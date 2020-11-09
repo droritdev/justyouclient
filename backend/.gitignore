@@ -1,0 +1,3 @@
+##Ignored folders on github
+.env
+node_modules
