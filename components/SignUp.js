@@ -69,7 +69,7 @@ const SignUp = ({navigation}) => {
       }
     }
 
-    //Handle the next button press
+    //Handle the next button press to send the verify code
     const handleNext = () => {
       if(inputIsValid){
         dispatchEmail({

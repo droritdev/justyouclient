@@ -10,7 +10,7 @@ const WelcomeUser = ({navigation}) => {
         <View style={styles.container}>
             <View style={styles.textContainer}>
                 <Text style={styles.justYouText}>Just You</Text>
-                <Text style={styles.welcomeUserText}>WELLCOME {firstName.toUpperCase()}</Text>
+                <Text style={styles.welcomeUserText}>WELLCOME{"\n"+firstName.toUpperCase()}</Text>
             </View>
         </View>
     );
@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
         fontWeight: 'bold',
         color: 'steelblue',
-        fontSize: 40
+        fontSize: 40,
+        textAlign: 'center'
     }
 });
 

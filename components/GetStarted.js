@@ -20,7 +20,7 @@ const GetStartedClient = ({navigation}) => {
         <View style={styles.getStartedContainer}>
             <TouchableOpacity
               style={styles.getStartedButton}
-              onPress={handleGetStartedButton} //navigates to the SignUp
+              onPress={handleGetStartedButton}
             >
               <Text style={styles.getStartedText}>Get Started</Text>
             </TouchableOpacity>

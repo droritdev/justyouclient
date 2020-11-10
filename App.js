@@ -1,29 +1,26 @@
 import React from 'react';
-import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import WelcomePopUp from './components/WelcomePopUp';
 import GetStarted from './components/GetStarted';
-import ProfileDetailsPage2 from './components/ProfileDetailsPage2';
-import ResetPassword from './components/ResetPassword';
-
 import SignUp from './components/SignUp';
+import LogIn from './components/LogIn';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import EmailVerification from './components/EmailVerification';
 import CreatePassword from './components/CreatePassword';
 import ProfileDetailsPage1 from './components/ProfileDetailsPage1';
+import ProfileDetailsPage2 from './components/ProfileDetailsPage2';
 import PaymentsAndPolicy from './components/PaymentsAndPolicy';
 import RegisteringAccountPopUp from './components/RegisteringAccountPopUp';
 import DetailsSuccessfully from './components/DetailsSuccessfully';
 import PhoneNumberVerification from './components/PhoneNumberVerification';
 import DonePopUp from './components/DonePopUp';
 import WelcomeUser from './components/WelcomeUser';
-import LogIn from './components/LogIn';
-import ForgotPassword from './components/ForgotPassword';
-
 import GlobalStore from './context/GlobalStore';
 
-
+//The main stack navigator to navigate between screens in the app
 const Stack = createStackNavigator();
 
 const App = () => {
