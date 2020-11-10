@@ -5,10 +5,10 @@ import CountryReducer from '../reducers/CountryReducer';
 export const CountryContext = React.createContext();
 
 const CountryContextProvider = ({children}) => {
-    const [country, dispatch] = useReducer(CountryReducer, "");
+    const [country, dispatchCountry] = useReducer(CountryReducer, "");
 
     return(
-        <CountryContext.Provider value={{country, dispatch}}>
+        <CountryContext.Provider value={{country, dispatchCountry}}>
             {children}
         </CountryContext.Provider>
     );

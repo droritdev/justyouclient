@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {StyleSheet, View, Text, TextInput, Button, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Dimensions} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -129,6 +129,16 @@ const PhoneNumberVerification = ({navigation}) => {
         setCodeErrorMessage('Code is 5 digits');
       }
       else{
+        dispatchArea({
+          type: 'SET_AREA_CODE',
+          areaCode: areaCodeInput
+        });
+
+        dispatchNumber({
+          type: 'SET_PHONE_NUMBER',
+          phoneNumber: phoneNumberInput
+        });
+
         navigation.navigate('DonePopUp');
         // axios
         //   .post('/verify-code', {
@@ -222,7 +232,7 @@ const PhoneNumberVerification = ({navigation}) => {
             <View>
                 <TouchableOpacity 
                   style={styles.sendAgainButton}
-                  onPress={sendVerificationCode}
+                  onPress={handleVerify}
                 >
                   <Text style={styles.resendCodeText}>No SMS? Tap to resend</Text> 
                 </TouchableOpacity>
@@ -251,7 +261,7 @@ const styles = StyleSheet.create({
     headerContainer: {
       flexDirection: 'column',
       alignItems: 'center',
-      marginTop: 45
+      marginTop: 60
     },
     justYouHeader: {
       color: 'black',
@@ -266,10 +276,10 @@ const styles = StyleSheet.create({
     phoneContainer: {
       flexDirection: 'column',
       marginTop: 50,
-      height: Dimensions.get('window').height * .2,
+      height: 175
     },
     phoneAndErrorContainer: {
-      height: Dimensions.get('window').height * .1
+      height: 90
     },
     inputTitle: {
       fontSize: 20,

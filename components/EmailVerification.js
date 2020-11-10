@@ -136,6 +136,7 @@ const EmailVerification = ({navigation}) => {
             placeholder='Enter your code'
             textAlign='center'
             onChangeText={text => handleOnInputChange(text)}
+            keyboardType={'numeric'}
           />
           {isErrorCodeMessage ?
             <Text style={styles.codeErrorText}>{codeErrorMessage}</Text>

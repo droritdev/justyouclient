@@ -5,7 +5,7 @@ import CountryContextProvider from './CountryContext';
 import PasswordContextProvider from './PasswordContext';
 import NameContextProvider from './NameContext';
 import PhoneContextProvider from './PhoneContext';
-import MediaContextProvider from './MediaContext';
+import BirthdayContextProvider from './BirthdayContext';
 import ProfileImageContextProvider from '../context/ProfileImageContext';
 
 const GlobalStore = ({children}) => {
@@ -15,13 +15,13 @@ const GlobalStore = ({children}) => {
             <CountryContextProvider>
                 <PasswordContextProvider>
                     <NameContextProvider>
-                        <MediaContextProvider>
-                            <ProfileImageContextProvider>
+                        <ProfileImageContextProvider>
+                            <BirthdayContextProvider>
                                 <PhoneContextProvider>
                                     {children}  
                                 </PhoneContextProvider>
-                            </ProfileImageContextProvider>
-                        </MediaContextProvider>
+                            </BirthdayContextProvider>
+                        </ProfileImageContextProvider>
                     </NameContextProvider>
                 </PasswordContextProvider>
             </CountryContextProvider>

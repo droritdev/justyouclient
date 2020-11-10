@@ -2,7 +2,7 @@
 const ProfileImageReducer = (state, action) => {
     switch(action.type) {
         case 'SET_PROFILE_IMAGE':
-            return action.imageSource;
+            return action.profileImage;
         
         default:
             return state;

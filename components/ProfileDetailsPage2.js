@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useReducer} from 'react';
 import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -8,21 +8,24 @@ import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import { Platform, Alert, Linking } from 'react-native';
 
 import { checkPermission } from '../permissionService';
-import {EmailContext} from '../context/EmailContext';
 import {NameContext} from '../context/NameContext';
 import {ProfileImageContext} from '../context/ProfileImageContext';
+import {BirthdayContext} from '../context/BirthdayContext';
+import {EmailContext} from '../context/EmailContext';
 
 //Here the user enters his: Full name, profile image(wich uploads to the cloudinary cloud) and his birthday
 const ProfileDetailsPage2 = ({navigation}) => {
     const {emailAddress} = useContext(EmailContext);
     const {dispatchFirst} = useContext(NameContext);
     const {dispatchLast} = useContext(NameContext);
-    const {imageSource, dispatch} = useContext(ProfileImageContext);
+    const {dispatchProfileImage} = useContext(ProfileImageContext);
+    const {dispatchBirthday} = useContext(BirthdayContext);
+
     const [photo, setPhoto] = useState("");
     const [firstNameInput, setFirstNameInput] = useState("");
     const [lastNameInput, setLastNameInput] = useState("");
     const [profileImageSource, setProfileImageSource] = useState(require('../images/camera.png'));
-    const [birthday, setBirthday] = useState("");
+    const [birthdaySelected, setBirthdaySelected] = useState("");
     const [minimumDate, setMinimumDate] = useState("");
     const [namesErrorMessage, setNamesErrorMessage] = useState("");
     const [isNamesError, setIsNamesError] = useState(false);
@@ -172,13 +175,16 @@ const ProfileDetailsPage2 = ({navigation}) => {
       })
     }
 
+    const handleOnBirthdayChange = (text) => {
+      setBirthdaySelected(text);
+    }
     //Handle the next button press - if ok, navigates to RegisteringAccountPopUp
-    const handleNext = async () => {
+    const handleNext = () => {
       if(firstNameInput === "" || lastNameInput === ""){
         setNamesErrorMessage("Name fields are required");
         setIsNamesError(true);
       }
-      else if(birthday === ""){
+      else if(birthdaySelected === ""){
         setBirthdayErrorMessage("Birthday is required");
         setIsBirthdayError(true);
       }
@@ -192,13 +198,19 @@ const ProfileDetailsPage2 = ({navigation}) => {
           type: 'SET_LAST_NAME',
           firstName: lastNameInput
         });
+
+        dispatchProfileImage({
+          type: 'SET_PROFILE_IMAGE',
+          profileImage: profileImageSource.uri
+        });
+
+        dispatchBirthday({
+          type: 'SET_BIRTHDAY',
+          birthday: birthdaySelected
+        });
+
         setIsNamesError(false);
         setIsBirthdayError(false);
-
-        dispatch({
-          type: 'SET_PROFILE_IMAGE',
-          imageSource: photo
-        });
 
         navigation.navigate('PaymentsAndPolicy');
       }
@@ -217,42 +229,40 @@ const ProfileDetailsPage2 = ({navigation}) => {
           </View>
           <Text style={styles.profileDetailesText}>Profile Details</Text>
           <Text style={styles.fillTheFieldsText}>Please fill out all fields</Text>
-          <View style={styles.upperContainer}>
-            <View style={styles.namesAndErrorContainer}>
-              <View style={styles.nameAndImageContanier}>
-                <TextInput
-                  style={styles.textInput}
-                  textAlign='center'
-                  placeholder='First name'
-                  placeholderTextColor='darkgrey'
-                  onChangeText={value => handleFirstNameInputChange(value)}
+          <View style={styles.namesAndErrorContainer}>
+            <View style={styles.nameAndImageContanier}>
+              <TextInput
+                style={styles.textInput}
+                textAlign='center'
+                placeholder='First name'
+                placeholderTextColor='darkgrey'
+                onChangeText={value => handleFirstNameInputChange(value)}
+              />
+              <TextInput
+                style={styles.textInput}
+                textAlign='center'
+                placeholder='Last name'
+                placeholderTextColor='darkgrey'
+                onChangeText={value => handleLastNameInputChange(value)}
+              />
+              <TouchableOpacity onPress={handleProfileImage}>
+                <Image
+                  source={profileImageSource}
+                  style={styles.profileImage}
                 />
-                <TextInput
-                  style={styles.textInput}
-                  textAlign='center'
-                  placeholder='Last name'
-                  placeholderTextColor='darkgrey'
-                  onChangeText={value => handleLastNameInputChange(value)}
-                />
-                <TouchableOpacity onPress={handleProfileImage}>
-                  <Image
-                    source={profileImageSource}
-                    style={styles.profileImage}
-                  />
-                </TouchableOpacity>
-              </View>
-              {isNamesError ?
-                <Text style={styles.namesErrorMessage}>{namesErrorMessage}</Text>
-              :null}
+              </TouchableOpacity>
             </View>
-            <View style={styles.errorMessageContainer}>
-              <Text style={styles.nameAndImageExplenation}>Your name and photo help the trainer to identify you</Text>
-            </View>
+            {isNamesError ?
+              <Text style={styles.namesErrorMessage}>{namesErrorMessage}</Text>
+            :null}
+          </View>
+          <View style={styles.errorMessageContainer}>
+            <Text style={styles.nameAndImageExplenation}>Your name and photo help the trainer to identify you</Text>
           </View>
           <Text style={styles.birthdayText}>Birthday</Text>
           <DatePicker
             style={styles.datePicker}
-            date={birthday}
+            date={birthdaySelected}
             mode="date"
             placeholder="Enter your birthday"
             placeholderTextColor="black"
@@ -261,7 +271,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
             maxDate="29-10-2090"
             confirmBtnText="Confirm"
             cancelBtnText="Cancel"
-            onDateChange={(date) => setBirthday(date)}
+            onDateChange={(date) => handleOnBirthdayChange(date)}
             customStyles={{
               dateIcon: {
                 height: 50,
@@ -276,7 +286,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
             }}
           />
           {isBirthdayError ?
-          <Text style={styles.birthdayErrorMessage}>{birthdayErrorMessage}</Text>
+            <Text style={styles.birthdayErrorMessage}>{birthdayErrorMessage}</Text>
           :null}
           <Text style={styles.emailAddressText}>EMAIL ADDRESS</Text>
           <View style={styles.emailContainer}>
@@ -324,11 +334,6 @@ const ProfileDetailsPage2 = ({navigation}) => {
         marginTop: 30,
         fontSize: 23
       },
-      upperContainer: {
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        height: Dimensions.get('window').height * .1
-      },
       nameAndImageContanier: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -356,17 +361,18 @@ const ProfileDetailsPage2 = ({navigation}) => {
       },
       namesErrorMessage: {
         color: 'red',
-        marginLeft: 10
+        marginLeft: 15
       },
       nameAndImageExplenation: {
         color: 'darkgrey',
         width: Dimensions.get('window').width,
         textAlign: 'center',
-        fontSize: 16
+        fontSize: 16,
+        marginTop: 5
       },
       birthdayText: {
         marginLeft: 20,
-        marginTop: 75,
+        marginTop: 40,
         fontWeight: 'bold',
         fontSize: 25
       },
@@ -378,17 +384,14 @@ const ProfileDetailsPage2 = ({navigation}) => {
       birthdayErrorMessage: {
         marginLeft: 20,
         color: 'red',
-        marginLeft: 10
+        marginTop: 15
       },
       emailContainer: {
-        marginLeft: 20,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        height: Dimensions.get('window').height * .1
+        marginLeft: 20
       },
       emailAddressText: {
         marginLeft: 20,
-        marginTop: 65,
+        marginTop: 45,
         fontWeight: 'bold',
         fontSize: 25
       },

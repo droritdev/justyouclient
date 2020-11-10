@@ -3,7 +3,7 @@ import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import FlipToggle from 'react-native-flip-toggle-button';
-import {Dropdown, DropDown} from 'react-native-material-dropdown'
+import {Dropdown} from 'react-native-material-dropdown'
 
 import {CountryContext} from '../context/CountryContext';
 import {PasswordContext} from '../context/PasswordContext';
@@ -11,11 +11,12 @@ import {PasswordContext} from '../context/PasswordContext';
 //Here the user picks his country and grante the push and location pemissions
 const ProfileDetailsPage1 = ({navigation}) => {
     const {dispatchPassword} = useContext(PasswordContext);
-    const {country, dispatch} = useContext(CountryContext);
+    const {country, dispatchCountry} = useContext(CountryContext);
     const [isLocationPermission, setIsLocationPermission] = useState(true);
     const [isPushPermission, setIsPushPermission] = useState(true);
     const [isPermissionsNotConfirmed, setIsPermissionsNotConfirmed] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState("");
+    const [selectedCountryName, setSelectedCountryName] = useState("");
     const [isCountryErrorMessage, setIsCountryErrorMessage] = useState(false);
     const [countryErrorMessage,setCountryErrorMessage] = useState("");
     const [isCountrySelected, setIsCountrySelected] = useState(false);
@@ -32,11 +33,11 @@ const ProfileDetailsPage1 = ({navigation}) => {
     ]
 
     //Checks if both permissions granted every time each of them changes
-    useEffect(() => {
-      if(isLocationPermission && isPushPermission){
-        setIsPermissionsNotConfirmed(false);
-      }
-    },[isPushPermission, isLocationPermission])
+    // useEffect(() => {
+    //   if(isLocationPermission && isPushPermission){
+    //     setIsPermissionsNotConfirmed(false);
+    //   }
+    // },[isPushPermission, isLocationPermission])
 
     //Navigates back to the create password page and Re-set the password in the passwordContext
     const handleArrowButton = () => {
@@ -51,18 +52,26 @@ const ProfileDetailsPage1 = ({navigation}) => {
     const handleOnChangeText = (value) => {
       setIsCountrySelected(true);
       setIsCountryErrorMessage(false);
+      setIsPermissionsNotConfirmed(false);
       setCountryErrorMessage("");
       setSelectedCountry(value);
+      setSelectedCountryName(countries[value - 1].label);
     }
 
     //Sets the location permission to the value
     const handleLocationToggleChange = (newState) => {
       setIsLocationPermission(newState);
+      if(isPushPermission && newState){
+        setIsPermissionsNotConfirmed(false);
+      }
     }
 
     //Sets the push permission to the value
     const handlePermissionToggleChange = (newState) => {
       setIsPushPermission(newState);
+      if(isLocationPermission && newState){
+        setIsPermissionsNotConfirmed(false);
+      }
     }
     
     //Handle the next button press - if ok, navigates to ProfileDetailsPage2
@@ -76,9 +85,9 @@ const ProfileDetailsPage1 = ({navigation}) => {
       }
       else{
         setIsPermissionsNotConfirmed(false);
-        dispatch({
+        dispatchCountry({
           type: 'SET_COUNTRY',
-          country: selectedCountry
+          country: selectedCountryName
         });
         navigation.navigate('ProfileDetailsPage2');
       }
@@ -102,7 +111,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
             <View style={styles.dropDownContainer}>
               <Dropdown
                 data={countries}
-                value={country}
+                value={selectedCountry}
                 useNativeDriver={true}
                 onChangeText={(value) => handleOnChangeText(value)}
                 containerStyle={{

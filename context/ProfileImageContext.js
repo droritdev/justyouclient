@@ -5,10 +5,10 @@ import ProfileImageReducer from '../reducers/ProfileImageReducer';
 export const ProfileImageContext = React.createContext();
 
 const ProfileImageContextProvider = ({children}) => {
-    const [imageSource, dispatch] = useReducer(ProfileImageReducer, "");
+    const [profileImage, dispatchProfileImage] = useReducer(ProfileImageReducer, "");
 
     return(
-        <ProfileImageContext.Provider value={{imageSource, dispatch}}>
+        <ProfileImageContext.Provider value={{profileImage, dispatchProfileImage}}>
             {children}
         </ProfileImageContext.Provider>
     );

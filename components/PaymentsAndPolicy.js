@@ -92,76 +92,74 @@ const PaymentsAndPolicy = ({navigation}) => {
             />
             </TouchableOpacity>
             <Text style={styles.profileDetailesText}>Profile Details</Text>
-            <View style={styles.paymentsAndPolicyContainer}>
-                <View style={styles.paymentFormContainer}>
-                    <Text style={styles.paymentTitle}>
-                        ADD FORM OF PAYMENT:
+            <View style={styles.paymentFormContainer}>
+                <Text style={styles.paymentTitle}>
+                    ADD FORM OF PAYMENT:
+                </Text>
+                <TextInput
+                    style={styles.cardInput}
+                    textAlign='center'
+                    placeholder='ENTER YOUR CREDIT CARD INFORMATION'
+                    placeholderTextColor='black'
+                    onChangeText={value => handleOnChangeCardNumber(value)}
+                />
+                <TextInput
+                    style={styles.cardInput}
+                    textAlign='center'
+                    placeholder='CVV'
+                    placeholderTextColor='black'
+                    onChangeText={value => handleOnChangeCardCvv(value)}
+                />
+                <TextInput
+                    style={styles.cardInput}
+                    textAlign='center'
+                    placeholder='EXPIRATION'
+                    placeholderTextColor='black'
+                    onChangeText={value => handleOnChangeCardExpiration(value)}
+                />
+            { !isAllfieldsFilled ? 
+                <Text style={styles.paymentFormErrorText}>{paymentsErrorText}</Text>                
+            :null}
+            </View>
+            <View style={styles.policyContainer}>
+                <View style={styles.policyTextAndFlipToggle}>
+                    <Text style={styles.policyText}>
+                        I have read and agree with the user terms of service and I understand that my personal data will be processed in accordance with Just You privacy statment.
                     </Text>
-                    <TextInput
-                        style={styles.cardInput}
-                        textAlign='center'
-                        placeholder='ENTER YOUR CREDIT CARD INFORMATION'
-                        placeholderTextColor='black'
-                        onChangeText={value => handleOnChangeCardNumber(value)}
-                    />
-                    <TextInput
-                        style={styles.cardInput}
-                        textAlign='center'
-                        placeholder='CVV'
-                        placeholderTextColor='black'
-                        onChangeText={value => handleOnChangeCardCvv(value)}
-                    />
-                    <TextInput
-                        style={styles.cardInput}
-                        textAlign='center'
-                        placeholder='EXPIRATION'
-                        placeholderTextColor='black'
-                        onChangeText={value => handleOnChangeCardExpiration(value)}
-                    />
+                    <View style={styles.flipToggle}>
+                        <FlipToggle
+                            value={isAccepted}
+                            buttonHeight={30}
+                            buttonWidth={70}
+                            buttonRadius={40}
+                            sliderWidth={35}
+                            sliderHeight={30}
+                            sliderRadius={50}
+                            sliderOffColor={'black'}
+                            sliderOnColor={'white'}
+                            buttonOffColor={'grey'}
+                            buttonOnColor={'deepskyblue'}
+                            onToggle={(newState) => handleFlipToggleChange(newState)}
+                        />
+                    </View>
                 </View>
-                { !isAllfieldsFilled ? 
-                    <Text style={styles.paymentFormErrorText}>{paymentsErrorText}</Text>                
-                :null}
-                <View style={styles.policyContainer}>
-                    <View style={styles.policyTextAndFlipToggle}>
-                        <Text style={styles.policyText}>
-                            I have read and agree with the user terms of service and I understand that my personal data will be processed in accordance with Just You privacy statment.
+                <View style={styles.readMoreContainer}>
+                    <TouchableOpacity
+                        //onPress={}
+                    >
+                        <Image
+                            source={require('../images/moreInformation.jpg')}
+                            style={styles.moreInformationImage}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        //onPress={}
+                    >
+                        <Text style={styles.readMoreText}>
+                            Read more
                         </Text>
-                        <View style={styles.flipToggle}>
-                            <FlipToggle
-                                value={isAccepted}
-                                buttonHeight={30}
-                                buttonWidth={70}
-                                buttonRadius={40}
-                                sliderWidth={35}
-                                sliderHeight={30}
-                                sliderRadius={50}
-                                sliderOffColor={'black'}
-                                sliderOnColor={'white'}
-                                buttonOffColor={'grey'}
-                                buttonOnColor={'deepskyblue'}
-                                onToggle={(newState) => handleFlipToggleChange(newState)}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.readMoreContainer}>
-                        <TouchableOpacity
-                            //onPress={}
-                        >
-                            <Image
-                                source={require('../images/moreInformation.jpg')}
-                                style={styles.moreInformationImage}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            //onPress={}
-                        >
-                            <Text style={styles.readMoreText}>
-                                Read more
-                            </Text>
 
-                        </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.nextButtonContainer}>
@@ -181,10 +179,6 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height,
         flexDirection: 'column'
     },
-    paymentsAndPolicyContainer: {
-        justifyContent: 'space-between',
-        height: Dimensions.get('window').height * .6,
-    },
     headerContainer: {
         flexDirection: 'row',
         marginTop:30,
@@ -201,9 +195,8 @@ const styles = StyleSheet.create({
         fontSize: 38
     },
     paymentFormContainer:{
-        justifyContent: 'space-between',
         marginTop: 50,
-        height: Dimensions.get('window').height * .275
+        height: 265
     },
     paymentTitle: {
         fontSize: 17,
@@ -216,14 +209,17 @@ const styles = StyleSheet.create({
         borderColor: 'deepskyblue',
         borderRadius: 30,
         alignSelf: 'center',
-        fontSize: 15
+        fontSize: 15,
+        marginTop: 20
     },
     paymentFormErrorText: {
         color: 'red',
         alignSelf: 'center',
-        fontSize: 20
+        fontSize: 20,
+        marginTop: 15
     },
     policyContainer: {
+        marginTop: 50,
         marginLeft: 10,
         justifyContent: 'space-between',
         height: Dimensions.get('window').height * .19,
