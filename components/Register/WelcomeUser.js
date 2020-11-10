@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native';
 
-import {NameContext} from '../context/NameContext';
+import {NameContext} from '../../context/NameContext';
 
 const WelcomeUser = ({navigation}) => {
     const {firstName} = useContext(NameContext);

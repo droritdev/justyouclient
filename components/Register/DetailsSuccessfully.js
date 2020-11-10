@@ -9,7 +9,7 @@ const DetailsSuccessfully = ({navigation}) => {
         <View style={styles.container}>
             <Text style={styles.registeringText}>THE DETAILS SUCCESSFULLY ENTERD!</Text>
             <Image 
-                source={require('../images/successfullyIcon.png')}
+                source={require('../../images/successfullyIcon.png')}
             />
         </View>
     );

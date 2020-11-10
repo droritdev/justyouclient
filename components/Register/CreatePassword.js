@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import {StyleSheet, View, Text, TextInput, Button, Dimensions} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import {PasswordContext} from '../context/PasswordContext';
+import {PasswordContext} from '../../context/PasswordContext';
 
 //Here the user creates his password
 const CreatePassword = ({navigation}) => {

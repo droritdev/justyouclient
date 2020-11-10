@@ -19,7 +19,7 @@ const ForgotPassword = ({navigation}) => {
                 onPress={handleArrowButton}
                 >
                 <Image
-                    source={require('../images/arrowBack.png')}
+                    source={require('../../images/arrowBack.png')}
                     style={styles.arrowImage}
                 />
                 </TouchableOpacity>

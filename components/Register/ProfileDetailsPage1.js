@@ -5,13 +5,13 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import FlipToggle from 'react-native-flip-toggle-button';
 import {Dropdown} from 'react-native-material-dropdown'
 
-import {CountryContext} from '../context/CountryContext';
-import {PasswordContext} from '../context/PasswordContext';
+import {CountryContext} from '../../context/CountryContext';
+import {PasswordContext} from '../../context/PasswordContext';
 
 //Here the user picks his country and grante the push and location pemissions
 const ProfileDetailsPage1 = ({navigation}) => {
     const {dispatchPassword} = useContext(PasswordContext);
-    const {country, dispatchCountry} = useContext(CountryContext);
+    const {dispatchCountry} = useContext(CountryContext);
     const [isLocationPermission, setIsLocationPermission] = useState(true);
     const [isPushPermission, setIsPushPermission] = useState(true);
     const [isPermissionsNotConfirmed, setIsPermissionsNotConfirmed] = useState(false);
@@ -99,7 +99,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
           onPress={handleArrowButton}
         >
           <Image
-            source={require('../images/arrowBack.png')}
+            source={require('../../images/arrowBack.png')}
             style={styles.arrowImage}
           />
         </TouchableOpacity>

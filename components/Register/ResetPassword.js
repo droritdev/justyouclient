@@ -2,10 +2,10 @@ import React, {useContext, useState} from 'react';
 import {StyleSheet, View, Text, TextInput, Button, Dimensions} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import {PasswordContext} from '../context/PasswordContext';
+import {PasswordContext} from '../../context/PasswordContext';
 
 const ResetPasswordClient = ({navigation}) => {
-    const {password, dispatch} = useContext(PasswordContext);
+    const {dispatchPassword} = useContext(PasswordContext);
     const [confirmedPassword, setConfirmedPassword] = useState("");
     const [isPasswordsNotMatch, setIsPasswordsNotMatch] = useState(false)
     const [passwordErrorText, setPasswordErrorText] = useState("");
@@ -30,7 +30,7 @@ const ResetPasswordClient = ({navigation}) => {
           setIsPasswordsNotMatch(true);
         }
         else{
-          dispatch({
+          dispatchPassword({
             type: 'SET_PASSWORD',
             password: input
           });

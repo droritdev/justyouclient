@@ -3,7 +3,7 @@ import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import {EmailContext} from '../context/EmailContext';
+import {EmailContext} from '../../context/EmailContext';
 
 //Here the user enters the verification code he recived to his mail address
 const EmailVerification = ({navigation}) => {
@@ -124,7 +124,7 @@ const EmailVerification = ({navigation}) => {
           onPress={handleArrowButton}
         >
           <Image
-            source={require('../images/arrowBack.png')}
+            source={require('../../images/arrowBack.png')}
             style={styles.arrowImage}
           />
         </TouchableOpacity>

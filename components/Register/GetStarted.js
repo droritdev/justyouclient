@@ -12,7 +12,7 @@ const GetStartedClient = ({navigation}) => {
     return(
       <View style={styles.welcomePage2}>
         <View style={styles.welcomeContainer}>
-            <Image source = {require('../images/welcomepic.png')} />
+            <Image source = {require('../../images/welcomepic.png')} />
             <Text style={styles.welcomeToText}>Welcome to</Text>
             <Text style={styles.justYouText}>Just You</Text>
             <Text style={styles.excitedText}>We are exited to meet you!</Text>

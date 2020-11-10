@@ -3,7 +3,7 @@ import {StyleSheet, View, Text, TextInput, Dimensions} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import {PhoneContext} from '../context/PhoneContext';
+import {PhoneContext} from '../../context/PhoneContext';
  
 //Here the verifies his phone number with a code
 const PhoneNumberVerification = ({navigation}) => {
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     verifyButton: {
         marginTop: 40,
         width: Dimensions.get('window').width * .9,
-        height: Dimensions.get('window').height * .07,
+        height: Dimensions.get('window').height * .065,
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',

@@ -3,7 +3,7 @@ import {StyleSheet, View, Text, TextInput, Button, Dimensions} from 'react-nativ
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
 
-import {EmailContext} from '../context/EmailContext';
+import {EmailContext} from '../../context/EmailContext';
 
 //Here the user enters his email address to verify his account
 const SignUp = ({navigation}) => {

@@ -8,7 +8,7 @@ const DonePopUp = ({navigation}) => {
     return(
         <View style={styles.container}>
             <Image 
-                source={require('../images/successfullyIcon.png')}
+                source={require('../../images/successfullyIcon.png')}
             />
             <Text style={styles.registeringText}>Done</Text>
         </View>

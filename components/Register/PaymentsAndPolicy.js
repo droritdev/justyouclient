@@ -87,7 +87,7 @@ const PaymentsAndPolicy = ({navigation}) => {
                 onPress={handleArrowButton}
             >
             <Image
-                source={require('../images/arrowBack.png')}
+                source={require('../../images/arrowBack.png')}
                 style={styles.arrowImage}
             />
             </TouchableOpacity>
@@ -148,7 +148,7 @@ const PaymentsAndPolicy = ({navigation}) => {
                         //onPress={}
                     >
                         <Image
-                            source={require('../images/moreInformation.jpg')}
+                            source={require('../../images/moreInformation.jpg')}
                             style={styles.moreInformationImage}
                         />
                     </TouchableOpacity>

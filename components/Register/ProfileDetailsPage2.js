@@ -7,11 +7,11 @@ import ImagePicker from 'react-native-image-picker';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import { Platform, Alert, Linking } from 'react-native';
 
-import { checkPermission } from '../permissionService';
-import {NameContext} from '../context/NameContext';
-import {ProfileImageContext} from '../context/ProfileImageContext';
-import {BirthdayContext} from '../context/BirthdayContext';
-import {EmailContext} from '../context/EmailContext';
+import { checkPermission } from '../../permissionService';
+import {NameContext} from '../../context/NameContext';
+import {ProfileImageContext} from '../../context/ProfileImageContext';
+import {BirthdayContext} from '../../context/BirthdayContext';
+import {EmailContext} from '../../context/EmailContext';
 
 //Here the user enters his: Full name, profile image(wich uploads to the cloudinary cloud) and his birthday
 const ProfileDetailsPage2 = ({navigation}) => {
@@ -24,7 +24,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
     const [photo, setPhoto] = useState("");
     const [firstNameInput, setFirstNameInput] = useState("");
     const [lastNameInput, setLastNameInput] = useState("");
-    const [profileImageSource, setProfileImageSource] = useState(require('../images/camera.png'));
+    const [profileImageSource, setProfileImageSource] = useState(require('../../images/camera.png'));
     const [birthdaySelected, setBirthdaySelected] = useState("");
     const [minimumDate, setMinimumDate] = useState("");
     const [namesErrorMessage, setNamesErrorMessage] = useState("");
@@ -222,7 +222,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
               onPress={handleArrowButton}
             >
               <Image
-                source={require('../images/arrowBack.png')}
+                source={require('../../images/arrowBack.png')}
                 style={styles.arrowImage}
               />
             </TouchableOpacity>
