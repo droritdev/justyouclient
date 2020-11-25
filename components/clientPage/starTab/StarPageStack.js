@@ -2,20 +2,20 @@ import React from 'react';
 import { Button, Text, View } from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import AroundYouPage from '../aroundYouTab/AroundYouPage';
+import StarPage from '../starTab/StarPage';
 
 const Stack = createStackNavigator();
 
-//The trainer's stack navigator to handle screen navigations in the around you section
-const AroundYouPageStack = ({navigation}) => {
+//The trainer's stack navigator to handle screen navigations in the profile section
+const TrainerProfilePageStack = ({navigation}) => {
     return(
         <Stack.Navigator
             screenOptions={{headerShown: false}}
         >
-            <Stack.Screen name='AroundYouPage' component={AroundYouPage}/>
+            <Stack.Screen name='StarPage' component={StarPage}/>
 
         </Stack.Navigator>
     )
 }
 
-export default AroundYouPageStack;
+export default TrainerProfilePageStack;

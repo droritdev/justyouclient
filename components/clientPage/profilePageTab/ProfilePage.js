@@ -1,0 +1,602 @@
+import React from 'react';
+import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+//The claint's start area page
+const StarPage = ({navigation}) => {
+    return(
+        <SafeAreaView style={styles.safeArea}>
+            <ScrollView style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>Just You</Text>
+                </View>
+                <Text style={styles.helloUserTitle}>Hello Erez!</Text>
+                <View style={styles.imageAndDetailsRow}>
+                    <View
+                        style={styles.imageView}
+                    >
+                        <TouchableOpacity>
+                            <Image
+
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.nameAndDetailsView}>        
+                        <Text style={styles.clientNameTitle}>Erez Buganim</Text>
+                        <View style={styles.detailsRow}>
+                            <View style={styles.credits}>
+                                <Text style={styles.creditValue}>0.00</Text>
+                                <Text style={styles.creditText}>Credit (USD)</Text>
+                            </View>
+                            <View style={styles.confirmedOrders}>
+                                <Text style={styles.confirmedOrdersValue}>1</Text>
+                                <Text style={styles.confirmedOrdersText}>Confirmed Orders</Text>
+                            </View>
+                            <View style={styles.pandingOrders}>
+                                <Text style={styles.pandingOrdersValue}>1</Text>
+                                <Text style={styles.pandingOrdersText}>Panding Orders</Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+                <View style={styles.likesSectionContainer}>
+                    <Text style={styles.likesTitle}>Choises I Liked</Text>
+                    <ScrollView 
+                        style={styles.likesScrollView} 
+                        horizontal={true} 
+                        showsHorizontalScrollIndicator={false}
+                    >
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerImageView}>
+                                <TouchableOpacity>
+                                    <Image
+                                        style={styles.trainerImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.trainerPreviewText}
+                            >
+                                <Text style={styles.trainerText1}>Judi Woods</Text>
+                                <Text style={styles.trainerText2}>Personal Trainer</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerText3}>8.7 </Text>
+                                    <Image 
+                                        source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerImageView}>
+                                <TouchableOpacity>
+                                    <Image
+                                        style={styles.trainerImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.trainerPreviewText}
+                            >
+                                <Text style={styles.trainerText1}>Judi Woods</Text>
+                                <Text style={styles.trainerText2}>Personal Trainer</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerText3}>8.7 </Text>
+                                    <Image 
+                                        source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerImageView}>
+                                <TouchableOpacity>
+                                    <Image
+                                        style={styles.trainerImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.trainerPreviewText}
+                            >
+                                <Text style={styles.trainerText1}>Judi Woods</Text>
+                                <Text style={styles.trainerText2}>Personal Trainer</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerText3}>8.7 </Text>
+                                    <Image 
+                                        source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerImageView}>
+                                <TouchableOpacity>
+                                    <Image
+                                        style={styles.trainerImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.trainerPreviewText}
+                            >
+                                <Text style={styles.trainerText1}>Judi Woods</Text>
+                                <Text style={styles.trainerText2}>Personal Trainer</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerText3}>8.7 </Text>
+                                    <Image 
+                                        source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </ScrollView>
+                </View>
+                <View style={styles.linksContainer}>
+                    <Text style={styles.linksTitle}>Links</Text>
+                    <View style={styles.rowContainer}>
+                        <View style={styles.inviteRow}>
+                            <TouchableOpacity
+
+                            >
+                                <Text style={styles.inviteTitle}>Receive credit by inviting friends</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                                style={styles.inviteButton}
+
+                            >
+                                <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <View style={styles.receiptsRow}>
+                            <TouchableOpacity
+ 
+                            >
+                                <Text style={styles.receiptssTitle}>Receipts History</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.arrowButton}>
+                                <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+                <View style={styles.recentOrdersSectionContainer}>
+                    <View style={styles.recentAndHistoryRow}>
+                        <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
+                        <TouchableOpacity
+
+                        >
+                            <Text style={styles.historyText}>History</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView 
+                        style={styles.recentOrdersScrollView} 
+                        horizontal={true} 
+                        showsHorizontalScrollIndicator={false}
+                    >
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerImageView}>
+                                <TouchableOpacity>
+                                    <Image
+                                        style={styles.trainerImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.trainerPreviewText}
+                            >
+                                <Text style={styles.trainerText1}>Judi Woods</Text>
+                                <Text style={styles.trainerText2}>Personal Trainer</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerText3}>8.7 </Text>
+                                    <Image 
+                                        source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerImageView}>
+                                <TouchableOpacity>
+                                    <Image
+                                        style={styles.trainerImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.trainerPreviewText}
+                            >
+                                <Text style={styles.trainerText1}>Judi Woods</Text>
+                                <Text style={styles.trainerText2}>Personal Trainer</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerText3}>8.7 </Text>
+                                    <Image 
+                                        source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerImageView}>
+                                <TouchableOpacity>
+                                    <Image
+                                        style={styles.trainerImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.trainerPreviewText}
+                            >
+                                <Text style={styles.trainerText1}>Judi Woods</Text>
+                                <Text style={styles.trainerText2}>Personal Trainer</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerText3}>8.7 </Text>
+                                    <Image 
+                                        source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerImageView}>
+                                <TouchableOpacity>
+                                    <Image
+                                        style={styles.trainerImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.trainerPreviewText}
+                            >
+                                <Text style={styles.trainerText1}>Judi Woods</Text>
+                                <Text style={styles.trainerText2}>Personal Trainer</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerText3}>8.7 </Text>
+                                    <Image 
+                                        source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </ScrollView>
+                </View>
+                <View style={styles.moreContainer}>
+                    <Text style={styles.moreTitle}>More</Text>
+                    <View style={styles.rowContainer}>
+                        <View style={styles.editProfileRow}>
+                            <TouchableOpacity
+                                onPress={() => handleOnEditProfilePressed()}
+                            >
+                                <Text style={styles.editProfileTitle}>Edit Profile</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                                style={styles.arrowButton}
+                                onPress={() => handleOnEditProfilePressed()}
+                            >
+                                <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <View style={styles.customerServiceRow}>
+                            <TouchableOpacity
+                                onPress={() => handleOnCustomerServicePressed()}    
+                            >
+                                <Text style={styles.customerServicesTitle}>Customer Service</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.arrowButton}>
+                                <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <View style={styles.settingsRow}>
+                            <TouchableOpacity
+                                onPress={() => handleOnSettingsPress()}
+                            >
+                                <Text style={styles.settingsTitle}>Settings</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                                style={styles.arrowButton}
+                                onPress={() => handleOnSettingsPress()}
+                            >
+                                <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View
+                        style={styles.deadAreaBottom}
+                    />
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    )
+}
+
+const styles = StyleSheet.create({
+    safeArea: {
+        backgroundColor: 'white'
+    },
+    container: {
+        backgroundColor: 'white',
+        width: Dimensions.get('window').width,
+        // height: Dimensions.get('window').height
+    },
+    header: {
+        alignSelf: 'center'
+    },
+    headerText: {
+        fontSize: 25,
+        fontWeight: 'bold'
+    },
+    helloUserTitle: {
+        fontWeight: 'bold',
+        fontSize: 22,
+        marginLeft: 15
+    },
+    imageAndDetailsRow: {
+        flexDirection: 'row',
+        height: 110,
+        width: Dimensions.get('window').width * .95,
+        alignSelf: 'center',
+        marginTop: 15,
+        alignItems: 'center'
+    },
+    imageView: {
+        height: 100,
+        width: 100,
+        borderWidth: 2,
+        borderRadius: 60,
+        borderColor: 'grey'
+    },
+    nameAndDetailsView: {
+        justifyContent: 'space-between',
+        height: 90,
+    },
+    clientNameTitle: {
+        marginLeft: 15,
+        fontWeight: 'bold',
+        fontSize: 20
+    },
+    detailsRow: {
+        flexDirection: 'row',
+        width: Dimensions.get('window').width * .7,
+        justifyContent: 'space-between',
+        marginLeft: 10
+    },
+    credits: {
+        alignItems: 'center'
+    },
+    creditValue: {
+        fontWeight: 'bold',
+        fontSize: 17
+    },
+    creditText: {
+    },
+    confirmedOrders: {
+        alignItems: 'center',
+        width: 75
+    },
+    confirmedOrdersValue: {
+        fontWeight: 'bold',
+        fontSize: 17
+    },
+    confirmedOrdersText: {
+        textAlign: 'center',
+        color: 'deepskyblue',
+        fontWeight: 'bold'
+    },
+    pandingOrders: {
+        alignItems: 'center',
+        width: 75
+    },
+    pandingOrdersValue: {
+        fontWeight: 'bold',
+        fontSize: 17
+    },
+    pandingOrdersText: {
+        textAlign: 'center',
+        color: 'deepskyblue',
+        fontWeight: 'bold'
+    },
+    likesSectionContainer: {
+        marginTop: 35,
+        marginLeft: 10
+    },
+    likesTitle: {
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
+    likesScrollView: {
+        marginTop: 10,
+    },
+    trainerView: {
+        marginRight: 5,
+        height: Dimensions.get('window').height * .125,
+        width: Dimensions.get('window').width * .3,
+        borderWidth: 2,
+        borderColor: 'gainsboro',
+        borderRadius: 20
+    },
+    trainerImageView: {
+        height: '60%',
+        backgroundColor: 'gainsboro',
+        borderTopRightRadius: 15,
+        borderTopLeftRadius: 15,
+    },
+    trainerImage: {
+
+    },
+    trainerPreviewText: {
+        height: '40%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: Dimensions.get('window').width * .3,
+    },
+    trainerText1: {
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
+    trainerText2: {
+        fontSize: 10,
+        textAlign: 'center'
+    },
+    ratingRow: {
+        flexDirection: 'row'
+    },
+    trainerText3: {
+        fontSize: 10,
+        textAlign: 'center'
+    },
+    starIcon: {
+        height: 10,
+        width: 10,
+        alignSelf: 'center'
+    },
+    linksContainer: {
+        marginTop: 20,
+    },
+    linksTitle: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        marginLeft: 20,
+    },
+    rowContainer: {
+        height: 40,
+        justifyContent: 'center',
+        borderBottomColor: 'lightgrey',
+        borderBottomWidth: 2,
+    },
+    arrowImage: {
+        height: 15,
+        marginTop: 8
+    },
+    arrowButton: {
+        
+    },
+    inviteRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    inviteTitle: {
+        fontSize: 20,
+        marginLeft: 20,
+    },
+    inviteButton: {
+
+    },
+    receiptsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    receiptssTitle: {
+        fontSize: 20,
+        marginLeft: 20,
+    },
+    receiptssButton: {
+
+    },
+    recentOrdersSectionContainer: {
+        marginTop: 35,
+        marginLeft: 10
+    },
+    recentAndHistoryRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: Dimensions.get('window').width * .9,
+        alignSelf: 'center'
+    },
+    recentOrdersTitle: {
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
+    historyText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'deepskyblue' 
+    },
+    recentOrdersScrollView: {
+        marginTop: 10,
+    },
+    moreContainer: {
+        marginTop: 30,
+    },
+    moreTitle: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        marginLeft: 20,
+    },
+    rowContainer: {
+        height: 40,
+        justifyContent: 'center',
+        borderBottomColor: 'lightgrey',
+        borderBottomWidth: 2,
+    },
+    arrowImage: {
+        height: 15,
+        marginTop: 8
+    },
+    arrowButton: {
+        
+    },
+    editProfileRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    editProfileTitle: {
+        fontSize: 20,
+        marginLeft: 20,
+    },
+    editProfileButton: {
+
+    },
+    customerServiceRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    customerServicesTitle: {
+        fontSize: 20,
+        marginLeft: 20,
+    },
+    customerServicesButton: {
+
+    },
+    settingsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    settingsTitle: {
+        fontSize: 20,
+        marginLeft: 20,
+    },
+    settingsButton: {
+    },
+});
+
+export default StarPage;

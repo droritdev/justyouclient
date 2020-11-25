@@ -7554,7 +7554,7 @@
   dependencies:
     "read" "1"
 
-"prop-types@^15.5.10", "prop-types@^15.5.9", "prop-types@^15.6.2", "prop-types@^15.7.2":
+"prop-types@^15.5.10", "prop-types@^15.5.9", "prop-types@^15.6.0", "prop-types@^15.6.2", "prop-types@^15.7.2":
   "integrity" "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ=="
   "resolved" "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz"
   "version" "15.7.2"
@@ -7812,6 +7812,13 @@
   "integrity" "sha512-B0kPYq5ZK/2G7pPhcAFLflDfm+HXktdVEeLFHnP/+oPnao+b28hXsOBCi0IgK72gxbdPtnpZME8KONRIKOBDug=="
   "resolved" "https://registry.npmjs.org/react-native-screens/-/react-native-screens-2.13.0.tgz"
   "version" "2.13.0"
+
+"react-native-tag-select@^2.0.0":
+  "integrity" "sha512-ys0A2MKZ8CLQ6QYBnnuyg1/MIsNVmRSSJpPFD3E+tTR4FTaLYNRiTIaBy1Wy77feBaYeDfN7UG2K5jr31+Iq0A=="
+  "resolved" "https://registry.npmjs.org/react-native-tag-select/-/react-native-tag-select-2.0.0.tgz"
+  "version" "2.0.0"
+  dependencies:
+    "prop-types" "^15.6.0"
 
 "react-native-vector-icons@^7.1.0", "react-native-vector-icons@>6.0.0":
   "integrity" "sha512-V2a1zJ4i+kS8O4j183gIwX14St9AxxXabxwYpFBgRhvr2NDXyFcjHDEAgrOYYlt2W57e20aN1tBDU/I+wn9WtQ=="

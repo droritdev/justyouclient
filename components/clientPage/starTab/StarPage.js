@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 //The claint's start area page
-const ProfilePage = ({navigation}) => {
+const StarPage = ({navigation}) => {
     return(
         <SafeAreaView style={styles.safeArea}>
             <ScrollView style={styles.container}>
@@ -345,8 +345,7 @@ const ProfilePage = ({navigation}) => {
 
 const styles = StyleSheet.create({
     safeArea: {
-        backgroundColor: 'white',
-        flex: 0
+        backgroundColor: 'white'
     },
     container: {
         backgroundColor: 'white',
@@ -513,7 +512,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     whyUsButton: {
-        width: Dimensions.get('window').width * .235,
+        width: Dimensions.get('window').width * .23,
         height: Dimensions.get('window').height * .065,
         backgroundColor: 'deepskyblue',
         borderRadius: 15,
@@ -526,7 +525,7 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     shareAndEarnButton: {
-        width: Dimensions.get('window').width * .235,
+        width: Dimensions.get('window').width * .23,
         height: Dimensions.get('window').height * .065,
         backgroundColor: 'deepskyblue',
         borderRadius: 15,
@@ -540,7 +539,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     qAndaButton: {
-        width: Dimensions.get('window').width * .235,
+        width: Dimensions.get('window').width * .23,
         height: Dimensions.get('window').height * .065,
         backgroundColor: 'deepskyblue',
         borderRadius: 15,
@@ -554,7 +553,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     updatesButton: {
-        width: Dimensions.get('window').width * .235,
+        width: Dimensions.get('window').width * .23,
         height: Dimensions.get('window').height * .065,
         backgroundColor: 'deepskyblue',
         borderRadius: 15,
@@ -647,4 +646,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ProfilePage;
+export default StarPage;
