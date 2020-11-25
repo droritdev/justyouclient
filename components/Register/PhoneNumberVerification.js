@@ -3,6 +3,7 @@ import {StyleSheet, View, Text, TextInput, Dimensions} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import NextButton from '../GlobalComponents/NextButton';
 import {PhoneContext} from '../../context/PhoneContext';
  
 //Here the verifies his phone number with a code
@@ -208,13 +209,11 @@ const PhoneNumberVerification = ({navigation}) => {
               <Text style={styles.verifyExplenationText}>Adding your phone number will strengthen your account security. We'll send you a text with a 5-digit code to verify your account.</Text>
               </View>
             </View>
-            <View>
-                <TouchableOpacity
-                    style={styles.verifyButton}
+            <View style={styles.verifyButton}>
+                <NextButton
+                    title="Verify"
                     onPress={handleVerify}
-                >
-                    <Text style={styles.verifyButtonText}>Verify</Text>
-                </TouchableOpacity>
+                />
             </View>
             <View style={styles.codeAndErrorMessage}>
               <View style={styles.codeTextInput}>
@@ -241,12 +240,10 @@ const PhoneNumberVerification = ({navigation}) => {
               {isNextError ?
               <Text style={styles.nextErrorMessage}>{nextErrorMessage}</Text>
               :null}
-                <TouchableOpacity
-                    style={styles.nextButton}
-                    onPress={handleNext}
-                >
-                    <Text style={styles.nextButtonText}>Next</Text>
-                </TouchableOpacity>
+              <NextButton
+                title="Next"
+                onPress={handleNext}
+              />
             </View>
         </View>
     );
@@ -324,14 +321,7 @@ const styles = StyleSheet.create({
         fontSize: 17,
     },
     verifyButton: {
-        marginTop: 40,
-        width: Dimensions.get('window').width * .9,
-        height: Dimensions.get('window').height * .065,
-        alignItems: 'center',
-        justifyContent: 'center',
-        alignSelf: 'center',
-        backgroundColor: 'deepskyblue',
-        borderRadius: 20
+        marginTop: 40
     },
     verifyButtonText: {
         fontSize: 25,

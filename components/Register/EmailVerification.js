@@ -3,7 +3,10 @@ import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
+import NextButton from '../GlobalComponents/NextButton';
 import {EmailContext} from '../../context/EmailContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 //Here the user enters the verification code he recived to his mail address
 const EmailVerification = ({navigation}) => {
@@ -119,15 +122,18 @@ const EmailVerification = ({navigation}) => {
     }
 
     return(
-      <View style={styles.container}>
-        <TouchableOpacity
+      <SafeAreaView style={styles.container}>
+        <ArrowBackButton
+          onPress={handleArrowButton}
+        />
+        {/* <TouchableOpacity
           onPress={handleArrowButton}
         >
           <Image
             source={require('../../images/arrowBack.png')}
             style={styles.arrowImage}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Text style={styles.verifyEmailTitle}>Verify email</Text>
         <Text style={styles.verifyEmailText}>We've sent a code to {<Text style={{color: 'deepskyblue'}}>{emailAddress}</Text>}. To continue, enter your code here bellow.</Text>
         <View style={styles.textInputContainer}>
@@ -136,7 +142,6 @@ const EmailVerification = ({navigation}) => {
             placeholder='Enter your code'
             textAlign='center'
             onChangeText={text => handleOnInputChange(text)}
-            keyboardType={'numeric'}
           />
           {isErrorCodeMessage ?
             <Text style={styles.codeErrorText}>{codeErrorMessage}</Text>
@@ -152,24 +157,22 @@ const EmailVerification = ({navigation}) => {
             </TouchableOpacity>
         </View>
         <View style={styles.nextButtonContainer}>
-            <TouchableOpacity
-                style={styles.nextButton}
-                onPress={handleNext}
-            >
-                <Text style={styles.nextButtonText}>Next</Text>
-            </TouchableOpacity>
+          <NextButton 
+            title="Next"
+            onPress={handleNext}
+          />
         </View>
-     </View>
+     </SafeAreaView>
     )
   }
   
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'column',
-      height: '100%'
+      height: Dimensions.get('window').height,
     },
     arrowImage: {
-        marginTop: 70,
+        marginTop: 20,
         marginLeft: 20
     },
     verifyEmailTitle: {
@@ -235,23 +238,8 @@ const EmailVerification = ({navigation}) => {
     nextButtonContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      marginBottom: 40,
       alignItems: 'center'
-    },
-    nextButton: {
-      width: Dimensions.get('window').width * .9,
-      height: Dimensions.get('window').height * .065,
-      alignItems: 'center',
-      justifyContent: 'center',
-      alignSelf: 'center',
-      backgroundColor: 'deepskyblue',
-      borderRadius: 20
-    },
-    nextButtonText: {
-      fontSize: 25,
-      fontWeight: 'bold',
-      color: 'white'
-    },
+    }
   });
 
   export default EmailVerification;

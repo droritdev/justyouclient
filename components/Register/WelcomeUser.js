@@ -6,6 +6,8 @@ import {NameContext} from '../../context/NameContext';
 const WelcomeUser = ({navigation}) => {
     const {firstName} = useContext(NameContext);
 
+    
+
     return(
         <View style={styles.container}>
             <View style={styles.textContainer}>

@@ -1,10 +1,14 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, Image, Dimensions, SafeAreaView} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import FlipToggle from 'react-native-flip-toggle-button';
 import {Dropdown} from 'react-native-material-dropdown'
 
+import FlipToggleButton from '../GlobalComponents/FlipToggleButton';
+import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
+import PickCountry from '../GlobalComponents/PickCountry';
+import NextButton from '../GlobalComponents/NextButton';
 import {CountryContext} from '../../context/CountryContext';
 import {PasswordContext} from '../../context/PasswordContext';
 
@@ -15,29 +19,12 @@ const ProfileDetailsPage1 = ({navigation}) => {
     const [isLocationPermission, setIsLocationPermission] = useState(true);
     const [isPushPermission, setIsPushPermission] = useState(true);
     const [isPermissionsNotConfirmed, setIsPermissionsNotConfirmed] = useState(false);
-    const [selectedCountry, setSelectedCountry] = useState("");
+    const [selectedCountry, setSelectedCountry] = useState("Pick a country");
     const [selectedCountryName, setSelectedCountryName] = useState("");
     const [isCountryErrorMessage, setIsCountryErrorMessage] = useState(false);
     const [countryErrorMessage,setCountryErrorMessage] = useState("");
     const [isCountrySelected, setIsCountrySelected] = useState(false);
-
-    let countries = [
-      {
-        label: 'United States',
-        value: 1
-      },
-      {
-        label: 'Israel',
-        value: 2
-      }
-    ]
-
-    //Checks if both permissions granted every time each of them changes
-    // useEffect(() => {
-    //   if(isLocationPermission && isPushPermission){
-    //     setIsPermissionsNotConfirmed(false);
-    //   }
-    // },[isPushPermission, isLocationPermission])
+    const [visible, setVisible] = useState(false);
 
     //Navigates back to the create password page and Re-set the password in the passwordContext
     const handleArrowButton = () => {
@@ -49,13 +36,21 @@ const ProfileDetailsPage1 = ({navigation}) => {
     }
 
     //Sets the selected country array to the value
-    const handleOnChangeText = (value) => {
+    const handleOnChangeCountry = (value) => {
       setIsCountrySelected(true);
       setIsCountryErrorMessage(false);
       setIsPermissionsNotConfirmed(false);
       setCountryErrorMessage("");
       setSelectedCountry(value);
-      setSelectedCountryName(countries[value - 1].label);
+      setSelectedCountryName(value);
+    }
+
+    const handleOnWorldIconPress = () => {
+      setVisible(true);
+    }
+
+    const handleOnModalClose = () => {
+      setVisible(false);
     }
 
     //Sets the location permission to the value
@@ -77,7 +72,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
     //Handle the next button press - if ok, navigates to ProfileDetailsPage2
     const handleNext = () => {
       if(!isCountrySelected){
-        setCountryErrorMessage("You must pick a country");
+        setCountryErrorMessage("Pick a country");
         setIsCountryErrorMessage(true);
       }
       else if(!isLocationPermission || !isPushPermission){
@@ -94,35 +89,28 @@ const ProfileDetailsPage1 = ({navigation}) => {
     }
   
     return(
-      <View style={styles.container}>
-        <TouchableOpacity
+      <SafeAreaView style={styles.container}>
+        <ArrowBackButton
           onPress={handleArrowButton}
-        >
-          <Image
-            source={require('../../images/arrowBack.png')}
-            style={styles.arrowImage}
-          />
-        </TouchableOpacity>
+        />
         <View style={styles.upperContainer}>
           <Text style={styles.profileDetailesText}>Profile Details</Text>
           <Text style={styles.fillTheFieldsText}>Please fill out all fields:</Text>
-          <View style={styles.countryContainer}>
-            <Text style={styles.countryTitle}>Country</Text>
-            <View style={styles.dropDownContainer}>
-              <Dropdown
-                data={countries}
-                value={selectedCountry}
-                useNativeDriver={true}
-                onChangeText={(value) => handleOnChangeText(value)}
-                containerStyle={{
-                  width: Dimensions.get('window').width * .92,
-                  marginLeft: 20
-                }}
-              />
-              {isCountryErrorMessage ? 
-                <Text style={styles.countryErrorText}>{countryErrorMessage}</Text>
-              : null}
-            </View>
+        </View>
+        <View style={styles.countryContainer}>
+          <Text style={styles.countryTitle}>Country</Text>
+          <View styles={styles.countryPicker}>
+            <PickCountry
+              initValue={selectedCountry}
+              onChange={(option) => handleOnChangeCountry(option.label)}
+              visible={visible}
+              onModalClose={() => handleOnModalClose()}
+              onPress={() => handleOnWorldIconPress()}
+
+            />
+            {isCountryErrorMessage ? 
+              <Text style={styles.countryErrorText}>Pick a country</Text>
+            : null}
           </View>
         </View>
         <View style={styles.permissionsContainer}>
@@ -131,18 +119,8 @@ const ProfileDetailsPage1 = ({navigation}) => {
             <Text 
               style={{fontWeight: 'bold', fontSize: 20}}
             >Location</Text>
-            <FlipToggle
+            <FlipToggleButton
               value={isLocationPermission}
-              buttonHeight={30}
-              buttonWidth={70}
-              buttonRadius={40}
-              sliderWidth={35}
-              sliderHeight={30}
-              sliderRadius={50}
-              sliderOffColor={'black'}
-              sliderOnColor={'white'}
-              buttonOffColor={'grey'}
-              buttonOnColor={'deepskyblue'}
               onToggle={(newState) => handleLocationToggleChange(newState)}
             />
           </View>
@@ -152,18 +130,8 @@ const ProfileDetailsPage1 = ({navigation}) => {
             <Text 
               style={{fontWeight: 'bold', fontSize: 20}}
             >Allow push notifications</Text>
-            <FlipToggle
+            <FlipToggleButton
               value={isPushPermission}
-              buttonHeight={30}
-              buttonWidth={70}
-              buttonRadius={40}
-              sliderWidth={35}
-              sliderHeight={30}
-              sliderRadius={50}
-              sliderOffColor={'black'}
-              sliderOnColor={'white'}
-              buttonOffColor={'grey'}
-              buttonOnColor={'deepskyblue'}
               onToggle={(newState) => handlePermissionToggleChange(newState)}
             />
           </View>
@@ -175,14 +143,12 @@ const ProfileDetailsPage1 = ({navigation}) => {
         <Text style={styles.permissionsErrorText}>Please allow both permissions to continue the registration</Text>
         :null}
         <View style={styles.nextButtonContainer}>
-          <TouchableOpacity
-            style={styles.nextButton}
+          <NextButton
+          title="Next"
             onPress={handleNext}
-          >
-            <Text style={styles.nextButtonText}>NEXT</Text>
-          </TouchableOpacity>
+          />
         </View>
-      </View>
+      </SafeAreaView>
     )
   }
   
@@ -198,7 +164,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
     upperContainer: {
       marginTop: 25,
       justifyContent: 'space-between',
-      height: Dimensions.get('window').height * .275,
+      height: Dimensions.get('window').height * .125,
     },
     profileDetailesText: {
       fontWeight: 'bold',
@@ -211,19 +177,17 @@ const ProfileDetailsPage1 = ({navigation}) => {
     },
     countryContainer: {
       height: Dimensions.get('window').height * .11,
-    },
-    dropDownContainer: {
-
+      marginTop: 40
     },
     countryTitle: {
       fontWeight: 'bold',
       fontSize: 24,
       marginLeft: 20
-    },
+    }, 
     countryErrorText: {
-      textAlign:'center',
       color: 'red',
-      fontSize: 15
+      fontSize: 15,
+      marginLeft: 20
     },
     permissionsContainer: {
       justifyContent: 'space-between',
@@ -251,23 +215,8 @@ const ProfileDetailsPage1 = ({navigation}) => {
     nextButtonContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      marginBottom: 40,
       alignItems: 'center'
-    },
-    nextButton: {
-      width: Dimensions.get('window').width * .9,
-      height: Dimensions.get('window').height * .065,
-      alignItems: 'center',
-      justifyContent: 'center',
-      alignSelf: 'center',
-      backgroundColor: 'deepskyblue',
-      borderRadius: 20
-    },
-    nextButtonText: {
-      fontSize: 25,
-      fontWeight: 'bold',
-      color: 'white'
-    },
+    }
   });
 
   export default ProfileDetailsPage1;

@@ -1,5 +1,7 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image, Button, TouchableOpacity, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, Image, Button, TouchableOpacity, Dimensions, SafeAreaView} from 'react-native';
+
+import NextButton from '../GlobalComponents/NextButton';
 
 //Get started page - by press the button the user navigates to the SignUp page
 const GetStartedClient = ({navigation}) => {
@@ -10,7 +12,7 @@ const GetStartedClient = ({navigation}) => {
     }
 
     return(
-      <View style={styles.welcomePage2}>
+      <SafeAreaView style={styles.welcomePage2}>
         <View style={styles.welcomeContainer}>
             <Image source = {require('../../images/welcomepic.png')} />
             <Text style={styles.welcomeToText}>Welcome to</Text>
@@ -18,14 +20,12 @@ const GetStartedClient = ({navigation}) => {
             <Text style={styles.excitedText}>We are exited to meet you!</Text>
         </View>
         <View style={styles.getStartedContainer}>
-            <TouchableOpacity
-              style={styles.getStartedButton}
-              onPress={handleGetStartedButton}
-            >
-              <Text style={styles.getStartedText}>Get Started</Text>
-            </TouchableOpacity>
+          <NextButton
+            title="Get Started"
+            onPress={handleGetStartedButton}
+          />
         </View>
-        </View>
+      </SafeAreaView>
     )
 }
 
@@ -58,22 +58,7 @@ const styles = StyleSheet.create({
     getStartedContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      marginBottom: 40,
       alignItems: 'center'
-    },
-    getStartedButton: {
-      width: Dimensions.get('window').width * .9,
-      height: Dimensions.get('window').height * .065,
-      alignItems: 'center',
-      justifyContent: 'center',
-      alignSelf: 'center',
-      backgroundColor: 'deepskyblue',
-      borderRadius: 20
-    },
-    getStartedText: {
-      fontSize: 25,
-      fontWeight: 'bold',
-      color: 'white'
     }
   });
 

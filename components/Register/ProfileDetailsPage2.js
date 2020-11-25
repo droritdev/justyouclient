@@ -1,12 +1,16 @@
 import React, {useState, useEffect, useContext, useReducer} from 'react';
-import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import DatePicker from 'react-native-datepicker';
 import ImagePicker from 'react-native-image-picker';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import { Platform, Alert, Linking } from 'react-native';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
+import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
+import BirthdayPicker from '../GlobalComponents/BirthdayPicker';
+import NextButton from '../GlobalComponents/NextButton';
 import { checkPermission } from '../../permissionService';
 import {NameContext} from '../../context/NameContext';
 import {ProfileImageContext} from '../../context/ProfileImageContext';
@@ -25,8 +29,11 @@ const ProfileDetailsPage2 = ({navigation}) => {
     const [firstNameInput, setFirstNameInput] = useState("");
     const [lastNameInput, setLastNameInput] = useState("");
     const [profileImageSource, setProfileImageSource] = useState(require('../../images/camera.png'));
-    const [birthdaySelected, setBirthdaySelected] = useState("");
+    const [birthdaySelected, setBirthdaySelected] = useState("Set your birthday");
+    const [isBirthdaySelected, setIsBirthdaySelected] = useState(false);
     const [minimumDate, setMinimumDate] = useState("");
+    const [maximumDate, setMaximumDate] = useState("");
+    const [datePickerVisible, setDatePickerVisible] = useState(false);
     const [namesErrorMessage, setNamesErrorMessage] = useState("");
     const [isNamesError, setIsNamesError] = useState(false);
     const [birthdayErrorMessage, setBirthdayErrorMessage] = useState("");
@@ -42,12 +49,12 @@ const ProfileDetailsPage2 = ({navigation}) => {
     
     //Sets the minimum age of registration to 18 automatticly
     useEffect (() => {
+      let date = new Date();
       let currentYear = new Date().getFullYear();
       let currentMonth = new Date().getMonth();
       let currentDay = new Date().getDate();
-      let minimumYear = (Number(currentYear) - 18).toString();
-      let minimumDate = `${currentDay}`+"-"+`${currentMonth}`+"-"+`${minimumYear}`;
-      setMinimumDate(minimumDate);
+      date.setFullYear(currentYear - 18, currentMonth, currentDay);
+      setMaximumDate(date);
     }, []);
 
   // const checkForPermissions = () => {
@@ -110,19 +117,9 @@ const ProfileDetailsPage2 = ({navigation}) => {
             else{
               const imagesource = {uri: res.uri};
               setProfileImageSource(imagesource);
-
-              const uri = res.uri;
-              const type = res.type;
-              const name = res.fileName;
-              const source = {
-                uri,
-                type,
-                name,
-              }
-              cloudinaryUpload(source);
             }
           })
-        }
+    }
       //   }
       //   else{
       //     // Show an alert in case permission was not granted
@@ -148,43 +145,40 @@ const ProfileDetailsPage2 = ({navigation}) => {
     //Sets the firstName object to the value
     const handleFirstNameInputChange = (text) => {
       setIsNamesError(false);
+      setIsBirthdayError(false);
       setFirstNameInput(text);
     }
 
     //Sets the lastName object to the value
     const handleLastNameInputChange = (text) => {
       setIsNamesError(false);
+      setIsBirthdayError(false);
       setLastNameInput(text);
     }
 
-    //Upload the profile picture of the user to the cloudinary cloud
-    const cloudinaryUpload = (photo) => {
-      const data = new FormData()
-      data.append('file', photo);
-      data.append('upload_preset', 'omer13');
-      data.append("cloud_name", "omerohana");
+    const handleConfirm = (date) => {
+      setBirthdaySelected((date.getMonth()+1)+"/"+date.getUTCDate()+"/"+date.getUTCFullYear());
+      setDatePickerVisible(false);
+      setIsBirthdaySelected(true);
+    };
 
-      fetch("https://api.cloudinary.com/v1_1/omerohana/upload", {
-        method: "post",
-        body: data
-      })
-      .then(res => res.json())
-      .then(data => setPhoto(data.secure_url))
-      .catch(err => {
-        alert("An Error Occured While Uploading")
-      })
+    const hideDatePicker = () => {
+      setDatePickerVisible(false);
+    };
+  
+    const handleDateInputPressed = () => {
+      setIsNamesError(false);
+      setIsBirthdayError(false);
+      setDatePickerVisible(!datePickerVisible);
     }
 
-    const handleOnBirthdayChange = (text) => {
-      setBirthdaySelected(text);
-    }
     //Handle the next button press - if ok, navigates to RegisteringAccountPopUp
     const handleNext = () => {
       if(firstNameInput === "" || lastNameInput === ""){
         setNamesErrorMessage("Name fields are required");
         setIsNamesError(true);
       }
-      else if(birthdaySelected === ""){
+      else if(birthdaySelected === "Set your birthday"){
         setBirthdayErrorMessage("Birthday is required");
         setIsBirthdayError(true);
       }
@@ -196,7 +190,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
 
         dispatchLast({
           type: 'SET_LAST_NAME',
-          firstName: lastNameInput
+          lastName: lastNameInput
         });
 
         dispatchProfileImage({
@@ -216,17 +210,10 @@ const ProfileDetailsPage2 = ({navigation}) => {
       }
     }
     return(
-        <View style={styles.container}>
-          <View style={styles.headerContainer}>
-            <TouchableOpacity
-              onPress={handleArrowButton}
-            >
-              <Image
-                source={require('../../images/arrowBack.png')}
-                style={styles.arrowImage}
-              />
-            </TouchableOpacity>
-          </View>
+        <SafeAreaView style={styles.container}>
+          <ArrowBackButton
+            onPress={handleArrowButton}
+          />
           <Text style={styles.profileDetailesText}>Profile Details</Text>
           <Text style={styles.fillTheFieldsText}>Please fill out all fields</Text>
           <View style={styles.namesAndErrorContainer}>
@@ -259,35 +246,21 @@ const ProfileDetailsPage2 = ({navigation}) => {
           <View style={styles.errorMessageContainer}>
             <Text style={styles.nameAndImageExplenation}>Your name and photo help the trainer to identify you</Text>
           </View>
-          <Text style={styles.birthdayText}>Birthday</Text>
-          <DatePicker
-            style={styles.datePicker}
-            date={birthdaySelected}
-            mode="date"
-            placeholder="Enter your birthday"
-            placeholderTextColor="black"
-            format="DD-MM-YYYY"
-            minDate={minimumDate}
-            maxDate="29-10-2090"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            onDateChange={(date) => handleOnBirthdayChange(date)}
-            customStyles={{
-              dateIcon: {
-                height: 50,
-                width: 50
-              },
-              dateInput: {
-                height: 50
-              },
-              dateText: {
-                fontSize: 25
-              }
-            }}
-          />
-          {isBirthdayError ?
-            <Text style={styles.birthdayErrorMessage}>{birthdayErrorMessage}</Text>
-          :null}
+          <View style={styles.birthdayContainer}>
+            <Text style={styles.birthdayText}>Birthday</Text>
+            <BirthdayPicker
+              onPress={handleDateInputPressed}
+              isBirthdaySelected={isBirthdaySelected}
+              isVisible={datePickerVisible}
+              onConfirm={(date) => handleConfirm(date)}
+              onCancel={hideDatePicker}
+              maximumDate={maximumDate}
+              birthdaySelected={birthdaySelected}
+            />
+            {isBirthdayError ? 
+              <Text style={styles.birthdayErrorMessage}>{birthdayErrorMessage}</Text>
+            : null}
+          </View>
           <Text style={styles.emailAddressText}>EMAIL ADDRESS</Text>
           <View style={styles.emailContainer}>
             <TextInput 
@@ -299,29 +272,20 @@ const ProfileDetailsPage2 = ({navigation}) => {
             <Text style={styles.emailExplinationText}>We use your email to send you receips. your mobile number is required to enhance account security.</Text>
           </View>
           <View style={styles.nextButtonContainer}>
-            <TouchableOpacity
-              style={styles.nextButton}
+            <NextButton
+              title="Next"
               onPress={handleNext}
-            >
-              <Text style={styles.nextButtonText}>NEXT</Text>
-            </TouchableOpacity>
+            />
         </View>
-       </View> 
+       </SafeAreaView> 
     );
   }
   
   const styles = StyleSheet.create({
     container: {
         height: Dimensions.get('window').height,
-        flexDirection: 'column'
-      },
-      headerContainer: {
-        marginLeft: 20,
-        flexDirection: 'row',
-        marginTop:30,
-      },
-      arrowImage: {
-        marginTop: 20
+        flexDirection: 'column',
+        backgroundColor: 'white'
       },
       profileDetailesText: {
         marginLeft: 20,
@@ -370,22 +334,20 @@ const ProfileDetailsPage2 = ({navigation}) => {
         fontSize: 16,
         marginTop: 5
       },
-      birthdayText: {
-        marginLeft: 20,
-        marginTop: 40,
-        fontWeight: 'bold',
-        fontSize: 25
+      birthdayContainer: {
+        height: Dimensions.get('window').height * .165
       },
-      datePicker: {
-        alignSelf: 'center',
-        marginTop: 20,
-        width: Dimensions.get('window').width * .9,
+      birthdayText: {
+        marginTop: 30,
+        fontWeight: 'bold',
+        fontSize: 25,
+        marginLeft: 20
       },
       birthdayErrorMessage: {
         marginLeft: 20,
         color: 'red',
-        marginTop: 15
-      },
+        marginTop: 5
+      },  
       emailContainer: {
         marginLeft: 20
       },
@@ -416,22 +378,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
       nextButtonContainer: {
         flex: 1,
         justifyContent: 'flex-end',
-        marginBottom: 40,
         alignItems: 'center'
-      },
-      nextButton: {
-        width: Dimensions.get('window').width * .9,
-        height: Dimensions.get('window').height * .065,
-        alignItems: 'center',
-        justifyContent: 'center',
-        alignSelf: 'center',
-        backgroundColor: 'deepskyblue',
-        borderRadius: 20
-      },
-      nextButtonText: {
-        fontSize: 25,
-        fontWeight: 'bold',
-        color: 'white'
       }
   });
 

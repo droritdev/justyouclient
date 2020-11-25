@@ -1,8 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import FlipToggle from 'react-native-flip-toggle-button';
 import Dialog from "react-native-dialog";
+
+import FlipToggleButton from '../GlobalComponents/FlipToggleButton';
+import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
+import NextButton from '../GlobalComponents/NextButton';
 
 //Here the user enters his payment methods and grante the app policy
 const PaymentsAndPolicy = ({navigation}) => {
@@ -49,7 +53,7 @@ const PaymentsAndPolicy = ({navigation}) => {
     };
 
     //Handle the approve button when pressed, if ok - navigates to RegisteringAccountPopUp
-    const handleApprove = () => {
+    const handleNext = () => {
         if(cardNumber === "" && cardCvv === "" && cardExpiration === ""){
             setIsAllfieldsFilled(false);
             setPaymentsErrorText("Please fill all the fields");
@@ -75,7 +79,7 @@ const PaymentsAndPolicy = ({navigation}) => {
     }
 
     return(
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View>
                 <Dialog.Container visible={visible}>
                     <Dialog.Title>Attention</Dialog.Title>
@@ -83,14 +87,9 @@ const PaymentsAndPolicy = ({navigation}) => {
                     <Dialog.Button label="OK" onPress={handleOk} />
                 </Dialog.Container>
             </View>
-            <TouchableOpacity
+            <ArrowBackButton
                 onPress={handleArrowButton}
-            >
-            <Image
-                source={require('../../images/arrowBack.png')}
-                style={styles.arrowImage}
             />
-            </TouchableOpacity>
             <Text style={styles.profileDetailesText}>Profile Details</Text>
             <View style={styles.paymentFormContainer}>
                 <Text style={styles.paymentTitle}>
@@ -163,14 +162,12 @@ const PaymentsAndPolicy = ({navigation}) => {
                 </View>
             </View>
             <View style={styles.nextButtonContainer}>
-                <TouchableOpacity
-                    style={styles.nextButton}
-                    onPress={handleApprove}
-                >
-                    <Text style={styles.nextButtonText}>APPROVE</Text>
-                </TouchableOpacity>
+                <NextButton
+                    title="Next"
+                    onPress={handleNext}
+                />
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -259,23 +256,7 @@ const styles = StyleSheet.create({
     nextButtonContainer: {
         flex: 1,
         justifyContent: 'flex-end',
-        marginBottom: 40,
-        marginTop: 40,
         alignItems: 'center'
-    },
-    nextButton: {
-        width: Dimensions.get('window').width * .9,
-        height: Dimensions.get('window').height * .065,
-        alignItems: 'center',
-        justifyContent: 'center',
-        alignSelf: 'center',
-        backgroundColor: 'deepskyblue',
-        borderRadius: 20
-    },
-    nextButtonText: {
-        fontSize: 25,
-        fontWeight: 'bold',
-        color: 'white'
     }
 });
 

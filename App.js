@@ -20,6 +20,8 @@ import DonePopUp from './components/Register/DonePopUp';
 import WelcomeUser from './components/Register/WelcomeUser';
 import GlobalStore from './context/GlobalStore';
 
+import ClientContainer from './components/clientPage/ClientContainer';
+
 //The main stack navigator to navigate between screens in the app
 const Stack = createStackNavigator();
 
@@ -29,7 +31,7 @@ const App = () => {
     <GlobalStore>
       <NavigationContainer>
         <Stack.Navigator 
-          initialRouteName='WelcomePopUp'
+          initialRouteName='ClientContainer'
           screenOptions={{headerShown: false}}
         >
           <Stack.Screen name='WelcomePopUp' component={WelcomePopUp} />
@@ -48,6 +50,7 @@ const App = () => {
           <Stack.Screen name='LogIn' component={LogIn} />
           <Stack.Screen name='ForgotPassword' component={ForgotPassword} />
           <Stack.Screen name='ResetPassword' component={ResetPassword} />
+          <Stack.Screen name='ClientContainer' component={ClientContainer} />
         </Stack.Navigator>
       </NavigationContainer>
     </GlobalStore>

@@ -1,8 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, View, Text, TextInput, Button, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Button, Dimensions, SafeAreaView} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
 
+import NextButton from '../GlobalComponents/NextButton';
 import {EmailContext} from '../../context/EmailContext';
 
 //Here the user enters his email address to verify his account
@@ -93,31 +94,33 @@ const SignUp = ({navigation}) => {
     }
   
     return(
-      <View style={styles.container}>
-        <Text style={styles.justYouHeader}>Just You</Text>
-        <Text style={styles.signUpText}>Sign up and start searching</Text>
-        <Text style={styles.inputTitle}>Email</Text>
-        <View style={styles.textInput}>
-          <TextInput
-            style={{fontSize: 25}}
-            textAlign='center'
-            placeholder='Enter your email address'
-            onChangeText={text => handleInput(text)}
-            value={emailAddressInput}
-          />
+      <SafeAreaView style={styles.container}>
+        <View style={styles.upperContainer}>
+          <Text style={styles.justYouHeader}>Just You</Text>
+          <Text style={styles.signUpText}>Sign up and start searching</Text>
         </View>
-        <View>
-            {!emailIsValidate ?
-            <Text style={styles.emailErrorText}>{emailErrorMessage}</Text>
-            :null}   
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputTitle}>Email</Text>
+          <View style={styles.textInput}>
+            <TextInput
+              style={{fontSize: 25}}
+              textAlign='center'
+              placeholder='Enter your email address'
+              onChangeText={text => handleInput(text)}
+              value={emailAddressInput}
+            />
+          </View>
+          <View>
+              {!emailIsValidate ?
+              <Text style={styles.emailErrorText}>{emailErrorMessage}</Text>
+              :null}   
+          </View>
         </View>
         <View style={styles.fotterContainer}>
-            <TouchableOpacity
-                style={styles.nextButton}
-                onPress={handleNext}
-            >
-                <Text style={styles.nextButtonText}>Next</Text>
-            </TouchableOpacity>
+          <NextButton 
+            title="Next"
+            onPress={handleNext}
+          />
           <View style={styles.alreadyHaveAccountContainer}>
             <Text style={styles.alreadyHaveAnAccountText}>Already have an account? </Text>
             <TouchableOpacity
@@ -127,7 +130,7 @@ const SignUp = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     );
 }
 
@@ -136,19 +139,21 @@ const styles = StyleSheet.create({
       height: Dimensions.get('window').height,
       flexDirection: 'column'
     },
+    upperContainer: {
+      marginLeft: 20,
+    },
     justYouHeader: {
       color: 'deepskyblue',
       fontWeight: 'bold',
       fontSize: 30,
-      marginTop:70,
-      marginLeft: 20,
+      marginTop:20,
     },
     signUpText: {
       fontSize: 40,
       fontWeight: 'bold',
-      width: Dimensions.get('window').width * .8,
       marginTop: 20,
-      marginLeft: 20,
+    },
+    inputContainer: {
     },
     inputTitle: {
       marginTop: 60,
@@ -173,23 +178,9 @@ const styles = StyleSheet.create({
     fotterContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      marginBottom: 40,
+      //marginBottom: 40,
       alignItems: 'center'
     },
-    nextButton: {
-      width: Dimensions.get('window').width * .9,
-      height: Dimensions.get('window').height * .065,
-      alignItems: 'center',
-      justifyContent: 'center',
-      alignSelf: 'center',
-      backgroundColor: 'deepskyblue',
-      borderRadius: 20
-  },
-    nextButtonText: {
-      fontSize: 25,
-      fontWeight: 'bold',
-      color: 'white'
-  },
   alreadyHaveAccountContainer: {
     flexDirection: 'row',
     marginTop: 20

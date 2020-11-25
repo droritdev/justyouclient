@@ -16,21 +16,9 @@ exports.register = (req, res) => {
             email: req.body.email, 
             password: req.body.password, 
             country: req.body.country, 
-            permissions: {
-                location: req.body.permissions.locationPermission, 
-                push: req.body.permissions.pushPermission
-            }, 
             //image: image,
-            creditCard: {
-                number: req.body.creditCard.creditNumber, 
-                cvv: req.body.creditCard.creditCvv, 
-                expire: {
-                    month: req.body.creditCard.expire.creditExpireMonth, 
-                    year: req.body.creditCard.expire.creditExpireYear
-                }
-            }, 
             phone: {
-                areaCode: req.body.phone.phoneAreaCode, 
+                areaCode: req.body.phone.areaCode, 
                 phoneNumber: req.body.phone.phoneNumber
             },
             location: {

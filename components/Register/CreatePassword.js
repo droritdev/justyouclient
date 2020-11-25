@@ -1,7 +1,8 @@
 import React, {useContext, useState} from 'react';
-import {StyleSheet, View, Text, TextInput, Button, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Button, Dimensions, KeyboardAvoidingView, Platform, SafeAreaView} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import NextButton from '../GlobalComponents/NextButton';
 import {PasswordContext} from '../../context/PasswordContext';
 
 //Here the user creates his password
@@ -55,7 +56,7 @@ const CreatePassword = ({navigation}) => {
     }
   
     return(
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={styles.justYouHeader}>Just You</Text>
         <View style={styles.passwordContainer}>
           <Text style={styles.createPasswordText}>CREATE PASSWORD</Text>
@@ -85,14 +86,12 @@ const CreatePassword = ({navigation}) => {
         <Text style={styles.passwordsErrorText}>{passwordErrorText}</Text>
         :null}
         <View style={styles.nextButtonContainer}>
-          <TouchableOpacity
-            style={styles.nextButton}
+          <NextButton
+            title="Next"
             onPress={handleNext}
-          >
-            <Text style={styles.nextButtonText}>NEXT</Text>
-          </TouchableOpacity>
+          />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
   
@@ -103,9 +102,10 @@ const CreatePassword = ({navigation}) => {
       alignItems: 'center'
     },
     justYouHeader: {
-      marginTop: 70,
+      marginTop: 20,
       fontSize: 30,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      color: 'deepskyblue'
     },
     passwordContainer: {
       width: Dimensions.get('window').width,
@@ -142,23 +142,8 @@ const CreatePassword = ({navigation}) => {
     nextButtonContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      marginBottom: 40,
       alignItems: 'center'
-    },
-    nextButton: {
-      width: Dimensions.get('window').width * .9,
-      height: Dimensions.get('window').height * .065,
-      alignItems: 'center',
-      justifyContent: 'center',
-      alignSelf: 'center',
-      backgroundColor: 'deepskyblue',
-      borderRadius: 20
-    },
-    nextButtonText: {
-      fontSize: 25,
-      fontWeight: 'bold',
-      color: 'white'
-    },
+    }
   });
 
   export default CreatePassword;
