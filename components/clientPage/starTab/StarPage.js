@@ -5,6 +5,27 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 //The claint's start area page
 const StarPage = ({navigation}) => {
+
+    const handleOnWhyUsPressed = () => {
+        navigation.navigate('WhyUs');
+    }
+
+    const handleOnQandAsPressed = () => {
+        navigation.navigate('QuestionsAndAnswers');
+    }
+
+    const handleOnDiscountCodePressed = () => {
+        navigation.navigate('ComingSoon');
+    }
+
+    const handleOnCustomerSrvicePressed = () => {
+        navigation.navigate('CustomerService');
+    }
+
+    const handleOnGiftCardPurchasePressed = () => {
+        navigation.navigate('ComingSoon');
+    }
+
     return(
         <SafeAreaView style={styles.safeArea}>
             <ScrollView style={styles.container}>
@@ -250,21 +271,25 @@ const StarPage = ({navigation}) => {
                     <View style={styles.whyShareQandAUpdatesButtonsRow}>
                         <TouchableOpacity 
                             style={styles.whyUsButton}
+                            onPress={() => handleOnWhyUsPressed()}
                         >
                             <Text style={styles.whyUsTitle}>WHY US</Text>
                         </TouchableOpacity>
                         <TouchableOpacity 
                             style={styles.shareAndEarnButton}
+                            onPress={() => handleOnGiftCardPurchasePressed()}
                         >
                             <Text style={styles.shareAndEarnTitle}>SHARE & EARN</Text>
                         </TouchableOpacity>
                         <TouchableOpacity 
                             style={styles.qAndaButton}
+                            onPress={() => handleOnQandAsPressed()}
                         >
                             <Text style={styles.qAndaTitle}>Q & A's</Text>
                         </TouchableOpacity>
                         <TouchableOpacity 
                             style={styles.updatesButton}
+                            onPress={() => handleOnGiftCardPurchasePressed()}
                         >
                             <Text style={styles.updatesTitle}>UPDATES</Text>
                         </TouchableOpacity>
@@ -289,13 +314,13 @@ const StarPage = ({navigation}) => {
                     <View style={styles.rowContainer}>
                         <View style={styles.discountCodeRow}>
                             <TouchableOpacity
-
+                                onPress={() => handleOnDiscountCodePressed()}
                             >
                                 <Text style={styles.discountCodeTitle}>Discount Code</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={styles.discountCodeButton}
-
+                                onPress={() => handleOnDiscountCodePressed()}
                             >
                                 <Image
                                     source={require('../../../images/arrowButton.png')}
@@ -307,11 +332,14 @@ const StarPage = ({navigation}) => {
                     <View style={styles.rowContainer}>
                         <View style={styles.customerServiceRow}>
                             <TouchableOpacity
- 
+                                onPress={() => handleOnCustomerSrvicePressed()}
                             >
                                 <Text style={styles.customerServicesTitle}>Customer Service</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.arrowButton}>
+                            <TouchableOpacity 
+                                style={styles.arrowButton}
+                                onPress={() => handleOnCustomerSrvicePressed()}
+                            >
                                 <Image
                                     source={require('../../../images/arrowButton.png')}
                                     style={styles.arrowImage}
@@ -322,13 +350,13 @@ const StarPage = ({navigation}) => {
                     <View style={styles.rowContainer}>
                         <View style={styles.giftCardRow}>
                             <TouchableOpacity
-
+                                onPress={() => handleOnGiftCardPurchasePressed()}
                             >
                                 <Text style={styles.giftCardTitle}>Gift Card Purchase</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={styles.giftCardButton}
-
+                                onPress={() => handleOnGiftCardPurchasePressed()}
                             >
                                 <Image
                                     source={require('../../../images/arrowButton.png')}

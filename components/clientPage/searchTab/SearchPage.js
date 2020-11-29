@@ -25,23 +25,23 @@ const SearchPage = ({navigation}) => {
 
     //When the user chooses category it whill be displayed on the input bellow
     const handleOnItemPress = (item) => {
-        // if(selectedItems.includes(item.label)){
-        //     let index = selectedItems.indexOf(item.label);
-        //     selectedItems.splice(index, 1);
-        //     setSelectedItems(selectedItems.filter(element => element !== item.label));
-        // }
-        // else{
-        //     setSelectedItems(selectedItems => [...selectedItems, item.label]);
-        // }
+        if(selectedItems.includes(item.label)){
+            let index = selectedItems.indexOf(item.label);
+            selectedItems.splice(index, 1);
+            setSelectedItems(selectedItems.filter(element => element !== item.label));
+        }
+        else{
+            setSelectedItems(selectedItems => [...selectedItems, item.label]);
+        }
     }
 
     const handleOnInputChange = (text) => {
-        // if(text.length > 0){
-        //     setItems(items.filter(item => item.label.toLowerCase().includes(text.toLowerCase())));
-        // }
-        // else{
-        //     setItems(categoriesData);
-        // }
+        if(text.length > 0){
+            setItems(items.filter(item => item.label.toLowerCase().includes(text.toLowerCase())));
+        }
+        else{
+            setItems(categoriesData);
+        }
     }
 
     return(
@@ -57,6 +57,7 @@ const SearchPage = ({navigation}) => {
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Search category"
+                    onChangeText={(text) => handleOnInputChange(text)}
                 />
 
             </View>

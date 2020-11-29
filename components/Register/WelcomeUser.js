@@ -6,7 +6,8 @@ import {NameContext} from '../../context/NameContext';
 const WelcomeUser = ({navigation}) => {
     const {firstName} = useContext(NameContext);
 
-    
+    //Navigates automaticlly to the profile page after 2 seconds
+    setTimeout(() => navigation.navigate('ClientContainer'), 1500);
 
     return(
         <View style={styles.container}>

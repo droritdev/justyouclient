@@ -40,9 +40,9 @@ const clientProfileSchema = new Schema(
            required: true,
            trim: true
        },
-       image: {
-           type: String
-       },
+    //    image: {
+    //        type: String
+    //    },
        phone: {
            areaCode: {
                type: String,

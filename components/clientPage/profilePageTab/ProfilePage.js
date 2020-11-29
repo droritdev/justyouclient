@@ -1,17 +1,87 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import axios from 'axios';
+
+import {NameContext} from '../../../context/NameContext';
 
 //The claint's start area page
 const StarPage = ({navigation}) => {
+
+    const {firstName, dispatchFirst} = useContext(NameContext);
+    const {lastName, dispatchLast} = useContext(NameContext);
+
+    const config = {
+        withCredentials: true,
+        baseURL: 'http://localhost:3000/',
+        headers: {
+          "Content-Type": "application/json",
+        },
+    };
+
+    useEffect(() => {
+        axios
+            .get('/clients/omero@gmail.com',
+            config
+        )
+        .then((doc) => {
+            if(doc){
+                dispatchFirst({
+                    type: 'SET_FIRST_NAME',
+                    firstName: doc.data[0].name.first
+                });
+
+                dispatchLast({
+                    type: 'SET_LAST_NAME',
+                    lastName: doc.data[0].name.last
+                })
+            }
+            else{
+                alert("No trainer");
+            }
+        })
+        .then(() => {
+
+        })
+        .catch((err) => alert(err))
+    },[])
+
+    const handleOnConfirmedOrdersPRessed = () => {
+        navigation.navigate('ConfirmedOrders');
+    }
+
+    const handleOnPendingOrdersPRessed = () => {
+        navigation.navigate('PendingOrders');
+    }
+
+    const handleOnInvitePressed = () => {
+        navigation.navigate('ComingSoon');
+    }
+
+    const handleOnReceiptsHistoryPressed = () => {
+        navigation.navigate('ReceiptsHistory');
+    }
+
+    const handleOnHistoryPressed = () => {
+        navigation.navigate('History');
+    }
+
+    const handleOnEditProfilePressed = () => {
+        navigation.navigate('EditProfile');
+    }
+
+    const handleOnCustomerServicePressed = () => {
+        navigation.navigate('CustomerService');
+    }
+    
     return(
         <SafeAreaView style={styles.safeArea}>
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Just You</Text>
                 </View>
-                <Text style={styles.helloUserTitle}>Hello Erez!</Text>
+                <Text style={styles.helloUserTitle}>Hello {firstName}</Text>
                 <View style={styles.imageAndDetailsRow}>
                     <View
                         style={styles.imageView}
@@ -23,7 +93,7 @@ const StarPage = ({navigation}) => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.nameAndDetailsView}>        
-                        <Text style={styles.clientNameTitle}>Erez Buganim</Text>
+                        <Text style={styles.clientNameTitle}>{firstName} {lastName}</Text>
                         <View style={styles.detailsRow}>
                             <View style={styles.credits}>
                                 <Text style={styles.creditValue}>0.00</Text>
@@ -31,11 +101,19 @@ const StarPage = ({navigation}) => {
                             </View>
                             <View style={styles.confirmedOrders}>
                                 <Text style={styles.confirmedOrdersValue}>1</Text>
-                                <Text style={styles.confirmedOrdersText}>Confirmed Orders</Text>
+                                <TouchableOpacity
+                                    onPress={() => handleOnConfirmedOrdersPRessed()}
+                                >
+                                    <Text style={styles.confirmedOrdersText}>Confirmed Orders</Text>
+                                </TouchableOpacity>
                             </View>
                             <View style={styles.pandingOrders}>
                                 <Text style={styles.pandingOrdersValue}>1</Text>
-                                <Text style={styles.pandingOrdersText}>Panding Orders</Text>
+                                <TouchableOpacity
+                                    onPress={() => handleOnPendingOrdersPRessed()}
+                                >
+                                    <Text style={styles.pandingOrdersText}>Panding Orders</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
@@ -142,13 +220,13 @@ const StarPage = ({navigation}) => {
                     <View style={styles.rowContainer}>
                         <View style={styles.inviteRow}>
                             <TouchableOpacity
-
+                                onPress={() => handleOnInvitePressed()}
                             >
                                 <Text style={styles.inviteTitle}>Receive credit by inviting friends</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={styles.inviteButton}
-
+                                onPress={() => handleOnInvitePressed()}
                             >
                                 <Image
                                     source={require('../../../images/arrowButton.png')}
@@ -160,11 +238,14 @@ const StarPage = ({navigation}) => {
                     <View style={styles.rowContainer}>
                         <View style={styles.receiptsRow}>
                             <TouchableOpacity
- 
+                                onPress={() => handleOnReceiptsHistoryPressed()}
                             >
                                 <Text style={styles.receiptssTitle}>Receipts History</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.arrowButton}>
+                            <TouchableOpacity 
+                                style={styles.arrowButton}
+                                onPress={() => handleOnReceiptsHistoryPressed()}
+                            >
                                 <Image
                                     source={require('../../../images/arrowButton.png')}
                                     style={styles.arrowImage}
@@ -177,7 +258,7 @@ const StarPage = ({navigation}) => {
                     <View style={styles.recentAndHistoryRow}>
                         <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
                         <TouchableOpacity
-
+                            onPress={() => handleOnHistoryPressed()}
                         >
                             <Text style={styles.historyText}>History</Text>
                         </TouchableOpacity>
@@ -304,7 +385,10 @@ const StarPage = ({navigation}) => {
                             >
                                 <Text style={styles.customerServicesTitle}>Customer Service</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.arrowButton}>
+                            <TouchableOpacity 
+                                style={styles.arrowButton}
+                                onPress={() => handleOnCustomerServicePressed()}  
+                            >
                                 <Image
                                     source={require('../../../images/arrowButton.png')}
                                     style={styles.arrowImage}
@@ -315,7 +399,7 @@ const StarPage = ({navigation}) => {
                     <View style={styles.rowContainer}>
                         <View style={styles.settingsRow}>
                             <TouchableOpacity
-                                onPress={() => handleOnSettingsPress()}
+                                //onPress={() => handleOnSettingsPress()}
                             >
                                 <Text style={styles.settingsTitle}>Settings</Text>
                             </TouchableOpacity>

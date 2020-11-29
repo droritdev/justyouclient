@@ -3,21 +3,16 @@ const clientProfileModel = require('../models/clientModels');
 
 //Edit fields in the client's profile
 exports.editProfile = (req, res) => {
-    clientProfileModel.findByIdAndUpdate(
-        {_id: req.body.id},
+    clientProfileModel.findOneAndUpdate(
+        {email: req.params.email},
         {
-            country: req.body.country,
             name: {
                 first: req.body.name.first,
                 last: req.body.name.last
             },
-            birthday: req.body.birthday,
-            permissions: {
-                location: req.body.permissions.locationPermission,
-                push: req.body.permissions.pushPermission
-            }  
+            birthday: req.body.birthday, 
         }
     )
-    .then(() => res.send("Client updated"))
+    .then((doc) => res.send(doc))
     .catch((err) => res.send(err))
 }

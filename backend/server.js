@@ -26,6 +26,7 @@ const deleteComment = require('./commentReviews/deleteComment');
 const markStarReview = require('./markStarReview/markStarReview');
 const findAroundMe = require('./findAroundMe/findAroundMe');
 const uploadimage = require('./uploadimage/uploadimage');
+const findClientByEmail = require('./findClientByEmail/findClientByEmail');
 
         //**Place imports**//
 const placeRegister = require('./register/placeRegister');
@@ -132,7 +133,7 @@ app.put('/clients/update-credit', updateClientCredit.updateClientCredit);
 app.get('/clients/places', clientFindPlaces.clientFindPlaces);
 
 //End point for editing the client profile
-app.put('/clients/settings/edit-profile', clientEditProfile.editProfile);
+app.put('/clients/settings/edit-profile/:email', clientEditProfile.editProfile);
 
 //End point for mark a trainer as like
 app.put('/clients/likes/add', markAsLike.markAsLike);
@@ -162,6 +163,8 @@ app.get('/clients/aroundme/trainers', findAroundMe.findTrainers);
 app.get('/clients/aroundme/places', findAroundMe.findPlaces);
 
 app.post('/clients/upload-image', uploadimage.uploadImage);
+
+app.get('/clients/:email', findClientByEmail.getClientByEmail);
 
             ////**Place end points**////
 //End point for confirming the registration and add a new place to the dataBase 

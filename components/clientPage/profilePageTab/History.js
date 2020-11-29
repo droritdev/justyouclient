@@ -5,18 +5,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 
 //The claint's around you area page
-const ProfilePage = ({navigation}) => {
+const History = ({navigation}) => {
 
     const [isTrainers, setIsTrainers] = useState(true);
-    const [maxDistanceSelected, setMaxDistanceSelected] = useState("1");
-    const [sliderValue, setSliderValue] = useState("1 MILES");
 
-    //Sets the slider value to the value
-    const handleSliderValueChange = (value) => {
-        setSliderValue(value+" MILE");
-        setMaxDistanceSelected(value);
+    //Navigates back to the profile page
+    const handleOnArrowPress = () => {
+        navigation.navigate('ProfilePage');
     }
-
     const handleFlipToggle = () => {
         setIsTrainers(!isTrainers);
     }
@@ -26,22 +22,16 @@ const ProfilePage = ({navigation}) => {
             <View style={styles.header}>
                 <Text style={styles.headerText}>Just You</Text>
             </View>
-            <View style={styles.aroundYouTitle}>
-                <Text style={styles.aroundYouText}>Around You</Text>
-            </View>
-            <View style={styles.sliderContainer}>
-                <Text style={styles.maxDistanceText}>DISTANCE RANGE</Text>
-                <Text style={styles.sliderValueTitle}>{sliderValue}</Text>
-                <Slider
-                    style={styles.slider}
-                    minimumValue={1}
-                    maximumValue={100}
-                    minimumTrackTintColor="deepskyblue"
-                    maximumTrackTintColor="#000000"
-                    onValueChange={(value) => handleSliderValueChange(value)}
-                    step={1}
-                    thumbTintColor='deepskyblue'
+            <TouchableOpacity
+                    onPress={() => handleOnArrowPress()}
+                >
+                <Image
+                    source={require('../../../images/blackArrow.png')}
+                    style={styles.arrowBackImage}
                 />
+            </TouchableOpacity>
+            <View style={styles.allOrdersTitle}>
+                <Text style={styles.allOrdersText}>All Orders</Text>
             </View>
             <View style={ styles.pricingLabels}>
               <TouchableOpacity 
@@ -236,36 +226,19 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold'
     },
-    aroundYouTitle: {
+    arrowBackImage: {
+        marginLeft: 20
+    },
+    allOrdersTitle: {
         marginLeft: 15,
         marginTop: 40
     },
-    aroundYouText: {
+    allOrdersText: {
         fontWeight: 'bold',
         fontSize: 25
     },
-    sliderContainer: {
-        marginTop: 20
-    },  
-    maxDistanceText: {
-        fontSize: 20,
-        marginTop: 20,
-        marginLeft: 15,
-        fontWeight: '500'
-    },  
-    sliderValueTitle: {
-        //alignSelf: 'center',
-        fontSize: 17,
-        marginTop: 20,
-        marginLeft: 15
-    },
-    slider: {
-        width: Dimensions.get('window').width * .95,
-        alignSelf: 'center',
-        marginTop: 10
-    },
     pricingLabels: {
-        marginTop: 15,
+        marginTop: 30,
         marginLeft: 15,
         marginBottom: 15,
         flexDirection: 'row'
@@ -394,4 +367,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProfilePage;
+export default History;

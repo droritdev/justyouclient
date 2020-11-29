@@ -29,6 +29,7 @@ const DonePopUp = ({navigation}) => {
     };
 
     const registerClient = () => {
+        //navigation.navigate('WelcomeUser');
         axios
             .post('/clients/register', {
                 name: {
