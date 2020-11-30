@@ -2,10 +2,12 @@ import React, {useState} from 'react';
 import {StyleSheet, View, Text, Dimensions, Image} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 
+//Page for the exsisting users to log back in
 const LogIn = ({navigation}) => {
     const [isPasswordErrorMessage, setIsPasswordErrorMessage] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
+    //Navigates back to the EmailVerification page
     const handleArrowButton = () => {
         navigation.navigate('EmailVerification');
     }
@@ -14,14 +16,17 @@ const LogIn = ({navigation}) => {
 
     }
 
+    //Handle when the user presses the log in button
     const handleLogInButton = () => {
         navigation.navigate('WelcomeUser');
     }
 
+    //Handle when the user presses the sign in button
     const handleSignUpButton = () => {
         navigation.navigate('EmailVerification');
     }
 
+    //Sends the users to reset his password
     const handleForgotPasswordButton = () => {
         navigation.navigate('ForgotPassword');
     }

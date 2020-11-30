@@ -10,6 +10,7 @@ import {PasswordContext} from '../../context/PasswordContext';
 import {PhoneContext} from '../../context/PhoneContext';
 import {ProfileImageContext} from '../../context/ProfileImageContext';
 
+//Page to inform the user that the register is done, and mean while the client is uploaded to the data base
 const DonePopUp = ({navigation}) => {
     const {firstName} = useContext(NameContext);
     const {lastName} = useContext(NameContext);
@@ -57,6 +58,7 @@ const DonePopUp = ({navigation}) => {
             .catch((err) => alert(err.data));
     }
     
+    //Uploading the client to the data base automaticly after 2 second
     setTimeout(() => registerClient(), 2000);
 
     return(

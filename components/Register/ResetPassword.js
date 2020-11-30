@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import {PasswordContext} from '../../context/PasswordContext';
 
+//Page to set the new client's password
 const ResetPasswordClient = ({navigation}) => {
     const {dispatchPassword} = useContext(PasswordContext);
     const [confirmedPassword, setConfirmedPassword] = useState("");
@@ -11,18 +12,21 @@ const ResetPasswordClient = ({navigation}) => {
     const [passwordErrorText, setPasswordErrorText] = useState("");
     const [input, setInput] = useState("");
     
+    //Handle the password input when changed
     const handleOnPasswordChangeText = (text) => {
       setIsPasswordsNotMatch(false);
       setPasswordErrorText("");
       setInput(text);
     }
 
+    //Handle the confirmed password input when changed
     const handleOnConfirmedPasswordChangeText = (text) => {
       setIsPasswordsNotMatch(false);
       setPasswordErrorText("");
       setConfirmedPassword(text);
     }
 
+    //Handle when next button is pressed
     const handleNext = () => {
       if(input.length > 0 && confirmedPassword.length > 0){
         if(confirmedPassword !== input){

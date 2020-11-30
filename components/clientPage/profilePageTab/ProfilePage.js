@@ -74,6 +74,10 @@ const StarPage = ({navigation}) => {
     const handleOnCustomerServicePressed = () => {
         navigation.navigate('CustomerService');
     }
+
+    const handleOnSettingsPressed = () => {
+        navigation.navigate('Settings');
+    }
     
     return(
         <SafeAreaView style={styles.safeArea}>
@@ -399,13 +403,13 @@ const StarPage = ({navigation}) => {
                     <View style={styles.rowContainer}>
                         <View style={styles.settingsRow}>
                             <TouchableOpacity
-                                //onPress={() => handleOnSettingsPress()}
+                                onPress={() => handleOnSettingsPressed()}
                             >
                                 <Text style={styles.settingsTitle}>Settings</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={styles.arrowButton}
-                                onPress={() => handleOnSettingsPress()}
+                                onPress={() => handleOnSettingsPressed()}
                             >
                                 <Image
                                     source={require('../../../images/arrowButton.png')}
@@ -613,7 +617,7 @@ const styles = StyleSheet.create({
     recentAndHistoryRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: Dimensions.get('window').width * .9,
+        width: Dimensions.get('window').width * .95,
         alignSelf: 'center'
     },
     recentOrdersTitle: {

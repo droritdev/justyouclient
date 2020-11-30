@@ -6,6 +6,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 //The claint's start area page
 const StarPage = ({navigation}) => {
 
+    const handleOnTrainerPressed = () => {
+        navigation.navigate('TrainerOrderPage')
+    }
+
     const handleOnWhyUsPressed = () => {
         navigation.navigate('WhyUs');
     }
@@ -40,8 +44,11 @@ const StarPage = ({navigation}) => {
                         showsHorizontalScrollIndicator={false}
                     >
                         <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.trainerImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.trainerImageView}
+                                    onPress={() => handleOnTrainerPressed()}
+                                >
                                     <Image
                                         style={styles.trainerImage}
                                     />
@@ -62,8 +69,11 @@ const StarPage = ({navigation}) => {
                             </View>
                         </View>
                         <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.trainerImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.trainerImageView}
+                                    onPress={() => handleOnTrainerPressed()}
+                                >
                                     <Image
                                         style={styles.trainerImage}
                                     />
@@ -84,8 +94,11 @@ const StarPage = ({navigation}) => {
                             </View>
                         </View>
                         <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.trainerImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.trainerImageView}
+                                    onPress={() => handleOnTrainerPressed()}
+                                >
                                     <Image
                                         style={styles.trainerImage}
                                     />
@@ -106,8 +119,11 @@ const StarPage = ({navigation}) => {
                             </View>
                         </View>
                         <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.trainerImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.trainerImageView}
+                                    onPress={() => handleOnTrainerPressed()}
+                                >
                                     <Image
                                         style={styles.trainerImage}
                                     />
@@ -137,8 +153,10 @@ const StarPage = ({navigation}) => {
                         showsHorizontalScrollIndicator={false}
                     >
                         <View style={styles.categoryView}>
-                            <View style={styles.categoryImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.categoryImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.categoryImageView}
+                                >
                                     <Image
                                         style={styles.categoryImage}
                                     />
@@ -152,8 +170,10 @@ const StarPage = ({navigation}) => {
                             </View>
                         </View>
                         <View style={styles.categoryView}>
-                            <View style={styles.categoryImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.categoryImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.categoryImageView}
+                                >
                                     <Image
                                         style={styles.categoryImage}
                                     />
@@ -167,8 +187,10 @@ const StarPage = ({navigation}) => {
                             </View>
                         </View>
                         <View style={styles.categoryView}>
-                            <View style={styles.categoryImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.categoryImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.categoryImageView}
+                                >
                                     <Image
                                         style={styles.categoryImage}
                                     />
@@ -182,8 +204,10 @@ const StarPage = ({navigation}) => {
                             </View>
                         </View>
                         <View style={styles.categoryView}>
-                            <View style={styles.categoryImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.categoryImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.categoryImageView}
+                                >
                                     <Image
                                         style={styles.categoryImage}
                                     />
@@ -206,8 +230,10 @@ const StarPage = ({navigation}) => {
                         showsHorizontalScrollIndicator={false}
                     >
                         <View style={styles.placeView}>
-                            <View style={styles.placeImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.placeImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.placeImageView}
+                                >
                                     <Image
                                         style={styles.placeImage}
                                     />
@@ -221,8 +247,10 @@ const StarPage = ({navigation}) => {
                             </View>
                         </View>
                         <View style={styles.placeView}>
-                            <View style={styles.placeImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.placeImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.placeImageView}
+                                >
                                     <Image
                                         style={styles.placeImage}
                                     />
@@ -236,8 +264,10 @@ const StarPage = ({navigation}) => {
                             </View>
                         </View>
                         <View style={styles.placeView}>
-                            <View style={styles.placeImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.placeImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.placeImageView}
+                                >
                                     <Image
                                         style={styles.placeImage}
                                     />
@@ -251,8 +281,10 @@ const StarPage = ({navigation}) => {
                             </View>
                         </View>
                         <View style={styles.placeView}>
-                            <View style={styles.placeImageView}>
-                                <TouchableOpacity>
+                            <View style={styles.placeImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.placeImageView}
+                                >
                                     <Image
                                         style={styles.placeImage}
                                     />
@@ -406,8 +438,11 @@ const styles = StyleSheet.create({
         borderColor: 'gainsboro',
         borderRadius: 20
     },
+    trainerImageViewContainer: {
+        height: '60%'
+    },
     trainerImageView: {
-        height: '60%',
+        height: '100%',
         backgroundColor: 'gainsboro',
         borderTopRightRadius: 15,
         borderTopLeftRadius: 15,
@@ -461,8 +496,11 @@ const styles = StyleSheet.create({
         borderColor: 'gainsboro',
         borderRadius: 20
     },
-    categoryImageView: {
+    categoryImageViewContainer: {
         height: '60%',
+    },
+    categoryImageView: {
+        height: '100%',
         backgroundColor: 'gainsboro',
         borderTopRightRadius: 15,
         borderTopLeftRadius: 15
@@ -505,8 +543,11 @@ const styles = StyleSheet.create({
         borderColor: 'gainsboro',
         borderRadius: 20
     },
-    placeImageView: {
+    placeImageViewContainer: {
         height: '60%',
+    },
+    placeImageView: {
+        height: '100%',
         backgroundColor: 'gainsboro',
         borderTopRightRadius: 15,
         borderTopLeftRadius: 15

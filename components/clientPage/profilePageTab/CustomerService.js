@@ -5,31 +5,82 @@ import Dialog from "react-native-dialog";
 
 //The question and answers page
 const CustomerService = ({navigation}) => {
+    const mailformat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    
+    const [bccInput, setBccInput] = useState("");
+    const [subjectInput, setSubjectInput] = useState("");
+    const [mailInput, setMailInput] = useState("");
 
-    const [dialogVisible, setDialogVisible] = useState(false);
+    const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+    const [sendDialogVisible, setSendDialogVisible] = useState(false);
 
     const handleOnCancelPressed = () => {
-        setDialogVisible(true);
-    }
+        setCancelDialogVisible(true);
+    };
 
-    const handleYesDialog = () => {
-        setDialogVisible(false);
+    const handleCancelYesDialog = () => {
+        setCancelDialogVisible(false);
         navigation.navigate('ProfilePage');
     };
 
-    const handleNoDialog = () => {
-        setDialogVisible(false);
+    const handleCancelNoDialog = () => {
+        setCancelDialogVisible(false);
     };
+
+    const handleSendOkDialog = () => {
+        setSendDialogVisible(false);
+    };
+
+    const handleOnSendEmailPressed = () => {
+        if(subjectInput === ""){
+            setSendDialogVisible(true);
+        }
+        else if(mailInput === ""){
+            setSendDialogVisible(true);
+        }
+        else if(bccInput !== ""){
+            if(!(mailformat.test(bccInput))){
+                setSendDialogVisible(true);
+            }
+        }
+        else{
+            sendEmail();
+        }
+    };
+
+    const handleOnBccInputChange = (text) => {
+        setBccInput(text);
+    };
+
+    const handleOnSubjectChange = (text) => {
+        setSubjectInput(text);
+    };
+
+    const handleOnMailInputChange = (text) => {
+        setMailInput(text);
+    };
+
+    const sendEmail = () => {
+        navigation.navigate('ProfilePage');
+    }
 
     return(
         <SafeAreaView style={styles.container}>
             <ScrollView>
                 <View>
-                    <Dialog.Container visible={dialogVisible}>
+                    <Dialog.Container visible={cancelDialogVisible}>
                         <Dialog.Title style={styles.dialogTitle}>Attention</Dialog.Title>
                         <Dialog.Description style={styles.dialogContent}>Mail was not sent - are you sure?</Dialog.Description>
-                        <Dialog.Button label="No" onPress={(() => handleNoDialog())} />
-                        <Dialog.Button label="Yes" onPress={() => handleYesDialog()} />
+                        <Dialog.Button label="No" onPress={(() => handleCancelNoDialog())} />
+                        <Dialog.Button label="Yes" onPress={() => handleCancelYesDialog()} />
+
+                    </Dialog.Container>
+                </View>
+                <View>
+                    <Dialog.Container visible={sendDialogVisible}>
+                        <Dialog.Title style={styles.dialogTitle}>Attention</Dialog.Title>
+                        <Dialog.Description style={styles.dialogContent}>Not all field are correct, email can not be sent</Dialog.Description>
+                        <Dialog.Button label="Ok" onPress={(() => handleSendOkDialog())} />
 
                     </Dialog.Container>
                 </View>
@@ -43,7 +94,7 @@ const CustomerService = ({navigation}) => {
                     <View style={styles.titleAndButtonRow}>
                         <Text style={styles.titleText}>Just You</Text>
                         <TouchableOpacity
-                            
+                            onPress={() => handleOnSendEmailPressed()}
                         >
                             <Image
                                 source={require('../../../images/emailSendIcon.png')}
@@ -63,6 +114,7 @@ const CustomerService = ({navigation}) => {
                             <Text style={styles.emailHeader}>Cc/Bcc: </Text>
                             <TextInput
                                 style={styles.headerInput}
+                                onChangeText={(text) => handleOnBccInputChange(text)}
                             />
                         </View>
                     </View>
@@ -71,6 +123,7 @@ const CustomerService = ({navigation}) => {
                             <Text style={styles.emailHeader}>Subject: </Text>
                             <TextInput
                                 style={styles.headerInput}
+                                onChangeText={(text) => handleOnSubjectChange(text)}
                             />
                         </View>
                     </View>
@@ -79,6 +132,7 @@ const CustomerService = ({navigation}) => {
                             style={styles.emailContentInput}
                             placeholder="Type your text here..."
                             multiline={true}
+                            onChangeText={(text) => handleOnMailInputChange(text)}
                         />
                     </View>
                 </View>

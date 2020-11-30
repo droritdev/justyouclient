@@ -9,10 +9,13 @@ import PendingOrders from './PendingOrders';
 import History from './History';
 import EditProfile from './EditProfile';
 import CustomerService from './CustomerService';
+import Settings from './Settings';
+import ChangeEmailAddress from './ChangeEmailAddress';
+import ChangePhoneNumber from './ChangePhoneNumber';
 
 const Stack = createStackNavigator();
 
-//The trainer's stack navigator to handle screen navigations in the profile section
+//The clients's stack navigator to handle screen navigations in the profile section
 const TrainerProfilePageStack = ({navigation}) => {
     return(
         <Stack.Navigator
@@ -26,6 +29,9 @@ const TrainerProfilePageStack = ({navigation}) => {
             <Stack.Screen name='History' component={History}/>
             <Stack.Screen name='EditProfile' component={EditProfile}/>
             <Stack.Screen name='CustomerService' component={CustomerService}/>
+            <Stack.Screen name='Settings' component={Settings}/>
+            <Stack.Screen name='ChangeEmailAddress' component={ChangeEmailAddress}/>
+            <Stack.Screen name='ChangePhoneNumber' component={ChangePhoneNumber}/>
         </Stack.Navigator>
     )
 }

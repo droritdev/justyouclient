@@ -2,12 +2,15 @@ import React, { useContext } from 'react'
 import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+//Here the user verifies his user details before navigates to the reset password page
 const ForgotPassword = ({navigation}) => {
 
+    //Navigates back to the log in page
     const handleArrowButton = () => {
         navigation.navigate('LogIn');
     }
 
+    //navigates to the reset passwrod page
     const handleNext = () => {
         navigation.navigate('ResetPassword')
     }

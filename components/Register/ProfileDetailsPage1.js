@@ -45,10 +45,12 @@ const ProfileDetailsPage1 = ({navigation}) => {
       setSelectedCountryName(value);
     }
 
+    //Handle when user presses the world icon
     const handleOnWorldIconPress = () => {
       setVisible(true);
     }
 
+    //Handle when the country modal closes
     const handleOnModalClose = () => {
       setVisible(false);
     }

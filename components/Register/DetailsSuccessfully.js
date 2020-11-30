@@ -1,6 +1,7 @@
 import React from 'react'
 import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native';
 
+//Navigates automaticly to the PhoneNumberVerification page after 2 seconds
 const DetailsSuccessfully = ({navigation}) => {
 
     setTimeout(() => navigation.navigate('PhoneNumberVerification'), 2000);
