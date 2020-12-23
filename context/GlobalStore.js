@@ -8,6 +8,7 @@ import PhoneContextProvider from './PhoneContext';
 import BirthdayContextProvider from './BirthdayContext';
 import ProfileImageContextProvider from '../context/ProfileImageContext';
 
+//The context api global store to handle the state managments of the app
 const GlobalStore = ({children}) => {
 
     return(

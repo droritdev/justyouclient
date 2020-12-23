@@ -22,6 +22,7 @@ const WelcomeUser = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         height: Dimensions.get('window').height,
+        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center'
     },

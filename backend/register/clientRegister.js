@@ -16,7 +16,7 @@ exports.register = (req, res) => {
             email: req.body.email, 
             password: req.body.password, 
             country: req.body.country, 
-            //image: image,
+            image: req.body.image,
             phone: {
                 areaCode: req.body.phone.areaCode, 
                 phoneNumber: req.body.phone.phoneNumber

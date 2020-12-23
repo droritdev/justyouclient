@@ -174,30 +174,31 @@ const PaymentsAndPolicy = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         height: Dimensions.get('window').height,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: 'white'
     },
     headerContainer: {
         flexDirection: 'row',
-        marginTop:30,
-        marginLeft: 20
-      },
+        marginTop: Dimensions.get('window').height * 0.033,
+        marginLeft: Dimensions.get('window').width * 0.0483
+    },
     arrowImage: {
-        marginTop: 60,
-        marginLeft: 20
+        marginTop: Dimensions.get('window').height * 0.066,
+        marginLeft: Dimensions.get('window').width * 0.0483
     },
     profileDetailesText: {
-        marginLeft: 30,
-        marginTop: 20,
+        marginLeft: Dimensions.get('window').width * 0.0724,
+        marginTop: Dimensions.get('window').height * 0.022,
         fontWeight: 'bold',
-        fontSize: 38
+        fontSize: Dimensions.get('window').height * 0.04
     },
     paymentFormContainer:{
-        marginTop: 50,
-        height: 265
+        marginTop: Dimensions.get('window').height * 0.055,
+        height: Dimensions.get('window').height * 0.295
     },
     paymentTitle: {
-        fontSize: 17,
-        marginLeft: 20
+        fontSize: Dimensions.get('window').height * 0.02,
+        marginLeft: Dimensions.get('window').width * 0.0483
     },
     cardInput: {
         width: Dimensions.get('window').width * .95,
@@ -206,18 +207,18 @@ const styles = StyleSheet.create({
         borderColor: 'deepskyblue',
         borderRadius: 30,
         alignSelf: 'center',
-        fontSize: 15,
-        marginTop: 20
+        fontSize: Dimensions.get('window').height * 0.018,
+        marginTop: Dimensions.get('window').height * 0.022
     },
     paymentFormErrorText: {
         color: 'red',
         alignSelf: 'center',
-        fontSize: 20,
-        marginTop: 15
+        fontSize: Dimensions.get('window').height * 0.022,
+        marginTop: Dimensions.get('window').height * 0.018
     },
     policyContainer: {
-        marginTop: 50,
-        marginLeft: 10,
+        marginTop: Dimensions.get('window').height * 0.055,
+        marginLeft: Dimensions.get('window').width * 0.0241,
         justifyContent: 'space-between',
         height: Dimensions.get('window').height * .19,
     },
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
     policyText: {
         width: Dimensions.get('window').width * .77,
         fontWeight: 'bold',
-        fontSize: 20
+        fontSize: Dimensions.get('window').height * 0.022
     },
     flipToggle: {
         flexDirection: 'column',
@@ -240,14 +241,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: Dimensions.get('window').width * .325,
-        marginLeft: 10        
+        marginLeft: Dimensions.get('window').width * 0.0241        
     },
     readMoreText: {
         color: 'deepskyblue',
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: Dimensions.get('window').height * 0.018,
         alignSelf: 'flex-end',
-        marginTop: 2.5
+        marginTop: Dimensions.get('window').height * 0.0028
     },
     moreInformationImage: {
         height: Dimensions.get('window').height * .0325,

@@ -18,6 +18,7 @@ const Stack = createStackNavigator();
 //The clients's stack navigator to handle screen navigations in the profile section
 const TrainerProfilePageStack = ({navigation}) => {
     return(
+        
         <Stack.Navigator
             screenOptions={{headerShown: false}}
         >

@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native'
 
 import { TagSelect } from 'react-native-tag-select';
 
+//Common pick categories object
 const PickCategories = (props) => {
     return (
         <TagSelect

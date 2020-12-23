@@ -30,14 +30,6 @@ const placeSchema = new Schema(
             required: true,
             trim: true
         },
-        permissions: {
-            location: {
-                type: Boolean
-            },
-            push: {
-                type: Boolean
-            }
-        },
         address: {
             type: String,
             required: true,
@@ -72,28 +64,6 @@ const placeSchema = new Schema(
                 }
             ]
         },
-        creditCard: {
-            number: {
-                type: Number,
-                required: true,
-                trim: true
-            },
-            cvv: {
-                type: Number,
-                required: true,
-                trim: true
-            },
-            expire: {
-                month: {
-                    type: Number,
-                    required: true
-                },
-                year: {
-                    type: Number,
-                    required: true
-                }
-            }
-        },
         phone: {
             areaCode: {
                 type: Number,
@@ -115,14 +85,6 @@ const placeSchema = new Schema(
                      }
                 }
             ]
-        },
-        connected: {
-            type: Boolean,
-            default: true
-        },
-        visibility: {
-            type: Boolean,
-            default: true
         },
         location: {
             type: {

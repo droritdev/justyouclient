@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import {EmailContext} from '../../../context//EmailContext';
 
+//The change email address page
 const ChangeEmailAddress = ({navigation}) => {
     const {emailAddress, dispatchEmail} = useContext(EmailContext);
 
@@ -16,6 +17,8 @@ const ChangeEmailAddress = ({navigation}) => {
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
     const [isCodeError, setIsCodeError] = useState(false);
     const [codeErrorMessage, setCodeErrorMessage] = useState("");
+    const [isCodeSentDisplayMode,setIsCodeSentDisplayMode] = useState("none");
+
 
     const config = {
         withCredentials: true,
@@ -26,6 +29,8 @@ const ChangeEmailAddress = ({navigation}) => {
     };
 
     const mailformat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    
+    //The function that sends the verify code to the user's email
     const sendVerifyEmail = () => {
         alert("Code sent");
         // setIsCodeSent(true);
@@ -55,11 +60,12 @@ const ChangeEmailAddress = ({navigation}) => {
         //   })
     }
 
-    //Navigates back to the profile page
+    //Navigates back to the settings page
     const handleOnArrowPress = () => {
         navigation.navigate('Settings');
     }
 
+    //Handle when the users presses the get code button
     const handleGetCodePressed = () => {
         setIsEmailError(false);
         if(emailAddressInput === ""){
@@ -80,17 +86,20 @@ const ChangeEmailAddress = ({navigation}) => {
         }
     }
 
+    //Sets the emailInput to the input the user enters
     const HandleOnEmailInputChange = (value) => {
         setIsEmailError(false);
         setEmailAddressInput(value);
     }
 
+    //Sets the codeInput to the input the user enters
     const handleOnCodeInputChange = (value) => {
         setIsEmailError(false);
         setIsCodeError(false);
         setCodeInput(value);
     }
 
+    //Handle when the user presses the approve button
     const handleApprovePressed = () => {
         if(isCodeSent){
             if(codeInput === ""){
@@ -168,7 +177,7 @@ const ChangeEmailAddress = ({navigation}) => {
                     <Text style={styles.emailErrorMessage}>{emailErrorMessage}</Text>
                 : null}
             </View>
-            <Text style={styles.codeExplination}>A 5 digit code will be sent to you to confirm your new eddress</Text>
+            <Text style={styles.codeExplination}>A 5 digit code will be sent to you to confirm your new address</Text>
             <View style={styles.getCodeButtonContainer}>
                 <TouchableOpacity
                 style={styles.getCodeButton}

@@ -11,7 +11,7 @@ import CustomerService from './CustomerService';
 
 const Stack = createStackNavigator();
 
-//The trainer's stack navigator to handle screen navigations in the profile section
+//The client's stack navigator to handle screen navigations in the star section
 const TrainerProfilePageStack = ({navigation}) => {
     return(
         <Stack.Navigator

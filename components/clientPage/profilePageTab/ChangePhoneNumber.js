@@ -4,7 +4,7 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import FlipToggle from 'react-native-flip-toggle-button';
 import axios from 'axios';
 
-//The question and answers page
+//The change phone number page
 const ChangePhoneNumber = ({navigation}) => {
 
     const [areaCodeInput, setAreaCodeInput] = useState("");
@@ -24,6 +24,7 @@ const ChangePhoneNumber = ({navigation}) => {
         navigation.navigate('Settings');
     }
 
+    //The function that sends the verify code to the user's phone
     const sendVerifyCode = () => {
         setIsPhoneError(false);
         setIsCodeError(false);
@@ -56,6 +57,7 @@ const ChangePhoneNumber = ({navigation}) => {
         // })
     }
 
+    //The function that verifies the code the user's gtes
     const verifyCode = () => {
         navigation.navigate('Settings');
         // axios
@@ -86,6 +88,7 @@ const ChangePhoneNumber = ({navigation}) => {
         // })
     }
 
+    //Sets the areaCodeInput to the input the user enters
     const handleOnChangeAreaCode = (text) => {
         setIsPhoneError(false);
         setIsCodeError(false);
@@ -93,6 +96,7 @@ const ChangePhoneNumber = ({navigation}) => {
         setAreaCodeInput(text);
     }
 
+    //Sets the phoneNumberInput to the input the user enters
     const handleOnChangePhoneNumber = (text) => {
         setIsPhoneError(false);
         setIsCodeError(false);
@@ -100,6 +104,7 @@ const ChangePhoneNumber = ({navigation}) => {
         setPhoneNumberInput(text);
     }
 
+    //Handle when the user presses the verify button
     const handleOnVerifyPressed = () => {
         if(areaCodeInput === "" || phoneNumberInput === ""){
             setIsPhoneError(true);
@@ -115,6 +120,7 @@ const ChangePhoneNumber = ({navigation}) => {
         }
     }
 
+    //Sets the codeInput to the input the user enters
     const handleOnCodeInputChange = (value) => {
         setIsPhoneError(false);
         setIsCodeError(false);
@@ -122,6 +128,7 @@ const ChangePhoneNumber = ({navigation}) => {
         setCodeInput(value);
     }
 
+    //Handle when the user presses the done button
     const handleOnDonePressed = () => {
         setIsPhoneError(false);
         setIsCodeError(false);

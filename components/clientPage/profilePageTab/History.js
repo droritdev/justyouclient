@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 
-//The claint's around you area page
+//The history page
 const History = ({navigation}) => {
 
     const [isTrainers, setIsTrainers] = useState(true);
@@ -13,6 +13,8 @@ const History = ({navigation}) => {
     const handleOnArrowPress = () => {
         navigation.navigate('ProfilePage');
     }
+
+    //Handle when flip toggle changes
     const handleFlipToggle = () => {
         setIsTrainers(!isTrainers);
     }

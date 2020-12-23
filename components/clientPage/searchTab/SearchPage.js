@@ -56,7 +56,7 @@ const SearchPage = ({navigation}) => {
                 />
                 <TextInput
                     style={styles.searchInput}
-                    placeholder="Search category"
+                    placeholder="Search by category"
                     onChangeText={(text) => handleOnInputChange(text)}
                 />
 

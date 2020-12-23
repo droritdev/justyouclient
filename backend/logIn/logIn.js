@@ -3,6 +3,7 @@ const clientProfileModel = require('../models/clientModels');
 
 exports.logIn = (req, res) => {
     // const password = bcrypt.hashSync(req.body.password, 14);
+    // const password = bcrypt.compareSync(req.body.password, 6)
     // const password2 = bcrypt.hashSync(req.body.password, 14);
     // console.log(password);
     // console.log(password2);

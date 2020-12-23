@@ -3,7 +3,7 @@ import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'r
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-//The claint's start area page
+//The confirmed orders page
 const ConfirmedOrders = ({navigation}) => {
 
     //Navigates back to the profile page

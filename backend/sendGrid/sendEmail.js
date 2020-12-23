@@ -24,29 +24,3 @@ exports.sendEmail = (req, res) => {
       res.send(error);
     });
 }
-
-//*****Ignore this section*****//
-
-//const mailgun = require("mailgun-js");
-//const mg = mailgun({apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});
-
-// exports.sendEmail = (req, res) => {
-//     const code = [];
-//     var digit1 = Math.floor(Math.random() * Math.floor(10)).toString();
-//     var digit2 = Math.floor(Math.random() * Math.floor(10)).toString();
-//     var digit3 = Math.floor(Math.random() * Math.floor(10)).toString();
-//     var digit4 = Math.floor(Math.random() * Math.floor(10)).toString();
-//     code.push(digit1 + digit2 + digit3 + digit4);
-//     code.join('');
-
-//     const data = {
-//         from: req.body.from,
-//         to: req.body.to,
-//         subject: req.body.subject,
-//         text: req.body.text + `${code}`
-//     };
-
-//     mg.messages().send(data, function (err, body) {
-//         res.send(code);
-//     });
-// }

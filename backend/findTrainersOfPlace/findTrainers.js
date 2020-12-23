@@ -5,8 +5,7 @@ const trainerProfileModel = require('../models/trainerModels');
 exports.getTrainersOfPlace = (req, res) => {
     trainerProfileModel.find(
         {
-            placeId: req.body.placeId,
-            visibility: true
+            placeId: req.body.placeId
         } 
     )
     .then((doc) => res.send(doc))

@@ -17,7 +17,7 @@ const GetStartedClient = ({navigation}) => {
             <Image source = {require('../../images/welcomepic.png')} />
             <Text style={styles.welcomeToText}>Welcome to</Text>
             <Text style={styles.justYouText}>Just You</Text>
-            <Text style={styles.excitedText}>We are exited to meet you!</Text>
+            <Text style={styles.excitedText}>We are excited to meet you!</Text>
         </View>
         <View style={styles.getStartedContainer}>
           <NextButton
@@ -32,6 +32,7 @@ const GetStartedClient = ({navigation}) => {
 const styles = StyleSheet.create({
     welcomePage2: {
       height: Dimensions.get('window').height,
+      backgroundColor: 'white',
       flexDirection: 'column'
     },
     welcomeContainer: {
@@ -41,19 +42,19 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
     },
     welcomeToText: {
-      marginTop: 10,
-      fontSize: 30,
+      marginTop: Dimensions.get('window').height * .011,
+      fontSize: Dimensions.get('window').height * .033,
       fontWeight: 'bold',
     },
     justYouText: {
-      fontSize: 60,
+      fontSize: Dimensions.get('window').height * .066,
       fontWeight: 'bold',
       color: 'deepskyblue',
-      marginTop: 10
+      marginTop: Dimensions.get('window').height * .011
     },
     excitedText: {
-      fontSize: 25,
-      marginTop: 20
+      fontSize: Dimensions.get('window').height * .0278,
+      marginTop: Dimensions.get('window').height * .022
     },
     getStartedContainer: {
       flex: 1,

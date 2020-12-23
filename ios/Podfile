@@ -21,7 +21,11 @@ target 'justYouClient' do
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications.podspec"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
   pod 'Permission-Reminders', :path => "#{permissions_path}/Reminders.podspec"
-  
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Storage'
+  pod 'Firebase/InAppMessaging'
+
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])

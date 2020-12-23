@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet , TouchableOpacity, Image} from 'react-native';
 
+//Common Arrow back button
 const ArrowBackButton = (props) => {
     return(
         <TouchableOpacity

@@ -27,6 +27,7 @@ const markStarReview = require('./markStarReview/markStarReview');
 const findAroundMe = require('./findAroundMe/findAroundMe');
 const uploadimage = require('./uploadimage/uploadimage');
 const findClientByEmail = require('./findClientByEmail/findClientByEmail');
+const findClientByPhone = require('./findClientByPhone/findClientByPhone');
 
         //**Place imports**//
 const placeRegister = require('./register/placeRegister');
@@ -71,7 +72,11 @@ mongoose.connect(process.env.MONGO_URI, {
     })
     .catch(err => console.log(err));
 
+
             ////**Client & trainer & place end points**////
+
+//db.records.find( { a: { $exists: true } } )
+
 //End point for sending emails
 app.post('/send-email', sendEmail.sendEmail);
 
@@ -165,6 +170,9 @@ app.get('/clients/aroundme/places', findAroundMe.findPlaces);
 app.post('/clients/upload-image', uploadimage.uploadImage);
 
 app.get('/clients/:email', findClientByEmail.getClientByEmail);
+
+//for phone validation
+app.get('/clients/phone/:phone', findClientByPhone.getClientByPhone);
 
             ////**Place end points**////
 //End point for confirming the registration and add a new place to the dataBase 

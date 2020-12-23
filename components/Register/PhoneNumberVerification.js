@@ -1,13 +1,16 @@
-import React, {useState, useContext} from 'react';
-import {StyleSheet, View, Text, TextInput, Dimensions} from 'react-native';
+import React, {useEffect, useState, useContext} from 'react';
+import {StyleSheet, View, Text, TextInput, Dimensions, SafeAreaView} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import NextButton from '../GlobalComponents/NextButton';
 import {PhoneContext} from '../../context/PhoneContext';
+import {CountryContext} from '../../context/CountryContext';
+
  
 //Here the verifies his phone number with a code
 const PhoneNumberVerification = ({navigation}) => {
+    const {country ,dispatchCountry} = useContext(CountryContext);
     const {dispatchArea} = useContext(PhoneContext);
     const {dispatchNumber} = useContext(PhoneContext);
     const [areaCodeInput, setAreaCodeInput] = useState("");
@@ -20,6 +23,22 @@ const PhoneNumberVerification = ({navigation}) => {
     const [nextErrorMessage, setNextErrorMessage] = useState("");
     const [isCodeError, setIsCodeError] = useState(false);
     const [codeErrorMessage, setCodeErrorMessage] = useState("");
+    const [inputIsValid,setInputIsValid] = useState(false);
+    const [isCodeSent,setIsCodeSent] = useState("none");
+
+
+    //run when page create
+    useEffect (() => {
+      getAreaCode();
+    }, []);
+
+    //Get area code by country picked
+    const getAreaCode = () => {
+      switch(country){
+        case "United States":
+          setAreaCodeInput("001");
+      }
+    }
   
     const config = {
       withCredentials: true,
@@ -29,8 +48,30 @@ const PhoneNumberVerification = ({navigation}) => {
       },
     };
 
+        //Send GET request to mongodb using axios, to check if phone is already exist
+        //Send GET request to mongodb using axios, to check if phone is already used
+          const checkPhoneIsUsed = () => {
+            axios  
+            .get('/clients/phone/'+areaCodeInput+phoneNumberInput, config)
+            .then((doc) => {
+              if (doc.data[0].phone.areaCode === areaCodeInput && doc.data[0].phone.phoneNumber === phoneNumberInput) {
+                setPhoneErrorMessage("Phone is already used");
+                setIsPhoneError(true);
+              }
+            })
+            .catch((err) =>  {
+              setIsPhoneError(false);
+              setIsNextError(false);
+              setFullPhoneNumber("+"+(areaCodeInput.concat(phoneNumberInput)));
+              sendVerificationCode();
+            });
+          }
+
     //Sets the areaCode object to the value
     const handleOnChangeAreaCode = (value) => {
+      if(value.length > 3){
+        value = value.slice(0,3);
+      }
       setIsNextError(false);
       setIsPhoneError(false);
       setIsCodeError(false);
@@ -39,6 +80,9 @@ const PhoneNumberVerification = ({navigation}) => {
 
     //Sets the phoneNumber object to the value
     const handleOnChangePhoneNumber = (value) => {
+      if(value.length > 7){
+        value = value.slice(0,7);
+      }
       setIsNextError(false);
       setIsPhoneError(false);
       setIsCodeError(false);
@@ -55,11 +99,22 @@ const PhoneNumberVerification = ({navigation}) => {
 
     //Send the verify code to the user's phone if the field are valid
     const handleVerify = () => {
+
       let areaCodeTemp = Number(areaCodeInput);
       let phoneNumberTemp = Number(phoneNumberInput);
 
-      if(areaCodeInput === "" || phoneNumberInput == ""){
+      if(areaCodeInput === "" && phoneNumberInput === ""){
         setPhoneErrorMessage("Both fields are required");
+        setIsPhoneError(true);
+        setIsNextError(true);
+      }
+      else if(areaCodeInput === "" ){
+        setPhoneErrorMessage("Area code is required");
+        setIsPhoneError(true);
+        setIsNextError(true);
+      }
+      else if(phoneNumberInput === "" ){
+        setPhoneErrorMessage("Phone number is required");
         setIsPhoneError(true);
         setIsNextError(true);
       }
@@ -73,18 +128,16 @@ const PhoneNumberVerification = ({navigation}) => {
         setIsPhoneError(true);
         setIsNextError(true);
       }
+      
       else{
-        setIsPhoneError(false);
-        setIsNextError(false);
-        setFullPhoneNumber("+972"+(areaCodeInput.concat(phoneNumberInput)));
-        sendVerificationCode();
+         checkPhoneIsUsed();
+        
       }
     }
 
     //The function that sends the code to the user's phone
     const sendVerificationCode = () => {
-        alert("Code sent");
-        // alert(fullPhoneNumber)
+           setIsCodeSent('flex');
         // axios
         //   .post('/send-verification-code', {
         //     to: fullPhoneNumber,
@@ -179,26 +232,30 @@ const PhoneNumberVerification = ({navigation}) => {
     }
   
     return(
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
               <Text style={styles.justYouHeader}>Just You</Text>
-              <Text style={styles.partnerHeader}>Partner</Text>
             </View>
             <View style={styles.phoneContainer}>
               <View style={styles.phoneAndErrorContainer}>
-                <Text style={styles.inputTitle}>PHONE NUMBER</Text>
+                <Text style={styles.inputTitle}>Phone number</Text>
                 <View style={styles.phoneTextInput}>
                   <TextInput
                       style={styles.areaCodeInput}
                       textAlign='center'
                       placeholder='+001'
-                      onChangeText={text => handleOnChangeAreaCode(text)}
-                  />
+                      value = {areaCodeInput}
+                      keyboardType='numeric'
+                      onChangeText={value => handleOnChangeAreaCode(value)}>
+                        {}</TextInput>
+                  
                   <TextInput
                       style={styles.phoneNumberInput}
                       textAlign='center'
                       placeholder='00000000000'
-                      onChangeText={text => handleOnChangePhoneNumber(text)}
+                      value = {phoneNumberInput}
+                      keyboardType='numeric'
+                      onChangeText={value => handleOnChangePhoneNumber(value)}
                   />
                 </View>
                 {isPhoneError ?
@@ -212,10 +269,12 @@ const PhoneNumberVerification = ({navigation}) => {
             <View style={styles.verifyButton}>
                 <NextButton
                     title="Verify"
-                    onPress={handleVerify}
+                    onPress={() => handleVerify()}
                 />
             </View>
-            <View style={styles.codeAndErrorMessage}>
+            <View style={styles.codeAndErrorMessage}
+                  display= {isCodeSent}
+                  >
               <View style={styles.codeTextInput}>
                 <TextInput
                     style={{fontSize: 33}}
@@ -228,24 +287,29 @@ const PhoneNumberVerification = ({navigation}) => {
                 <Text style={styles.codeErrorMessage}>{codeErrorMessage}</Text>
               : null}
             </View>
-            <View>
+            <View
+                 display= {isCodeSent}
+                >
                 <TouchableOpacity 
                   style={styles.sendAgainButton}
-                  onPress={handleVerify}
+                  onPress={() => handleVerify()}
                 >
                   <Text style={styles.resendCodeText}>No SMS? Tap to resend</Text> 
                 </TouchableOpacity>
             </View>
-            <View style={styles.nextButtonContainer}>
+            <View style={styles.nextButtonContainer}
+                  display= {isCodeSent}
+                  >
+                             
               {isNextError ?
               <Text style={styles.nextErrorMessage}>{nextErrorMessage}</Text>
               :null}
               <NextButton
                 title="Next"
-                onPress={handleNext}
+                onPress={() => handleNext()}
               />
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -253,50 +317,45 @@ const styles = StyleSheet.create({
     container: {
       height: Dimensions.get('window').height,
       flexDirection: 'column',
-      //backgroundColor: 'white'
+      backgroundColor: 'white'
     },
     headerContainer: {
       flexDirection: 'column',
       alignItems: 'center',
-      marginTop: 60
     },
     justYouHeader: {
       color: 'black',
       fontWeight: 'bold',
-      fontSize: 30
-    },
-    partnerHeader: {
-      color: 'deepskyblue',
-      fontWeight: 'bold',
-      fontSize: 20
+      fontSize: Dimensions.get('window').height * .033
     },
     phoneContainer: {
       flexDirection: 'column',
-      marginTop: 50,
-      height: 175
+      marginTop: Dimensions.get('window').height * .055,
+      height: Dimensions.get('window').height * .195
     },
     phoneAndErrorContainer: {
-      height: 90
+      height: Dimensions.get('window').height * .1
     },
     inputTitle: {
-      fontSize: 20,
-      marginLeft: 20
+      fontWeight: 'bold',
+      fontSize: Dimensions.get('window').height * .025,
+      marginLeft: Dimensions.get('window').width * .0483
     },
     phoneTextInput: {
       flexDirection: 'row',
       borderColor: 'deepskyblue',
       justifyContent: 'center',
-      fontSize: 24,
-      marginTop: 15
+      fontSize: Dimensions.get('window').height * .025,
+      marginTop: Dimensions.get('window').height * .018
     },
     areaCodeInput: {
         borderRadius: 20,
-        marginRight: 10,
+        marginRight: Dimensions.get('window').width * .0241,
         borderColor: 'deepskyblue',
         borderWidth: 3,
         height: Dimensions.get('window').height * .06,
         width: Dimensions.get('window').width * .3,
-        fontSize: 25
+        fontSize: Dimensions.get('window').height * .0278
     },
     phoneNumberInput: {
         borderRadius: 20,
@@ -304,31 +363,32 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         height: Dimensions.get('window').height * .06,
         width: Dimensions.get('window').width * .6,
-        fontSize: 25
+        fontSize: Dimensions.get('window').height * .0278
     },
     phoneErrorMessage: {
       color: 'red',
-      marginLeft: 25,
-      fontSize: 17
+      marginLeft: Dimensions.get('window').width * .049,
+      fontSize: Dimensions.get('window').height * .018
     },
     verifyExplenationContainer: {
         width: Dimensions.get('window').width * .8,
         alignSelf: 'center',
-        marginTop: 30
+        marginTop: Dimensions.get('window').height * .033
     },
     verifyExplenationText: {
         textAlign:'center',
-        fontSize: 17,
+        fontSize: Dimensions.get('window').height * .019,
     },
     verifyButton: {
-        marginTop: 40
+        marginTop: Dimensions.get('window').height * .044
     },
     verifyButtonText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .0278,
         fontWeight: 'bold',
         color: 'white'
     },
     codeAndErrorMessage: {
+      // display : 'none',
       height: Dimensions.get('window').height * .1544,
       width: Dimensions.get('window').width * .9, 
       alignItems: 'center',
@@ -340,33 +400,32 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         height: Dimensions.get('window').height * .07,
         width: Dimensions.get('window').width * .9,
-        marginTop: 70,
+        marginTop: Dimensions.get('window').height * .077,
         justifyContent: 'center',
-        fontSize: 24
+        fontSize: Dimensions.get('window').height * .0278
     },
     codeErrorMessage: {
       color: 'red',
-      marginTop: 5
+      marginTop: Dimensions.get('window').height * .0055
     },
     resendCodeText: {
       color: 'deepskyblue', 
-      fontSize: 20,
+      fontSize: Dimensions.get('window').height * .022,
       fontWeight: '600',
       alignSelf: 'center'
     },
     sendAgainButton: {
-      marginTop: 50,
+      marginTop: Dimensions.get('window').height * .055,
       width: Dimensions.get('window').width * .55,
       height: Dimensions.get('window').height * .04,
       backgroundColor: 'lightgrey',
       borderRadius: 5,
       justifyContent: 'center',
-      marginLeft: 20
+      marginLeft: Dimensions.get('window').width * .0483
     },
     nextButtonContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      marginBottom: 40,
       alignItems: 'center'
     },
     nextButton: {
@@ -379,14 +438,14 @@ const styles = StyleSheet.create({
       borderRadius: 20
     },
     nextButtonText: {
-      fontSize: 25,
+      fontSize: Dimensions.get('window').height * .0278,
       fontWeight: 'bold',
       color: 'white'
     },
     nextErrorMessage: {
         color: 'red',
-        marginLeft: 25,
-        marginBottom: 20
+        marginLeft: Dimensions.get('window').width * .049,
+        marginBottom: Dimensions.get('window').height * .022
     }
 });
 

@@ -1,9 +1,11 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {StyleSheet, View, Text, Image, Dimensions, SafeAreaView} from 'react-native';
+import React, { useState, useContext, useEffect} from 'react';
+import { StyleSheet, View, Text, Image, Dimensions, SafeAreaView, Alert } from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import FlipToggle from 'react-native-flip-toggle-button';
 import {Dropdown} from 'react-native-material-dropdown'
+import {Platform} from 'react-native';
+import {check ,request, PERMISSIONS, RESULTS, requestNotifications, checkNotifications, openSettings} from 'react-native-permissions';
 
 import FlipToggleButton from '../GlobalComponents/FlipToggleButton';
 import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
@@ -12,12 +14,17 @@ import NextButton from '../GlobalComponents/NextButton';
 import {CountryContext} from '../../context/CountryContext';
 import {PasswordContext} from '../../context/PasswordContext';
 
+
+
+
+
+
 //Here the user picks his country and grante the push and location pemissions
 const ProfileDetailsPage1 = ({navigation}) => {
     const {dispatchPassword} = useContext(PasswordContext);
-    const {dispatchCountry} = useContext(CountryContext);
-    const [isLocationPermission, setIsLocationPermission] = useState(true);
-    const [isPushPermission, setIsPushPermission] = useState(true);
+    const { country ,dispatchCountry} = useContext(CountryContext);
+    const [isLocationPermission, setIsLocationPermission] = useState(false);
+    const [isPushPermission, setIsPushPermission] = useState(false);
     const [isPermissionsNotConfirmed, setIsPermissionsNotConfirmed] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState("Pick a country");
     const [selectedCountryName, setSelectedCountryName] = useState("");
@@ -55,19 +62,126 @@ const ProfileDetailsPage1 = ({navigation}) => {
       setVisible(false);
     }
 
+
     //Sets the location permission to the value
     const handleLocationToggleChange = (newState) => {
-      setIsLocationPermission(newState);
-      if(isPushPermission && newState){
-        setIsPermissionsNotConfirmed(false);
+      if(newState) {
+        //toogle is on
+        checkLocationPermission();
+      } else {
+        //toogle is off
+        setIsLocationPermission(newState);
       }
     }
 
+
+
+    //check if the location permission is enabled
+    const checkLocationPermission = () => {
+      check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+        .then((result) => {
+          switch (result) {
+            case RESULTS.UNAVAILABLE:
+              alert('This feature is not available (on this device / in this context)');
+              break;
+            case RESULTS.DENIED:
+              //permission wasn't asked yet
+                askForPermission();
+              break;
+            case RESULTS.LIMITED:
+              alert('The permission is limited: some actions are possible');
+              break;
+            case RESULTS.GRANTED:
+              //permission is granted
+              setIsLocationPermission(true);
+              break;
+            case RESULTS.BLOCKED:
+              //permission is not allowed
+              setIsLocationPermission(false);
+              showOpenSettingsAlert("location");
+              break;
+          }
+        })
+        .catch((error) => {
+        });
+    }
+
+
+
+    // prompt permission window to the user
+    const askForPermission = () => {
+      request(
+        Platform.select({
+          android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+          ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+        })).then((result) => {
+          if(result == 'granted') {
+            //user has granted permission
+            setIsLocationPermission(true);
+          } else {
+            //user has declined permission
+            setIsLocationPermission(false);
+          }
+        });
+    }
+
+
+
+    // show alert to send user to his settings (user has decliend permission)
+    const showOpenSettingsAlert = (type) => {
+      title = "";
+      msg = "";
+      switch (type) {
+        case "location":
+          title = "Location is disabled";
+          msg = "To continue, allow JustYou app to access your location"
+          break;
+        case "notifications":
+          title = "Notifications is disabled";
+          msg = "To continue, allow JustYou app to show notifcations"
+          break;
+      }
+      Alert.alert(
+        title,
+        msg,
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => openSettings }
+        ],
+        { cancelable: false }
+      );
+    }
+
+
     //Sets the push permission to the value
-    const handlePermissionToggleChange = (newState) => {
-      setIsPushPermission(newState);
-      if(isLocationPermission && newState){
-        setIsPermissionsNotConfirmed(false);
+    const handleNotificationToggleChange = (newState) => {
+      if(newState){
+        checkNotifications().then(({status, settings}) => {
+          switch(status){
+            case "blocked":
+              showOpenSettingsAlert("notifications");
+            break;
+            case "denied":
+              requestNotifications(['alert', 'sound']).then(({status, settings}) => {
+                if(status === "granted"){
+                  setIsPushPermission(newState);
+                }
+
+              });
+            break;
+            case "granted":
+              setIsPushPermission(newState);
+            break;
+          }
+        }
+        );
+
+      }else{
+        setIsPushPermission(newState);
       }
     }
     
@@ -134,7 +248,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
             >Allow push notifications</Text>
             <FlipToggleButton
               value={isPushPermission}
-              onToggle={(newState) => handlePermissionToggleChange(newState)}
+              onToggle={(newState) => handleNotificationToggleChange(newState)}
             />
           </View>
           <Text style={{color: 'grey'}}>
@@ -157,62 +271,63 @@ const ProfileDetailsPage1 = ({navigation}) => {
   const styles = StyleSheet.create({
     container: {
       height: Dimensions.get('window').height,
+      backgroundColor: 'white',
       flexDirection: 'column'
     },
     arrowImage: {
-      marginTop: 60,
-      marginLeft: 20
+      marginTop: Dimensions.get('window').height * 0.066,
+      marginLeft: Dimensions.get('window').width * 0.0483
     },
     upperContainer: {
-      marginTop: 25,
+      marginTop: Dimensions.get('window').height * 0.039,
       justifyContent: 'space-between',
       height: Dimensions.get('window').height * .125,
     },
     profileDetailesText: {
       fontWeight: 'bold',
-      fontSize: 38,
-      marginLeft: 20
+      fontSize: Dimensions.get('window').height * 0.038,
+      marginLeft: Dimensions.get('window').width * 0.0483
     },
     fillTheFieldsText: {
-      fontSize: 23,
-      marginLeft: 20
+      fontSize: Dimensions.get('window').height * 0.026,
+      marginLeft: Dimensions.get('window').width * 0.0483
     },
     countryContainer: {
       height: Dimensions.get('window').height * .11,
-      marginTop: 40
+      marginTop: Dimensions.get('window').height * 0.044
     },
     countryTitle: {
       fontWeight: 'bold',
-      fontSize: 24,
-      marginLeft: 20
+      fontSize: Dimensions.get('window').height * 0.027,
+      marginLeft: Dimensions.get('window').width * 0.0483
     }, 
     countryErrorText: {
       color: 'red',
-      fontSize: 15,
-      marginLeft: 20
+      fontSize: Dimensions.get('window').height * 0.014,
+      marginLeft: Dimensions.get('window').width * 0.0483,
     },
     permissionsContainer: {
       justifyContent: 'space-between',
       height: Dimensions.get('window').height * .24,
-      marginTop: 70,
-      marginLeft: 20
+      marginTop: Dimensions.get('window').height * 0.077,
+      marginLeft: Dimensions.get('window').width * 0.0483
     },
     permissionsText: {
       fontWeight: 'bold',
-      fontSize: 27
+      fontSize: Dimensions.get('window').height * 0.03
     },
     permissionsSection: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       height: Dimensions.get('window').height * .03,
-      marginRight: 25,
-      marginTop: 20
+      marginRight: Dimensions.get('window').height * 0.028,
+      marginTop: Dimensions.get('window').height * 0.022
     },
     permissionsErrorText: {
       textAlign:'center',
       color: 'red',
-      fontSize: 15,
-      marginTop: 25
+      fontSize: Dimensions.get('window').height * 0.016,
+      marginTop: Dimensions.get('window').height * 0.03
     }, 
     nextButtonContainer: {
       flex: 1,

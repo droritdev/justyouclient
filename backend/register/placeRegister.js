@@ -19,24 +19,12 @@ exports.register = (req, res) => {
             email: req.body.email, 
             password: req.body.password, 
             country: req.body.country, 
-            permissions: {
-                location: req.body.permissions.locationPermission, 
-                push: req.body.permissions.pushPermission
-            }, 
             address: req.body.address, 
             categories: req.body.categories, 
             about: about, 
             prices: {
                 single: req.body.prices.single, 
                 couple: req.body.prices.couple
-            },
-            creditCard: {
-                number: req.body.creditCard.number, 
-                cvv: req.body.creditCard.cvv, 
-                expire: {
-                    month: req.body.creditCard.expire.month, 
-                    year: req.body.creditCard.expire.year
-                }
             }, 
             phone: {
                 areaCode: req.body.phone.areaCode, 

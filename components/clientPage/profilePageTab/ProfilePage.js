@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import {NameContext} from '../../../context/NameContext';
 
-//The claint's start area page
+//The client's profile page area page
 const StarPage = ({navigation}) => {
 
     const {firstName, dispatchFirst} = useContext(NameContext);
@@ -20,6 +20,7 @@ const StarPage = ({navigation}) => {
         },
     };
 
+    //First off all, the component loads the user details from the data base and sets the variables to the data
     useEffect(() => {
         axios
             .get('/clients/omero@gmail.com',
@@ -45,36 +46,45 @@ const StarPage = ({navigation}) => {
 
         })
         .catch((err) => alert(err))
-    },[])
+    }
+    ,[])
 
+    //Handle when the user presses the ConfirmedOrders button
     const handleOnConfirmedOrdersPRessed = () => {
         navigation.navigate('ConfirmedOrders');
     }
 
+    //Handle when the user presses the PendingOrders button
     const handleOnPendingOrdersPRessed = () => {
         navigation.navigate('PendingOrders');
     }
 
+    //Handle when the user presses the Invite friends button
     const handleOnInvitePressed = () => {
         navigation.navigate('ComingSoon');
     }
 
+    //Handle when the user presses the Receipts history button
     const handleOnReceiptsHistoryPressed = () => {
         navigation.navigate('ReceiptsHistory');
     }
 
+    //Handle when the user presses the History button
     const handleOnHistoryPressed = () => {
         navigation.navigate('History');
     }
 
+    //Handle when the user presses the Edit profile button
     const handleOnEditProfilePressed = () => {
         navigation.navigate('EditProfile');
     }
 
+    //Handle when the user presses the CustomerService button
     const handleOnCustomerServicePressed = () => {
         navigation.navigate('CustomerService');
     }
 
+    //Handle when the user presses the Settings button
     const handleOnSettingsPressed = () => {
         navigation.navigate('Settings');
     }
@@ -123,7 +133,7 @@ const StarPage = ({navigation}) => {
                     </View>
                 </View>
                 <View style={styles.likesSectionContainer}>
-                    <Text style={styles.likesTitle}>Choises I Liked</Text>
+                    <Text style={styles.likesTitle}>Choices I Liked</Text>
                     <ScrollView 
                         style={styles.likesScrollView} 
                         horizontal={true} 

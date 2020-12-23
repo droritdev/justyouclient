@@ -11,6 +11,7 @@ import FlipToggleButton from '../../GlobalComponents/FlipToggleButton';
 import {NameContext} from '../../../context/NameContext';
 import {BirthdayContext} from '../../../context/BirthdayContext';
 
+//Edit profile page
 const EditProfile = ({navigation}) => {
     const {firstName, dispatchFirst} = useContext(NameContext);
     const {lastName, dispatchLast} = useContext(NameContext);
@@ -40,6 +41,7 @@ const EditProfile = ({navigation}) => {
         },
     };
 
+    //First off all, the component loads the user details from the data base and sets the variables to the data
     useEffect(() => {
         axios
             .get('/clients/omero@gmail.com',
@@ -83,25 +85,29 @@ const EditProfile = ({navigation}) => {
         .catch((err) => alert(err))
     },[])
 
+    //Handle when the user presses the yes button in the dialog
     const handleYesDialog = () => {
         setDialogVisible(false);
         navigation.navigate('ProfilePage');
     };
 
+    //Handle when the user presses the no button in the dialog
     const handleNoDialog = () => {
         setDialogVisible(false);
     };
 
-    //Navigates back to the profile page
+    //Handle when the user presses the arrow back button
     const handleOnArrowPress = () => {
         setDialogVisible(true);
     }
     
+    //Sets the firstNameInput object to the input the user enters
     const handleOnChangeFirstName = (value) => {
         setIsNamesError(false);
         setFirstNameInput(value);
     }
 
+    //Sets the lastNameInput object to the input the user enters
     const handleOnChangeLastName = (value) => {
         setIsNamesError(false);
         setLastNameInput(value);
@@ -136,14 +142,15 @@ const EditProfile = ({navigation}) => {
         }
     }
     
-        //Sets the push permission to the value
-        const handlePermissionToggleChange = (newState) => {
+    //Sets the push permission to the value
+    const handlePermissionToggleChange = (newState) => {
         setIsPushPermission(newState);
         if(isLocationPermission && newState){
             setIsPermissionsNotConfirmed(false);
         }
     }
 
+    //Handle when user presses the approve button
     const handleOnApprovePressed = () => {
         if(firstNameInput === "" || lastNameInput === ""){
             if(firstNameInput === "" || lastNameInput === ""){
@@ -227,6 +234,14 @@ const EditProfile = ({navigation}) => {
             <View style={styles.namesContainer}>
                 <View style={styles.namesAndErrorContainer}>
                     <View style={styles.namesRowContainer}>
+                    <TouchableOpacity 
+                            //onPress={handleProfileImage}
+                        >
+                            <Image
+                                source={require('../../../images/profileImage.png')}
+                                style={styles.profileImage}
+                            />
+                        </TouchableOpacity>
                         <TextInput
                             style={styles.namesInput}
                             textAlign='center'
@@ -239,14 +254,7 @@ const EditProfile = ({navigation}) => {
                             placeholder={lastNameInput}
                             onChangeText={value => handleOnChangeLastName(value)}
                         />
-                        <TouchableOpacity 
-                            //onPress={handleProfileImage}
-                        >
-                            <Image
-                                source={require('../../../images/camera.png')}
-                                style={styles.profileImage}
-                            />
-                        </TouchableOpacity>
+                        
                     </View>
                     {isNamesError ? 
                         <Text style={styles.nameErrorMessage}>{nameErrorMessage}</Text>
@@ -347,11 +355,12 @@ const styles = StyleSheet.create({
     namesRowContainer: {
         flexDirection: 'row',
         width: Dimensions.get('window').width * .95,
+        height: Dimensions.get('window').width * .15,
         alignSelf: 'center',
         justifyContent: 'space-between'
     },  
     namesInput: {
-        marginTop: 20,
+        marginTop: Dimensions.get('window').height * 0.035,
         borderColor: 'deepskyblue',
         borderRadius: 17,
         borderWidth: 3,
@@ -361,9 +370,9 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     profileImage: {
-        width: Dimensions.get('window').height * .085,
-        height: Dimensions.get('window').height * .09,
-        borderRadius: 20
+        width: Dimensions.get('window').width * .200,
+        height: Dimensions.get('window').height * .113,
+        borderRadius: 5
     },
     nameErrorMessage: {
         color: 'red',

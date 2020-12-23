@@ -6,26 +6,32 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 //The claint's start area page
 const StarPage = ({navigation}) => {
 
+    //Handle when the client presses on a trainer button
     const handleOnTrainerPressed = () => {
         navigation.navigate('TrainerOrderPage')
     }
 
+    //Handle when the client presses on Why Us button
     const handleOnWhyUsPressed = () => {
         navigation.navigate('WhyUs');
     }
 
+    //Handle when the client presses on Q&As button
     const handleOnQandAsPressed = () => {
         navigation.navigate('QuestionsAndAnswers');
     }
 
+    //Handle when the client presses on Discount Code button
     const handleOnDiscountCodePressed = () => {
         navigation.navigate('ComingSoon');
     }
 
+    //Handle when the client presses on Customer Service button
     const handleOnCustomerSrvicePressed = () => {
         navigation.navigate('CustomerService');
     }
 
+    //Handle when the client presses on gift card purchase button
     const handleOnGiftCardPurchasePressed = () => {
         navigation.navigate('ComingSoon');
     }

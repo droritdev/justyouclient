@@ -3,10 +3,13 @@ import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView} from
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import DatePicker from 'react-native-datepicker';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
+
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import { Platform, Alert, Linking } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 
 import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
 import BirthdayPicker from '../GlobalComponents/BirthdayPicker';
@@ -17,6 +20,14 @@ import {ProfileImageContext} from '../../context/ProfileImageContext';
 import {BirthdayContext} from '../../context/BirthdayContext';
 import {EmailContext} from '../../context/EmailContext';
 
+
+//for Firebase Storage
+import storage from '@react-native-firebase/storage';
+
+//for Firebase Auth
+import auth from '@react-native-firebase/auth';
+
+
 //Here the user enters his: Full name, profile image(wich uploads to the cloudinary cloud) and his birthday
 const ProfileDetailsPage2 = ({navigation}) => {
     const {emailAddress} = useContext(EmailContext);
@@ -25,19 +36,24 @@ const ProfileDetailsPage2 = ({navigation}) => {
     const {dispatchProfileImage} = useContext(ProfileImageContext);
     const {dispatchBirthday} = useContext(BirthdayContext);
 
-    const [photo, setPhoto] = useState("");
+    const [imageUriFireBase, setImageUriFireBase] = useState("");
     const [firstNameInput, setFirstNameInput] = useState("");
     const [lastNameInput, setLastNameInput] = useState("");
-    const [profileImageSource, setProfileImageSource] = useState(require('../../images/camera.png'));
+    const [profileImageSource, setProfileImageSource] = useState(require('../../images/profileImage.png'));
     const [birthdaySelected, setBirthdaySelected] = useState("Set your birthday");
     const [isBirthdaySelected, setIsBirthdaySelected] = useState(false);
-    const [minimumDate, setMinimumDate] = useState("");
-    const [maximumDate, setMaximumDate] = useState("");
+    const [minimumDate, setMinimumDate] = useState(new Date());
+    const [maximumDate, setMaximumDate] = useState(new Date());
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     const [namesErrorMessage, setNamesErrorMessage] = useState("");
+    const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
+    const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
     const [isNamesError, setIsNamesError] = useState(false);
+    const [isFirstNameError, setIsFirstNameError] = useState(false);
+    const [isLastNameError, setIsLastNameError] = useState(false);
     const [birthdayErrorMessage, setBirthdayErrorMessage] = useState("");
     const [isBirthdayError, setIsBirthdayError] = useState(false);
+
 
     const config = {
       withCredentials: true,
@@ -49,12 +65,12 @@ const ProfileDetailsPage2 = ({navigation}) => {
     
     //Sets the minimum age of registration to 18 automatticly
     useEffect (() => {
-      let date = new Date();
+
       let currentYear = new Date().getFullYear();
       let currentMonth = new Date().getMonth();
       let currentDay = new Date().getDate();
-      date.setFullYear(currentYear - 18, currentMonth, currentDay);
-      setMaximumDate(date);
+      setMaximumDate(new Date().setFullYear(currentYear - 18, currentMonth, currentDay));
+      setMinimumDate(new Date().setFullYear(currentYear - 120, currentMonth, currentDay));
     }, []);
 
   // const checkForPermissions = () => {
@@ -98,27 +114,65 @@ const ProfileDetailsPage2 = ({navigation}) => {
       navigation.navigate('ProfileDetailsPage1');
     }
 
+    const reference = storage().ref('shahar');
+
+    const uploadImage = async (image) => {
+      await reference.putFile(image);
+    }  
+
+    const uploadImageToStorage = async (path, imageName) => {
+      let reference = storage().ref('shaharUpload/projectX/');         // 2
+      let task = reference.putFile(imageName);               // 3
+  
+      task.then(() => {                                 // 4
+          console.log('Image uploaded to the bucket!');
+      }).catch((e) => console.log('uploading image error => ', e));
+  }
+
     //User picks an image from the gallery/camera and sets it to his profile picture
     const handleProfileImage = () => {
       //   const granted = checkForPermissions();
     
       //   if(granted) {
+
+        ImagePicker.openPicker({
+          width: 400,
+          height: 400,
+          cropping: true,
+          mediaType: 'photo',
+        }).then(image => {
+          console.log(image);
+          const source = {uri :'file://'+image.path}
+          setProfileImageSource(source);
+          setImageUriFireBase(source.uri);
+        });
     
           const options = {
             title: 'Select photo',
             base64: true
           };
+
     
-          ImagePicker.showImagePicker(options, (res) => {
-            if(res.didCancel){
-            }
-            else if(res.error){
-            }
-            else{
-              const imagesource = {uri: res.uri};
-              setProfileImageSource(imagesource);
-            }
-          })
+          // ImagePicker.showImagePicker(options, (res) => {
+          //   if(res.didCancel){
+          //   }
+          //   else if(res.error){
+          //   }
+          //   else{
+          //     const imagesource = {uri: res.uri};
+
+          //     console.log(imagesource);
+          //     uploadImage('/Users/shaharkeisar/Desktop/justforyou/justYouClientFromBackup/justYouClient/images/aroundYouFocusedIcon.png');
+          //     uploadImageToStorage(res.uri, 'aroundYouFocusedIcon.png')
+          //     // {
+          //     //   // path to existing file on filesystem
+          //     //   // const pathToFile = `${utils.FilePath.PICTURES_DIRECTORY}/black-t-shirt-sm.png`;
+          //     //   // uploads file
+          //     //    reference.putFile(imagesource.toString());
+          //     // }
+          //     setProfileImageSource(imagesource);
+          //   }
+          // })
     }
       //   }
       //   else{
@@ -145,6 +199,8 @@ const ProfileDetailsPage2 = ({navigation}) => {
     //Sets the firstName object to the value
     const handleFirstNameInputChange = (text) => {
       setIsNamesError(false);
+      setIsFirstNameError(false);
+      setIsLastNameError(false);
       setIsBirthdayError(false);
       setFirstNameInput(text);
     }
@@ -152,14 +208,24 @@ const ProfileDetailsPage2 = ({navigation}) => {
     //Sets the lastName object to the value
     const handleLastNameInputChange = (text) => {
       setIsNamesError(false);
+      setIsFirstNameError(false);
+      setIsLastNameError(false);
       setIsBirthdayError(false);
       setLastNameInput(text);
     }
 
     const handleConfirm = (date) => {
-      setBirthdaySelected((date.getMonth()+1)+"/"+date.getUTCDate()+"/"+date.getUTCFullYear());
+    
+      if(date.getUTCFullYear() == new Date().getUTCFullYear()){
+        date === minimumDate;
+      }else{
+          setBirthdaySelected((date.getMonth()+1)+"/"+date.getUTCDate()+"/"+date.getUTCFullYear());
+          setIsBirthdaySelected(true);
+
+      }
+
       setDatePickerVisible(false);
-      setIsBirthdaySelected(true);
+      
     };
 
     const hideDatePicker = () => {
@@ -168,15 +234,23 @@ const ProfileDetailsPage2 = ({navigation}) => {
   
     const handleDateInputPressed = () => {
       setIsNamesError(false);
+      setIsFirstNameError(false);
+      setIsLastNameError(false);
       setIsBirthdayError(false);
       setDatePickerVisible(!datePickerVisible);
     }
 
     //Handle the next button press - if ok, navigates to RegisteringAccountPopUp
     const handleNext = () => {
-      if(firstNameInput === "" || lastNameInput === ""){
-        setNamesErrorMessage("Name fields are required");
+      if(firstNameInput === "" && lastNameInput === ""){
+        setNamesErrorMessage("Names fields are required");
         setIsNamesError(true);
+      }else if(firstNameInput === ""){
+        setFirstNameErrorMessage("First name field is required");
+        setIsFirstNameError(true);
+      }else if(lastNameInput === ""){
+        setLastNameErrorMessage("Last name field is required");
+        setIsLastNameError(true);
       }
       else if(birthdaySelected === "Set your birthday"){
         setBirthdayErrorMessage("Birthday is required");
@@ -195,7 +269,8 @@ const ProfileDetailsPage2 = ({navigation}) => {
 
         dispatchProfileImage({
           type: 'SET_PROFILE_IMAGE',
-          profileImage: profileImageSource.uri
+          profileImage: imageUriFireBase
+          
         });
 
         dispatchBirthday({
@@ -204,6 +279,8 @@ const ProfileDetailsPage2 = ({navigation}) => {
         });
 
         setIsNamesError(false);
+        setIsFirstNameError(false);
+        setIsLastNameError(false);
         setIsBirthdayError(false);
 
         navigation.navigate('PaymentsAndPolicy');
@@ -218,6 +295,12 @@ const ProfileDetailsPage2 = ({navigation}) => {
           <Text style={styles.fillTheFieldsText}>Please fill out all fields</Text>
           <View style={styles.namesAndErrorContainer}>
             <View style={styles.nameAndImageContanier}>
+              <TouchableOpacity onPress={handleProfileImage}>
+                <Image
+                  source={profileImageSource}
+                  style={styles.profileImage}
+                />
+              </TouchableOpacity>
               <TextInput
                 style={styles.textInput}
                 textAlign='center'
@@ -232,17 +315,21 @@ const ProfileDetailsPage2 = ({navigation}) => {
                 placeholderTextColor='darkgrey'
                 onChangeText={value => handleLastNameInputChange(value)}
               />
-              <TouchableOpacity onPress={handleProfileImage}>
-                <Image
-                  source={profileImageSource}
-                  style={styles.profileImage}
-                />
-              </TouchableOpacity>
+
             </View>
             {isNamesError ?
               <Text style={styles.namesErrorMessage}>{namesErrorMessage}</Text>
             :null}
+
+            {isFirstNameError ?
+              <Text style={styles.namesErrorMessage}>{firstNameErrorMessage}</Text>
+            :null}
+
+            {isLastNameError?
+            <Text style={styles.namesErrorMessage}>{lastNameErrorMessage}</Text>
+            :null}
           </View>
+          
           <View style={styles.errorMessageContainer}>
             <Text style={styles.nameAndImageExplenation}>Your name and photo help the trainer to identify you</Text>
           </View>
@@ -254,14 +341,15 @@ const ProfileDetailsPage2 = ({navigation}) => {
               isVisible={datePickerVisible}
               onConfirm={(date) => handleConfirm(date)}
               onCancel={hideDatePicker}
-              maximumDate={maximumDate}
+              maximumDate={(maximumDate)}
+              minimumDate={(minimumDate)}
               birthdaySelected={birthdaySelected}
             />
             {isBirthdayError ? 
               <Text style={styles.birthdayErrorMessage}>{birthdayErrorMessage}</Text>
             : null}
           </View>
-          <Text style={styles.emailAddressText}>EMAIL ADDRESS</Text>
+          <Text style={styles.emailAddressText}>Email Address</Text>
           <View style={styles.emailContainer}>
             <TextInput 
               editable={false}
@@ -288,90 +376,100 @@ const ProfileDetailsPage2 = ({navigation}) => {
         backgroundColor: 'white'
       },
       profileDetailesText: {
-        marginLeft: 20,
-        marginTop: 20,
+        marginLeft: Dimensions.get('window').width * 0.0483,
+        marginTop: Dimensions.get('window').height * 0.022,
         fontWeight: 'bold',
-        fontSize: 38
+        fontSize: Dimensions.get('window').height * 0.04
       },
       fillTheFieldsText: {
-        marginLeft: 20,
-        marginTop: 30,
-        fontSize: 23
+        marginLeft: Dimensions.get('window').width * 0.0483,
+        marginTop: Dimensions.get('window').height * 0.01,
+        fontSize: Dimensions.get('window').height * 0.027
       },
       nameAndImageContanier: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        width: Dimensions.get('window').width * .95,
+        height: Dimensions.get('window').width * - .15,
         width: Dimensions.get('screen').width,
-        marginLeft: 10
+        marginLeft: Dimensions.get('window').width * -0.0241
       },
       textInput: {
-        marginTop: 20,
+        marginTop: Dimensions.get('window').height * 0.035,
         borderColor: 'deepskyblue',
         borderRadius: 17,
-        borderWidth: 3,
+        borderWidth: 2,
         height: Dimensions.get('window').height * .065,
-        width: Dimensions.get('window').width * .35,
+        width: Dimensions.get('window').width * .34,
         justifyContent: 'center',
-        fontSize: 18
+        fontSize: 20,
+        // fontSize: Dimensions.get('window').height * 0.025
       },
       profileImage: {
-        marginRight: 20,
-        width: Dimensions.get('window').width * .225,
-        height: Dimensions.get('window').height * .1,
-        borderRadius: 50
+        marginTop: Dimensions.get('window').height * 0.015,
+        marginLeft: Dimensions.get('window').height * 0.032,
+        width: Dimensions.get('window').width * .200,
+        height: Dimensions.get('window').height * .095,
+        overflow: 'hidden',
+        borderRadius: 70,
       },
       namesAndErrorContainer: {
         height: Dimensions.get('window').height * .12,
+        justifyContent: 'center'
+
       },
       namesErrorMessage: {
         color: 'red',
-        marginLeft: 15
+        justifyContent: 'center',
+        alignSelf: 'center'
       },
       nameAndImageExplenation: {
         color: 'darkgrey',
         width: Dimensions.get('window').width,
         textAlign: 'center',
-        fontSize: 16,
-        marginTop: 5
+        fontSize: Dimensions.get('window').height * 0.018,
+        marginTop: Dimensions.get('window').height * 0.02
       },
       birthdayContainer: {
         height: Dimensions.get('window').height * .165
       },
       birthdayText: {
-        marginTop: 30,
+        marginTop: Dimensions.get('window').height * 0.033,
         fontWeight: 'bold',
-        fontSize: 25,
-        marginLeft: 20
+        fontSize: Dimensions.get('window').height * 0.0278,
+        marginLeft: Dimensions.get('window').width * 0.0483
       },
       birthdayErrorMessage: {
-        marginLeft: 20,
+        marginLeft: Dimensions.get('window').width * 0.0483,
         color: 'red',
-        marginTop: 5
+        marginTop: Dimensions.get('window').height * 0.0055
       },  
       emailContainer: {
-        marginLeft: 20
+        marginLeft: Dimensions.get('window').width * 0.0483,
+        width: Dimensions.get('window').width * .9,
+
       },
       emailAddressText: {
-        marginLeft: 20,
-        marginTop: 45,
+        marginLeft: Dimensions.get('window').width * 0.0483,
+        marginTop: Dimensions.get('window').height * 0.05,
         fontWeight: 'bold',
-        fontSize: 25
+        fontSize: Dimensions.get('window').height * 0.0278
       },
       emailAddressButton: {
-        marginTop: 15,
+        marginTop: Dimensions.get('window').height * 0.018,
         borderColor: 'deepskyblue',
         backgroundColor: 'lightgrey',
-        borderRadius: 20,
-        borderWidth: 3,
+        borderRadius: 17,
+        borderWidth: 2,
         height: Dimensions.get('window').height * .065,
         width: Dimensions.get('window').width * .9,
         justifyContent: 'center',
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * 0.0278,
         fontWeight: '300',
         textAlign: 'center',
       },
       emailExplinationText: {
-        marginTop: 10,
+        marginTop: Dimensions.get('window').height * 0.011,
         width: Dimensions.get('window').width * .9,
         textAlign: 'center'
       },

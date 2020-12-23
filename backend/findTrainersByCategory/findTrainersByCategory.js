@@ -6,7 +6,6 @@ exports.getTrainersByCategory = (req, res) => {
     trainerProfileModel.find(
         {
             categories: {$in: [req.body.category]},
-            visibility: true,
         },
     )
     .then((doc) => res.send(doc))

@@ -48,7 +48,7 @@ const SECTIONS = [
 //The question and answers page
 const QuestionsAndAnswers = ({navigation}) => {
 
-    //Navigates back to the profile page
+    //Navigates back to the star page
     const handleOnArrowPress = () => {
         navigation.navigate('StarPage');
     }

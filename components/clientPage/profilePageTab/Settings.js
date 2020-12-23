@@ -4,20 +4,23 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Dialog from "react-native-dialog";
 import {Accordion, Block} from 'galio-framework';
 
-//The question and answers page
+//The settings page
 const Settings = ({navigation}) => {
 
     const [dialogVisible, setDialogVisible] = useState(false);
 
+    //Handle when the user presses yes in the sign out dialog
     const handleYesDialog = () => {
         setDialogVisible(false);
         navigation.navigate('ProfilePage');
     };
 
+    //Handle when the user presses no in the sign out dialog
     const handleNoDialog = () => {
         setDialogVisible(false);
     };
 
+    //Handle when the user presses the sign out button
     const handleOnSignOutPress = () => {
         setDialogVisible(true);
     }
@@ -27,10 +30,12 @@ const Settings = ({navigation}) => {
         navigation.navigate('ProfilePage');
     }
 
+    //Handle when the user presses the change email address button
     const handleOnChangeEmailPress = () => {
         navigation.navigate('ChangeEmailAddress');
     }
 
+    //Handle when the user presses the change phone number button
     const handleOnChangePhonePressed = () => {
         navigation.navigate('ChangePhoneNumber');
     }

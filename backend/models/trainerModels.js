@@ -51,16 +51,6 @@ const trainerProfileSchema = new Schema(
            required: true,
            trim: true
        },
-       permissions: {
-           location: {
-               type: Boolean,
-               required: true,
-           },
-           push: {
-               type: Boolean,
-               required: true
-           }
-       },
        categories: {
            type: [String],
            required: true
@@ -85,10 +75,6 @@ const trainerProfileSchema = new Schema(
            type: [String],
            default: "Outdoor"
        },
-       placeId: {
-           type: String,
-           default: ""
-       },
        prices: {
            single: {
                singleAtTrainer: {
@@ -104,28 +90,6 @@ const trainerProfileSchema = new Schema(
                },
                coupleAtClient: {
                    type: Number
-               }
-           }
-       },
-       creditCard: {
-           number: {
-               type: Number,
-               required: true,
-               trim: true
-           },
-           cvv: {
-               type: Number,
-               required: true,
-               trim: true
-           },
-           expire: {
-               month: {
-                   type: Number,
-                   required: true
-               },
-               year: {
-                   type: Number,
-                   required: true
                }
            }
        },
@@ -194,18 +158,6 @@ const trainerProfileSchema = new Schema(
                     }
                }
            ]
-       },
-       profileViews: {
-           type: Number,
-           default: 0
-       },
-       connected: {
-           type: Boolean,
-           default: true
-       },
-       visibility: {
-           type: Boolean,
-           default: true
        },
        location: {
            type: {

@@ -3,6 +3,7 @@ import {StyleSheet ,Text, TouchableOpacity, Dimensions, View, Image} from 'react
 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
+//Common birthday picker object
 const BirthdayPicker = (props) => {
     return(
         <View>
@@ -13,14 +14,14 @@ const BirthdayPicker = (props) => {
                 birthdaySelected={props.birthdaySelected}
             >
             <Text style={props.isBirthdaySelected ? styles.birthdayPicked : styles.birthdayUnPicked}>{props.birthdaySelected}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={props.onPress}
-            >
             <Image
                 source={require('../../images/calendarIcon.png')}
                 style={styles.calendarIcon}
             />
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={props.onPress}
+            >
             </TouchableOpacity>
             </View>
             <DateTimePickerModal
@@ -28,7 +29,8 @@ const BirthdayPicker = (props) => {
                 mode="date"
                 onConfirm={props.onConfirm}
                 onCancel={props.onCancel}
-                maximumDate={props.maximumDate}
+                maximumDate={new Date((props.maximumDate))}
+                minimumDate={new Date((props.minimumDate))}
                 headerTextIOS="Pick a date - minimum 18"
             />
         </View>
@@ -40,30 +42,33 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
       },
       birthdayBox: {
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: 'deepskyblue',
         borderRadius: 17,
-        height: 60,
         justifyContent: 'center',
-        marginTop: 10,
-        width: Dimensions.get('window').width * .8,
-        marginLeft: 15
+        marginTop: Dimensions.get('window').height * .01,
+        alignItems: 'center',
+        flexDirection : 'row',
+        justifyContent: 'space-between',
+        height: Dimensions.get('window').height * .065,
+        width: Dimensions.get('window').width * .9,
+        marginLeft: Dimensions.get('window').width * 0.0483
       },
       birthdayUnPicked: {
         textAlign: 'center',
         color: 'grey',
-        fontSize: 20,
-        fontWeight: '300'
+        fontSize: Dimensions.get('window').height * 0.025,
+        marginLeft: Dimensions.get('window').width * 0.25,
       },
       birthdayPicked: {
         textAlign: 'center',
-        fontSize: 20,
-        fontWeight: 'bold'
+        marginLeft: Dimensions.get('window').width * 0.3,
+        fontSize: Dimensions.get('window').height * 0.025,
       },
       calendarIcon: {
-        height: 60,
-        width: 60,
-        marginTop: 10
+        height: Dimensions.get('window').height * 0.045,
+        width: Dimensions.get('window').height * 0.045,
+        marginRight: Dimensions.get('window').width * + 0.01
       }
 });
 

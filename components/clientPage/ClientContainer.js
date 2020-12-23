@@ -9,7 +9,7 @@ import ProfilePageStack from './profilePageTab/ProfilePageStack';
 
 const Tab = createBottomTabNavigator();
 
-//The tab navigation container to handle the navigation in the trainer's area
+//The tab navigation container to handle the navigation in the client's area
 const ClientContainer = () => {
     return(
         <Tab.Navigator

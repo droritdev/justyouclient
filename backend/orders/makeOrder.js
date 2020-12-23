@@ -22,7 +22,6 @@ exports.makeOrder = (req, res) => {
                 last_name: req.body.trainer.lastName
             }, 
             placeId: placeId, 
-            site: req.body.site, 
             address: req.body.address, 
             type: req.body.type, 
             category: req.body.category, 

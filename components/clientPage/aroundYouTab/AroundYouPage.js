@@ -17,6 +17,7 @@ const ProfilePage = ({navigation}) => {
         setMaxDistanceSelected(value);
     }
 
+    //Handle when the flip Toggle button changes
     const handleFlipToggle = () => {
         setIsTrainers(!isTrainers);
     }

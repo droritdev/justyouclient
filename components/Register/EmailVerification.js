@@ -170,23 +170,24 @@ const EmailVerification = ({navigation}) => {
     container: {
       flexDirection: 'column',
       height: Dimensions.get('window').height,
+      backgroundColor: 'white'
     },
     arrowImage: {
-        marginTop: 20,
-        marginLeft: 20
+        marginTop: Dimensions.get('window').height * .022,
+        marginLeft: Dimensions.get('window').width * .0483
     },
     verifyEmailTitle: {
         fontWeight: 'bold',
-        fontSize: 40,
+        fontSize: Dimensions.get('window').height * .044,
         marginTop: Dimensions.get('window').height * .05,
-        marginLeft: 20
+        marginLeft: Dimensions.get('window').width * .0483
     },
     verifyEmailText: {
         width: Dimensions.get('window').width * .875,
         fontWeight: 'bold',
-        fontSize: 25,
-        marginTop: 30,
-        marginLeft: 20
+        fontSize: Dimensions.get('window').height * .0278,
+        marginTop: Dimensions.get('window').height * .033,
+        marginLeft: Dimensions.get('window').width * .0483
     },
     textInputContainer: {
       height: Dimensions.get('window').height * .25
@@ -196,33 +197,33 @@ const EmailVerification = ({navigation}) => {
         borderRadius: 20,
         borderWidth: 3,
         height: Dimensions.get('window').height * .08,
-        marginRight: 20,
-        marginTop: 60,
+        marginRight: Dimensions.get('window').width * .0483,
+        marginTop: Dimensions.get('window').height * .066,
         justifyContent: 'center',
-        fontSize: 24,
-        marginLeft: 20,
-        fontSize: 33
+        fontSize: Dimensions.get('window').height * .0278,
+        marginLeft: Dimensions.get('window').width * .04830,
+        fontSize: Dimensions.get('window').height * .033
     },
     codeErrorText: {
       textAlign:'center',
       color: 'red',
-      fontSize: 20,
-      marginTop: 5
+      fontSize: Dimensions.get('window').height * .022,
+      marginTop: Dimensions.get('window').height * .0055
     },
     fotterContainer: {
       flex: 1,
       flexDirection: 'column',
       justifyContent: 'flex-end',
-      marginLeft: 20,
+      marginLeft: Dimensions.get('window').width * .0483,
 
     },
     didntGetEmailText: {
       width: Dimensions.get('window').width * .9,
       fontWeight: 'bold',
-      fontSize: 25
+      fontSize: Dimensions.get('window').height * .0278
     },
     sendAgainButton: {
-      marginTop: 20,
+      marginTop: Dimensions.get('window').height * .022,
       width: Dimensions.get('window').width * .35,
       height: Dimensions.get('window').height * .035,
       backgroundColor: 'lightgrey',
@@ -231,7 +232,7 @@ const EmailVerification = ({navigation}) => {
     },
     sendAgainButtonText: {
       color: 'deepskyblue', 
-      fontSize: 20,
+      fontSize: Dimensions.get('window').height * .022,
       fontWeight: '600',
       alignSelf: 'center'
     },

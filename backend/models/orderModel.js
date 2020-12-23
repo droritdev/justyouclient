@@ -41,15 +41,6 @@ const orderSchema = new Schema(
                 trim: true
             } 
         },
-        placeId: {
-            type: String,
-            trim: true,
-            default: ""
-        },
-        site: {
-            type: String,
-            trim: true
-        },
         address: {
             type: String,
             trim: true

@@ -9,11 +9,13 @@ const TrainerOrderPage = ({navigation}) => {
 
     const [dialogVisible, setDialogVisible] = useState(false);
 
+    //Handle when the user presses the yes button in the dialog
     const handleYesDialog = () => {
         setDialogVisible(false);
         navigation.navigate('StarPage');
     };
 
+    //Handle when the user presses the no button in the dialog
     const handleNoDialog = () => {
         setDialogVisible(false);
     };

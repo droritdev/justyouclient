@@ -14,8 +14,7 @@ exports.findTrainers = (req, res) => {
                 distanceField: "dist.calculated",
                 maxDistance: req.body.maxDistance,
                 query: {
-                    categories: {$in: [req.body.category]},
-                    visibility: true,
+                    categories: {$in: [req.body.category]}
                 }
             },
         },

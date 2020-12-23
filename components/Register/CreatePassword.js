@@ -19,6 +19,7 @@ const CreatePassword = ({navigation}) => {
       setPasswordErrorText("");
       setPasswordInput(text);
     }
+
     //Sets the confirmmedPassword object to the value in the text field
     const handleOnChangeConfirmedPassword = (text) => {
       setIsPasswordsNotMatch(false);
@@ -34,7 +35,7 @@ const CreatePassword = ({navigation}) => {
           setIsPasswordsNotMatch(true);
         }
         else if(passwordInput.length < 6){
-          setPasswordErrorText("Valid password is at least 6 charecters")
+          setPasswordErrorText("Valid password is at least 6 characters")
           setIsPasswordsNotMatch(true);
         }
         else{
@@ -99,45 +100,46 @@ const CreatePassword = ({navigation}) => {
     container: {
       height: Dimensions.get('window').height,
       flexDirection: 'column',
+      backgroundColor: 'white',
       alignItems: 'center'
     },
     justYouHeader: {
-      marginTop: 20,
-      fontSize: 30,
+      marginTop: Dimensions.get('window').height * 0.022,
+      fontSize: Dimensions.get('window').height * 0.033,
       fontWeight: 'bold',
       color: 'deepskyblue'
     },
     passwordContainer: {
       width: Dimensions.get('window').width,
       alignItems: 'center',
-      marginTop: '30%'
+      marginTop: Dimensions.get('window').height * .125
     },
     createPasswordText: {
-      fontSize: 35,
+      fontSize: Dimensions.get('window').height * 0.039,
       fontWeight: 'bold'
     },
     passwordInput: {
-      borderColor: 'lightgrey',
+      borderColor: 'deepskyblue',
       borderRadius: 10,
       borderWidth: 3,
-      height: 80,
-      width: '70%',
-      marginTop: 80,
+      height: Dimensions.get('window').height * 0.088,
+      width: Dimensions.get('window').width * .7,
+      marginTop: Dimensions.get('window').height * 0.088,
       justifyContent: 'center'
     },
     confirmedPasswordInput: {
-      borderColor: 'lightgrey',
+      borderColor: 'deepskyblue',
       borderRadius: 10,
       borderWidth: 3,
-      height: 80,
-      width: '70%',
-      marginTop: '15%',
+      height: Dimensions.get('window').height * 0.088,
+      width: Dimensions.get('window').width * .7,
+      marginTop: Dimensions.get('window').height * 0.039,
       justifyContent: 'center'
     },
     passwordsErrorText: {
         textAlign:'center',
         color: 'red',
-        fontSize: 20
+        fontSize: Dimensions.get('window').height * 0.022
     },
     nextButtonContainer: {
       flex: 1,

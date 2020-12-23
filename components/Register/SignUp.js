@@ -22,8 +22,11 @@ const SignUp = ({navigation}) => {
       },
     };
 
+
+
     //Navigate to Login page
     const handleSignIn = () => {
+      setEmailErrorMessage(false);
       navigation.navigate('LogIn');
     }
 
@@ -40,7 +43,8 @@ const SignUp = ({navigation}) => {
         // .then((res) => {
         //   if(res !== null) {
         //     if(res.data.status === 'pending'){
-        //       navigation.navigate('VerifyEmailExplenation')
+        //       alert('Pending');
+        //       navigation.navigate('EmailVerification');
         //     }
         //     else{
         //       alert(res.data);
@@ -70,14 +74,33 @@ const SignUp = ({navigation}) => {
       }
     }
 
-    //Handle the next button press to send the verify code
-    const handleNext = () => {
-      if(inputIsValid){
+    //Send GET request to mongodb using axios, to check if email is already exist
+    const checkEmailIsUsed = () => {
+      axios
+      .get('/clients/'+emailAddressInput.toLowerCase(),config)
+      .then((doc) => {
+        if(doc) {
+          console.log("doc.data" , doc.data);
+          if(doc.data[0].email!=null){
+            setEmailErrorMessage("Email address is already used");
+            setEmailIsValidate(false);
+          }
+        }
+      })
+      .catch((err) => {
+        //email is not used
         dispatchEmail({
           type: 'SET_EMAIL_ADDRESS',
           emailAddress: emailAddressInput.toLowerCase()
         });
         sendVerifyEmail();
+      })
+    }
+
+    //Handle the next button press to send the verify code
+    const handleNext = () => {
+      if(inputIsValid){
+        checkEmailIsUsed();
       }
       else if(emailAddressInput === ""){
         setEmailErrorMessage("Email address is required");
@@ -119,7 +142,7 @@ const SignUp = ({navigation}) => {
         <View style={styles.fotterContainer}>
           <NextButton 
             title="Next"
-            onPress={handleNext}
+            onPress={() => handleNext()}
           />
           <View style={styles.alreadyHaveAccountContainer}>
             <Text style={styles.alreadyHaveAnAccountText}>Already have an account? </Text>
@@ -137,53 +160,53 @@ const SignUp = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
       height: Dimensions.get('window').height,
+      backgroundColor: 'white',
       flexDirection: 'column'
     },
     upperContainer: {
-      marginLeft: 20,
+      marginLeft: Dimensions.get('window').width * .0483,
     },
     justYouHeader: {
       color: 'deepskyblue',
       fontWeight: 'bold',
-      fontSize: 30,
-      marginTop:20,
+      fontSize: Dimensions.get('window').height * .033,
+      marginTop: Dimensions.get('window').height * .022,
     },
     signUpText: {
-      fontSize: 40,
+      fontSize: Dimensions.get('window').height * .044,
       fontWeight: 'bold',
-      marginTop: 20,
+      marginTop: Dimensions.get('window').height * .022,
     },
     inputContainer: {
     },
     inputTitle: {
-      marginTop: 60,
-      fontSize: 20,
-      marginLeft: 20,
+      marginTop: Dimensions.get('window').height * .066,
+      fontSize: Dimensions.get('window').height * .022,
+      marginLeft: Dimensions.get('window').width * .0483,
     },
     textInput: {
       borderColor: 'deepskyblue',
       borderRadius: 20,
       borderWidth: 3,
       height: Dimensions.get('window').height * .1,
-      marginRight: 20,
-      marginTop: 8,
+      marginRight: Dimensions.get('window').width * .0483,
+      marginTop: Dimensions.get('window').height * .0088,
       justifyContent: 'center',
-      marginLeft: 20,
+      marginLeft: Dimensions.get('window').width * .0483,
     },
     emailErrorText: {
         textAlign:'center',
         color: 'red',
-        fontSize: 20
+        fontSize: Dimensions.get('window').height * .022
     },
     fotterContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      //marginBottom: 40,
       alignItems: 'center'
     },
   alreadyHaveAccountContainer: {
     flexDirection: 'row',
-    marginTop: 20
+    marginTop: Dimensions.get('window').height * .022
   },
     alreadyHaveAnAccountText: {
       color: 'grey'

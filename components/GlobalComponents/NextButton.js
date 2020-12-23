@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet ,Text, TouchableOpacity, Dimensions} from 'react-native';
 
+//Common next button
 const NextButton = (props) => {
     return(
         <TouchableOpacity

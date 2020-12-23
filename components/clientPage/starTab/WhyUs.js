@@ -2,9 +2,10 @@ import React, {useContext, useState, useEffect} from 'react';
 import { Button, Text, View, SafeAreaView, Image, StyleSheet, Dimensions, ImageBackground} from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
+//Why us page
 const WhyUs = ({navigation}) => {
 
-    //Navigates back to the profile page
+    //Navigates back to the star page
     const handleOnArrowPress = () => {
         navigation.navigate('StarPage');
     }

@@ -2,6 +2,7 @@ import React, {useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, Text, Image, Dimensions, SafeAreaView} from 'react-native';
 import FlipToggle from 'react-native-flip-toggle-button';
 
+////Common Flip Toggle button
 const FlipToggleButton = (props) => {
     return(
         <FlipToggle
@@ -12,9 +13,9 @@ const FlipToggleButton = (props) => {
         sliderWidth={35}
         sliderHeight={30}
         sliderRadius={50}
-        sliderOffColor={'black'}
+        sliderOffColor={'slategray'}
         sliderOnColor={'white'}
-        buttonOffColor={'grey'}
+        buttonOffColor={'lightgray'}
         buttonOnColor={'deepskyblue'}
         onToggle={props.onToggle}
       />

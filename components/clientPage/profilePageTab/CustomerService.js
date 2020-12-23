@@ -3,7 +3,7 @@ import { Button, Text, View, SafeAreaView, Image, StyleSheet, Dimensions, ImageB
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Dialog from "react-native-dialog";
 
-//The question and answers page
+//The Customer Service page
 const CustomerService = ({navigation}) => {
     const mailformat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     
@@ -14,23 +14,28 @@ const CustomerService = ({navigation}) => {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [sendDialogVisible, setSendDialogVisible] = useState(false);
 
+    //Handle when the user presses the cancel button
     const handleOnCancelPressed = () => {
         setCancelDialogVisible(true);
     };
 
+    //When the user presses the yes button in the dialog he navigates back to the profile page
     const handleCancelYesDialog = () => {
         setCancelDialogVisible(false);
         navigation.navigate('ProfilePage');
     };
 
+    //When the user presses the cancel button in the dialog he stayes in the page
     const handleCancelNoDialog = () => {
         setCancelDialogVisible(false);
     };
 
+    //Handle when the user presses the ok button in the second dialog
     const handleSendOkDialog = () => {
         setSendDialogVisible(false);
     };
 
+    //Handle when the user presses the send email button
     const handleOnSendEmailPressed = () => {
         if(subjectInput === ""){
             setSendDialogVisible(true);
@@ -48,18 +53,22 @@ const CustomerService = ({navigation}) => {
         }
     };
 
+    //Sets the bcc object to the input the user enters
     const handleOnBccInputChange = (text) => {
         setBccInput(text);
     };
 
+    //Sets the subject object to the input the user enters
     const handleOnSubjectChange = (text) => {
         setSubjectInput(text);
     };
 
+    //Sets the mail object to the input the user enters
     const handleOnMailInputChange = (text) => {
         setMailInput(text);
     };
 
+    //Navigates back to the profile page
     const sendEmail = () => {
         navigation.navigate('ProfilePage');
     }

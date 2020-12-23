@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 //Here the user verifies his user details before navigates to the reset password page
@@ -16,7 +16,7 @@ const ForgotPassword = ({navigation}) => {
     }
 
     return(
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.upperContainer}>
                 <TouchableOpacity
                 onPress={handleArrowButton}
@@ -28,7 +28,6 @@ const ForgotPassword = ({navigation}) => {
                 </TouchableOpacity>
                 <View style={styles.justYouHeader}>
                     <Text style={styles.justYouText}>Just You</Text>
-                    <Text style={styles.partnerText}>Partner</Text>
                 </View>
             </View>
             <Text style={styles.resetTitle}>Re-Set Your Password</Text>
@@ -60,23 +59,24 @@ const ForgotPassword = ({navigation}) => {
                     <Text style={styles.nextButtonText}>Next</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
-        height: '100%'
+        backgroundColor: 'white',
+        height: Dimensions.get('window').height
     },
     upperContainer: {
         flexDirection: 'row',
         width: Dimensions.get('window').width,
-        marginTop: 60
+        marginTop: Dimensions.get('window').height * .022
 
     },
     arrowImage: {
-        marginLeft: 15
+        marginLeft: Dimensions.get('window').width * .039
     },
     justYouHeader: {
         justifyContent: 'center',
@@ -85,20 +85,16 @@ const styles = StyleSheet.create({
     },
     justYouText: {
         fontWeight: 'bold',
-        fontSize: 25
-    },
-    partnerText: {
-        fontWeight: 'bold',
-        color: 'deepskyblue'
+        fontSize: Dimensions.get('window').height * .0278
     },
     resetTitle: {
         alignSelf: 'center',
-        marginTop: 30,
+        marginTop: Dimensions.get('window').height * .033,
         fontWeight: 'bold',
-        fontSize: 30
+        fontSize: Dimensions.get('window').height * .033
     },
     sendVerifyContainer: {
-        marginTop: 60,
+        marginTop: Dimensions.get('window').height * .066,
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -106,12 +102,12 @@ const styles = StyleSheet.create({
     },
     phoneEmailInput: {
         borderWidth: 2,
-        borderColor: 'grey',
+        borderColor: 'deepskyblue',
         borderRadius: 10,
         width: Dimensions.get('window').width * .9,
         height: Dimensions.get('window').height * .065,
         textAlign: 'center',
-        fontSize: 20
+        fontSize: Dimensions.get('window').height * .022
     },
     verifyButton: {
         width: Dimensions.get('window').width * .3,
@@ -123,37 +119,36 @@ const styles = StyleSheet.create({
         borderRadius: 10
       },
       verifyButtonText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .0278,
         fontWeight: 'bold',
         color: 'white'
       },
       verifyExplination: {
-          fontSize: 20,
+          fontSize: Dimensions.get('window').height * .02,
           fontWeight: '300',
           textAlign: 'center',
           width: Dimensions.get('window').width * .65,
       },
       codeContainer: {
         alignItems: 'center',
-        marginTop: 60
+        marginTop: Dimensions.get('window').height * .066
       },
       enterCodeText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .0278,
         fontWeight: '300'
       },
       codeInput: {
         borderWidth: 2,
-        borderColor: 'grey',
+        borderColor: 'deepskyblue',
         borderRadius: 10,
         width: Dimensions.get('window').width * .9,
         height: Dimensions.get('window').height * .065,
         textAlign: 'center',
-        fontSize: 20
+        fontSize: Dimensions.get('window').height * .022
       },
       nextButtonContainer: {
         flex: 1,
         justifyContent: 'flex-end',
-        marginBottom: 40,
         alignItems: 'center'
       },
       nextButton: {
@@ -166,7 +161,7 @@ const styles = StyleSheet.create({
         borderRadius: 20
       },
       nextButtonText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .0278,
         fontWeight: 'bold',
         color: 'white'
       },
