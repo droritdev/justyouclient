@@ -10,7 +10,7 @@ import {check ,request, PERMISSIONS, RESULTS, requestNotifications, checkNotific
 import FlipToggleButton from '../GlobalComponents/FlipToggleButton';
 import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
 import PickCountry from '../GlobalComponents/PickCountry';
-import NextButton from '../GlobalComponents/NextButton';
+import AppButton from '../GlobalComponents/AppButton';
 import {CountryContext} from '../../context/CountryContext';
 import {PasswordContext} from '../../context/PasswordContext';
 
@@ -259,7 +259,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
         <Text style={styles.permissionsErrorText}>Please allow both permissions to continue the registration</Text>
         :null}
         <View style={styles.nextButtonContainer}>
-          <NextButton
+          <AppButton
           title="Next"
             onPress={handleNext}
           />
@@ -274,13 +274,13 @@ const ProfileDetailsPage1 = ({navigation}) => {
       backgroundColor: 'white',
       flexDirection: 'column'
     },
-    arrowImage: {
-      marginTop: Dimensions.get('window').height * 0.066,
-      marginLeft: Dimensions.get('window').width * 0.0483
-    },
+    // arrowImage: {
+    //   marginTop: Dimensions.get('window').height * 0.066,
+    //   marginLeft: Dimensions.get('window').width * 0.0483
+    // },
     upperContainer: {
-      marginTop: Dimensions.get('window').height * 0.039,
-      justifyContent: 'space-between',
+      marginTop: Dimensions.get('window').height * 0.022,
+      // justifyContent: 'space-between',
       height: Dimensions.get('window').height * .125,
     },
     profileDetailesText: {
@@ -289,6 +289,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
       marginLeft: Dimensions.get('window').width * 0.0483
     },
     fillTheFieldsText: {
+      marginTop: Dimensions.get('window').height * 0.01,
       fontSize: Dimensions.get('window').height * 0.026,
       marginLeft: Dimensions.get('window').width * 0.0483
     },

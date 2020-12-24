@@ -13,8 +13,7 @@ import CreatePassword from './components/Register/CreatePassword';
 import ProfileDetailsPage1 from './components/Register/ProfileDetailsPage1';
 import ProfileDetailsPage2 from './components/Register/ProfileDetailsPage2';
 import PaymentsAndPolicy from './components/Register/PaymentsAndPolicy';
-import RegisteringAccountPopUp from './components/Register/RegisteringAccountPopUp';
-import DetailsSuccessfully from './components/Register/DetailsSuccessfully';
+
 import PhoneNumberVerification from './components/Register/PhoneNumberVerification';
 import DonePopUp from './components/Register/DonePopUp';
 import WelcomeUser from './components/Register/WelcomeUser';
@@ -31,7 +30,7 @@ const App = () => {
     <GlobalStore>
       <NavigationContainer>
         <Stack.Navigator 
-          initialRouteName='WelcomePopUp'
+          initialRouteName='GetStarted'
           screenOptions={{headerShown: false}}
         >
           <Stack.Screen name='WelcomePopUp' component={WelcomePopUp} />
@@ -41,8 +40,6 @@ const App = () => {
           <Stack.Screen name='CreatePassword' component={CreatePassword} />
           <Stack.Screen name='ProfileDetailsPage1' component={ProfileDetailsPage1} />
           <Stack.Screen name='ProfileDetailsPage2' component={ProfileDetailsPage2} />
-          <Stack.Screen name='RegisteringAccountPopUp' component={RegisteringAccountPopUp} />
-          <Stack.Screen name='DetailsSuccessfully' component={DetailsSuccessfully} />
           <Stack.Screen name='PhoneNumberVerification' component={PhoneNumberVerification} />
           <Stack.Screen name='PaymentsAndPolicy' component={PaymentsAndPolicy} />
           <Stack.Screen name='DonePopUp' component={DonePopUp} />

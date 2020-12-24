@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet , TouchableOpacity, Image} from 'react-native';
+import {StyleSheet , TouchableOpacity, Image, Dimensions} from 'react-native';
 
 //Common Arrow back button
 const ArrowBackButton = (props) => {
@@ -8,7 +8,7 @@ const ArrowBackButton = (props) => {
           onPress={props.onPress}
         >
           <Image
-            source={require('../../images/arrowBack.png')}
+            source={require('../../images/leftArrow.png')}
             style={styles.arrowImage}
           />
         </TouchableOpacity>
@@ -17,8 +17,9 @@ const ArrowBackButton = (props) => {
 
 const styles = StyleSheet.create({
     arrowImage: {
-        marginTop: 10,
-        marginLeft: 20
+        marginLeft: Dimensions.get('window').width * .038,
+        width: Dimensions.get('window').width * .080,
+        height: Dimensions.get('window').height * .050,
     },
 });
 

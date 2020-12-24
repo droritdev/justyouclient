@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, Image, Button, TouchableOpacity, Dimensions, SafeAreaView} from 'react-native';
 
-import NextButton from '../GlobalComponents/NextButton';
+import AppButton from '../GlobalComponents/AppButton';
 
 //Get started page - by press the button the user navigates to the SignUp page
 const GetStartedClient = ({navigation}) => {
@@ -20,7 +20,7 @@ const GetStartedClient = ({navigation}) => {
             <Text style={styles.excitedText}>We are excited to meet you!</Text>
         </View>
         <View style={styles.getStartedContainer}>
-          <NextButton
+          <AppButton
             title="Get Started"
             onPress={handleGetStartedButton}
           />

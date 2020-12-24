@@ -80,7 +80,7 @@ const ResetPasswordClient = ({navigation}) => {
             style={styles.nextButton}
             onPress={handleNext}
           >
-            <Text style={styles.nextButtonText}>NEXT</Text>
+            <Text style={styles.nextButtonText}>Next</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import {StyleSheet, View, Text, TextInput, Button, Dimensions, KeyboardAvoidingView, Platform, SafeAreaView} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import NextButton from '../GlobalComponents/NextButton';
+import AppButton from '../GlobalComponents/AppButton';
 import {PasswordContext} from '../../context/PasswordContext';
 
 //Here the user creates his password
@@ -60,14 +60,14 @@ const CreatePassword = ({navigation}) => {
       <SafeAreaView style={styles.container}>
         <Text style={styles.justYouHeader}>Just You</Text>
         <View style={styles.passwordContainer}>
-          <Text style={styles.createPasswordText}>CREATE PASSWORD</Text>
+          <Text style={styles.createPasswordText}>Create Password</Text>
           <View style={styles.passwordInput}>
             <TextInput
               value={passwordInput}
               secureTextEntry={true}
               style={{fontSize: 20}}
               textAlign='center'
-              placeholder='PASSWORD'
+              placeholder='Password'
               onChangeText={text => handleOnChangePassword(text)}
             />
           </View>
@@ -77,7 +77,7 @@ const CreatePassword = ({navigation}) => {
               secureTextEntry={true}
               style={{fontSize: 20}}
               textAlign='center'
-              placeholder='CONFIRM PASSWORD'
+              placeholder='Confirm Password'
               onChangeText={
                 text => handleOnChangeConfirmedPassword(text)}
             />
@@ -87,7 +87,7 @@ const CreatePassword = ({navigation}) => {
         <Text style={styles.passwordsErrorText}>{passwordErrorText}</Text>
         :null}
         <View style={styles.nextButtonContainer}>
-          <NextButton
+          <AppButton
             title="Next"
             onPress={handleNext}
           />
@@ -120,18 +120,18 @@ const CreatePassword = ({navigation}) => {
     },
     passwordInput: {
       borderColor: 'deepskyblue',
-      borderRadius: 10,
-      borderWidth: 3,
-      height: Dimensions.get('window').height * 0.088,
+      borderRadius: 17,
+      borderWidth: 2,
+      height: Dimensions.get('window').height * 0.08,
       width: Dimensions.get('window').width * .7,
       marginTop: Dimensions.get('window').height * 0.088,
       justifyContent: 'center'
     },
     confirmedPasswordInput: {
       borderColor: 'deepskyblue',
-      borderRadius: 10,
-      borderWidth: 3,
-      height: Dimensions.get('window').height * 0.088,
+      borderRadius: 17,
+      borderWidth: 2,
+      height: Dimensions.get('window').height * 0.08,
       width: Dimensions.get('window').width * .7,
       marginTop: Dimensions.get('window').height * 0.039,
       justifyContent: 'center'

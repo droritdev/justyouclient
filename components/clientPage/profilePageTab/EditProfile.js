@@ -5,7 +5,7 @@ import axios from 'axios';
 import Slider from '@react-native-community/slider';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Dialog from "react-native-dialog";
-import NextButton from '../../GlobalComponents/NextButton';
+import AppButton from '../../GlobalComponents/AppButton';
 import FlipToggleButton from '../../GlobalComponents/FlipToggleButton';
 
 import {NameContext} from '../../../context/NameContext';
@@ -317,7 +317,7 @@ const EditProfile = ({navigation}) => {
                     <Text style={styles.permissionsErrorText}>Please allow both permissions to continue the registration</Text>
                 :null}
             <View style={styles.nextButtonContainer}>
-                <NextButton
+                <AppButton
                     title="APPROVE"
                     onPress={handleOnApprovePressed}
                 />

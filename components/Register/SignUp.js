@@ -3,7 +3,7 @@ import {StyleSheet, View, Text, TextInput, Button, Dimensions, SafeAreaView} fro
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
 
-import NextButton from '../GlobalComponents/NextButton';
+import AppButton from '../GlobalComponents/AppButton';
 import {EmailContext} from '../../context/EmailContext';
 
 //Here the user enters his email address to verify his account
@@ -123,7 +123,6 @@ const SignUp = ({navigation}) => {
           <Text style={styles.signUpText}>Sign up and start searching</Text>
         </View>
         <View style={styles.inputContainer}>
-          <Text style={styles.inputTitle}>Email</Text>
           <View style={styles.textInput}>
             <TextInput
               style={{fontSize: 25}}
@@ -140,7 +139,7 @@ const SignUp = ({navigation}) => {
           </View>
         </View>
         <View style={styles.fotterContainer}>
-          <NextButton 
+          <AppButton 
             title="Next"
             onPress={() => handleNext()}
           />
@@ -170,27 +169,28 @@ const styles = StyleSheet.create({
       color: 'deepskyblue',
       fontWeight: 'bold',
       fontSize: Dimensions.get('window').height * .033,
-      marginTop: Dimensions.get('window').height * .022,
+      marginTop: Dimensions.get('window').height * .013,
+      
     },
     signUpText: {
       fontSize: Dimensions.get('window').height * .044,
       fontWeight: 'bold',
-      marginTop: Dimensions.get('window').height * .022,
+      marginTop: Dimensions.get('window').height * .05,
     },
     inputContainer: {
     },
     inputTitle: {
       marginTop: Dimensions.get('window').height * .066,
       fontSize: Dimensions.get('window').height * .022,
-      marginLeft: Dimensions.get('window').width * .0483,
+      marginLeft: Dimensions.get('window').width * .06,
     },
     textInput: {
       borderColor: 'deepskyblue',
-      borderRadius: 20,
-      borderWidth: 3,
-      height: Dimensions.get('window').height * .1,
+      borderRadius: 17,
+      borderWidth: 2,
+      height: Dimensions.get('window').height * .08,
       marginRight: Dimensions.get('window').width * .0483,
-      marginTop: Dimensions.get('window').height * .0088,
+      marginTop: Dimensions.get('window').height * .145,
       justifyContent: 'center',
       marginLeft: Dimensions.get('window').width * .0483,
     },

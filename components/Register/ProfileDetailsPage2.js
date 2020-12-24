@@ -13,7 +13,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
 import BirthdayPicker from '../GlobalComponents/BirthdayPicker';
-import NextButton from '../GlobalComponents/NextButton';
+import AppButton from '../GlobalComponents/AppButton';
 import { checkPermission } from '../../permissionService';
 import {NameContext} from '../../context/NameContext';
 import {ProfileImageContext} from '../../context/ProfileImageContext';
@@ -33,13 +33,13 @@ const ProfileDetailsPage2 = ({navigation}) => {
     const {emailAddress} = useContext(EmailContext);
     const {dispatchFirst} = useContext(NameContext);
     const {dispatchLast} = useContext(NameContext);
-    const {dispatchProfileImage} = useContext(ProfileImageContext);
+    const {profileImage ,dispatchProfileImage} = useContext(ProfileImageContext);
     const {dispatchBirthday} = useContext(BirthdayContext);
 
     const [imageUriFireBase, setImageUriFireBase] = useState("");
     const [firstNameInput, setFirstNameInput] = useState("");
     const [lastNameInput, setLastNameInput] = useState("");
-    const [profileImageSource, setProfileImageSource] = useState(require('../../images/profileImage.png'));
+    // const [profileImageSource, setProfileImageSource] = useState(require('../../images/profileImage.png'));
     const [birthdaySelected, setBirthdaySelected] = useState("Set your birthday");
     const [isBirthdaySelected, setIsBirthdaySelected] = useState(false);
     const [minimumDate, setMinimumDate] = useState(new Date());
@@ -143,8 +143,10 @@ const ProfileDetailsPage2 = ({navigation}) => {
         }).then(image => {
           console.log(image);
           const source = {uri :'file://'+image.path}
-          setProfileImageSource(source);
-          setImageUriFireBase(source.uri);
+          dispatchProfileImage({
+            type: 'SET_PROFILE_IMAGE',
+            profileImage: source
+          });
         });
     
           const options = {
@@ -242,7 +244,11 @@ const ProfileDetailsPage2 = ({navigation}) => {
 
     //Handle the next button press - if ok, navigates to RegisteringAccountPopUp
     const handleNext = () => {
-      if(firstNameInput === "" && lastNameInput === ""){
+      if (profileImage === require('../../images/profileImage.png')) {
+        setIsNamesError(true);
+        setNamesErrorMessage('Profile image is required');
+      }
+      else if(firstNameInput === "" && lastNameInput === ""){
         setNamesErrorMessage("Names fields are required");
         setIsNamesError(true);
       }else if(firstNameInput === ""){
@@ -265,12 +271,6 @@ const ProfileDetailsPage2 = ({navigation}) => {
         dispatchLast({
           type: 'SET_LAST_NAME',
           lastName: lastNameInput
-        });
-
-        dispatchProfileImage({
-          type: 'SET_PROFILE_IMAGE',
-          profileImage: imageUriFireBase
-          
         });
 
         dispatchBirthday({
@@ -297,7 +297,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
             <View style={styles.nameAndImageContanier}>
               <TouchableOpacity onPress={handleProfileImage}>
                 <Image
-                  source={profileImageSource}
+                  source={profileImage}
                   style={styles.profileImage}
                 />
               </TouchableOpacity>
@@ -360,7 +360,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
             <Text style={styles.emailExplinationText}>We use your email to send you receips. your mobile number is required to enhance account security.</Text>
           </View>
           <View style={styles.nextButtonContainer}>
-            <NextButton
+            <AppButton
               title="Next"
               onPress={handleNext}
             />

@@ -7,7 +7,7 @@ import {EmailContext} from '../../context/EmailContext';
 import {PasswordContext} from '../../context/PasswordContext';
 
 //The log in page for exsisting users
-const LogInTrainer = ({navigation}) => {
+const LogInClient = ({navigation}) => {
     const {emailAddress, dispatchEmail} = useContext(EmailContext);
     const {password, dispatchPassword} = useContext(PasswordContext);
 
@@ -25,7 +25,7 @@ const LogInTrainer = ({navigation}) => {
     const [user, setUser] = useState();
 
 
-    //Navigates back to the SignUpTrainer page
+    //Navigates back to the SignUpClient page
     const handleArrowButton = () => {
         navigation.navigate('SignUp');
     }
@@ -130,9 +130,8 @@ const LogInTrainer = ({navigation}) => {
             <TouchableOpacity
                 onPress={handleArrowButton}
             >
-                <Image
-                    source={require('../../images/arrowBack.png')}
-                    style={styles.arrowImage}
+                <ArrowBackButton
+                     onPress={handleArrowButton}
                 />
             </TouchableOpacity>
             <View style={styles.headerContainer}>
@@ -211,7 +210,6 @@ const styles = StyleSheet.create({
     inputsContainer: {
         marginTop: Dimensions.get('window').height * .055,
         flexDirection: 'column',
-        //height: Dimensions.get('window').height * .2,
     },
     input: {
         borderWidth: 2,
@@ -273,4 +271,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default LogInTrainer;
+export default LogInClient;

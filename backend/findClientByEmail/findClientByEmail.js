@@ -1,7 +1,7 @@
-//Import The trainer model
+//Import The client model
 const clientProfileModel = require('../models/clientModels');
 
-//Find trainers by category
+//Find clients by category
 exports.getClientByEmail = (req, res) => {
     
     clientProfileModel.find( 

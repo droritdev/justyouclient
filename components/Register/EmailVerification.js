@@ -4,7 +4,7 @@ import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
-import NextButton from '../GlobalComponents/NextButton';
+import AppButton from '../GlobalComponents/AppButton';
 import {EmailContext} from '../../context/EmailContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -157,7 +157,7 @@ const EmailVerification = ({navigation}) => {
             </TouchableOpacity>
         </View>
         <View style={styles.nextButtonContainer}>
-          <NextButton 
+          <AppButton 
             title="Next"
             onPress={handleNext}
           />
@@ -172,10 +172,10 @@ const EmailVerification = ({navigation}) => {
       height: Dimensions.get('window').height,
       backgroundColor: 'white'
     },
-    arrowImage: {
-        marginTop: Dimensions.get('window').height * .022,
-        marginLeft: Dimensions.get('window').width * .0483
-    },
+    // arrowImage: {
+    //     marginTop: Dimensions.get('window').height * .022,
+    //     marginLeft: Dimensions.get('window').width * .0483
+    // },
     verifyEmailTitle: {
         fontWeight: 'bold',
         fontSize: Dimensions.get('window').height * .044,
@@ -194,8 +194,8 @@ const EmailVerification = ({navigation}) => {
     },
     textInput: {
         borderColor: 'deepskyblue',
-        borderRadius: 20,
-        borderWidth: 3,
+        borderRadius: 17,
+        borderWidth: 2,
         height: Dimensions.get('window').height * .08,
         marginRight: Dimensions.get('window').width * .0483,
         marginTop: Dimensions.get('window').height * .066,

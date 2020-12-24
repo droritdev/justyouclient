@@ -6,7 +6,7 @@ import Dialog from "react-native-dialog";
 
 import FlipToggleButton from '../GlobalComponents/FlipToggleButton';
 import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
-import NextButton from '../GlobalComponents/NextButton';
+import AppButton from '../GlobalComponents/AppButton';
 
 //Here the user enters his payment methods and grante the app policy
 const PaymentsAndPolicy = ({navigation}) => {
@@ -74,7 +74,7 @@ const PaymentsAndPolicy = ({navigation}) => {
             setIsAllfieldsFilled(true);
             setDialogVisible(false);
             setPaymentsErrorText(""); 
-            navigation.navigate('RegisteringAccountPopUp');
+            navigation.navigate('PhoneNumberVerification');
         }
     }
 
@@ -162,7 +162,7 @@ const PaymentsAndPolicy = ({navigation}) => {
                 </View>
             </View>
             <View style={styles.nextButtonContainer}>
-                <NextButton
+                <AppButton
                     title="Next"
                     onPress={handleNext}
                 />

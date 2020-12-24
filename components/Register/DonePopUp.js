@@ -1,5 +1,5 @@
 import React, {useState ,useContext} from 'react'
-import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
+import {ART, StyleSheet, View, Text, Image, Dimensions} from 'react-native';
 import axios from 'axios';
 
 import {NameContext} from '../../context/NameContext';
@@ -9,6 +9,11 @@ import {BirthdayContext} from '../../context/BirthdayContext';
 import {PasswordContext} from '../../context/PasswordContext';
 import {PhoneContext} from '../../context/PhoneContext';
 import {ProfileImageContext} from '../../context/ProfileImageContext';
+
+import * as Progress from 'react-native-progress';
+import {Surface, Shape} from '@react-native-community/art';
+
+
 
 //for Firebase Storage
 import storage from '@react-native-firebase/storage';
@@ -30,6 +35,11 @@ const DonePopUp = ({navigation}) => {
 
 
     const [profileImageUrl, setProfileImageUrl] = useState("");
+    const [taskProgress, setTaskProgress] = useState(undefined);
+    const [isLoading,setIsLoading] = useState("flex");
+    const [isDone,setIsDone] = useState("none");
+    const [isLoadingCircle, setIsLoadingCircle] = useState(true);
+
 
 
 
@@ -42,13 +52,20 @@ const DonePopUp = ({navigation}) => {
         },
     };
 
+
+    const getFormat = (uri) => {
+        indexOfDot = uri.indexOf('.', uri.length-6);
+        console.log("format : " +uri.slice(indexOfDot));
+        return uri.slice(indexOfDot);
+    }
+
     const createUserFirebase = () =>{
         auth()
             .createUserWithEmailAndPassword(emailAddress, password)
             .then((data) => {
                 console.log('User account created & signed in!');
-                const userUid = "/clients/" + data.user.uid + "/profileImage.png" 
-                uploadImage(userUid, profileImage)
+                const userUid = "/clients/" + data.user.uid + '/profileImage'+getFormat(profileImage.uri); 
+                uploadImage(userUid, profileImage.uri)
 
             })
             .catch(error => {
@@ -64,18 +81,43 @@ const DonePopUp = ({navigation}) => {
             });
     }
 
+
     const uploadImage = async (filePath, imageUri) => {
         let reference = await storage().ref(filePath);
-        reference.putFile(imageUri).then((snapshot) => {
+        const task = reference.putFile(imageUri);
+        // .then((snapshot) => {
                 
+        //     reference.getDownloadURL().then((url) => {
+        //         alert(url);
+        //         setProfileImageUrl('url');
+        //         registerClient(url);
+        //     })
+        //     // setProfileImageUrl(snapshot.ref.getDownloadURL()); 
+        //     // const ImageUrl = await reference.getDownloadURL().catch((error) => { throw error });
+        //     // return setProfileImageUrl(ImageUrl),registerClient();
+        //   })
+          task.on('state_changed', taskSnapshot => {
+            console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
+            const bytesTransferred = taskSnapshot.bytesTransferred;
+            const totalByteCount = taskSnapshot.totalByteCount;
+            const progress = (bytesTransferred / totalByteCount);
+            // console.log(progress.toFixed(1));
+            // setTaskProgress(progress.toFixed(1));
+            // alert(progress.toFixed(1));
+            // setIsLoading('none');
+            // setIsDone('flex');
+            // console.log( "isLoading"+isLoading);
+            // console.log( "isDone"+isDone);
+            // setProfileImageUrl("text isn't changing");
+            // console.log(profileImageUrl);
+          });
+          
+          task.then(() => {
+            console.log('Image uploaded to the bucket!');
             reference.getDownloadURL().then((url) => {
-                alert(url);
-                setProfileImageUrl(url);
-                registerClient();
+
+                registerClient(url);
             })
-            // setProfileImageUrl(snapshot.ref.getDownloadURL()); 
-            // const ImageUrl = await reference.getDownloadURL().catch((error) => { throw error });
-            // return setProfileImageUrl(ImageUrl),registerClient();
           })
           .catch((e) => {
               console.log(e)
@@ -91,8 +133,8 @@ const DonePopUp = ({navigation}) => {
     //         console.log('Image uploaded to the bucket!');
     //     }).catch((e) => console.log('uploading image error => ', e));
     // }
-
-    const registerClient = () => {
+    
+    const registerClient = (imageUrl) => {
         // navigation.navigate('WelcomeUser');
         axios
             .post('/clients/register', {
@@ -104,7 +146,7 @@ const DonePopUp = ({navigation}) => {
                 email: emailAddress,
                 password: password,
                 country: country,
-                image: 'profileImageUrl',
+                image: imageUrl,
                 phone: {
                     areaCode: areaCode, 
                     phoneNumber: phoneNumber
@@ -117,23 +159,58 @@ const DonePopUp = ({navigation}) => {
             config
             )
             .then((res) => {
-                // navigation.navigate('WelcomeUser');
+               setIsLoadingCircle(false);
+               setTimeout(() => {
+                navigation.navigate('WelcomeUser');
+           }, 1570);
+               
+
             })
+            
             .catch((err) => alert(err.data));
     }
     
     //Uploading the client to the data base automaticly after 2 second
     setTimeout(() => {
-        createUserFirebase();
-    }, 10000);
+         createUserFirebase();
+    }, 100);
+
+
+    // return(
+    //     <View style={styles.container}>
+    //         <Image 
+    //             source={require('../../images/successfullyIcon.png')}
+    //             style={styles.Image}
+    //         />
+    //         <Text style={styles.registeringText}
+    //                display= {isDone} >Done</Text>
+    //         <Progress.Circle size={Dimensions.get('window').height * .25}
+    //         display = {isLoading}
+    //          indeterminate={true} />
+
+    //     </View>
+    // );
 
     return(
         <View style={styles.container}>
-            <Image 
-                source={require('../../images/successfullyIcon.png')}
-                style={styles.Image}
-            />
-            <Text style={styles.registeringText}>Done</Text>
+            {isLoadingCircle?            
+             <View>
+                <View style={styles.progressView}>
+                    <Progress.Circle size={Dimensions.get('window').height * .25} indeterminate={true} />
+                </View>
+                <View style={styles.loadingTextView}>
+                    <Text style={styles.registeringText}>Creating account...</Text>
+                </View>
+             </View>
+            : 
+            <View>
+                <Image 
+                    source={require('../../images/successfullyIcon.png')}
+                    style={styles.Image}
+                />
+                <Text style={styles.registeringText}>Done</Text>
+            </View> 
+            }
         </View>
     );
 }
@@ -144,6 +221,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white'
+    },
+    loadingTextView: {
+        alignSelf: 'center',
+        marginTop: Dimensions.get('window').height * .020
+    },
+    progressView: {
+        alignSelf: 'center'
     },
     registeringText: {
         fontWeight: 'bold',

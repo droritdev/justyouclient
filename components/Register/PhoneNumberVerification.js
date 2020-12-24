@@ -3,7 +3,7 @@ import {StyleSheet, View, Text, TextInput, Dimensions, SafeAreaView} from 'react
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import NextButton from '../GlobalComponents/NextButton';
+import AppButton from '../GlobalComponents/AppButton';
 import {PhoneContext} from '../../context/PhoneContext';
 import {CountryContext} from '../../context/CountryContext';
 
@@ -267,7 +267,7 @@ const PhoneNumberVerification = ({navigation}) => {
               </View>
             </View>
             <View style={styles.verifyButton}>
-                <NextButton
+                <AppButton
                     title="Verify"
                     onPress={() => handleVerify()}
                 />
@@ -304,7 +304,7 @@ const PhoneNumberVerification = ({navigation}) => {
               {isNextError ?
               <Text style={styles.nextErrorMessage}>{nextErrorMessage}</Text>
               :null}
-              <NextButton
+              <AppButton
                 title="Next"
                 onPress={() => handleNext()}
               />
@@ -349,18 +349,18 @@ const styles = StyleSheet.create({
       marginTop: Dimensions.get('window').height * .018
     },
     areaCodeInput: {
-        borderRadius: 20,
+        borderRadius: 17,
         marginRight: Dimensions.get('window').width * .0241,
         borderColor: 'deepskyblue',
-        borderWidth: 3,
+        borderWidth: 2,
         height: Dimensions.get('window').height * .06,
         width: Dimensions.get('window').width * .3,
         fontSize: Dimensions.get('window').height * .0278
     },
     phoneNumberInput: {
-        borderRadius: 20,
+        borderRadius: 17,
         borderColor: 'deepskyblue',
-        borderWidth: 3,
+        borderWidth: 2,
         height: Dimensions.get('window').height * .06,
         width: Dimensions.get('window').width * .6,
         fontSize: Dimensions.get('window').height * .0278

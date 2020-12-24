@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet ,Text, TouchableOpacity, Dimensions} from 'react-native';
 
 //Common next button
-const NextButton = (props) => {
+const AppButton = (props) => {
     return(
         <TouchableOpacity
             style={styles.getStartedButton}
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default NextButton;
+export default AppButton;
