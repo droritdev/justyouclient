@@ -1,16 +1,38 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
+import FastImage from 'react-native-fast-image'
+import auth from '@react-native-firebase/auth';
 
+
+
+import {EmailContext} from '../../../context/EmailContext';
 import {NameContext} from '../../../context/NameContext';
 
 //The client's profile page area page
-const StarPage = ({navigation}) => {
+const ProfilePage = ({navigation}) => {
 
-    const {firstName, dispatchFirst} = useContext(NameContext);
-    const {lastName, dispatchLast} = useContext(NameContext);
+    const [initializing, setInitializing] = useState(false);
+    const [user, setUser] = useState();
+
+
+    // const {emailAddress} = useContext(EmailContext);
+    const [emailAddress, setEmailAddress] = useState("");
+
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [profileImageUrl, setProfileImageUrl] = useState("");
+
+
+    function onAuthStateChanged(user) {
+        setUser(user);
+        if (initializing) setInitializing(false);
+      }
+    
+    
+
 
     const config = {
         withCredentials: true,
@@ -20,34 +42,131 @@ const StarPage = ({navigation}) => {
         },
     };
 
+
+    const getUserFromMongoDB = () => {
+        axios
+                        .get('/clients/'
+                        +emailAddress.toLocaleLowerCase(),
+                        config
+                    )
+                    .then((doc) => {
+                        if(doc) {
+                          console.log("doc.data" , doc.data);
+                          const currectUserData = doc.data[0];
+                          setFirstName(currectUserData.name.first);
+                          setLastName(currectUserData.name.last);
+                          setProfileImageUrl(currectUserData.image);
+                          console.log(profileImageUrl);
+                          if(doc.data[0].email!=null){
+                            
+                          }
+                        }
+                      })
+                    .catch((err) => console.log(err));
+                    }
+        
+    
+
     //First off all, the component loads the user details from the data base and sets the variables to the data
     useEffect(() => {
-        axios
-            .get('/clients/omero@gmail.com',
-            config
-        )
-        .then((doc) => {
-            if(doc){
-                dispatchFirst({
-                    type: 'SET_FIRST_NAME',
-                    firstName: doc.data[0].name.first
-                });
 
-                dispatchLast({
-                    type: 'SET_LAST_NAME',
-                    lastName: doc.data[0].name.last
-                })
-            }
-            else{
-                alert("No trainer");
-            }
-        })
-        .then(() => {
+        const subscriber = auth().onAuthStateChanged((user) => {
+                    console.log('🚨userStatus:' , user)
+                    setUser(user);
+                    getUserFromMongoDB();
 
-        })
-        .catch((err) => alert(err))
+                    if(user){
+                        setInitializing(true);
+                        setEmailAddress(user.email); 
+                        
+                        
+                        axios
+                        .get('/clients/'
+                        +emailAddress.toLocaleLowerCase(),
+                        config
+                    )
+                    .then((doc) => {
+                        if(doc) {
+                          console.log("doc.data" , doc.data);
+                          const currectUserData = doc.data[0];
+                          setFirstName(currectUserData.name.first);
+                          setLastName(currectUserData.name.last);
+                          setProfileImageUrl(currectUserData.image);
+                          console.log(profileImageUrl);
+                          if(doc.data[0].email!=null){
+                            
+                          }
+                        }
+                      })
+                    .catch((err) => console.log(err));
+                    }else{
+                        setInitializing(true);
+                    }
+
+                    
+
+                 
+                 
+        // auth().onAuthStateChanged((user) => {
+        //     if (user === null){
+        //         console.log('userStatus:' , user)
+        //         }else{
+        //         setEmailAddress(user.email); 
+        //         console.log('🚨firebase: ' + user.email);
+
+        //         axios
+        //         .get('/clients/'
+        //         +emailAddress.toLocaleLowerCase(),
+        //         config
+        //     )
+        //     .then((doc) => {
+        //         if(doc) {
+        //           console.log("doc.data" , doc.data);
+        //           const currectUserData = doc.data[0];
+        //           setFirstName(currectUserData.name.first);
+        //           setLastName(currectUserData.name.last);
+        //           setProfileImageUrl(currectUserData.image);
+        //           console.log(profileImageUrl);
+        //           if(doc.data[0].email!=null){
+                    
+        //           }
+        //         }
+        //       })
+        //     .catch((err) => console.log(err))
+            // }   
+        
+         });
+
+         return subscriber; // unsubscribe on unmount
+
+    } ,[]);
+
+
+    if(user){
+        getUserFromMongoDB();
     }
-    ,[])
+
+    
+
+    const profileImage = () => (
+        <FastImage
+            style={s.image}
+            source={{
+                uri: profileImageUrl,
+                priority: FastImage.priority.normal,
+            }}
+           resizeMode={FastImage.resizeMode.stretch}
+        />
+    //     <FastImage
+    //         style={{ width: 200, height: 200 }}
+    //         source={{
+    //             uri: profileImageUrl,
+    //             headers: { Authorization: 'someAuthToken' },
+    //             priority: FastImage.priority.normal,
+    //         }}
+    //         resizeMode={FastImage.resizeMode.contain}
+    //     />
+    );
 
     //Handle when the user presses the ConfirmedOrders button
     const handleOnConfirmedOrdersPRessed = () => {
@@ -90,24 +209,36 @@ const StarPage = ({navigation}) => {
     }
     
     return(
+        // initializing?
         <SafeAreaView style={styles.safeArea}>
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Just You</Text>
                 </View>
-                <Text style={styles.helloUserTitle}>Hello {firstName}</Text>
+                <Text style={styles.helloUserTitle}> {firstName} {lastName}</Text>
                 <View style={styles.imageAndDetailsRow}>
-                    <View
+                <TouchableOpacity >
+                    <FastImage
+                        style={styles.profileImage}
+                        source={{
+                            uri: profileImageUrl,
+                            priority: FastImage.priority.normal,
+                                }}
+                        resizeMode={FastImage.resizeMode.stretch}
+                    />
+              </TouchableOpacity>
+                    {/* <View
                         style={styles.imageView}
+                        
                     >
                         <TouchableOpacity>
                             <Image
+                                //  source={profileImage}
 
                             />
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                     <View style={styles.nameAndDetailsView}>        
-                        <Text style={styles.clientNameTitle}>{firstName} {lastName}</Text>
                         <View style={styles.detailsRow}>
                             <View style={styles.credits}>
                                 <Text style={styles.creditValue}>0.00</Text>
@@ -132,8 +263,8 @@ const StarPage = ({navigation}) => {
                         </View>
                     </View>
                 </View>
-                <View style={styles.likesSectionContainer}>
-                    <Text style={styles.likesTitle}>Choices I Liked</Text>
+                <View style={styles.sectionContainer}>
+                    <Text style={styles.inPageMainTitles}>Choices I Liked</Text>
                     <ScrollView 
                         style={styles.likesScrollView} 
                         horizontal={true} 
@@ -229,14 +360,14 @@ const StarPage = ({navigation}) => {
                         </View>
                     </ScrollView>
                 </View>
-                <View style={styles.linksContainer}>
-                    <Text style={styles.linksTitle}>Links</Text>
+                <View style={styles.pageMainTitlesContainer}>
+                    <Text style={styles.inPageSubMainTitles}>Links</Text>
                     <View style={styles.rowContainer}>
-                        <View style={styles.inviteRow}>
+                        <View style={styles.navigationsRows}>
                             <TouchableOpacity
                                 onPress={() => handleOnInvitePressed()}
                             >
-                                <Text style={styles.inviteTitle}>Receive credit by inviting friends</Text>
+                                <Text style={styles.navigationsRowsTitle}>Receive credit by inviting friends</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={styles.inviteButton}
@@ -250,11 +381,11 @@ const StarPage = ({navigation}) => {
                         </View>
                     </View>
                     <View style={styles.rowContainer}>
-                        <View style={styles.receiptsRow}>
+                        <View style={styles.navigationsRows}>
                             <TouchableOpacity
                                 onPress={() => handleOnReceiptsHistoryPressed()}
                             >
-                                <Text style={styles.receiptssTitle}>Receipts History</Text>
+                                <Text style={styles.navigationsRowsTitle}>Receipts History</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={styles.arrowButton}
@@ -268,9 +399,9 @@ const StarPage = ({navigation}) => {
                         </View>
                     </View>
                 </View>
-                <View style={styles.recentOrdersSectionContainer}>
+                <View style={styles.sectionContainer}>
                     <View style={styles.recentAndHistoryRow}>
-                        <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
+                        <Text style={styles.inPageMainTitles}>Recent Orders</Text>
                         <TouchableOpacity
                             onPress={() => handleOnHistoryPressed()}
                         >
@@ -372,14 +503,14 @@ const StarPage = ({navigation}) => {
                         </View>
                     </ScrollView>
                 </View>
-                <View style={styles.moreContainer}>
-                    <Text style={styles.moreTitle}>More</Text>
+                <View style={styles.pageMainTitlesContainer}>
+                    <Text style={styles.inPageSubMainTitles}>More</Text>
                     <View style={styles.rowContainer}>
-                        <View style={styles.editProfileRow}>
+                        <View style={styles.navigationsRows}>
                             <TouchableOpacity
                                 onPress={() => handleOnEditProfilePressed()}
                             >
-                                <Text style={styles.editProfileTitle}>Edit Profile</Text>
+                                <Text style={styles.navigationsRowsTitle}>Edit Profile</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={styles.arrowButton}
@@ -393,11 +524,11 @@ const StarPage = ({navigation}) => {
                         </View>
                     </View>
                     <View style={styles.rowContainer}>
-                        <View style={styles.customerServiceRow}>
+                        <View style={styles.navigationsRows}>
                             <TouchableOpacity
                                 onPress={() => handleOnCustomerServicePressed()}    
                             >
-                                <Text style={styles.customerServicesTitle}>Customer Service</Text>
+                                <Text style={styles.navigationsRowsTitle}>Customer Service</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={styles.arrowButton}
@@ -411,11 +542,11 @@ const StarPage = ({navigation}) => {
                         </View>
                     </View>
                     <View style={styles.rowContainer}>
-                        <View style={styles.settingsRow}>
+                        <View style={styles.navigationsRows}>
                             <TouchableOpacity
                                 onPress={() => handleOnSettingsPressed()}
                             >
-                                <Text style={styles.settingsTitle}>Settings</Text>
+                                <Text style={styles.navigationsRowsTitle}>Settings</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={styles.arrowButton}
@@ -450,60 +581,58 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     headerText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .04,
         fontWeight: 'bold'
     },
     helloUserTitle: {
         fontWeight: 'bold',
-        fontSize: 22,
-        marginLeft: 15
+        marginTop: Dimensions.get('window').height * .040,
+        fontSize: Dimensions.get('window').height * .03,
+        marginLeft: Dimensions.get('window').width * .03,
     },
     imageAndDetailsRow: {
         flexDirection: 'row',
-        height: 110,
+        height: Dimensions.get('window').height * .11,
         width: Dimensions.get('window').width * .95,
         alignSelf: 'center',
-        marginTop: 15,
+        marginTop: Dimensions.get('window').height * .01,
         alignItems: 'center'
     },
-    imageView: {
-        height: 100,
-        width: 100,
-        borderWidth: 2,
-        borderRadius: 60,
-        borderColor: 'grey'
+    profileImage: {
+        marginTop: Dimensions.get('window').height * 0.015,
+        marginLeft: Dimensions.get('window').height * 0.01,
+        width: Dimensions.get('window').width * .200,
+        height: Dimensions.get('window').height * .095,
+        overflow: 'hidden',
+        borderRadius: 70,
     },
     nameAndDetailsView: {
         justifyContent: 'space-between',
-        height: 90,
-    },
-    clientNameTitle: {
-        marginLeft: 15,
-        fontWeight: 'bold',
-        fontSize: 20
+        height: Dimensions.get('window').height * .095,
     },
     detailsRow: {
+        marginTop: Dimensions.get('window').height * .035,
         flexDirection: 'row',
-        width: Dimensions.get('window').width * .7,
+        width: Dimensions.get('window').width * .65,
         justifyContent: 'space-between',
-        marginLeft: 10
+        marginLeft: Dimensions.get('window').width * .045,
     },
     credits: {
         alignItems: 'center'
     },
     creditValue: {
         fontWeight: 'bold',
-        fontSize: 17
+        fontSize: Dimensions.get('window').height * .017,
     },
     creditText: {
     },
     confirmedOrders: {
         alignItems: 'center',
-        width: 75
+        width: Dimensions.get('window').width * .200,
     },
     confirmedOrdersValue: {
         fontWeight: 'bold',
-        fontSize: 17
+        fontSize: Dimensions.get('window').height * .017,
     },
     confirmedOrdersText: {
         textAlign: 'center',
@@ -512,38 +641,45 @@ const styles = StyleSheet.create({
     },
     pandingOrders: {
         alignItems: 'center',
-        width: 75
+        width: Dimensions.get('window').width * .200
     },
     pandingOrdersValue: {
         fontWeight: 'bold',
-        fontSize: 17
+        fontSize: Dimensions.get('window').height * .017,
     },
     pandingOrdersText: {
         textAlign: 'center',
         color: 'deepskyblue',
         fontWeight: 'bold'
     },
-    likesSectionContainer: {
-        marginTop: 35,
-        marginLeft: 10
+    sectionContainer: {
+        marginTop: Dimensions.get('window').height * .035,
+        marginLeft: Dimensions.get('window').width * .045
     },
-    likesTitle: {
-        fontSize: 20,
+    inPageMainTitles: {
+        marginTop: Dimensions.get('window').height * .0150,
+        marginLeft: Dimensions.get('window').width * .010,
+        fontSize: Dimensions.get('window').height * .0225,
+        fontWeight: 'bold'
+    },
+    inPageSubMainTitles: {
+        marginLeft: Dimensions.get('window').width * .05,
+        fontSize: Dimensions.get('window').height * .0225,
         fontWeight: 'bold'
     },
     likesScrollView: {
-        marginTop: 10,
+        marginTop: Dimensions.get('window').height * .01,
     },
     trainerView: {
-        marginRight: 5,
+        marginRight: Dimensions.get('window').width * .017,
         height: Dimensions.get('window').height * .125,
         width: Dimensions.get('window').width * .3,
         borderWidth: 2,
         borderColor: 'gainsboro',
-        borderRadius: 20
+        borderRadius: 17
     },
     trainerImageView: {
-        height: '60%',
+        height: Dimensions.get('window').height * .0745,
         backgroundColor: 'gainsboro',
         borderTopRightRadius: 15,
         borderTopLeftRadius: 15,
@@ -552,7 +688,7 @@ const styles = StyleSheet.create({
 
     },
     trainerPreviewText: {
-        height: '40%',
+        height: Dimensions.get('window').height * .045,
         alignItems: 'center',
         justifyContent: 'center',
         width: Dimensions.get('window').width * .3,
@@ -562,139 +698,78 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     trainerText2: {
-        fontSize: 10,
+        fontSize: Dimensions.get('window').height * .010,
         textAlign: 'center'
     },
     ratingRow: {
         flexDirection: 'row'
     },
     trainerText3: {
-        fontSize: 10,
+        fontSize: Dimensions.get('window').height * .010,
         textAlign: 'center'
     },
     starIcon: {
-        height: 10,
-        width: 10,
+        height: Dimensions.get('window').height * .01,
+        width: Dimensions.get('window').width * .017,
         alignSelf: 'center'
     },
-    linksContainer: {
-        marginTop: 20,
+    pageMainTitlesContainer: {
+        marginTop: Dimensions.get('window').height * .030,
     },
     linksTitle: {
         fontWeight: 'bold',
-        fontSize: 20,
-        marginLeft: 20,
+        fontSize: Dimensions.get('window').height * .0225,
+        marginLeft: Dimensions.get('window').width * .05,
     },
     rowContainer: {
-        height: 40,
+        // marginTop: Dimensions.get('window').height * .005,
+        height: Dimensions.get('window').height * .045,
         justifyContent: 'center',
         borderBottomColor: 'lightgrey',
         borderBottomWidth: 2,
     },
     arrowImage: {
-        height: 15,
-        marginTop: 8
+        height: Dimensions.get('window').height * .015,
+        marginTop: Dimensions.get('window').height * .005,
     },
     arrowButton: {
         
     },
-    inviteRow: {
+    navigationsRows: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginTop: Dimensions.get('window').height * .0150,
     },
-    inviteTitle: {
-        fontSize: 20,
-        marginLeft: 20,
-    },
-    inviteButton: {
-
+    navigationsRowsTitle: {
+        // marginTop: Dimensions.get('window').height * .0020,
+        fontSize: Dimensions.get('window').height * .0175,
+        marginLeft: Dimensions.get('window').width * .05,
     },
     receiptsRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    receiptssTitle: {
-        fontSize: 20,
-        marginLeft: 20,
-    },
-    receiptssButton: {
-
-    },
+    
     recentOrdersSectionContainer: {
-        marginTop: 35,
-        marginLeft: 10
+        marginTop: Dimensions.get('window').height * .02,
+        marginLeft: Dimensions.get('window').width * .05,
     },
     recentAndHistoryRow: {
+        marginRight: Dimensions.get('window').width * .05,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: Dimensions.get('window').width * .95,
+        width: Dimensions.get('window').width * .90,
         alignSelf: 'center'
     },
-    recentOrdersTitle: {
-        fontSize: 20,
-        fontWeight: 'bold'
-    },
     historyText: {
+        marginTop:  Dimensions.get('window').height * .015,
         fontSize: 18,
         fontWeight: 'bold',
         color: 'deepskyblue' 
     },
     recentOrdersScrollView: {
-        marginTop: 10,
-    },
-    moreContainer: {
-        marginTop: 30,
-    },
-    moreTitle: {
-        fontWeight: 'bold',
-        fontSize: 20,
-        marginLeft: 20,
-    },
-    rowContainer: {
-        height: 40,
-        justifyContent: 'center',
-        borderBottomColor: 'lightgrey',
-        borderBottomWidth: 2,
-    },
-    arrowImage: {
-        height: 15,
-        marginTop: 8
-    },
-    arrowButton: {
-        
-    },
-    editProfileRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    editProfileTitle: {
-        fontSize: 20,
-        marginLeft: 20,
-    },
-    editProfileButton: {
-
-    },
-    customerServiceRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    customerServicesTitle: {
-        fontSize: 20,
-        marginLeft: 20,
-    },
-    customerServicesButton: {
-
-    },
-    settingsRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    settingsTitle: {
-        fontSize: 20,
-        marginLeft: 20,
-    },
-    settingsButton: {
-    },
+        marginTop: Dimensions.get('window').height * .005,
+    }
 });
 
-export default StarPage;
+export default ProfilePage;

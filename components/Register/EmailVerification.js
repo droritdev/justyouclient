@@ -99,7 +99,7 @@ const EmailVerification = ({navigation}) => {
         //     if(res.data.status === 'approved'){
         //       setIsErrorCodeMessage(false);
         //       setCodeErrorMessage("");
-        //       navigation.navigate('CreatePasswordPartner');
+        //       navigation.navigate('CreatePassword');
         //     }
         //     else{
         //       setCodeErrorMessage("Wrong Code - try again")

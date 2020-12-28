@@ -1,4 +1,8 @@
-        //**External imports**//
+
+//for get server run 
+//node server.js   
+
+//**External imports**//
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');

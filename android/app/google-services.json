@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "875902311914",
+    "project_id": "justyoupro-87582",
+    "storage_bucket": "justyoupro-87582.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875902311914:android:e28d241500c04a5517a693",
+        "android_client_info": {
+          "package_name": "com.justyouclient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "875902311914-g1h9o05ga3jlf0g4smicq9tt7u7v1qbk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnTKW8j0n64N-hKXgCQBHm5ED48utMAW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875902311914-g1h9o05ga3jlf0g4smicq9tt7u7v1qbk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "875902311914-82jqalpu2knc12hi8idkl11ob5jpg4oa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.justYouClient"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

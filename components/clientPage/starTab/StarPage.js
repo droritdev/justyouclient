@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
+import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image, FlatList } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -45,6 +45,7 @@ const StarPage = ({navigation}) => {
                 <View style={styles.popularSectionContainer}>
                     <Text style={styles.popularTitle}>Popular</Text>
                     <ScrollView 
+                    
                         style={styles.popularScrollView} 
                         horizontal={true} 
                         showsHorizontalScrollIndicator={false}

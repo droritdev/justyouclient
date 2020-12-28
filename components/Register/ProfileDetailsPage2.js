@@ -65,7 +65,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
     
     //Sets the minimum age of registration to 18 automatticly
     useEffect (() => {
-
+      setIsNamesError(false);
       let currentYear = new Date().getFullYear();
       let currentMonth = new Date().getMonth();
       let currentDay = new Date().getDate();
@@ -147,7 +147,9 @@ const ProfileDetailsPage2 = ({navigation}) => {
             type: 'SET_PROFILE_IMAGE',
             profileImage: source
           });
-        });
+        }).catch((err) => {
+            
+        })
     
           const options = {
             title: 'Select photo',

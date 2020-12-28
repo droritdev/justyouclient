@@ -3,6 +3,8 @@ import { Button, Text, View, SafeAreaView, Image, StyleSheet, Dimensions, ImageB
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Dialog from "react-native-dialog";
 import {Accordion, Block} from 'galio-framework';
+import auth from '@react-native-firebase/auth';
+
 
 //The settings page
 const Settings = ({navigation}) => {
@@ -12,8 +14,9 @@ const Settings = ({navigation}) => {
     //Handle when the user presses yes in the sign out dialog
     const handleYesDialog = () => {
         setDialogVisible(false);
-        navigation.navigate('ProfilePage');
-    };
+        auth().signOut()
+            .then(() => navigation.navigate('LogIn'));
+         };
 
     //Handle when the user presses no in the sign out dialog
     const handleNoDialog = () => {

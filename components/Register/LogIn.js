@@ -1,7 +1,13 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {StyleSheet, View, Text, Dimensions, Image, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, Image, SafeAreaView, Button} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
+import axios from 'axios';
+
+
 import auth from '@react-native-firebase/auth';
+// import { GoogleSignin } from '@react-native-community/google-signin';
+
 
 import {EmailContext} from '../../context/EmailContext';
 import {PasswordContext} from '../../context/PasswordContext';
@@ -37,6 +43,14 @@ const LogInClient = ({navigation}) => {
         if (initializing) setInitializing(false);
     }
 
+    const config = {
+        withCredentials: true,
+        baseURL: 'http://localhost:3000/',
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -45,7 +59,26 @@ const LogInClient = ({navigation}) => {
     
       if (initializing) return null;
 
-
+      const checkEmailIsUsed = () => {
+        axios
+        .get('/clients/'+emailAddressInput.toLowerCase(),config)
+        .then((doc) => {
+          if(doc) {
+            console.log("doc.data" , doc.data);
+            if(doc.data[0].email!=null){
+                setErrorMessage("The account dosen't exist");
+                //TODO: for later use
+                //setErrorMessage("Your email and password does not match");
+                setIsErrorMessage(true);
+            }
+          }
+        })
+        .catch((err) => {
+            setErrorMessage("The account dosen't exist");
+            setIsErrorMessage(true);
+          
+        })
+      }
 
     //Auth user with Firebase after validation and login button click
     //After auth is complete, navigate to welcome page
@@ -53,18 +86,23 @@ const LogInClient = ({navigation}) => {
         auth()
         .signInWithEmailAndPassword(emailAddressInput, passwordInput)
         .then(() => {
-            dispatchEmail({
-                type: 'SET_EMAIL_ADDRESS',
-                emailAddress: emailAddressInput
-              });
-              dispatchPassword({
-                type: 'SET_PASSWORD',
-                password: passwordInput
-              });
-            navigation.navigate('WelcomeTrainer');
+            // dispatchEmail({
+            //     type: 'SET_EMAIL_ADDRESS',
+            //     emailAddress: emailAddressInput
+            //   });
+            //   dispatchPassword({
+            //     type: 'SET_PASSWORD',
+            //     password: passwordInput
+            //   });
+            navigation.navigate('WelcomeUser');
         })
         .catch(error => {
-            alert("The user doesn't exist");
+            checkEmailIsUsed();
+            // setErrorMessage("The account dosen't exist");
+            // setIsErrorMessage(true);
+
+
+            // Your email and password does not match
         });
     }
 
@@ -115,6 +153,30 @@ const LogInClient = ({navigation}) => {
         }
     }
 
+    // GoogleSignin.configure({
+    //     webClientId: '875902311914-82jqalpu2knc12hi8idkl11ob5jpg4oa.apps.googleusercontent.com',
+    //   });
+
+    // function GoogleSignIn() {
+    //     return (
+    //       <Button
+    //         title="Google Sign-In"
+    //         onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
+    //       />
+    //     );
+    //   }
+
+    //   async function onGoogleButtonPress() {
+    //     // Get the users ID token
+    //     const { idToken } = await GoogleSignin.signIn();
+      
+    //     // Create a Google credential with the token
+    //     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      
+    //     // Sign-in the user with the credential
+    //     return auth().signInWithCredential(googleCredential);
+    //   }
+
     //Navigates back to the SignUp page
     const handleSignUpButton = () => {
         navigation.navigate('SignUp');
@@ -136,7 +198,6 @@ const LogInClient = ({navigation}) => {
             </TouchableOpacity>
             <View style={styles.headerContainer}>
                 <Text style={styles.justYouTitle}>Just You</Text>
-                <Text style={styles.partnerText}>Partner</Text>
             </View>
             <View style={styles.inputsContainer}>
                 <TextInput

@@ -8,12 +8,12 @@ const WelcomeUser = ({navigation}) => {
 
     //Navigates automaticlly to the profile page after 2 seconds
     setTimeout(() => navigation.navigate('ClientContainer'), 1500);
-
+    // navigation.navigate('ClientContainer')
     return(
         <View style={styles.container}>
             <View style={styles.textContainer}>
                 <Text style={styles.justYouText}>Just You</Text>
-                <Text style={styles.welcomeUserText}>WELLCOME{"\n"+firstName.toUpperCase()}</Text>
+                <Text style={styles.welcomeUserText}>WELCOME{"\n"+firstName.toUpperCase()}</Text>
             </View>
         </View>
     );

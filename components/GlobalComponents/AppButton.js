@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     getStartedText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .030,
         fontWeight: 'bold',
         color: 'white'
     }

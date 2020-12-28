@@ -30,7 +30,7 @@ const App = () => {
     <GlobalStore>
       <NavigationContainer>
         <Stack.Navigator 
-          initialRouteName='GetStarted'
+          initialRouteName='WelcomePopUp'
           screenOptions={{headerShown: false}}
         >
           <Stack.Screen name='WelcomePopUp' component={WelcomePopUp} />

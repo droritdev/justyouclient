@@ -7794,6 +7794,11 @@
   dependencies:
     "prop-types" "^15.7.2"
 
+"react-native-fast-image@^8.3.4":
+  "integrity" "sha512-LpzAdjUphihUpVEBn5fEv5AILe55rHav0YiZroPZ1rumKDhAl4u2cG01ku2Pb7l8sayjTsNu7FuURAlXUUDsow=="
+  "resolved" "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-8.3.4.tgz"
+  "version" "8.3.4"
+
 "react-native-flip-toggle-button@^1.0.8":
   "integrity" "sha512-yIietb8bDAx+0EdrQ37SKfnGO1IzxgN6/WBZE57FcR/QJH4xXzTvSz4PQyKwBEz9aTxrdZHi95aYHsKZh9ZMOQ=="
   "resolved" "https://registry.npmjs.org/react-native-flip-toggle-button/-/react-native-flip-toggle-button-1.0.8.tgz"
@@ -8004,7 +8009,7 @@
     "react-is" "^16.8.6"
     "scheduler" "^0.19.1"
 
-"react@*", "react@^16.0", "react@^16.13.1", "react@^17.0.0", "react@>=16.8.3", "react@>=16.8.6", "react@>16.6.0", "react@16.13.1":
+"react@*", "react@^16.0", "react@^16.13.1", "react@^16.8.6", "react@^17.0.0", "react@>=16.8.3", "react@>=16.8.6", "react@>16.6.0", "react@16.13.1":
   "integrity" "sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w=="
   "resolved" "https://registry.yarnpkg.com/react/-/react-16.13.1.tgz"
   "version" "16.13.1"
