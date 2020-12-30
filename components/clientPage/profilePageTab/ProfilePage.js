@@ -362,42 +362,43 @@ const ProfilePage = ({navigation}) => {
                 </View>
                 <View style={styles.pageMainTitlesContainer}>
                     <Text style={styles.inPageSubMainTitles}>Links</Text>
-                    <View style={styles.rowContainer}>
-                        <View style={styles.navigationsRows}>
-                            <TouchableOpacity
-                                onPress={() => handleOnInvitePressed()}
-                            >
-                                <Text style={styles.navigationsRowsTitle}>Receive credit by inviting friends</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={styles.inviteButton}
-                                onPress={() => handleOnInvitePressed()}
-                            >
-                                <Image
-                                    source={require('../../../images/arrowButton.png')}
-                                    style={styles.arrowImage}
-                                />
-                            </TouchableOpacity>
+                       <View style={styles.linksRowsContainer}></View> 
+                        <View style={styles.eachRowContainer}>
+                            <View style={styles.navigationsRows}>
+                                <TouchableOpacity
+                                    onPress={() => handleOnInvitePressed()}
+                                >
+                                    <Text style={styles.navigationsRowsTitle}>Receive credit by inviting friends</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity 
+                                    style={styles.inviteButton}
+                                    onPress={() => handleOnInvitePressed()}
+                                >
+                                    <Image
+                                        source={require('../../../images/arrowButton.png')}
+                                        style={styles.arrowImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                    <View style={styles.rowContainer}>
-                        <View style={styles.navigationsRows}>
-                            <TouchableOpacity
-                                onPress={() => handleOnReceiptsHistoryPressed()}
-                            >
-                                <Text style={styles.navigationsRowsTitle}>Receipts History</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={styles.arrowButton}
-                                onPress={() => handleOnReceiptsHistoryPressed()}
-                            >
-                                <Image
-                                    source={require('../../../images/arrowButton.png')}
-                                    style={styles.arrowImage}
-                                />
-                            </TouchableOpacity>
+                        <View style={styles.eachRowContainer}>
+                            <View style={styles.navigationsRows}>
+                                <TouchableOpacity
+                                    onPress={() => handleOnReceiptsHistoryPressed()}
+                                >
+                                    <Text style={styles.navigationsRowsTitle}>Receipts History</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity 
+                                    style={styles.arrowButton}
+                                    onPress={() => handleOnReceiptsHistoryPressed()}
+                                >
+                                    <Image
+                                        source={require('../../../images/arrowButton.png')}
+                                        style={styles.arrowImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
                 </View>
                 <View style={styles.sectionContainer}>
                     <View style={styles.recentAndHistoryRow}>
@@ -504,65 +505,67 @@ const ProfilePage = ({navigation}) => {
                     </ScrollView>
                 </View>
                 <View style={styles.pageMainTitlesContainer}>
-                    <Text style={styles.inPageSubMainTitles}>More</Text>
-                    <View style={styles.rowContainer}>
-                        <View style={styles.navigationsRows}>
-                            <TouchableOpacity
-                                onPress={() => handleOnEditProfilePressed()}
-                            >
-                                <Text style={styles.navigationsRowsTitle}>Edit Profile</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={styles.arrowButton}
-                                onPress={() => handleOnEditProfilePressed()}
-                            >
-                                <Image
-                                    source={require('../../../images/arrowButton.png')}
-                                    style={styles.arrowImage}
-                                />
-                            </TouchableOpacity>
+                   <Text style={styles.inPageSubMainTitles}>More</Text>
+                    <View style={styles.moreRowsContainer}>
+                            <View style={styles.eachRowContainer}>
+                                <View style={styles.navigationsRows}>
+                                    <TouchableOpacity
+                                        onPress={() => handleOnEditProfilePressed()}
+                                    >
+                                        <Text style={styles.navigationsRowsTitle}>Edit Profile</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity 
+                                        style={styles.arrowButton}
+                                        onPress={() => handleOnEditProfilePressed()}
+                                    >
+                                        <Image
+                                            source={require('../../../images/arrowButton.png')}
+                                            style={styles.arrowImage}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.eachRowContainer}>
+                                <View style={styles.navigationsRows}>
+                                    <TouchableOpacity
+                                        onPress={() => handleOnCustomerServicePressed()}    
+                                    >
+                                        <Text style={styles.navigationsRowsTitle}>Customer Service</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity 
+                                        style={styles.arrowButton}
+                                        onPress={() => handleOnCustomerServicePressed()}  
+                                    >
+                                        <Image
+                                            source={require('../../../images/arrowButton.png')}
+                                            style={styles.arrowImage}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.eachRowContainer}>
+                                <View style={styles.navigationsRows}>
+                                    <TouchableOpacity
+                                        onPress={() => handleOnSettingsPressed()}
+                                    >
+                                        <Text style={styles.navigationsRowsTitle}>Settings</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity 
+                                        style={styles.arrowButton}
+                                        onPress={() => handleOnSettingsPressed()}
+                                    >
+                                        <Image
+                                            source={require('../../../images/arrowButton.png')}
+                                            style={styles.arrowImage}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View
+                                style={styles.deadAreaBottom}
+                            />
                         </View>
-                    </View>
-                    <View style={styles.rowContainer}>
-                        <View style={styles.navigationsRows}>
-                            <TouchableOpacity
-                                onPress={() => handleOnCustomerServicePressed()}    
-                            >
-                                <Text style={styles.navigationsRowsTitle}>Customer Service</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={styles.arrowButton}
-                                onPress={() => handleOnCustomerServicePressed()}  
-                            >
-                                <Image
-                                    source={require('../../../images/arrowButton.png')}
-                                    style={styles.arrowImage}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={styles.rowContainer}>
-                        <View style={styles.navigationsRows}>
-                            <TouchableOpacity
-                                onPress={() => handleOnSettingsPressed()}
-                            >
-                                <Text style={styles.navigationsRowsTitle}>Settings</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={styles.arrowButton}
-                                onPress={() => handleOnSettingsPressed()}
-                            >
-                                <Image
-                                    source={require('../../../images/arrowButton.png')}
-                                    style={styles.arrowImage}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View
-                        style={styles.deadAreaBottom}
-                    />
-                </View>
+                    </View>    
             </ScrollView>
         </SafeAreaView>
     )
@@ -721,9 +724,14 @@ const styles = StyleSheet.create({
         fontSize: Dimensions.get('window').height * .0225,
         marginLeft: Dimensions.get('window').width * .05,
     },
-    rowContainer: {
-        // marginTop: Dimensions.get('window').height * .005,
-        height: Dimensions.get('window').height * .045,
+    linksRowsContainer:{
+        marginTop:Dimensions.get('window').height * .01,
+    },
+    moreRowsContainer:{
+        marginTop:Dimensions.get('window').height * .035,
+    },
+    eachRowContainer: {
+        height: Dimensions.get('window').height * .04,
         justifyContent: 'center',
         borderBottomColor: 'lightgrey',
         borderBottomWidth: 2,
@@ -738,11 +746,9 @@ const styles = StyleSheet.create({
     navigationsRows: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: Dimensions.get('window').height * .0150,
     },
     navigationsRowsTitle: {
-        // marginTop: Dimensions.get('window').height * .0020,
-        fontSize: Dimensions.get('window').height * .0175,
+        fontSize: Dimensions.get('window').height * .02,
         marginLeft: Dimensions.get('window').width * .05,
     },
     receiptsRow: {

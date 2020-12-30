@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 20,
         marginTop: 25,
+        
     },
     settingsContainer1: {
         marginTop: 30,

@@ -1,8 +1,20 @@
 //Mongoose library to create new schemas
 const mongoose = require("mongoose");
+
 //Create new mongoose schema variable
 const Schema = mongoose.Schema;
 
+// const geoSchema = new schema(
+//     {
+//         type: {
+//             type: String,
+//             default: "Point"
+//         },
+//         coordinates: {
+//             type: [Number]
+//         }
+//     }
+// )
 //Create new "trainer profile" schema
 const trainerProfileSchema = new Schema(
     {
@@ -40,7 +52,7 @@ const trainerProfileSchema = new Schema(
            trim: true
        },
        categories: {
-           type: Object,
+           type: [String],
            required: true
        },
        about_me: {
@@ -50,47 +62,45 @@ const trainerProfileSchema = new Schema(
        },
        certifications: {
            type: String,
-           trim: true,
            default: "Personal trainer"
        },
-       media: {
-            images: {
-                type: [String]
-            },
-            videos: {
-                type: [String]
-            }
-       },
+    //    images: {
+    //        type: [images]
+    //    },
        maximumDistance: {
            type: Number,
            required: true
        },
+       trainingSites: {
+           type: [String],
+           default: "Outdoor"
+       },
        prices: {
            single: {
                singleAtTrainer: {
-                   type: String
+                   type: Number
                },
-               singleOutdoor: {
-                   type: String
+               singleAtClient: {
+                   type: Number
                }
            },
            couple: {
                coupleAtTrainer: {
-                   type: String
+                   type: Number
                },
-               coupleOutdoor: {
-                   type: String
+               coupleAtClient: {
+                   type: Number
                }
            }
        },
        phone: {
            areaCode: {
-               type: String,
+               type: Number,
                required: true,
                trim: true
            },
            phoneNumber: {
-               type: String,
+               type: Number,
                required: true,
                trim: true
            }
@@ -150,23 +160,15 @@ const trainerProfileSchema = new Schema(
            ]
        },
        location: {
-            trainingSite1: {
-                address: {
-                    type: String
-                },
-                coordinates: {
-                    type: [Number]
-                }
-            },
-            trainingSite2: {
-                address: {
-                    type: String
-                },
-                coordinates: {
-                    type: [Number]
-                }
-            }
-        },
+           type: {
+               type: String,
+               enum: ['Point']
+           },
+           coordinates: {
+               type: [Number],
+               index: '2dsphere'
+           }
+       }
     }, 
     {
         timestamps: true,

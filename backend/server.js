@@ -13,6 +13,9 @@ const cors = require('cors');
 const trainerRegister = require('./register/trainerRegister');
 const changeVisibility = require('./changeVisibility/changeVisibility');
 const trainerEditProfile = require('./trainerEditProfile/trainerEditProfile');
+const getAllTrainers = require('./getAllTrainers/getAllTrainers');
+const findTrainerByPopularity = require('./findTrainerByPopularity/findTrainerByPopularity');
+// const findTrainerByCategory = require('./findTrainerByPopularity/findTrainerByPopularity');
 
         //**Client imports**//
 const clientRegister = require('./register/clientRegister');
@@ -123,6 +126,10 @@ app.post('/trainers/register', trainerRegister.register);
 
 //End point for editing the trainer profile
 app.put('/trainers/settings/edit-profile', trainerEditProfile.editProfile);
+
+app.get('trainers/:allTrainer', getAllTrainers.allTrainers);
+app.get('/trainers/:email', findTrainerByPopularity.getTrainerByPopularity);
+// app.get('clients', getAllTrainers.allTrainers);
 
 
             ////**Client end points**////
