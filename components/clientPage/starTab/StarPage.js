@@ -1,6 +1,7 @@
-import React, {useState, useContext, useEffect} from 'react';
-import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image, FlatList } from 'react-native';
+import React, {useState, useContext, useEffect, useReducer} from 'react';
+import { Button, Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions, Image, FlatList } from 'react-native';
 import FastImage from 'react-native-fast-image'
+import * as Progress from 'react-native-progress';
 
 // import { ListItem } from 'react-native-elements'
 
@@ -18,6 +19,9 @@ import {EmailContext} from '../../../context/EmailContext';
 const StarPage = ({navigation}) => {
 
     const [doc, setDoc] = useState();
+    const [isRefreshing,setIsRefreshing] = useState(false);
+    const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
+
     const {
         dispatchTrainerFirst,
                 dispatchTrainerMediaPictures,
@@ -38,6 +42,7 @@ const StarPage = ({navigation}) => {
 
     const getAllTrainers = () => {
         console.log('🚨click')
+        setIsRefreshing(true);
         
         axios  
             .get('/trainers/'
@@ -49,7 +54,9 @@ const StarPage = ({navigation}) => {
                     console.log('🚨in doc click')
                     // console.log("doc.data" , doc.data);
                     setDoc(doc.data);
+                    setIsRefreshing(false);
 
+                    
                 }
             })
             .catch((err) =>  {
@@ -61,7 +68,7 @@ const StarPage = ({navigation}) => {
         getAllTrainers();
     },[]);
      
-    
+     
 
 
 
@@ -92,7 +99,7 @@ const StarPage = ({navigation}) => {
                  {numberOfStarComments === 0 ? 
                  <Text style={styles.trainerText3}>no comments</Text> 
                  :
-                 <Text style={styles.trainerText3}>{numberOfStars/numberOfStarComments}</Text>} 
+                 <Text style={styles.trainerText3}>{(numberOfStars/numberOfStarComments).toFixed(1)}</Text>} 
 
                  {numberOfStarComments === 0 ? 
                  <Image 
@@ -212,7 +219,10 @@ const StarPage = ({navigation}) => {
 
     return(
         <SafeAreaView style={styles.safeArea}>
-            <ScrollView style={styles.container}>
+            <ScrollView 
+                    style={styles.container}
+                    >
+                    
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Just You</Text>
                 </View>
@@ -233,17 +243,8 @@ const StarPage = ({navigation}) => {
                                 
                                 
                             />
-                        {/* <FlatList
-                                        data={doc}
-                                        renderItem={({ item }) => (
-                                            <ListItem
-                                                // title={<Text>{item.groupTitle}</Text>}
-                                                // time={<Text>{item.groupTime}</Text>}
-                                                
-                                            />
-                                        )}
-                                    /> */}
-                        <View style={styles.inSectionView}>
+                        {/* example for dummy triner item */}
+                        {/* <View style={styles.inSectionView}>
                             <View style={styles.inSectionImageViewContainer}>
                                 <TouchableOpacity
                                     style={styles.inSectionImageView}
@@ -267,82 +268,7 @@ const StarPage = ({navigation}) => {
                                     />
                                 </View>
                             </View>
-                        </View>
-                        <View style={styles.inSectionView}>
-                            <View style={styles.inSectionImageViewContainer}>
-                                <TouchableOpacity
-                                    style={styles.inSectionImageView}
-                                    onPress={() => handleOnTrainerPressed()}
-                                >
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.inSectionView}>
-                            <View style={styles.inSectionImageViewContainer}>
-                                <TouchableOpacity
-                                    style={styles.inSectionImageView}
-                                    onPress={() => handleOnTrainerPressed()}
-                                >
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.inSectionView}>
-                            <View style={styles.inSectionImageViewContainer}>
-                                <TouchableOpacity
-                                    style={styles.inSectionImageView}
-                                    onPress={() => handleOnTrainerPressed()}
-                                >
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
+                        </View> */}
                     </ScrollView>
                 </View>
                 <View style={styles.sectionContainer}>

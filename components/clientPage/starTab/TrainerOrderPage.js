@@ -1,11 +1,14 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Text, View, SafeAreaView, Image, StyleSheet, Dimensions, TextInput, Button} from 'react-native';
+import { Text, View, SafeAreaView, Image, StyleSheet, Dimensions, TextInput, Button,FlatList} from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Dialog from "react-native-dialog";
 import {Accordion, Block, Radio} from 'galio-framework';
 import FastImage from 'react-native-fast-image'
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/Feather';
+
+
+import Geocoder from 'react-native-geocoding';
 import axios from 'axios';
 
 
@@ -13,6 +16,10 @@ import axios from 'axios';
 
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 import {TrainerContext} from '../../../context/TrainerContext';
+import {OrderContext} from '../../../context/OrderContext';
+
+var API_KEY = 'AIzaSyAKKYEMdjG_Xc6ZuvyzxHBi1raltggDA2c'; // TODO: move api key to .env
+Geocoder.init(API_KEY); // use a valid API key
 
 
 
@@ -22,6 +29,19 @@ const TrainerOrderPage = ({navigation}) => {
     const [dialogVisible, setDialogVisible] = useState(false);
     const [isSelected, setSelection] = useState(false);
     const [isOutdoorTraining,setIsOutdoorTraining] = useState("none");
+    const [isAtTrainerTraining,setIsAtTrainerTraining] = useState("none");
+    const [listData, setListData] = useState({});
+    const [inputText, setInputText] = useState("");
+    const [isAddressSelected,setIsAddressSelected] = useState("none");
+    const [isSearchingForLocation,setIsSearchingForLocation] = useState("none");
+
+    const [categorySelected, setCategorySelected] = useState("");
+    const [typeOfTrainingSelected, setTypeOfTrainingSelected] = useState("");
+    const [trainingSiteSelected, setTrainingSiteSelected] = useState("");
+    const [locationCoordinates, setLocationCoordinates] = useState("");
+    const [dateAndTimeSelected, setDateAndTimeSelected] = useState("");
+
+    
 
 
     const {
@@ -33,6 +53,9 @@ const TrainerOrderPage = ({navigation}) => {
                             trainerObject, dispatchTrainerObject}
          = useContext(TrainerContext);
 
+
+    const starRating = (trainerNumberOfStars/trainerNumberOfStarComments).toFixed(1);
+    const cleanedPrice = typeOfTrainingSelected.replace(/[^0-9]/g,'');
 
     const prices = trainerObject.prices   
     
@@ -70,6 +93,27 @@ const TrainerOrderPage = ({navigation}) => {
     //     return <DropDownPicker.Item value={i} label={i}> </DropDownPicker.Item>
     // })]}
 
+    const searchLocation = async (text) =>{
+        setInputText(text);
+        if (!text.trim()){
+            setIsAddressSelected('none');
+            // setIsSearchingForLocation('none');
+        }else{
+            // setIsSearchingForLocation('flex');
+
+        }
+        axios
+            .request({
+                method: 'post',
+                url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${API_KEY}&input=${text}`,
+            })
+            .then((response) => {
+                setListData(response.data.predictions);
+            })
+            .catch((e) => {
+                console.log(e.response);
+            });
+    }
 
     //Handle when the user presses the yes button in the dialog
     const handleYesDialog = () => {
@@ -90,23 +134,51 @@ const TrainerOrderPage = ({navigation}) => {
         setDialogVisible(true);
     }
 
+    const handleOnCategoryPressed = (item) => {
+        setCategorySelected(item.label)
+    }
+
     const handleOnTrainingTypePressed = (item) => {
         // navigation.navigate('ComingSoon');
-        console.log(pickerItems)
-        const Single = 'Single at Trainer'
+        setTypeOfTrainingSelected(item.label);
+        const atTrainer = 'at Trainer'
         const outdoor = 'outdoor'
         const itemLabel = new String(item.label)
         if(itemLabel.includes(outdoor)){
-            setIsOutdoorTraining(flex);
-            // console.log('Life Is Good');
+            setIsOutdoorTraining('flex');
+            setIsAtTrainerTraining('none');
+             // console.log('Life Is Good');
+        }else {
+            setIsOutdoorTraining('none');
+            setIsAtTrainerTraining('flex');
         }
         // console.log(item.label);
+    }
+
+    const handleSearchBoxPressed = (item) => {
+        setListData({});
+        setInputText(item);
+        setTrainingSiteSelected(item);
+        setIsAddressSelected('flex');
+        // setIsSearchingForLocation("none")
+
+        Geocoder.from(item)
+        .then(json => {
+            var location = json.results[0].geometry.location;
+            setLocationCoordinates([location.lat, location.lng]);
+            console.log(locationCoordinates);
+        })
+        .catch(error => console.warn(error));
+    }
+    
+
+    const handleTrainingSiteSelected = (item) => {
+
     }
 
     //Handle when the client presses on Discount Code button
     const handleOnReviewsPressed = () => {
         // navigation.navigate('ComingSoon');
-        console.log(trainerObject.prices.single.singleAtTrainer);
     }
 
     //Handle when the client presses on Customer Service button
@@ -145,13 +217,24 @@ const TrainerOrderPage = ({navigation}) => {
                             </View>
                         <View style={styles.trainerDetailsContainer} >
                             <Text style={styles.trainerNameTitle}> {trainerFirstName}</Text>
+
+
                             <View style={styles.trainerStarRatingContainer}>
-                                        <Text style={styles.trainerStarRating}> {trainerNumberOfStars/trainerNumberOfStarComments} </Text>
-                                        <Image 
-                                source={require('../../../images/ratingStar.png')}
-                                style={styles.starIcon}
-                            />
-                            </View>
+                                    {trainerNumberOfStarComments === 0 ? 
+                                    <Text style={styles.trainerStarRating}>no comments</Text> 
+                                    :
+                                    <Text style={styles.trainerStarRating}>{starRating}</Text>} 
+
+                                    {trainerNumberOfStarComments === 0 ? 
+                                    <Image 
+                                        // source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}/> 
+                                        : 
+                                        <Icon name="star" size={18} color="black" />
+                                    }
+                                        
+                                    
+                                </View>
                             {/* <Text style={styles.categoryAndCertificationText}> Category: {trainerCategories.join(", ")} </Text> */}
                             <Text style={styles.categoryAndCertificationText}> Certifications: NSCA-CSCS </Text>
 
@@ -196,7 +279,7 @@ const TrainerOrderPage = ({navigation}) => {
                                         }}
                                         dropDownStyle={{backgroundColor: '#fafafa'}}
                                         onChangeItem=
-                                        {item => item
+                                        {item => handleOnCategoryPressed(item)
                                             
                                         //     this.setState({
                                         //     country: item.value
@@ -237,9 +320,38 @@ const TrainerOrderPage = ({navigation}) => {
 
 
                         <View display={isOutdoorTraining}>
-                            <TextInput></TextInput>
+                        <View style={styles.textInputContainer}>
+                            <View display={isAddressSelected}>      
+                                <Icon name="map-pin" size={18} color="#00bfff" style={styles.iconTextInput} />  
+                            </View>          
+                            <TextInput
+                                    style={styles.textStyle}
+                                    placeholder={'Search your address'}
+                                    placeholderTextColor={'grey'}
+                                    onChangeText={(text)=>searchLocation(text)}
+                                    value={inputText}
+                                />
+                            </View>
+                            {/* <View display={isSearchingForLocation}> */}
+                            <FlatList
+                                    data={listData}
+                                    renderItem={({item, index}) => {
+                                    return (
+                                        <TouchableOpacity
+                                        style={styles.resultItem}
+                                        onPress={() => handleSearchBoxPressed(item.description)}
+                                        >
+                                        <Text  style={styles.itemText}>{item.description}</Text>
+                                        </TouchableOpacity>
+                                    );
+                                    }}
+                                    keyExtractor={(item) => item.id}
+                                    style={styles.searchResultsContainer}  
+                                />
+
+                            {/* </View> */}
                         </View>
-                        <View display={'flex'}>
+                        <View display={isAtTrainerTraining}>
                         <DropDownPicker
                                         items={[
                                             {label: locations.trainingSite1.address, value: 'usa', icon: () => <Icon name="map-pin" size={18} color="#00bfff" />, hidden: true},
@@ -253,9 +365,7 @@ const TrainerOrderPage = ({navigation}) => {
                                             justifyContent: 'flex-start'
                                         }}
                                         dropDownStyle={{backgroundColor: '#fafafa'}}
-                                        onChangeItem={item => this.setState({
-                                            country: item.value
-                                        })}
+                                        onChangeItem={item => setTrainingSiteSelected(item.label)}
                                     />
                         </View>
 
@@ -290,9 +400,9 @@ const TrainerOrderPage = ({navigation}) => {
                             </Image> */}
                             <TextInput 
                                 
-                                editable ={true} 
+                                editable ={false} 
                                 style={styles.costTextBox}>
-                            </TextInput>
+                            {cleanedPrice}</TextInput>
                          </View>
                      </View>      
 
@@ -498,6 +608,8 @@ const styles = StyleSheet.create({
     trainerStarRatingContainer:{
         flexDirection: 'row',
         // justifyContent: 'space-between',
+        marginTop: Dimensions.get('window').height * .020,
+
     },
     trainerStarRating:{
         fontSize: Dimensions.get('window').height * .015,
@@ -534,6 +646,57 @@ const styles = StyleSheet.create({
         zIndex: 8,
 
     },
+    searchResultsContainer: {
+        width: Dimensions.get('window').width * 0.915,
+        alignSelf: 'center',
+        backgroundColor: '#fafafa',
+        borderWidth:1,
+        borderRadius:5,
+        borderColor:'gainsboro',
+        opacity: 0.8,
+        zIndex: 1,
+        shadowColor: "black",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: 0.37,
+        shadowRadius: 7.49,
+        elevation: 12,
+    },
+    resultItem: {
+        height: Dimensions.get('window').height * 0.05,
+    },
+    textInputContainer:{
+        marginTop: Dimensions.get('window').height * .01,
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center' ,
+        borderWidth:1,
+        borderRadius:5,
+        borderColor:'gainsboro',
+        backgroundColor: '#fafafa',
+        height: Dimensions.get('window').height * .045,
+
+    },
+    textStyle: {
+        
+        height: Dimensions.get('window').height * .045,
+        flex: 1,
+        paddingLeft: Dimensions.get('window').width * .03,
+        // marginTop: Dimensions.get('window').height * .01,
+        fontSize: Dimensions.get('window').height * .02,
+    },
+    iconTextInput:{
+        marginLeft:Dimensions.get('window').width * .025,
+        // marginTop: Dimensions.get('window').height * .01,
+    },
+    itemText: {
+        fontSize: Dimensions.get('window').height * .02,
+    },
+
+
+
     pageMainTitles:{
         fontSize: Dimensions.get('window').height * .020,
         fontWeight: 'bold',
@@ -592,6 +755,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     textAlign: 'center',
     fontSize: Dimensions.get('window').height * .02,
+    color: 'darkgreen',
     opacity:0.8,
     borderWidth:1.5,
     borderRadius: 20,
