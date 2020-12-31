@@ -8,6 +8,7 @@ import PhoneContextProvider from './PhoneContext';
 import BirthdayContextProvider from './BirthdayContext';
 import ProfileImageContextProvider from '../context/ProfileImageContext';
 import TrainerContextProvider from './TrainerContext'
+import ClientContextProvider from './ClientContext'
 //The context api global store to handle the state managments of the app
 const GlobalStore = ({children}) => {
 
@@ -20,7 +21,9 @@ const GlobalStore = ({children}) => {
                             <BirthdayContextProvider>
                                 <PhoneContextProvider>
                                     <TrainerContextProvider>
+                                        <ClientContextProvider>
                                     {children}  
+                                        </ClientContextProvider>
                                     </TrainerContextProvider>
                                 </PhoneContextProvider>
                             </BirthdayContextProvider>

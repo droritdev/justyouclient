@@ -41,7 +41,7 @@ const StarPage = ({navigation}) => {
     };     
 
     const getAllTrainers = () => {
-        console.log('🚨click')
+        // console.log('🚨click')
         setIsRefreshing(true);
         
         axios  
@@ -51,7 +51,7 @@ const StarPage = ({navigation}) => {
             config)
             .then((doc) => {
                 if(doc) {
-                    console.log('🚨in doc click')
+                    // console.log('🚨in doc click')
                     // console.log("doc.data" , doc.data);
                     setDoc(doc.data);
                     setIsRefreshing(false);
@@ -60,7 +60,7 @@ const StarPage = ({navigation}) => {
                 }
             })
             .catch((err) =>  {
-                console.log('🚨'+ err)
+                // console.log('🚨'+ err)
             });
     }
     
@@ -147,7 +147,7 @@ const StarPage = ({navigation}) => {
 
     //Handle when the client presses on a trainer button
     const handleOnTrainerPressed = (trainerObject, name,media, numberOfStars, numberOfStarComments, categories, trainerTrainingSite1 ,trainerTrainingSite2, date, prices  ) => {
-        console.log('item: '+ name)
+        // console.log('item: '+ name)
 
             dispatchTrainerObject({
                 type: 'SET_TRAINER_OBJECT',
@@ -231,7 +231,7 @@ const StarPage = ({navigation}) => {
                     <ScrollView 
                     
                         style={styles.sectionScrollView} 
-                        horizontal={true} 
+                        // horizontal={true} 
                         showsHorizontalScrollIndicator={false}
                     >
 

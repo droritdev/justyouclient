@@ -16,6 +16,7 @@ import axios from 'axios';
 
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 import {TrainerContext} from '../../../context/TrainerContext';
+import {ClientContext} from '../../../context/ClientContext';
 import {OrderContext} from '../../../context/OrderContext';
 
 var API_KEY = 'AIzaSyAKKYEMdjG_Xc6ZuvyzxHBi1raltggDA2c'; // TODO: move api key to .env
@@ -53,6 +54,16 @@ const TrainerOrderPage = ({navigation}) => {
                             trainerObject, dispatchTrainerObject}
          = useContext(TrainerContext);
 
+    // const {clientObject} = useContext(ClientContext);
+
+
+    const config = {
+        withCredentials: true,
+        baseURL: 'http://localhost:3000/',
+        headers: {
+              "Content-Type": "application/json",
+        },
+    };
 
     const starRating = (trainerNumberOfStars/trainerNumberOfStarComments).toFixed(1);
     const cleanedPrice = typeOfTrainingSelected.replace(/[^0-9]/g,'');
@@ -60,6 +71,33 @@ const TrainerOrderPage = ({navigation}) => {
     const prices = trainerObject.prices   
     
     const locations = trainerObject.location
+
+    const orderObject = [
+        { 
+            client: {
+                id: 'a',
+                firstName: 'a',
+                lastName: 'a'
+            },
+            trainer:{
+                id: trainerObject._id,
+                firstName: trainerObject.name.first,
+                lastName: trainerObject.name.last  
+            },
+            type: 'a', 
+            category: categorySelected, 
+            trainingDate: 'a', 
+            cost: cleanedPrice,
+            status: 'a',
+            location: {
+                address: 'a',
+                latitude:'a',
+                longitude:'a'
+            }
+
+    }
+
+    ]
 
     const Item = ({ title }) => (
         <View style={styles.item}>
@@ -115,6 +153,105 @@ const TrainerOrderPage = ({navigation}) => {
             });
     }
 
+    const makeBamba = () => {
+        axios
+            .post('/clients/bamba',{
+                bamba: 'bamba'
+            }, config)
+            .then((res) => {
+            })
+            .catch((err) => console.log(err));
+    }
+
+    const registerOrder = () => {
+        
+        axios
+            .post('/clients/orders/book-order', {
+
+
+
+                client: {
+                    id: "b", 
+                    firstName: "b",
+                    lastName: "cc'"
+                },
+                trainer: {
+                    id: 'b', 
+                    firstName: 'a', 
+                    lastName: 'a'
+                }, 
+                type: 'type', 
+                category: 'a', 
+                trainingDate: 'a', 
+                cost: 12,
+                status: 'a',
+                location: {
+                    address: 'a',
+                    latitude:9,
+                    longitude:2
+                },
+
+
+
+                // client: {
+                //     id: req.body.client.id, 
+                //     first_name: req.body.client.firstName, 
+                //     last_name: req.body.client.lastName
+                // }, 
+                // trainer: {
+                //     id: req.body.trainer.id, 
+                //     first_name: req.body.trainer.firstName, 
+                //     last_name: req.body.trainer.lastName
+                // }, 
+                // type: req.body.type, 
+                // category: req.body.category, 
+                // trainingDate: req.body.trainingDate, 
+                // cost: req.body.cost,
+                // status: req.body.status,
+                // location: {
+                //     address: req.body.location.address,
+                //     latitude:req.body.location.latitude,
+                //     longitude:req.body.location.longitude
+                // },
+            },
+            config
+            )
+            .then((res) => {
+            })
+            .catch((err) => console.log(err));
+    }
+
+
+    const registerClient = () => {
+        // navigation.navigate('WelcomeUser');
+        axios
+            .post('/clients/register', {
+                name: {
+                    first: "firstName",
+                    last: "lastName"
+                },
+                birthday: "birthday",
+                email: "emailAddress",
+                password: "password",
+                country: "country",
+                image: "imageUrl",
+                phone: {
+                    areaCode: 123, 
+                    phoneNumber: 123
+                },
+                location: {
+                    type: 'Point',
+                    coordinates: [32.123602, 34.875223]
+                }
+            },
+            config
+            )
+            .then((res) => {
+            })
+            .catch((err) => alert(err.data));
+    }
+
+
     //Handle when the user presses the yes button in the dialog
     const handleYesDialog = () => {
         setDialogVisible(false);
@@ -136,6 +273,10 @@ const TrainerOrderPage = ({navigation}) => {
 
     const handleOnCategoryPressed = (item) => {
         setCategorySelected(item.label)
+        // registerOrder();
+        // console.log(clientObject);
+        // // registerClient();
+        // makeBamba();
     }
 
     const handleOnTrainingTypePressed = (item) => {
@@ -166,7 +307,7 @@ const TrainerOrderPage = ({navigation}) => {
         .then(json => {
             var location = json.results[0].geometry.location;
             setLocationCoordinates([location.lat, location.lng]);
-            console.log(locationCoordinates);
+            // console.log(locationCoordinates);
         })
         .catch(error => console.warn(error));
     }
@@ -755,7 +896,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     textAlign: 'center',
     fontSize: Dimensions.get('window').height * .02,
-    color: 'darkgreen',
     opacity:0.8,
     borderWidth:1.5,
     borderRadius: 20,

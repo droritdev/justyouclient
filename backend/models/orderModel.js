@@ -8,42 +8,38 @@ const Schema = mongoose.Schema;
 const orderSchema = new Schema(
     {
         client: {
-            id: {
-                type: String,
-                required: true,
-                trim: true
-            },
-            first_name: {
-                type: String,
-                required: true,
-                trim: true
-            },
-            last_name: {
-                type: String,
-                required: true,
-                trim: true
-            } 
+                id: {
+                    type: String,
+                    required: true,
+                    trim: true
+                },
+                firstName: {
+                    type: String,
+                    required: true,
+                    trim: true
+                },
+                lastName: {
+                    type: String,
+                    required: true,
+                    trim: true
+                } 
         },
         trainer: {
-            id: {
-                type: String,
-                required: true,
-                trim: true
-            },
-            first_name: {
-                type: String,
-                required: true,
-                trim: true
-            },
-            last_name: {
-                type: String,
-                required: true,
-                trim: true
-            } 
-        },
-        address: {
-            type: String,
-            trim: true
+                id: {
+                    type: String,
+                    required: true,
+                    trim: true
+                },
+                firstName: {
+                    type: String,
+                    required: true,
+                    trim: true
+                },
+                lastName: {
+                    type: String,
+                    required: true,
+                    trim: true
+                } 
         },
         type: {
             type: String,
@@ -68,11 +64,25 @@ const orderSchema = new Schema(
             type: String,
             trim: true,
             default: "Pending"
-        },
-        responseUser: {
-            type: String,
-            trim: true,
-            default: ""
+        },  
+        // responseUser: {
+        //     type: String,
+        //     trim: true,
+        //     default: ""
+        // },
+        location: {
+            address: {
+                type: String,
+                trim: true
+            },
+            latitude: {
+                type: Number,
+                required: true,
+            },
+            longitude: {
+                type: Number,
+                required: true,
+            } 
         }
     },
     {

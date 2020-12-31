@@ -9,6 +9,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+
+const makeBamba = require('./makeBamba/makeBamba');
+
         //**Trainer imports**//
 const trainerRegister = require('./register/trainerRegister');
 const changeVisibility = require('./changeVisibility/changeVisibility');
@@ -141,6 +144,7 @@ app.get('/clients/trainers/category', findTrainerByCategory.getTrainersByCategor
 
 //End point for booking an order
 app.post('/clients/orders/book-order', makeOrder.makeOrder);
+app.post('/clients/bamba', makeBamba.makeBamba);
 
 //End point for updating the client's credit
 app.put('/clients/update-credit', updateClientCredit.updateClientCredit);

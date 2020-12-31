@@ -10,6 +10,7 @@ import auth from '@react-native-firebase/auth';
 
 import {EmailContext} from '../../../context/EmailContext';
 import {NameContext} from '../../../context/NameContext';
+import {ClientContext} from '../../../context/ClientContext';
 
 //The client's profile page area page
 const ProfilePage = ({navigation}) => {
@@ -24,6 +25,10 @@ const ProfilePage = ({navigation}) => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [profileImageUrl, setProfileImageUrl] = useState("");
+
+    const {dispatchClientObject} = useContext(ClientContext);
+    const [clientObject, setClientObject] = useState([]);
+
 
 
     function onAuthStateChanged(user) {
@@ -51,12 +56,12 @@ const ProfilePage = ({navigation}) => {
                     )
                     .then((doc) => {
                         if(doc) {
-                          console.log("doc.data" , doc.data);
                           const currectUserData = doc.data[0];
                           setFirstName(currectUserData.name.first);
                           setLastName(currectUserData.name.last);
                           setProfileImageUrl(currectUserData.image);
-                          console.log(profileImageUrl);
+                        //   setClientObject(currectUserData);
+                        //   console.log(profileImageUrl);
                           if(doc.data[0].email!=null){
                             
                           }
@@ -71,7 +76,7 @@ const ProfilePage = ({navigation}) => {
     useEffect(() => {
 
         const subscriber = auth().onAuthStateChanged((user) => {
-                    console.log('🚨userStatus:' , user)
+                    // console.log('🚨userStatus:' , user)
                     setUser(user);
                     getUserFromMongoDB();
 
@@ -87,12 +92,12 @@ const ProfilePage = ({navigation}) => {
                     )
                     .then((doc) => {
                         if(doc) {
-                          console.log("doc.data" , doc.data);
+                        //   console.log("doc.data" , doc.data);
                           const currectUserData = doc.data[0];
                           setFirstName(currectUserData.name.first);
                           setLastName(currectUserData.name.last);
                           setProfileImageUrl(currectUserData.image);
-                          console.log(profileImageUrl);
+                        //   console.log(profileImageUrl);
                           if(doc.data[0].email!=null){
                             
                           }
@@ -144,7 +149,14 @@ const ProfilePage = ({navigation}) => {
 
     if(user){
         getUserFromMongoDB();
+        
     }
+    // dispatchClientObject({
+    //     type: 'SET_CLIENT_OBJECT',
+    //     ClientObject: clientObject
+    // });
+
+    
 
     
 
