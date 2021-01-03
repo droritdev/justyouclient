@@ -18,6 +18,47 @@ const trainerProfileSchema = new Schema(
                trim: true
            }
        },
+       calender: {
+    usersInvolved :{
+            trainerID: {
+                type: String,
+                required: true,
+                trim: true
+            },
+            clinetID:{
+                type: String,
+                required: true,
+                trim: true
+            }
+        },
+    event:{
+        start: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        end:{
+            type: String,
+            required: true,
+            trim: true
+        },
+        title:{
+            type: String,
+            required: true,
+            trim: true
+        },
+        summary:{
+            type: String,
+            required: true,
+            trim: true
+        },
+        color:{
+            type: String,
+            required: true,
+            trim: true
+        }
+    }
+},
        birthday: {
            type: String,
            required: true,
@@ -177,3 +218,49 @@ const trainerProfileSchema = new Schema(
 const trainerProfileModel = mongoose.model("trainers Profile", trainerProfileSchema);
 
 module.exports = trainerProfileModel;
+
+
+
+
+
+// calender: {
+//     usersInvolved :{
+//             trainerID: {
+//                 type: String,
+//                 required: true,
+//                 trim: true
+//             },
+//             clinetID:{
+//                 type: String,
+//                 required: true,
+//                 trim: true
+//             }
+//         },
+//     event:{
+//         start: {
+//             type: String,
+//             required: true,
+//             trim: true
+//         },
+//         end:{
+//             type: String,
+//             required: true,
+//             trim: true
+//         },
+//         title:{
+//             type: String,
+//             required: true,
+//             trim: true
+//         },
+//         summary:{
+//             type: String,
+//             required: true,
+//             trim: true
+//         },
+//         color:{
+//             type: String,
+//             required: true,
+//             trim: true
+//         }
+//     }
+// },

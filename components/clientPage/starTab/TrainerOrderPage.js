@@ -153,15 +153,6 @@ const TrainerOrderPage = ({navigation}) => {
             });
     }
 
-    const makeBamba = () => {
-        axios
-            .post('/clients/bamba',{
-                bamba: 'bamba'
-            }, config)
-            .then((res) => {
-            })
-            .catch((err) => console.log(err));
-    }
 
     const registerOrder = () => {
         
@@ -317,8 +308,19 @@ const TrainerOrderPage = ({navigation}) => {
 
     }
 
+    const handleChooseDateAndTime = () => {
+        dispatchTrainerObject({
+            type: 'SET_TRAINER_OBJECT',
+            trainerObject: trainerObject
+        })
+        navigation.navigate('ChooseDateAndTimePage');
+
+    }
+
     //Handle when the client presses on Discount Code button
     const handleOnReviewsPressed = () => {
+
+        console.log(trainerObject);
         // navigation.navigate('ComingSoon');
     }
 
@@ -371,7 +373,7 @@ const TrainerOrderPage = ({navigation}) => {
                                         // source={require('../../../images/ratingStar.png')}
                                         style={styles.starIcon}/> 
                                         : 
-                                        <Icon name="star" size={18} color="black" />
+                                        <Icon name="star" size={Dimensions.get('window').height * .02} color="black" />
                                     }
                                         
                                     
@@ -399,7 +401,7 @@ const TrainerOrderPage = ({navigation}) => {
                                             pickerItems.push({
                                                 value: i,
                                                 label: i,
-                                                icon: () => <Icon name="arrow-right" size={18} color="#00bfff" />,
+                                                icon: () => <Icon name="arrow-right" size={Dimensions.get('window').height * .02} color="#00bfff" />,
                                             })
                                         }) } 
                                         items = {pickerItems} 
@@ -435,10 +437,10 @@ const TrainerOrderPage = ({navigation}) => {
 
                         <DropDownPicker
                                         items={[
-                                            {label: 'Single at Trainer: $'+prices.single.singleAtTrainer+'/h' , value: prices.single.singleAtTrainer, icon: () => <Icon name="user" size={18} color="#00bfff" />, hidden: true},
-                                            {label: 'Single outdoor: $'+prices.single.singleOutdoor+'/h' , value: prices.single.singleOutdoor , icon: () => <Icon name="user" size={18} color="#00bfff" />},
-                                            {label: 'Couple at Trainer: $'+prices.couple.coupleAtTrainer+'/h'  , value: prices.couple.coupleAtTrainer, icon: () => <Icon name="users" size={18} color="#00bfff" />},
-                                            {label: 'Couple outdoor: $'+prices.couple.coupleOutdoor+'/h'  , value: prices.couple.coupleOutdoor, icon: () => <Icon name="users" size={18} color="#00bfff" />},
+                                            {label: 'Single at Trainer: $'+prices.single.singleAtTrainer+'/h' , value: prices.single.singleAtTrainer, icon: () => <Icon name="user" size={Dimensions.get('window').height * .02} color="#00bfff" />, hidden: true},
+                                            {label: 'Single outdoor: $'+prices.single.singleOutdoor+'/h' , value: prices.single.singleOutdoor , icon: () => <Icon name="user" size={Dimensions.get('window').height * .02} color="#00bfff" />},
+                                            {label: 'Couple at Trainer: $'+prices.couple.coupleAtTrainer+'/h'  , value: prices.couple.coupleAtTrainer, icon: () => <Icon name="users" size={Dimensions.get('window').height * .02} color="#00bfff" />},
+                                            {label: 'Couple outdoor: $'+prices.couple.coupleOutdoor+'/h'  , value: prices.couple.coupleOutdoor, icon: () => <Icon name="users" size={Dimensions.get('window').height * .02} color="#00bfff" />},
                                         ]}
                                         defaultValue={""}
                                         containerStyle={styles.innerContainerViewObject}
@@ -463,7 +465,7 @@ const TrainerOrderPage = ({navigation}) => {
                         <View display={isOutdoorTraining}>
                         <View style={styles.textInputContainer}>
                             <View display={isAddressSelected}>      
-                                <Icon name="map-pin" size={18} color="#00bfff" style={styles.iconTextInput} />  
+                                <Icon name="map-pin" size={Dimensions.get('window').height * .02} color="#00bfff" style={styles.iconTextInput} />  
                             </View>          
                             <TextInput
                                     style={styles.textStyle}
@@ -495,8 +497,8 @@ const TrainerOrderPage = ({navigation}) => {
                         <View display={isAtTrainerTraining}>
                         <DropDownPicker
                                         items={[
-                                            {label: locations.trainingSite1.address, value: 'usa', icon: () => <Icon name="map-pin" size={18} color="#00bfff" />, hidden: true},
-                                            {label: locations.trainingSite2.address, value: 'uk', icon: () => <Icon name="map-pin" size={18} color="#00bfff" />},
+                                            {label: locations.trainingSite1.address, value: 'usa', icon: () => <Icon name="map-pin" size={Dimensions.get('window').height * .02} color="#00bfff" />, hidden: true},
+                                            {label: locations.trainingSite2.address, value: 'uk', icon: () => <Icon name="map-pin" size={Dimensions.get('window').height * .02} color="#00bfff" />},
                                             
                                         ]}
                                         defaultValue={""}
@@ -519,7 +521,7 @@ const TrainerOrderPage = ({navigation}) => {
                         <View>
                         <TouchableOpacity
                             style={styles.chooseDateButton}
-                            // onPress={}
+                            onPress={() => handleChooseDateAndTime()}
                         >
                             <Text style={styles.chooseDateText}>Choose date and time</Text>
                         </TouchableOpacity>
@@ -532,7 +534,7 @@ const TrainerOrderPage = ({navigation}) => {
                          
                         <Text style={styles.pageSubTitles}>Cost</Text>
                          <View style={styles.rowCostContainer}>
-                             <Icon name="dollar-sign" size={18} color="black" 
+                             <Icon name="dollar-sign" size={Dimensions.get('window').height * .02} color="black" 
                              style={styles.dollarSign}> </Icon>
                             {/* <Image 
                                 source={require('../../../images/dollarSign.jpeg')}
