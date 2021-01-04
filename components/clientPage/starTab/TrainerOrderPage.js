@@ -42,17 +42,24 @@ const TrainerOrderPage = ({navigation}) => {
     const [locationCoordinates, setLocationCoordinates] = useState("");
     const [dateAndTimeSelected, setDateAndTimeSelected] = useState("");
 
+    const {orderObejct, dispatchOrderObject,
+            orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
+                orderTrainingCategory, dispatchOrderTrainingCategory} 
+            = useContext(OrderContext);
     
+    const {clientID, dispathClientID,
+            clientEmail,dispathClientEmail,
+                clientFirstName,dispathClientFirstName,
+                    clientlastName,dispathClientLastName } 
+        = useContext(ClientContext);
 
-
-    const {
-        trainerFirstName , dispatchTrainerFirst,
+    const {trainerFirstName , dispatchTrainerFirst,
             trainerMediaPictures, dispatchTrainerMediaPictures,
                 trainerNumberOfStars,dispatchTrainerNumberOfStars,
                     trainerNumberOfStarComments, dispatchTrainerNumberOfStarComments,
                         trainerCategories, dispatchTrainerCategories,
                             trainerObject, dispatchTrainerObject}
-         = useContext(TrainerContext);
+        = useContext(TrainerContext);
 
     // const {clientObject} = useContext(ClientContext);
 
@@ -72,21 +79,27 @@ const TrainerOrderPage = ({navigation}) => {
     
     const locations = trainerObject.location
 
-    const orderObject = [
+    const orderToUpload = [
         { 
             client: {
-                id: 'a',
-                firstName: 'a',
-                lastName: 'a'
+                id: '5fe9c0ccd33a98041163aedd',
+                firstName: 'shahar',
+                lastName: 'keisar',
+                profilePic: 'a'
             },
             trainer:{
                 id: trainerObject._id,
                 firstName: trainerObject.name.first,
-                lastName: trainerObject.name.last  
+                lastName: trainerObject.name.last,
+                profilePic: 'a'
+  
             },
-            type: 'a', 
+            type: 'couple outdoor', 
             category: categorySelected, 
-            trainingDate: 'a', 
+            trainingDate: {
+                startTime: '',
+                endTime: '',
+            },
             cost: cleanedPrice,
             status: 'a',
             location: {
@@ -162,24 +175,30 @@ const TrainerOrderPage = ({navigation}) => {
 
 
                 client: {
-                    id: "b", 
-                    firstName: "b",
-                    lastName: "cc'"
+                    id: '5fe9c0ccd33a98041163aedd',
+                    firstName: 'shahar',
+                    lastName: 'keisar',
+                    profilePic: 'profilePic'
                 },
-                trainer: {
-                    id: 'b', 
-                    firstName: 'a', 
-                    lastName: 'a'
-                }, 
-                type: 'type', 
-                category: 'a', 
-                trainingDate: 'a', 
-                cost: 12,
-                status: 'a',
+                trainer:{
+                    id: trainerObject._id,
+                    firstName: trainerObject.name.first,
+                    lastName: trainerObject.name.last,
+                    profilePic: trainerObject.media.images[0]
+  
+                },
+                type: 'couple outdoor', 
+                category: categorySelected, 
+                trainingDate: {
+                    startTime: '2021-01-03 12:00:00',
+                    endTime: '2021-01-03 13:00:00',
+                },
+                cost: cleanedPrice,
+                status: 'pending',
                 location: {
-                    address: 'a',
-                    latitude:9,
-                    longitude:2
+                    address: '19623 Bauer Road, Hockley, TX, USA',
+                    latitude:30.060248,
+                    longitude:-95.782935
                 },
 
 
@@ -210,36 +229,6 @@ const TrainerOrderPage = ({navigation}) => {
             .then((res) => {
             })
             .catch((err) => console.log(err));
-    }
-
-
-    const registerClient = () => {
-        // navigation.navigate('WelcomeUser');
-        axios
-            .post('/clients/register', {
-                name: {
-                    first: "firstName",
-                    last: "lastName"
-                },
-                birthday: "birthday",
-                email: "emailAddress",
-                password: "password",
-                country: "country",
-                image: "imageUrl",
-                phone: {
-                    areaCode: 123, 
-                    phoneNumber: 123
-                },
-                location: {
-                    type: 'Point',
-                    coordinates: [32.123602, 34.875223]
-                }
-            },
-            config
-            )
-            .then((res) => {
-            })
-            .catch((err) => alert(err.data));
     }
 
 
@@ -292,6 +281,7 @@ const TrainerOrderPage = ({navigation}) => {
         setInputText(item);
         setTrainingSiteSelected(item);
         setIsAddressSelected('flex');
+        console.log(trainingSiteSelected);
         // setIsSearchingForLocation("none")
 
         Geocoder.from(item)
@@ -312,8 +302,21 @@ const TrainerOrderPage = ({navigation}) => {
         dispatchTrainerObject({
             type: 'SET_TRAINER_OBJECT',
             trainerObject: trainerObject
+        });
+        dispatchOrderTrainingSiteAddress({
+            type: 'SET_ORDER_TRAINING_SITE_ADDRESS',
+            orderTrainingSiteAddress: categorySelected
+        });
+        dispatchOrderTrainingCategory({
+            type: 'SET_ORDER_TRAINING_CATEGORY',
+            orderTrainingCategory: trainingSiteSelected
+        });
+        dispatchOrderObject({
+            type: 'SET_ORDER_OBJECT',
+            orderObject : orderToUpload
         })
         navigation.navigate('ChooseDateAndTimePage');
+        // registerOrder();
 
     }
 

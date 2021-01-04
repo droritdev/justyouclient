@@ -45,25 +45,20 @@ const StarPage = ({navigation}) => {
         setIsRefreshing(true);
         
         axios  
-            .get('/trainers/'
-            +'getAllTrainers'
+            .get('/trainers/getAllTrainers'
             ,
             config)
             .then((doc) => {
                 if(doc) {
-                    // console.log('🚨in doc click')
-                    // console.log("doc.data" , doc.data);
                     setDoc(doc.data);
-                    setIsRefreshing(false);
+                    // setIsRefreshing(false);
 
-                    
                 }
             })
             .catch((err) =>  {
-                // console.log('🚨'+ err)
             });
     }
-    
+
     useEffect(() => {
         getAllTrainers();
     },[]);

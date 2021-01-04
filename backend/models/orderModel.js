@@ -22,7 +22,13 @@ const orderSchema = new Schema(
                     type: String,
                     required: true,
                     trim: true
-                } 
+                },
+                profilePic: {
+                    type: String,
+                    required: true,
+                    trim: true
+                }
+                 
         },
         trainer: {
                 id: {
@@ -39,6 +45,11 @@ const orderSchema = new Schema(
                     type: String,
                     required: true,
                     trim: true
+                },
+                profilePic: {
+                    type: String,
+                    required: true,
+                    trim: true
                 } 
         },
         type: {
@@ -52,9 +63,16 @@ const orderSchema = new Schema(
             trim: true
         },
         trainingDate: {
-            type: String,
-            required: true,
-            trim: true
+            startTime: {
+                type: String,
+                required: true,
+                trim: true
+            },
+            endTime: {
+                type: String,
+                required: true,
+                trim: true
+            },
         },
         cost: {
             type: Number,

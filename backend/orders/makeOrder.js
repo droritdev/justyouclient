@@ -3,10 +3,7 @@ const orderModel = require('../models/orderModel');
 
 //Book new order
 exports.makeOrder = (req, res) => {
-    // let placeId;
-    // if(req.body.placeId){
-    //     placeId = req.body.placeId;
-    // }
+    
 
     //Create new order in the data base
     console.log(req.body);
@@ -15,17 +12,24 @@ exports.makeOrder = (req, res) => {
             client: {
                 id: req.body.client.id, 
                 firstName: req.body.client.firstName, 
-                lastName: req.body.client.lastName
+                lastName: req.body.client.lastName,
+                profilePic: req.body.client.profilePic
+
             },
         
             trainer: {
                 id: req.body.trainer.id, 
                 firstName: req.body.trainer.firstName, 
-                lastName: req.body.trainer.lastName
+                lastName: req.body.trainer.lastName,
+                profilePic: req.body.trainer.profilePic
+
             },
             type: req.body.type, 
             category: req.body.category, 
-            trainingDate: req.body.trainingDate, 
+            trainingDate: {
+                startTime: req.body.trainingDate.startTime,
+                endTime: req.body.trainingDate.endTime
+            },
             cost: req.body.cost,
             status: req.body.status,
             location: {

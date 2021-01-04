@@ -16,7 +16,7 @@ const changeVisibility = require('./changeVisibility/changeVisibility');
 const trainerEditProfile = require('./trainerEditProfile/trainerEditProfile');
 const getAllTrainers = require('./getAllTrainers/getAllTrainers');
 const findTrainerByPopularity = require('./findTrainerByPopularity/findTrainerByPopularity');
-// const findTrainerByCategory = require('./findTrainerByPopularity/findTrainerByPopularity');
+const findTrainerByEmail = require('./findTrainerByEmail/findTrainerByEmail');
 
         //**Client imports**//
 const clientRegister = require('./register/clientRegister');
@@ -129,7 +129,7 @@ app.post('/trainers/register', trainerRegister.register);
 app.put('/trainers/settings/edit-profile', trainerEditProfile.editProfile);
 
 app.get('trainers/:allTrainer', getAllTrainers.allTrainers);
-app.get('/trainers/:email', findTrainerByPopularity.getTrainerByPopularity);
+app.get('/trainers/email/:email', findTrainerByEmail.getTrainerByEmail);
 // app.get('clients', getAllTrainers.allTrainers);
 
 

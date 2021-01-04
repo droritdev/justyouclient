@@ -1,10 +1,14 @@
-const TrainerReducer = (state, action) => {
+const OrderReducer = (state, action) => {
     switch(action.type) {
 
         case 'SET_ORDER_OBJECT':
-            return action.orderObejct
+            return action.orderObject
+        
+        case 'SET_ORDER_TRAINING_SITE_ADDRESS':
+            return action.orderTrainingSiteAddress
 
-    
+        case 'SET_ORDER_TRAINING_CATEGORY':
+            return action.orderTrainingCategory
 
          
 
@@ -15,4 +19,4 @@ const TrainerReducer = (state, action) => {
     }
 }
 
-export default TrainerReducer;
+export default OrderReducer;

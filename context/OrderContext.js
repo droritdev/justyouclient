@@ -1,18 +1,22 @@
 import React, {useReducer} from 'react';
 
-import OrderReducer from '../reducers/TrainerReducer';
+import OrderReducer from '../reducers/OrderReducer';
 
 export const OrderContext = React.createContext();
 
 const OrderContextProvider = ({children}) => {
     const [orderObject, dispatchOrderObject] = useReducer(OrderReducer, []);
+    const [orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress] = useReducer(OrderReducer, "");
+    const [orderTrainingCategory, dispatchOrderTrainingCategory] = useReducer(OrderReducer, "");
     
     return(
-        <TrainerContext.Provider value={{
+        <OrderContext.Provider value={{
             orderObject, dispatchOrderObject,
+            orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
+            orderTrainingCategory, dispatchOrderTrainingCategory
         }}>
             {children}
-        </TrainerContext.Provider>
+        </OrderContext.Provider>
     );
 }
 
