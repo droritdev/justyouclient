@@ -39,12 +39,17 @@ const TrainerOrderPage = ({navigation}) => {
     const [categorySelected, setCategorySelected] = useState("");
     const [typeOfTrainingSelected, setTypeOfTrainingSelected] = useState("");
     const [trainingSiteSelected, setTrainingSiteSelected] = useState("");
-    const [locationCoordinates, setLocationCoordinates] = useState("");
+    // const [locationLatitudeCoordinate, setLocationLatitudeCoordinate] = useState("");
+    // const [locationLongitudeCoordinate, setLocationLongitudeCoordinate] = useState("");
+    var locationLatitudeCoordinate = '';
+    var locationLongitudeCoordinate = '';
     const [dateAndTimeSelected, setDateAndTimeSelected] = useState("");
 
     const {orderObejct, dispatchOrderObject,
             orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
-                orderTrainingCategory, dispatchOrderTrainingCategory} 
+                orderTrainingCategory, dispatchOrderTrainingCategory,
+                    orderStartTime, dispatchOrderStartTime,
+                        orderEndTime, dispatchOrderEndTime}
             = useContext(OrderContext);
     
     const {clientID, dispathClientID,
@@ -79,6 +84,9 @@ const TrainerOrderPage = ({navigation}) => {
     
     const locations = trainerObject.location
 
+    // var StartTime = orderStartTime;
+    // var EndTime = orderEndTime;
+
     const orderToUpload = [
         { 
             client: {
@@ -107,10 +115,7 @@ const TrainerOrderPage = ({navigation}) => {
                 latitude:'a',
                 longitude:'a'
             }
-
-    }
-
-    ]
+    }]
 
     const Item = ({ title }) => (
         <View style={styles.item}>
@@ -122,9 +127,7 @@ const TrainerOrderPage = ({navigation}) => {
         <Item title={item.title} />
       );
 
-    // const PickerItems =  trainerCategories.map(i => {
-    //         return  {value={i}, label={i}}
-    //     });
+    
 
     const pickerItems = []
     // trainerCategories.map(i => {
@@ -190,15 +193,15 @@ const TrainerOrderPage = ({navigation}) => {
                 type: 'couple outdoor', 
                 category: categorySelected, 
                 trainingDate: {
-                    startTime: '2021-01-03 12:00:00',
-                    endTime: '2021-01-03 13:00:00',
+                    startTime: orderStartTime,
+                    endTime: orderEndTime,
                 },
                 cost: cleanedPrice,
                 status: 'pending',
                 location: {
-                    address: '19623 Bauer Road, Hockley, TX, USA',
-                    latitude:30.060248,
-                    longitude:-95.782935
+                    address: trainingSiteSelected,
+                    latitude:locationLatitudeCoordinate,
+                    longitude:locationLongitudeCoordinate
                 },
 
 
@@ -253,10 +256,7 @@ const TrainerOrderPage = ({navigation}) => {
 
     const handleOnCategoryPressed = (item) => {
         setCategorySelected(item.label)
-        // registerOrder();
-        // console.log(clientObject);
-        // // registerClient();
-        // makeBamba();
+       
     }
 
     const handleOnTrainingTypePressed = (item) => {
@@ -276,6 +276,10 @@ const TrainerOrderPage = ({navigation}) => {
         // console.log(item.label);
     }
 
+    const handleLocationPressed = (item) => {
+        
+    }
+
     const handleSearchBoxPressed = (item) => {
         setListData({});
         setInputText(item);
@@ -287,15 +291,27 @@ const TrainerOrderPage = ({navigation}) => {
         Geocoder.from(item)
         .then(json => {
             var location = json.results[0].geometry.location;
-            setLocationCoordinates([location.lat, location.lng]);
+            setLocationLatitudeCoordinate(location.lat);
+            setLocationLongitudeCoordinate(location.lng)
+            // setLocationCoordinates([location.lat, location.lng]);
             // console.log(locationCoordinates);
         })
         .catch(error => console.warn(error));
     }
     
 
-    const handleTrainingSiteSelected = (item) => {
+    const handleOnTrainingSiteSelected = (item) => {
+        setTrainingSiteSelected(item.label);
+        if(item.label === locations.trainingSite1.address){
+            // setLocationLongitudeCoordinate(locations.trainingSite1.longitude);
+            // setLocationLatitudeCoordinate(locations.trainingSite1.latitude);
+            locationLatitudeCoordinate = locations.trainingSite1.coordinates[0];
+            locationLongitudeCoordinate = locations.trainingSite1.coordinates[1];
 
+        }else{
+            locationLatitudeCoordinate = locations.trainingSite2.coordinates[0];
+            locationLongitudeCoordinate = locations.trainingSite2.coordinates[1];
+        }
     }
 
     const handleChooseDateAndTime = () => {
@@ -316,14 +332,13 @@ const TrainerOrderPage = ({navigation}) => {
             orderObject : orderToUpload
         })
         navigation.navigate('ChooseDateAndTimePage');
-        // registerOrder();
 
     }
 
     //Handle when the client presses on Discount Code button
     const handleOnReviewsPressed = () => {
+        // registerOrder();
 
-        console.log(trainerObject);
         // navigation.navigate('ComingSoon');
     }
 
@@ -511,7 +526,7 @@ const TrainerOrderPage = ({navigation}) => {
                                             justifyContent: 'flex-start'
                                         }}
                                         dropDownStyle={{backgroundColor: '#fafafa'}}
-                                        onChangeItem={item => setTrainingSiteSelected(item.label)}
+                                        onChangeItem={item => handleOnTrainingSiteSelected(item)}
                                     />
                         </View>
 

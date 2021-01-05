@@ -1,5 +1,5 @@
 // @flow
-import { Platform, StyleSheet, Dimensions} from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 // const eventPaddingLeft = 4
 const leftMargin = 50 - 1;
@@ -32,8 +32,7 @@ export default function styleConstructor(theme = {}, calendarHeight) {
       justifyContent: 'center',
     },
     headerText: {
-      fontSize: Dimensions.get('window').height * .020,
-      fontWeight: 'bold',
+      fontSize: 16,
       ...theme.headerText,
     },
     arrow: {
@@ -64,23 +63,22 @@ export default function styleConstructor(theme = {}, calendarHeight) {
       ...theme.event,
     },
     eventTitle: {
-      color: 'black',
-      fontWeight: 'bold',
-      fontSize: Dimensions.get('window').height * .020,
+      color: '#615B73',
+      fontWeight: '600',
       minHeight: 15,
       ...theme.eventTitle,
     },
     eventSummary: {
-      color: 'black',
-      fontSize: Dimensions.get('window').height * .017,
+      color: '#615B73',
+      fontSize: 12,
       flexWrap: 'wrap',
       ...theme.eventSummary,
     },
     eventTimes: {
       marginTop: 3,
-      fontSize: Dimensions.get('window').height * .014,
+      fontSize: 10,
       fontWeight: 'bold',
-      color: 'black',
+      color: '#615B73',
       flexWrap: 'wrap',
       ...theme.eventTimes,
     },
@@ -101,10 +99,10 @@ export default function styleConstructor(theme = {}, calendarHeight) {
     timeLabel: {
       position: 'absolute',
       left: 15,
-      color: 'black',
+      color: 'rgb(170,170,170)',
       fontSize: 10,
       fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto',
-      fontWeight: 'bold',
+      fontWeight: '500',
       ...theme.timeLabel,
     },
   };

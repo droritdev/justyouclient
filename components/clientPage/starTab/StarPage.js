@@ -41,17 +41,19 @@ const StarPage = ({navigation}) => {
     };     
 
     const getAllTrainers = () => {
-        // console.log('🚨click')
+        console.log('🚨click')
         setIsRefreshing(true);
         
         axios  
-            .get('/trainers/getAllTrainers'
-            ,
+            .get('/trainers/getAllTrainers',
             config)
             .then((doc) => {
+                console.log('🚨doc' + doc)
+
                 if(doc) {
                     setDoc(doc.data);
-                    // setIsRefreshing(false);
+                    console.log("is any doc here " + doc.data);
+                    setIsRefreshing(false);
 
                 }
             })

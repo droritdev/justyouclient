@@ -90,12 +90,9 @@ export default class EventCalendar extends React.Component {
       <Icon name="chevron-right" size={19} style={this.styles.arrow} />
     );
 
-    var headerText = upperCaseHeader
+    let headerText = upperCaseHeader
         ? date.format(formatHeader || 'DD MMMM YYYY')
         : date.format(formatHeader || 'DD MMMM YYYY');
-
-    var dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    headerText +=  ' - ' + dayOfWeek[date.day()];
 
     return (
       <View style={[this.styles.container, { width }]}>

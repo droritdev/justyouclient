@@ -24,28 +24,31 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
     const {orderObejct, dispatchOrderObject,
         orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
-            orderTrainingCategory, dispatchOrderTrainingCategory} 
+            orderTrainingCategory, dispatchOrderTrainingCategory,
+                 dispatchOrderStartTime,
+                     dispatchOrderEndTime}
         = useContext(OrderContext);
 
     const {trainerObject, dispatchTrainerObject} = useContext(TrainerContext);
 
-
+        
     const [dialogVisible, setDialogVisible] = useState(false);
+    const [timeSelectedDialogVisible, setTimeSelectedDialogVisible] = useState(false);
+    const [unavailableDialogVisible, setUnavailableDialogVisible] = useState(false);
     const [trainerObjectMongoDB, setTrainerObjectMongoDB] = useState({});
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     const [allEvents, setAllEvents] = useState([]);
+    const [startTimeToPass, setStartTimeToPass] = useState('');
+    const [endTimeToPass, setEndTimeToPass] = useState('');
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
+    var trainerMongoDB = {};
+    // var startTimeToPass = "";
+    // var endTimeToPass = "";
     
 
     useEffect(() => {
-        getAllTrainers();
-        getTrainerFromMongoDB();
-            getAllEvents();
-            setAvailabele();
-            cleanTrainerUnavailable();
-        
-    
+        getTrainerFromMongoDB();    
     },[]);
 
     const config = {
@@ -63,11 +66,10 @@ const ChooseDateAndTimePage = ({navigation}) => {
             .get('/trainers/email/'+trainerObject.email.toLowerCase(),config)
             .then((doc) => {
               if(doc) {
-                setTrainerObjectMongoDB(doc.data[0]);
-                console.log("function doc.data" , doc.data[0]);
-                console.log("trainer doc.data" ,trainerObjectMongoDB);
+                // setTrainerObjectMongoDB(doc.data[0]);
+                trainerMongoDB = doc.data[0];
               }
-
+              getAllEventAfterModify();
             })
             .catch((err) => {
              
@@ -77,39 +79,41 @@ const ChooseDateAndTimePage = ({navigation}) => {
     }
 
 
-    const getAllTrainers = () => {
-        // console.log('🚨click')
+
+    var async = require("async");
+
+    const getAllEventAfterModify = async() =>{
+        await getAllEvents();
         
-        axios  
-            .get('/trainers/getAllTrainers'
-            ,
-            config)
-            .then((doc) => {
-                if(doc) {
-                    console.log(data.doc)
-                }
-            })
-            .catch((err) =>  {
-            });
+            setAvailabele();
     }
-    console.log("outside doc.data" ,trainerObjectMongoDB);
-    console.log("outside trainerOriginal doc.data" ,trainerObject);
-
-
-
-    const getAllEvents = () => {
+    const getAllEvents = async () => {
         var events = allEvents;
-        //extract events from calender array
-        for (let index = 0; index < trainerObject.calender.length; index++) {
-            const element = trainerObject.calender[index].event;
+
+        //extract events from calendar array
+       for (let index = 0; index < trainerMongoDB.calendar.length; index++) {
+            var element = trainerMongoDB.calendar[index].event;
             
+
+            if( element.color === 'deepskyblue'){
+                element = Object.assign({}, element, {color: 'lightgrey'},{title: 'UNAVAILABLE'},{summary: ''},{start: element.start},{end: element.end});
+                console.log(element);
+
+            }
             events.push(element);
             
         }
-        //     //change color of event to lightgrey for Unavailable mode
-        // const eventsToPush = events.map(event => {
-        //     if (event) {
-        //     return Object.assign({}, event, {color: 'lightgrey'},{title: 'UnavAilable'},{summary: ''});
+
+        setAllEvents(events);
+        // forceUpdate();
+        
+        // setAvailabele();
+
+            //change color of event to lightgrey for Unavailable mode
+        // const eventsToPush = events
+        // .map(event => {
+        //     if (event.color === 'deepskyblue') {
+        //     return Object.assign({}, event, {color: 'lightgrey'},{title: 'UNAVAILABLE'},{summary: ''});
         //     } 
         //     return event      
         //     });
@@ -119,17 +123,17 @@ const ChooseDateAndTimePage = ({navigation}) => {
         //     console.log(allEvents);
     }
 
-    cleanTrainerUnavailable = () => {
-        var events = allEvents;
+    // cleanTrainerUnavailable = () => {
+    //     var events = allEvents;
 
-        for (let index = 0; index < trainerObject.calender.length; index++) {
-            const element = trainerObject.calender[index].event;
+    //     for (let index = 0; index < trainerObject.calendar.length; index++) {
+    //         const element = trainerObject.calendar[index].event;
             
-            events.splice(element, 1);
+    //         events.splice(element, 1);
             
             
-        }
-    }
+    //     }
+    // }
 
         //Return if the addAbleEvent is on occupiedHours and can't add him
         const checkIfTimeIsOccupied = (event, occupiedHours) => {
@@ -183,6 +187,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
     const getOccupiedHours = (events) => {
         var occupiedHours = [];
 
+
         for (let index = 0; index < events.length; index++) {
             const singleEvent = events[index];            
             const startTime = singleEvent.start.slice(11);
@@ -193,14 +198,18 @@ const ChooseDateAndTimePage = ({navigation}) => {
         return occupiedHours;
     }
 
+    const initAvailableEvents = () => {
+
+    }
+
     //Blocks the entire calendar for the picked date, only on available times
     const setAvailabele = () => {
         setDatePickerVisible(false);
-
         var events = allEvents;
         var addAbleEvent = {};
 
-        for (let index = 0; index < 10; index++) {
+        // for loop for days to run ahead
+        for (let index = 0; index < 30; index++) {
                 var date = new Date();
                 var day = date.getDate() +index; 
                 var month = date.getMonth() + 1; 
@@ -209,7 +218,9 @@ const ChooseDateAndTimePage = ({navigation}) => {
                 day = day <10 ? "0"+day : day; 
                 month = month < 9 ? "0"+(month) : (month) ; 
                 var fullDate = year + '-' + month + '-' + day;
+
                 var occupiedHours = getOccupiedHours(getEventsFromDate(fullDate));
+
 
 
                         
@@ -218,32 +229,38 @@ const ChooseDateAndTimePage = ({navigation}) => {
                     addAbleEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
                     if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
                         events.push(addAbleEvent);
-                    }else{
-                        //if trainer already has an event in that time 
-                        const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
-                        events.push(unavailableEvent)
                     }
+                    // else{
+                    //     //if trainer already has an event in that time 
+                    //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
+                    //     events.push(unavailableEvent)
+                    // }
                 } else if (index === 9) {
                     addAbleEvent =  {start: fullDate+' 0'+index+':00:00', end: fullDate+' '+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
                     if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
                         events.push(addAbleEvent);
-                    }else{
-                        //if trainer already has an event in that time 
-                        const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
-                        events.push(unavailableEvent)
                     }
+                    // else{
+                    //     //if trainer already has an event in that time 
+                    //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
+                    //     events.push(unavailableEvent)
+                    // }
                 } else {
                     addAbleEvent =  { start: fullDate+' '+index+':00:00', end: fullDate+' '+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
                     if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
                         events.push(addAbleEvent);
-                    }else{
-                        //if trainer already has an event in that time 
-                        const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
-                        events.push(unavailableEvent)
                     }
+                    // else{
+                    //     //if trainer already has an event in that time 
+                    //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
+                    //     events.push(unavailableEvent)
+                    // }
                 }
             }
         }
+        forceUpdate();
+        // cleanTrainerUnavailable();
+
        
     }
 
@@ -278,8 +295,14 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
 
     const handleEventTapped = (event) => {
-        // console.log(trainerObject);
-        // navigation.navigate('ComingSoon');
+        if(event.color === 'lightgrey'){
+            setUnavailableDialogVisible(true);
+        }else{
+            setTimeSelectedDialogVisible(true);
+            //pass the times through the Dialog
+            setStartTimeToPass(event.start);
+            setEndTimeToPass(event.end);
+        }
     }
 
     //Get all events on a certain date
@@ -312,15 +335,43 @@ const ChooseDateAndTimePage = ({navigation}) => {
     const handleBlockDayConfirm = (date) => {
         setDatePickerVisible(false);
     }
+
+    const handleCancelDialog = () => {
+        setTimeSelectedDialogVisible(false);
+    }
+    //passing selected order times to TrainerOrderPage
+    const handleSubmitDialog = (startTimeForOrder, endTimeForOrder) => {
+        dispatchOrderStartTime({
+            type: 'SET_ORDER_START_TIME',
+            orderStartTime : startTimeForOrder
+        });
+        dispatchOrderEndTime({
+            type: 'SET_ORDER_END_TIME',
+            orderEndTime : endTimeForOrder
+        });
+        
+        setTimeSelectedDialogVisible(false);
+
+        navigation.navigate('TrainerOrderPage');
+
+    }
     
 
     return(
         <SafeAreaView style={styles.safeArea}>
             <View>
-                <Dialog.Container visible={dialogVisible}>
-                    <Dialog.Title style={styles.dialogTitle}>Are You Sure?</Dialog.Title>
-                    <Dialog.Button style={styles.cancelDialog} label="Cancel" onPress={(() => handleNoDialog())} />
-                    <Dialog.Button style={styles.signOutDialog} label="Sign Out" onPress={() => handleYesDialog()} />
+               
+                <Dialog.Container visible={timeSelectedDialogVisible}>
+                    <Dialog.Title >Confirmation </Dialog.Title>
+                    <Dialog.Description >{ 'Date: '+ startTimeToPass.slice(0,10)+' \n'+'Time: '+startTimeToPass.slice(11,16)+ '-'+endTimeToPass.slice(11,16)} </Dialog.Description>
+                    <Dialog.Button style={styles.cancelDialog} label="Cancel" onPress={(() => handleCancelDialog())} />
+                    <Dialog.Button style={styles.signOutDialog} label="Submit" onPress={() => handleSubmitDialog(startTimeToPass, endTimeToPass)} />
+
+                </Dialog.Container>
+
+                <Dialog.Container visible={unavailableDialogVisible}>
+                    <Dialog.Title style={styles.dialogTitle}>The selected time is unavailable</Dialog.Title>
+                    <Dialog.Button style={styles.signOutDialog} label="ok" onPress={() => setUnavailableDialogVisible(false)} />
 
                 </Dialog.Container>
 

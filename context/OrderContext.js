@@ -8,12 +8,17 @@ const OrderContextProvider = ({children}) => {
     const [orderObject, dispatchOrderObject] = useReducer(OrderReducer, []);
     const [orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress] = useReducer(OrderReducer, "");
     const [orderTrainingCategory, dispatchOrderTrainingCategory] = useReducer(OrderReducer, "");
+    const [orderStartTime, dispatchOrderStartTime] = useReducer(OrderReducer, "");
+    const [orderEndTime, dispatchOrderEndTime] = useReducer(OrderReducer, "");
     
     return(
         <OrderContext.Provider value={{
             orderObject, dispatchOrderObject,
             orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
-            orderTrainingCategory, dispatchOrderTrainingCategory
+            orderTrainingCategory, dispatchOrderTrainingCategory,
+            orderStartTime, dispatchOrderStartTime,
+            orderEndTime, dispatchOrderEndTime
+
         }}>
             {children}
         </OrderContext.Provider>

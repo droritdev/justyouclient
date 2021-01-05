@@ -10,7 +10,11 @@ const OrderReducer = (state, action) => {
         case 'SET_ORDER_TRAINING_CATEGORY':
             return action.orderTrainingCategory
 
-         
+        case 'SET_ORDER_START_TIME':
+            return action.orderStartTime
+
+        case 'SET_ORDER_END_TIME':
+            return action.orderEndTime      
 
 
 
