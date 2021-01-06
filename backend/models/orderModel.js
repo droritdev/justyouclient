@@ -30,6 +30,7 @@ const orderSchema = new Schema(
                 }
                  
         },
+       
         trainer: {
                 id: {
                     type: String,
@@ -81,7 +82,7 @@ const orderSchema = new Schema(
         status: {
             type: String,
             trim: true,
-            default: "Pending"
+            default: "pending"
         },  
         // responseUser: {
         //     type: String,
@@ -101,7 +102,7 @@ const orderSchema = new Schema(
                 type: Number,
                 required: true,
             } 
-        }
+        },
     },
     {
         timestamps: true,

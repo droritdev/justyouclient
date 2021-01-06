@@ -16,7 +16,7 @@ import {EmailContext} from '../../../context/EmailContext';
 
 
 //The client's start area page
-const StarPage = ({navigation}) => {
+const StarPage = ({route, navigation}) => {
 
     const [doc, setDoc] = useState();
     const [isRefreshing,setIsRefreshing] = useState(false);
@@ -186,7 +186,7 @@ const StarPage = ({navigation}) => {
 
         // getPopularTrainers();
 
-        navigation.navigate('TrainerOrderPage')
+        navigation.navigate('TrainerOrderPage',{params: ''})
     }
 
     //Handle when the client presses on Why Us button

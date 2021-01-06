@@ -39,11 +39,15 @@ const TrainerOrderPage = ({navigation}) => {
     const [categorySelected, setCategorySelected] = useState("");
     const [typeOfTrainingSelected, setTypeOfTrainingSelected] = useState("");
     const [trainingSiteSelected, setTrainingSiteSelected] = useState("");
-    // const [locationLatitudeCoordinate, setLocationLatitudeCoordinate] = useState("");
-    // const [locationLongitudeCoordinate, setLocationLongitudeCoordinate] = useState("");
-    var locationLatitudeCoordinate = '';
-    var locationLongitudeCoordinate = '';
+    const [locationLatitudeCoordinate, setLocationLatitudeCoordinate] = useState("");
+    const [locationLongitudeCoordinate, setLocationLongitudeCoordinate] = useState("");
+    // var locationLatitudeCoordinate = 0;
+    // var locationLongitudeCoordinate = 0;
     const [dateAndTimeSelected, setDateAndTimeSelected] = useState("");
+    // const [isDateSelected, setIsDateSelected] = useState('none');
+    var isDateSelected = 'none';
+    var isDateSelectedForButtonShow = 'flex';
+    
 
     const {orderObejct, dispatchOrderObject,
             orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
@@ -65,6 +69,8 @@ const TrainerOrderPage = ({navigation}) => {
                         trainerCategories, dispatchTrainerCategories,
                             trainerObject, dispatchTrainerObject}
         = useContext(TrainerContext);
+
+        
 
     // const {clientObject} = useContext(ClientContext);
 
@@ -181,7 +187,7 @@ const TrainerOrderPage = ({navigation}) => {
                     id: '5fe9c0ccd33a98041163aedd',
                     firstName: 'shahar',
                     lastName: 'keisar',
-                    profilePic: 'profilePic'
+                    profilePic: 'profilePisadasdadadadc'
                 },
                 trainer:{
                     id: trainerObject._id,
@@ -196,12 +202,14 @@ const TrainerOrderPage = ({navigation}) => {
                     startTime: orderStartTime,
                     endTime: orderEndTime,
                 },
-                cost: cleanedPrice,
-                status: 'pending',
+                cost: 10,
+                // status: 'pending',
                 location: {
                     address: trainingSiteSelected,
-                    latitude:locationLatitudeCoordinate,
-                    longitude:locationLongitudeCoordinate
+                    // latitude: 1,
+                    latitude: locationLatitudeCoordinate,
+                    // longitude: 1
+                    longitude: locationLongitudeCoordinate
                 },
 
 
@@ -233,6 +241,26 @@ const TrainerOrderPage = ({navigation}) => {
             })
             .catch((err) => console.log(err));
     }
+    // const dateAndTimeArrived = () => {
+    //     if(orderEndTime === ''){
+
+    //     }else{
+    //         setIsDateSelected('flex');
+
+    //     }
+    // }
+    //for show/hide chooseDateAndTimeButton
+    if(orderEndTime === ''){
+        var isDateSelectedForButtonShow = 'flex';
+
+    }else{
+        // setIsDateSelected('flex');
+        isDateSelected = 'flex';
+        isDateSelectedForButtonShow = 'none';
+
+    }
+    // dateAndTimeArrived();
+
 
 
     //Handle when the user presses the yes button in the dialog
@@ -292,9 +320,11 @@ const TrainerOrderPage = ({navigation}) => {
         .then(json => {
             var location = json.results[0].geometry.location;
             setLocationLatitudeCoordinate(location.lat);
+            // locationLatitudeCoordinate = location.lat;
             setLocationLongitudeCoordinate(location.lng)
+            // locationLongitudeCoordinate = location.lng;
             // setLocationCoordinates([location.lat, location.lng]);
-            // console.log(locationCoordinates);
+            console.log(locationLongitudeCoordinate);
         })
         .catch(error => console.warn(error));
     }
@@ -303,14 +333,17 @@ const TrainerOrderPage = ({navigation}) => {
     const handleOnTrainingSiteSelected = (item) => {
         setTrainingSiteSelected(item.label);
         if(item.label === locations.trainingSite1.address){
-            // setLocationLongitudeCoordinate(locations.trainingSite1.longitude);
-            // setLocationLatitudeCoordinate(locations.trainingSite1.latitude);
-            locationLatitudeCoordinate = locations.trainingSite1.coordinates[0];
-            locationLongitudeCoordinate = locations.trainingSite1.coordinates[1];
+            setLocationLongitudeCoordinate(locations.trainingSite1.coordinates[0]);
+            setLocationLatitudeCoordinate(locations.trainingSite1.coordinates[1]);
+            // locationLatitudeCoordinate = locations.trainingSite1.coordinates[0];
+            // locationLongitudeCoordinate = locations.trainingSite1.coordinates[1];
+            console.log( 'locationLatitudeCoordinate'+ locationLatitudeCoordinate)
 
         }else{
-            locationLatitudeCoordinate = locations.trainingSite2.coordinates[0];
-            locationLongitudeCoordinate = locations.trainingSite2.coordinates[1];
+            setLocationLongitudeCoordinate(locations.trainingSite2.coordinates[0]);
+            setLocationLatitudeCoordinate(locations.trainingSite2.coordinates[1]);
+            // locationLatitudeCoordinate = locations.trainingSite2.coordinates[0];
+            // locationLongitudeCoordinate = locations.trainingSite2.coordinates[1];
         }
     }
 
@@ -337,7 +370,7 @@ const TrainerOrderPage = ({navigation}) => {
 
     //Handle when the client presses on Discount Code button
     const handleOnReviewsPressed = () => {
-        // registerOrder();
+        registerOrder();
 
         // navigation.navigate('ComingSoon');
     }
@@ -536,7 +569,7 @@ const TrainerOrderPage = ({navigation}) => {
 
                     <View style={styles.optionsSelectContainer}>
                         <Text style={styles.pageSubTitles}>Date</Text>
-                        <View>
+                        <View display={isDateSelectedForButtonShow} >
                         <TouchableOpacity
                             style={styles.chooseDateButton}
                             onPress={() => handleChooseDateAndTime()}
@@ -544,9 +577,47 @@ const TrainerOrderPage = ({navigation}) => {
                             <Text style={styles.chooseDateText}>Choose date and time</Text>
                         </TouchableOpacity>
                         </View>
+
+                        <View display={isDateSelected}
+                            style={styles.dateSelectedContainer}
+                            >
+                                <View style={styles.dateSelectedInnerContainer}>
+                                    <View style={styles.dateSelectedIcon}>
+                                        <Icon name="calendar" size={Dimensions.get('window').height * .07} color="#00bfff"  strokeWidth= '12'/>
+                                    </View>
+
+                                    <View>    
+                                            <View style={styles.dateSelectedDetailsContainer}>
+                                   
+             
+                                                <View style={styles.dateSelectedDetails}>
+                                                    <Text style={styles.dateSelectedDetailsText}>Date: </Text>
+                                                    <Text style={styles.dateSelectedDetailsText}>Start time: </Text>
+                                                    <Text style={styles.dateSelectedDetailsText}>End Time: </Text>
+                                                </View>
+                                                <View style={styles.dateSelectedDetails}>
+                                                    <Text style={styles.dateSelectedDetailsText}>{orderStartTime.slice(0,10)}</Text>
+                                                    <Text style={styles.dateSelectedDetailsText}>{orderStartTime.slice(11,16)}</Text>
+                                                    <Text style={styles.dateSelectedDetailsText}>{orderEndTime.slice(11,16)}</Text>
+                                                </View>
+                                            </View>
+                                            <TouchableOpacity
+                                                style={styles.changeDateButton}
+                                                onPress={() => handleChooseDateAndTime()}
+                                            >
+                                                <Text style={styles.chooseDateText}>Change date and time</Text>
+                                            </TouchableOpacity>
+                                    </View> 
+
+                                </View> 
+                                    
+
+                        </View>
                         
                         
                     </View>  
+
+
 
                      <View style={styles.optionsSelectContainer}>
                          
@@ -904,6 +975,92 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white'
     },
+    orderInformationContainer: {
+        borderTopWidth: 2,
+        borderTopColor: 'lightgrey',
+        marginTop: Dimensions.get('window').height * .040,
+        height: Dimensions.get('window').height * .3,
+        width: Dimensions.get('window').width *.85,
+        alignSelf: 'center'
+    },
+    orderRow: {
+        backgroundColor: 'whitesmoke',
+        flexDirection: 'row',
+        width: Dimensions.get('window').width * .85,
+        height: Dimensions.get('window').height * .07,
+        alignSelf: 'center',
+        justifyContent: 'space-between',
+        borderBottomWidth: 2,
+        borderBottomColor: 'lightgrey',
+        
+    },
+    orderRowSecond: {
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        width: Dimensions.get('window').width *.85,
+        height: Dimensions.get('window').height * .07,
+        alignSelf: 'center',
+        justifyContent: 'space-between',
+        borderBottomWidth: 2,
+        borderBottomColor: 'lightgrey',
+    },
+    dateSelectedContainer:{
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: 'lightgrey',
+        alignSelf: 'center',
+        backgroundColor: 'whitesmoke',
+        marginTop: Dimensions.get('window').height * .008,
+
+        
+
+        
+    },
+    dateSelectedInnerContainer:{
+        flexDirection: 'row',
+        alignSelf: 'center',
+        alignContent : 'center',
+        marginLeft: Dimensions.get('window').width * .06,
+        justifyContent: 'space-between',
+        marginRight: Dimensions.get('window').width * .06,
+
+
+    },
+    dateSelectedIcon: {
+        marginTop: Dimensions.get('window').height * .008,
+
+    },
+    dateSelectedDetailsContainer:{
+        flexDirection: 'row',
+        alignSelf: 'center',
+        
+        marginTop: Dimensions.get('window').height * .008,
+    },
+    dateSelectedDetails:{
+        flexDirection: 'column',
+        marginLeft: Dimensions.get('window').width * .03,
+
+        marginRight: Dimensions.get('window').width * .03,
+
+    },
+    dateSelectedDetailsText:{
+        fontSize: Dimensions.get('window').height * .018,
+
+    },
+    changeDateButton:{
+        marginTop: Dimensions.get('window').height * .005,
+        marginBottom: Dimensions.get('window').height * .005,
+        marginRight: Dimensions.get('window').width * .055,
+        marginLeft: Dimensions.get('window').width * .065,
+        width: Dimensions.get('window').width * .53,
+        height: Dimensions.get('window').height * .04,
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        backgroundColor: 'deepskyblue',
+        borderRadius: 20
+
+    },
     rowCostContainer:{
     flexDirection: 'row',
     marginLeft: Dimensions.get('window').width * .03,
@@ -918,7 +1075,7 @@ const styles = StyleSheet.create({
     fontSize: Dimensions.get('window').height * .02,
     opacity:0.8,
     borderWidth:1.5,
-    borderRadius: 20,
+    borderRadius: 17,
     zIndex: 1
 
 },

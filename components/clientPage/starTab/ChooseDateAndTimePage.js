@@ -198,9 +198,6 @@ const ChooseDateAndTimePage = ({navigation}) => {
         return occupiedHours;
     }
 
-    const initAvailableEvents = () => {
-
-    }
 
     //Blocks the entire calendar for the picked date, only on available times
     const setAvailabele = () => {
@@ -211,13 +208,15 @@ const ChooseDateAndTimePage = ({navigation}) => {
         // for loop for days to run ahead
         for (let index = 0; index < 30; index++) {
                 var date = new Date();
-                var day = date.getDate() +index; 
+                date.setDate(date.getDate() + index);
+                var day = date.getDate() ; 
                 var month = date.getMonth() + 1; 
                 var year = date.getFullYear(); 
 
                 day = day <10 ? "0"+day : day; 
                 month = month < 9 ? "0"+(month) : (month) ; 
                 var fullDate = year + '-' + month + '-' + day;
+                console.log(fullDate)
 
                 var occupiedHours = getOccupiedHours(getEventsFromDate(fullDate));
 
@@ -257,7 +256,39 @@ const ChooseDateAndTimePage = ({navigation}) => {
                     // }
                 }
             }
+
+
+            //Get all currently displayed events on this date
+        var eventsOnPickedDate = getEventsFromDate(fullDate);
+
+        // eventsOnPickedDate.forEach(element => {
+        //     console.log(element.start)
+            
+        // });
+        // console.log('eventsOnPickedDate: ' + eventsOnPickedDate[0].start);
+
+        //Merge the current events and our 'addable' unavailable events into an array
+        var allDayEvents = [
+            ...eventsOnPickedDate,
+            //  ...events
+            ];
+        
+        //Get all available events from the day
+        // var availableEvents = uniteAllAvailable(eventsOnPickedDate);
+        
         }
+        // events = [
+        //     ...allEvents,
+        //      ...availableEvents];
+
+        
+
+        // setAllEvents(events)
+                
+        // updateTrainerUnavailable(events);
+
+
+
         forceUpdate();
         // cleanTrainerUnavailable();
 
@@ -302,6 +333,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
             //pass the times through the Dialog
             setStartTimeToPass(event.start);
             setEndTimeToPass(event.end);
+            
         }
     }
 
@@ -321,6 +353,81 @@ const ChooseDateAndTimePage = ({navigation}) => {
     
         return eventsOnDate;
     }
+
+
+
+
+
+
+    //Get all the events in a day (real events + addable event) 
+    //and return an array with all the unavailable events united
+    const uniteAllAvailable = (allDayEvents) => {
+        //Create customevent for future usage
+        var customEvent = {};
+
+        //Sort all the events by time in the array
+        allDayEvents = bubbleSort(allDayEvents);
+
+        for (let index = 0; index < allDayEvents.length-1;) {
+            const firstEvent = allDayEvents[index]; //00:00:00
+            const secondEvent = allDayEvents[index+1]; //01:00:00
+            
+            if(firstEvent.color === 'deepskyblue' && secondEvent.color === 'deepskyblue') {
+                customEvent = {start: firstEvent.start, end: secondEvent.end, title: 'AVAILABLE', color: 'deepskyblue'};
+                allDayEvents.splice(index, 1);
+                allDayEvents[index] = customEvent;
+            }  else {
+                index++;
+            }
+        }
+        
+        var unavailableEvents = removeCustomerEvents(allDayEvents);
+        return unavailableEvents;
+    }
+
+    //Remove all real events (deepskyblue events) from the array
+    const removeCustomerEvents = (allDayEvents) => {
+        for (let index = 0; index < allDayEvents.length; index++) {
+            const singleEvent = allDayEvents[index];
+
+            if (singleEvent.color === 'deepskyblue') {
+                allDayEvents.splice(index, 1);
+            }  
+        }
+
+        return allDayEvents;
+    }
+
+        // Swap Numbers
+        const swapNumbers = (array, i, j) => {
+            // Save Element Value (Because It Will Change When We Swap/Reassign)
+            let temp = array[i];
+            // Assign Element2 To Element1
+            array[i] = array[j];
+            // Assign Element1 To Element2
+            array[j] = temp;
+        };
+    
+        //Sort events array by time
+        const bubbleSort = (array) => {
+            // Iterate Over Array From First Element
+            for (let i = 0; i < array.length; i++) {
+                // Iterate Over Array From Succeeding Element
+                for (let j = 1; j < array.length; j++) {
+                    // Check If First Element Is Greater Proceeding Element
+                    const firstEvent = new Date(getDateInFormat(array[j - 1].start));
+                    const secondEvent = new Date(getDateInFormat(array[j].start));
+        
+                    if (firstEvent.getTime() > secondEvent.getTime()) {
+                        // Swap Numbers
+                        swapNumbers(array, j - 1, j);
+                    }
+                }
+            }
+            // Return Array
+            return array;
+        };
+    
 
     //Show date picker
     const handleShowAddEvent = () => {
@@ -349,10 +456,17 @@ const ChooseDateAndTimePage = ({navigation}) => {
             type: 'SET_ORDER_END_TIME',
             orderEndTime : endTimeForOrder
         });
-        
-        setTimeSelectedDialogVisible(false);
+        navigation.navigate('TrainerOrderPage'
+        // ,{
+        //     params: { orderStartTime: startTimeForOrder, orderEndTime: endTimeForOrder },
+        //     orderStartTime: startTimeForOrder,
+        //     orderEndTime: endTimeForOrder
+        // }
+        );
 
-        navigation.navigate('TrainerOrderPage');
+        // setTimeSelectedDialogVisible(false);
+
+       
 
     }
     
@@ -388,10 +502,10 @@ const ChooseDateAndTimePage = ({navigation}) => {
             {/* <Icon name="plus-square" size={Dimensions.get('window').height * .025} color="#00bfff" /> */}
                 {/* <View style={styles.eventCalendarContainer}> */}
 
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress= {() => handleShowAddEvent()}>
                         <Text style={styles.addEventText}>Add event</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                         <EventCalendar
                             events={allEvents}
                             eventTapped={(event)=>handleEventTapped(event)}

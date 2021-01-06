@@ -16,7 +16,6 @@ exports.makeOrder = (req, res) => {
                 profilePic: req.body.client.profilePic
 
             },
-        
             trainer: {
                 id: req.body.trainer.id, 
                 firstName: req.body.trainer.firstName, 
