@@ -48,6 +48,9 @@ const ChooseDateAndTimePage = ({navigation}) => {
     
 
     useEffect(() => {
+        // for (let index = 0; index <= 60; index+10) {
+        //     console.log(index);
+        // }
         getTrainerFromMongoDB();    
     },[]);
 
@@ -84,7 +87,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
     const getAllEventAfterModify = async() =>{
         await getAllEvents();
-        
+            
             setAvailabele();
     }
     const getAllEvents = async () => {
@@ -97,7 +100,6 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
             if( element.color === 'deepskyblue'){
                 element = Object.assign({}, element, {color: 'lightgrey'},{title: 'UNAVAILABLE'},{summary: ''},{start: element.start},{end: element.end});
-                console.log(element);
 
             }
             events.push(element);
@@ -203,12 +205,31 @@ const ChooseDateAndTimePage = ({navigation}) => {
     const setAvailabele = () => {
         setDatePickerVisible(false);
         var events = allEvents;
+        // var events = [];
         var addAbleEvent = {};
 
+        var date = new Date();
+
+        
+        // for (let index = 0; index <= 60; index+=10) {
+        //     date.setHours(date.getHours(),date.getMinutes()+ 10,0,0);
+        //     console.log('adding minutes:'+ date);
+
+        // }
+        //  addAbleEvent = {start: '2021-01-08 '+ '07:00:00', end: '2021-01-08 ' + '08:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+        //  events.push(addAbleEvent);
+        //  setAllEvents(events);
+        //  forceUpdate();
+        // console.log(events);
+
+
+
         // for loop for days to run ahead
-        for (let index = 0; index < 30; index++) {
+        for (let index = 0; index < 3; index++) {
                 var date = new Date();
                 date.setDate(date.getDate() + index);
+                var minute = date.getMinutes();
+                var hour = date.getHours();
                 var day = date.getDate() ; 
                 var month = date.getMonth() + 1; 
                 var year = date.getFullYear(); 
@@ -216,70 +237,131 @@ const ChooseDateAndTimePage = ({navigation}) => {
                 day = day <10 ? "0"+day : day; 
                 month = month < 9 ? "0"+(month) : (month) ; 
                 var fullDate = year + '-' + month + '-' + day;
-                console.log(fullDate)
 
                 var occupiedHours = getOccupiedHours(getEventsFromDate(fullDate));
+                console.log('occupiedHours' + occupiedHours);
+                console.log(fullDate);
+
+
+                if (occupiedHours === undefined || occupiedHours.length == 0) {
+
+                    // occupiedHours empty or does not exist
+                    addAbleEvent = {start: fullDate+ ' 00:00:00', end: fullDate + ' 24:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+                    events.push(addAbleEvent);
+
+                }else if(occupiedHours){
+                    var sortedArray = occupiedHours.sort();
+                    console.log('insdie array check' + sortedArray);
+                    //if day got no any '00:00:00' start time and '24:00:00' end time
+                    if(sortedArray[0].slice(0,8) != '00:00:00' && sortedArray[sortedArray.length-1].slice(9,17) != '24:00:00' ){
+                        const baseStartTimeForEvent = '00:00:00'
+                        console.log('no start time: so ' + baseStartTimeForEvent);
+                        sortedArray.forEach(element => {
+                            var startTimeForNewEvent = element.slice(0,8);
+                            var endTimeForNewEvent = element.slice(9,17);
+                            // addAbleEvent = {start: fullDate+ ' '+baseStartTimeForEvent, end: fullDate + ' '+ startTimeForNewEvent, title: 'AVAILABLE', color: 'deepskyblue'};
+                            // events.push(addAbleEvent);
+                            // addAbleEvent = {start: fullDate+ ' '+endTimeForNewEvent, end: fullDate + ' '+ '24:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+                            // events.push(addAbleEvent);
+                        });
+                        for (let index = 0; index < sortedArray.length; index++) {
+                            var startTimeForNewEvent = sortedArray[index+1].slice(0,8);
+                            var endTimeForNewEvent = sortedArray[index].slice(9,17);
+                            console.log('startTimeForNewEventInForLoop' + startTimeForNewEvent)
+                            addAbleEvent = {start: fullDate+ ' '+endTimeForNewEvent, end: fullDate + ' '+ startTimeForNewEvent, title: 'AVAILABLE', color: 'deepskyblue'};
+                            events.push(addAbleEvent);
+                            
+                        }
+                    }
+                    
+                }
+
+                // occupiedHours.forEach(element => {
+                //     // var cuttedTime = {...occupiedHours.splice(1,2)}
+                //     var startTimeForNewEvent = element.slice(0,8);
+                //     var endTimeForNewEvent = element.slice(9,17);
+                //     console.log('startTimeForNewEvent ' +fullDate +' '+ startTimeForNewEvent +fullDate +' ' +endTimeForNewEvent )
+                //     addAbleEvent = {start: fullDate+ '07:00:00', end: fullDate + '08:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+                //     //addAbleEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+
+                //     events.push(addAbleEvent);
+
+                //     // if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
+
+                //     //     events.push(addAbleEvent);
+                //     // }
+                // });                        
+        
 
 
 
                         
-            for (let index = 0; index < 24; index++) {
-                if(index<9) {
-                    addAbleEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
-                    if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
-                        events.push(addAbleEvent);
-                    }
-                    // else{
-                    //     //if trainer already has an event in that time 
-                    //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
-                    //     events.push(unavailableEvent)
-                    // }
-                } else if (index === 9) {
-                    addAbleEvent =  {start: fullDate+' 0'+index+':00:00', end: fullDate+' '+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
-                    if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
-                        events.push(addAbleEvent);
-                    }
-                    // else{
-                    //     //if trainer already has an event in that time 
-                    //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
-                    //     events.push(unavailableEvent)
-                    // }
-                } else {
-                    addAbleEvent =  { start: fullDate+' '+index+':00:00', end: fullDate+' '+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
-                    if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
-                        events.push(addAbleEvent);
-                    }
-                    // else{
-                    //     //if trainer already has an event in that time 
-                    //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
-                    //     events.push(unavailableEvent)
-                    // }
-                }
-            }
+            // for (let index = 0; index < 24; index++) {
+            //     if(index<9) {
+            //         addAbleEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+            //         if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
+
+                        
+            //             events.push(addAbleEvent);
+                        
+            //         }
+            //         // else{
+            //         //     //if trainer already has an event in that time 
+            //         //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
+            //         //     events.push(unavailableEvent)
+            //         // }
+            //     } else if (index === 9) {
+            //         addAbleEvent =  {start: fullDate+' 0'+index+':00:00', end: fullDate+' '+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+            //         if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
+            //             events.push(addAbleEvent);
+            //         }
+            //         // else{
+            //         //     //if trainer already has an event in that time 
+            //         //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
+            //         //     events.push(unavailableEvent)
+            //         // }
+            //     } else {
+            //         addAbleEvent =  { start: fullDate+' '+index+':00:00', end: fullDate+' '+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+            //         if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
+            //             events.push(addAbleEvent);
+            //         }
+            //         // else{
+            //         //     //if trainer already has an event in that time 
+            //         //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
+            //         //     events.push(unavailableEvent)
+            //         // }
+            //     }
+            // }
 
 
-            //Get all currently displayed events on this date
+        //Get all currently displayed events on this date
         var eventsOnPickedDate = getEventsFromDate(fullDate);
 
         // eventsOnPickedDate.forEach(element => {
-        //     console.log(element.start)
+        //     console.log(element.start);
             
         // });
         // console.log('eventsOnPickedDate: ' + eventsOnPickedDate[0].start);
 
         //Merge the current events and our 'addable' unavailable events into an array
-        var allDayEvents = [
-            ...eventsOnPickedDate,
-            //  ...events
-            ];
+        // var allDayEvents = [
+        //     ...eventsOnPickedDate,
+        //     ...events
+        //     ];
         
         //Get all available events from the day
-        // var availableEvents = uniteAllAvailable(eventsOnPickedDate);
-        
-        }
+        // var availableEvents = uniteAllAvailable(allDayEvents);
         // events = [
         //     ...allEvents,
-        //      ...availableEvents];
+        //      ...availableEvents
+        //     ]
+
+
+
+        // events.push(...availableEvents)
+        
+        }
+        
 
         
 
@@ -295,7 +377,40 @@ const ChooseDateAndTimePage = ({navigation}) => {
        
     }
 
+    const noNameYetFunc = () => {
+        var events = allEvents;
+        var addAbleEvent = {};
 
+
+
+        for (let index = 0; index < 30; index++) {
+            var date = new Date();
+            date.setDate(date.getDate() + index);
+            var day = date.getDate() ; 
+            var month = date.getMonth() + 1; 
+            var year = date.getFullYear(); 
+
+            day = day <10 ? "0"+day : day; 
+            month = month < 9 ? "0"+(month) : (month) ; 
+            var fullDate = year + '-' + month + '-' + day;
+            console.log(fullDate)
+
+            // var occupiedHours = getOccupiedHours(getEventsFromDate(fullDate));
+            //Merge the current events and our 'addable' unavailable events into an array
+            var allDayEvents = [
+                ...eventsOnPickedDate,
+                ...events
+                ];
+        
+            //Get all available events from the day
+            var availableEvents = uniteAllAvailable(allDayEvents);
+            events = [
+                ...allEvents,
+                ...availableEvents
+                ]
+        }
+
+    }
     
 
     
@@ -368,14 +483,23 @@ const ChooseDateAndTimePage = ({navigation}) => {
         //Sort all the events by time in the array
         allDayEvents = bubbleSort(allDayEvents);
 
+        // console.log('allDayEvents:   '+ allDayEvents)
+
         for (let index = 0; index < allDayEvents.length-1;) {
             const firstEvent = allDayEvents[index]; //00:00:00
+            console.log('firstEvent: '+ firstEvent.start)
             const secondEvent = allDayEvents[index+1]; //01:00:00
+            console.log('secondEvent: '+ secondEvent.end)
+
             
             if(firstEvent.color === 'deepskyblue' && secondEvent.color === 'deepskyblue') {
                 customEvent = {start: firstEvent.start, end: secondEvent.end, title: 'AVAILABLE', color: 'deepskyblue'};
+                console.log('**************customEvent.start:************* '+ customEvent.start );
+                console.log('**************customEvent.end):************* '+  customEvent.end);
+                console.log('**************customEvent asdasdasdaaffasfdsdddd '+  customEvent.color);
                 allDayEvents.splice(index, 1);
                 allDayEvents[index] = customEvent;
+                
             }  else {
                 index++;
             }
@@ -383,6 +507,11 @@ const ChooseDateAndTimePage = ({navigation}) => {
         
         var unavailableEvents = removeCustomerEvents(allDayEvents);
         return unavailableEvents;
+    }
+
+    //Convert  2021-01-03 07:00:00 to 2021-01-03T07:00:00.000Z
+    const getDateInFormat = (dateString) => {
+        return ((dateString.replace(/ /g, 'T'))+ '.000Z');
     }
 
     //Remove all real events (deepskyblue events) from the array

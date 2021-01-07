@@ -1027,7 +1027,7 @@ const styles = StyleSheet.create({
 
     },
     dateSelectedIcon: {
-        marginTop: Dimensions.get('window').height * .008,
+        marginTop: Dimensions.get('window').height * .02,
 
     },
     dateSelectedDetailsContainer:{
