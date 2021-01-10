@@ -1,8 +1,10 @@
 import React, {useContext, useState, useEffect, useReducer} from 'react';
-import { Dimensions,Button, Text, View, SafeAreaView, Image, StyleSheet} from 'react-native';
+import {Modal, Dimensions,Button, Text, View, SafeAreaView, Image, StyleSheet} from 'react-native';
 import EventCalendar from '../../GlobalComponents/calendar/EventCalendar';
 import Dialog from "react-native-dialog";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import Icon from 'react-native-vector-icons/Feather';
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -37,6 +39,12 @@ const ChooseDateAndTimePage = ({navigation}) => {
     const [unavailableDialogVisible, setUnavailableDialogVisible] = useState(false);
     const [trainerObjectMongoDB, setTrainerObjectMongoDB] = useState({});
     const [datePickerVisible, setDatePickerVisible] = useState(false);
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [date, setDate] = useState(new Date(1598051730000));
+    const [currentDisplayedDate, setCurrentDisplayedDate] = useState("");
+
+
     const [allEvents, setAllEvents] = useState([]);
     const [startTimeToPass, setStartTimeToPass] = useState('');
     const [endTimeToPass, setEndTimeToPass] = useState('');
@@ -51,6 +59,8 @@ const ChooseDateAndTimePage = ({navigation}) => {
         // for (let index = 0; index <= 60; index+10) {
         //     console.log(index);
         // }
+        setCurrentDisplayedDate(getCurrentDate());
+
         getTrainerFromMongoDB();    
     },[]);
 
@@ -224,8 +234,8 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
 
 
-        // for loop for days to run ahead
-        for (let index = 0; index < 3; index++) {
+        // A loop that ran day after day on the calendar(30 days max as setted in the for loop)
+        for (let index = 0; index < 30; index++) {
                 var date = new Date();
                 date.setDate(date.getDate() + index);
                 var minute = date.getMinutes();
@@ -239,59 +249,96 @@ const ChooseDateAndTimePage = ({navigation}) => {
                 var fullDate = year + '-' + month + '-' + day;
 
                 var occupiedHours = getOccupiedHours(getEventsFromDate(fullDate));
-                console.log('occupiedHours' + occupiedHours);
-                console.log(fullDate);
 
-
+                ///***PART ONE IF NO ANY OCCUPIED HOURS AT THAT DAY***
                 if (occupiedHours === undefined || occupiedHours.length == 0) {
 
-                    // occupiedHours empty or does not exist
+                    //when occupiedHours empty or does not exist
+                    //inserting to the events array an event which set as AVAILABLE for all day
                     addAbleEvent = {start: fullDate+ ' 00:00:00', end: fullDate + ' 24:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
                     events.push(addAbleEvent);
 
                 }else if(occupiedHours){
+                    //if there are occupied event in that day
                     var sortedArray = occupiedHours.sort();
-                    console.log('insdie array check' + sortedArray);
-                    //if day got no any '00:00:00' start time and '24:00:00' end time
-                    if(sortedArray[0].slice(0,8) != '00:00:00' && sortedArray[sortedArray.length-1].slice(9,17) != '24:00:00' ){
-                        const baseStartTimeForEvent = '00:00:00'
-                        console.log('no start time: so ' + baseStartTimeForEvent);
-                        sortedArray.forEach(element => {
-                            var startTimeForNewEvent = element.slice(0,8);
-                            var endTimeForNewEvent = element.slice(9,17);
-                            // addAbleEvent = {start: fullDate+ ' '+baseStartTimeForEvent, end: fullDate + ' '+ startTimeForNewEvent, title: 'AVAILABLE', color: 'deepskyblue'};
-                            // events.push(addAbleEvent);
-                            // addAbleEvent = {start: fullDate+ ' '+endTimeForNewEvent, end: fullDate + ' '+ '24:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
-                            // events.push(addAbleEvent);
-                        });
-                        for (let index = 0; index < sortedArray.length; index++) {
-                            var startTimeForNewEvent = sortedArray[index+1].slice(0,8);
-                            var endTimeForNewEvent = sortedArray[index].slice(9,17);
-                            console.log('startTimeForNewEventInForLoop' + startTimeForNewEvent)
-                            addAbleEvent = {start: fullDate+ ' '+endTimeForNewEvent, end: fullDate + ' '+ startTimeForNewEvent, title: 'AVAILABLE', color: 'deepskyblue'};
-                            events.push(addAbleEvent);
+                    //if there is only one occupied event:
+                    if (sortedArray.length === 1) {
+                        var startTimeForNewEvent = sortedArray[0].slice(0,8);
+                        var endTimeForNewEvent = sortedArray[0].slice(9,17);
+                        //check if there is any event in the beginning of the day
+                        //if there is no event - first available event will be from '00:00:00'
+                        if(sortedArray[0].slice(0,8) != '00:00:00'){
+                            if (startTimeForNewEvent != '00:00:00') {
+                                addAbleEvent = {start: fullDate+ ' '+'00:00:00', end: fullDate + ' '+ startTimeForNewEvent, title: 'AVAILABLE', color: 'deepskyblue'};
+                                events.push(addAbleEvent);
+                            }
                             
                         }
+                        //check if there is any event in the end of the day
+                        //if there is no event - last available event will be until '24:00:00'
+                        if (sortedArray[0].slice(9,17) != '24:00:00'){
+                            if (endTimeForNewEvent != '24:00:00') {
+                                addAbleEvent = {start: fullDate+ ' '+endTimeForNewEvent, end: fullDate + ' '+ '24:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+                                events.push(addAbleEvent);
+                            }
+                        }
+                    //***PART TWO IF THERE ARE OCCUPIED HOURS AT THAT DAY***       
+                    }else if(sortedArray.length > 1){
+                        //first fill the empty start of the day
+                        //if day got no any '00:00:00' start time
+                        // sortedArray[0].slice(0,8) == first event in the day
+                        if (sortedArray[0].slice(0,8) != '00:00:00') {
+                            var startTimeForNewEvent = sortedArray[0].slice(0,8);
+                           if( startTimeForNewEvent != '00:00:00'){
+                            addAbleEvent = {start: fullDate+ ' '+'00:00:00', end: fullDate + ' '+ startTimeForNewEvent, title: 'AVAILABLE', color: 'deepskyblue'};
+                            events.push(addAbleEvent);
+                           }
+                            
+                        }
+                        //fill the end of the day:
+                        //if day got no any '24:00:00' end time
+                        //sortedArray[sortedArray.length-1] == last event in the day
+                        if (sortedArray[sortedArray.length-1].slice(9,17) != '24:00:00'){
+                            var endTimeForNewEvent = sortedArray[sortedArray.length-1].slice(9,17);
+                            if (endTimeForNewEvent != '24:00:00') {
+                                addAbleEvent = {start: fullDate+ ' '+endTimeForNewEvent, end: fullDate + ' '+ '24:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+                                events.push(addAbleEvent);
+                            }
+                        }
+
+                        //if day got no any '00:00:00' start time and '24:00:00' end time
+                        for (let index = 0; index < sortedArray.length; index++) {
+                            
+                            if ((sortedArray[index+1] != undefined)) {
+                                var startTimeForNewEvent = sortedArray[index+1].slice(0,8);
+                                var endTimeForNewEvent = sortedArray[index].slice(9,17);
+                                 //check that events won't create between no time in occupied hours
+                                 // so we check start time of the next event isn't equal to current event
+                                if(startTimeForNewEvent != endTimeForNewEvent){
+                                    addAbleEvent = {start: fullDate+ ' '+endTimeForNewEvent, end: fullDate + ' '+ startTimeForNewEvent, title: 'AVAILABLE', color: 'deepskyblue'};
+                                    events.push(addAbleEvent);
+                                }
+                            } 
+                        }
                     }
-                    
+
+                   
                 }
 
-                // occupiedHours.forEach(element => {
-                //     // var cuttedTime = {...occupiedHours.splice(1,2)}
-                //     var startTimeForNewEvent = element.slice(0,8);
-                //     var endTimeForNewEvent = element.slice(9,17);
-                //     console.log('startTimeForNewEvent ' +fullDate +' '+ startTimeForNewEvent +fullDate +' ' +endTimeForNewEvent )
-                //     addAbleEvent = {start: fullDate+ '07:00:00', end: fullDate + '08:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
-                //     //addAbleEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
+                // //unite UNAVILAVLE EVENTS
+                // var todayEvents = getEventsFromDate(fullDate);
+                // console.log('todayEvents: ' + todayEvents[0]);
+                // todayEvents.sort()
+                // console.log('todayEvents: ' +  + todayEvents[0]);
 
-                //     events.push(addAbleEvent);
+                // for (let index = 0; index < todayEvents.length; index++) {
+                //     // const element = array[index];
+                    
+                // }
 
-                //     // if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
 
-                //     //     events.push(addAbleEvent);
-                //     // }
-                // });                        
-        
+                
+                
 
 
 
@@ -334,31 +381,9 @@ const ChooseDateAndTimePage = ({navigation}) => {
             // }
 
 
-        //Get all currently displayed events on this date
-        var eventsOnPickedDate = getEventsFromDate(fullDate);
-
-        // eventsOnPickedDate.forEach(element => {
-        //     console.log(element.start);
-            
-        // });
-        // console.log('eventsOnPickedDate: ' + eventsOnPickedDate[0].start);
-
-        //Merge the current events and our 'addable' unavailable events into an array
-        // var allDayEvents = [
-        //     ...eventsOnPickedDate,
-        //     ...events
-        //     ];
         
-        //Get all available events from the day
-        // var availableEvents = uniteAllAvailable(allDayEvents);
-        // events = [
-        //     ...allEvents,
-        //      ...availableEvents
-        //     ]
-
-
-
-        // events.push(...availableEvents)
+        
+        
         
         }
         
@@ -377,40 +402,6 @@ const ChooseDateAndTimePage = ({navigation}) => {
        
     }
 
-    const noNameYetFunc = () => {
-        var events = allEvents;
-        var addAbleEvent = {};
-
-
-
-        for (let index = 0; index < 30; index++) {
-            var date = new Date();
-            date.setDate(date.getDate() + index);
-            var day = date.getDate() ; 
-            var month = date.getMonth() + 1; 
-            var year = date.getFullYear(); 
-
-            day = day <10 ? "0"+day : day; 
-            month = month < 9 ? "0"+(month) : (month) ; 
-            var fullDate = year + '-' + month + '-' + day;
-            console.log(fullDate)
-
-            // var occupiedHours = getOccupiedHours(getEventsFromDate(fullDate));
-            //Merge the current events and our 'addable' unavailable events into an array
-            var allDayEvents = [
-                ...eventsOnPickedDate,
-                ...events
-                ];
-        
-            //Get all available events from the day
-            var availableEvents = uniteAllAvailable(allDayEvents);
-            events = [
-                ...allEvents,
-                ...availableEvents
-                ]
-        }
-
-    }
     
 
     
@@ -440,17 +431,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
 
 
-    const handleEventTapped = (event) => {
-        if(event.color === 'lightgrey'){
-            setUnavailableDialogVisible(true);
-        }else{
-            setTimeSelectedDialogVisible(true);
-            //pass the times through the Dialog
-            setStartTimeToPass(event.start);
-            setEndTimeToPass(event.end);
-            
-        }
-    }
+    
 
     //Get all events on a certain date
     const getEventsFromDate = (date) => {
@@ -487,16 +468,11 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
         for (let index = 0; index < allDayEvents.length-1;) {
             const firstEvent = allDayEvents[index]; //00:00:00
-            console.log('firstEvent: '+ firstEvent.start)
             const secondEvent = allDayEvents[index+1]; //01:00:00
-            console.log('secondEvent: '+ secondEvent.end)
 
             
             if(firstEvent.color === 'deepskyblue' && secondEvent.color === 'deepskyblue') {
                 customEvent = {start: firstEvent.start, end: secondEvent.end, title: 'AVAILABLE', color: 'deepskyblue'};
-                console.log('**************customEvent.start:************* '+ customEvent.start );
-                console.log('**************customEvent.end):************* '+  customEvent.end);
-                console.log('**************customEvent asdasdasdaaffasfdsdddd '+  customEvent.color);
                 allDayEvents.splice(index, 1);
                 allDayEvents[index] = customEvent;
                 
@@ -557,12 +533,46 @@ const ChooseDateAndTimePage = ({navigation}) => {
             return array;
         };
     
+        const handleEventTapped = (event) => {
+            if(event.color === 'lightgrey'){
+                setUnavailableDialogVisible(true);
+            }else{
+                // setDatePickerVisible(true);
+                setModalVisible(true);
+                // setTimeSelectedDialogVisible(true);
+                //pass the times through the Dialog
+                setStartTimeToPass(event.start);
+                setEndTimeToPass(event.end);
+                
+            }
+        }
+
+        //Save value from start time picker
+    const onStartTimeChage = (event) => {
+        var selectedTime = new Date(event.nativeEvent.timestamp);
+        setCurrentDisplayedDate(selectedTime);
+
+        selectedTime.setHours(selectedTime.getHours()-selectedTime.getTimezoneOffset()/60);
+        new Date(selectedTime.toISOString());
+        setStartTimeToPass(new Date(selectedTime.toISOString()));
+        setCurrentDisplayedDate(selectedTime);
+        console.log(startTimeToPass);
+    }
+
+    //Save value from end time picker
+    const onEndTimeChage = (event) => {
+        var selectedTime = new Date(event.nativeEvent.timestamp);
+        selectedTime.setHours(selectedTime.getHours()-selectedTime.getTimezoneOffset()/60);
+        blockEndTime = new Date(selectedTime.toISOString());
+    
+    }
 
     //Show date picker
     const handleShowAddEvent = () => {
         setDatePickerVisible(true);
     }
     const handleAddEvent = (time) => {
+        console.log(startTimeToPass);
 
         
         setDatePickerVisible(false);
@@ -603,14 +613,74 @@ const ChooseDateAndTimePage = ({navigation}) => {
     return(
         <SafeAreaView style={styles.safeArea}>
             <View>
+
+            <View style={styles.headerContainer}>
+                    <Text style={styles.justYouHeader}>Just You</Text>
+                    <Text style={styles.partnerText}>Calendar</Text>
+            </View>
+
+
+            <Modal
+
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                }}
+                >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Choose time range</Text>
+
+                        <Text style={styles.subtitleText}>Training start time</Text>
+                        <DateTimePicker
+                            style={styles.pickerStyle}
+                            testID="dateTimePicker"
+                            minuteInterval={10}
+                            value={new Date(currentDisplayedDate)}
+                            mode={'time'}
+                            is24Hour={true}
+                            display="default"
+                            onChange={(time) => onStartTimeChage(time)}
+                        
+                        />
+                        
+                        <View style={styles.buttonsRow}> 
+                            <TouchableOpacity
+                                style={styles.cancelButton}
+                                onPress={() => {
+                                    setModalVisible(!modalVisible);
+                                }}
+                            >
+                                <Text style={styles.cancelTextStyle}>Cancel</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.submitButton}
+                                onPress={() => {
+                                    handleAddEvent();
+                                    // setModalVisible(!modalVisible);
+                                }}
+                            >
+                                <Text style={styles.submitTextStyle}>Submit</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+                </Modal>
+
+
+            
                
-                <Dialog.Container visible={timeSelectedDialogVisible}>
+                {/* <Dialog.Container visible={timeSelectedDialogVisible}>
                     <Dialog.Title >Confirmation </Dialog.Title>
                     <Dialog.Description >{ 'Date: '+ startTimeToPass.slice(0,10)+' \n'+'Time: '+startTimeToPass.slice(11,16)+ '-'+endTimeToPass.slice(11,16)} </Dialog.Description>
                     <Dialog.Button style={styles.cancelDialog} label="Cancel" onPress={(() => handleCancelDialog())} />
                     <Dialog.Button style={styles.signOutDialog} label="Submit" onPress={() => handleSubmitDialog(startTimeToPass, endTimeToPass)} />
 
-                </Dialog.Container>
+                </Dialog.Container> */}
 
                 <Dialog.Container visible={unavailableDialogVisible}>
                     <Dialog.Title style={styles.dialogTitle}>The selected time is unavailable</Dialog.Title>
@@ -620,11 +690,13 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
             <DateTimePickerModal
               isVisible={datePickerVisible}
-              mode="date"
+              mode="time"
               onConfirm={(time) => handleAddEvent(time)}
               onCancel={hideDatePicker}
               headerTextIOS="Choose a time to start training        *training is one hour"
             />
+
+            
             </View>
             <View style={styles.container}>
                 {/* <View>  </View> */}
@@ -658,6 +730,18 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         flex: 1
     },
+    headerContainer: {
+        alignItems: 'center'
+      },
+    justYouHeader: {
+        fontSize: Dimensions.get('window').height * .0278,
+        fontWeight: 'bold'
+    },
+    partnerText: {
+        color: 'deepskyblue',
+        fontWeight: 'bold',
+        fontSize: Dimensions.get('window').height * .018
+    },
     dialogTitle: {
         fontWeight: 'bold',
         fontSize: 20
@@ -687,7 +771,77 @@ const styles = StyleSheet.create({
     },
     eventCalendarContainer:{
         marginTop:Dimensions.get('window').height * .01,
-    }
+    },
+    modalView: {
+        // margin: Dimensions.get('window').height * .25,
+        backgroundColor: "white",
+        borderRadius: 20,
+        height: Dimensions.get('window').height * .25,
+        width: Dimensions.get('window').width * .7,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+      },
+      modalText: {
+        marginTop:  Dimensions.get('window').height * .01,
+        fontWeight: "bold",
+        fontSize: Dimensions.get('window').height * .03,
+        textAlign: "center"
+      }, 
+      centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      },
+      subtitleText: {
+        marginTop:  Dimensions.get('window').height * .025,
+        fontWeight: "bold",
+        fontSize: Dimensions.get('window').height * .02,
+        textAlign: "center"
+      },
+      buttonsRow: {
+        // marginTop:  Dimensions.get('window').height * .02,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      },
+      pickerStyle: {
+        // marginTop:  Dimensions.get('window').height * .025,
+        alignSelf: 'center',
+        marginRight: Dimensions.get('window').width * -.25,
+        width: Dimensions.get('window').width * .5,
+        height: Dimensions.get('window').height * .10,
+      },
+      cancelButton: {
+        marginLeft: Dimensions.get('window').width * .04,
+        backgroundColor: "lightgrey",
+        width: Dimensions.get('window').width * .25,
+        height: Dimensions.get('window').height * .05,
+        borderRadius: 20,
+        justifyContent: 'center'
+      },
+      cancelTextStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+      },
+      submitButton: {
+        marginRight: Dimensions.get('window').width * .04,
+        backgroundColor: "deepskyblue",
+        width: Dimensions.get('window').width * .25,
+        height: Dimensions.get('window').height * .05,
+        borderRadius: 20,
+        justifyContent: 'center'
+      },
+      submitTextStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+      },
 
 });
 

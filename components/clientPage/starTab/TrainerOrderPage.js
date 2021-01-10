@@ -199,8 +199,8 @@ const TrainerOrderPage = ({navigation}) => {
                 type: 'couple outdoor', 
                 category: categorySelected, 
                 trainingDate: {
-                    startTime: orderStartTime,
-                    endTime: orderEndTime,
+                    startTime: new Date(),
+                    endTime: new Date(),
                 },
                 cost: 10,
                 // status: 'pending',

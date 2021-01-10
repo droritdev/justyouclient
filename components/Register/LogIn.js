@@ -3,6 +3,7 @@ import {StyleSheet, View, Text, Dimensions, Image, SafeAreaView, Button} from 'r
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
 import axios from 'axios';
+import { Base64 } from 'js-base64';
 
 
 import auth from '@react-native-firebase/auth';
@@ -23,7 +24,7 @@ const LogInClient = ({navigation}) => {
 
     const [emailAddressInput, setEmailAddressInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
-
+    var encodedPass = "";
     const [isEmailValid, setIsEmailValid] = useState(false);
 
     // Set an initializing state whilst Firebase connects
@@ -84,7 +85,7 @@ const LogInClient = ({navigation}) => {
     //After auth is complete, navigate to welcome page
     const authUser = () => {
         auth()
-        .signInWithEmailAndPassword(emailAddressInput, passwordInput)
+        .signInWithEmailAndPassword(emailAddressInput, encodedPass)
         .then(() => {
             // dispatchEmail({
             //     type: 'SET_EMAIL_ADDRESS',
@@ -128,7 +129,12 @@ const LogInClient = ({navigation}) => {
 
     //Handle when user presses the log in button to try and log in to his user
     const handleLogInButton = () => {
-        if(emailAddressInput == "" && passwordInput == "") {
+            encodedPass = Base64.encode(passwordInput);
+          dispatchPassword({
+            type: 'SET_PASSWORD',
+            password: encodedPass
+          });
+        if(emailAddressInput == "" && encodedPass == "") {
             setErrorMessage("Both fields are required");
             setIsErrorMessage(true);
         }
@@ -137,11 +143,11 @@ const LogInClient = ({navigation}) => {
             setIsErrorMessage(true);
         }
 
-        else if(passwordInput == "") {
+        else if(encodedPass == "") {
                 setErrorMessage("Password is required");
                 setIsErrorMessage(true);
         } 
-        else if (isEmailValid && passwordInput != "") {
+        else if (isEmailValid && encodedPass != "") {
             authUser();
         }
         else if (!isEmailValid) {

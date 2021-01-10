@@ -1,5 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {StyleSheet, View, Text, TextInput, Button, Dimensions, KeyboardAvoidingView, Platform, SafeAreaView} from 'react-native';
+import { Base64 } from 'js-base64';
+
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import AppButton from '../GlobalComponents/AppButton';
@@ -12,6 +14,8 @@ const CreatePassword = ({navigation}) => {
     const [isPasswordsNotMatch, setIsPasswordsNotMatch] = useState(false)
     const [passwordErrorText, setPasswordErrorText] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
+
+   
     
     //Sets the password object to the value in the text field
     const handleOnChangePassword = (text) => {
@@ -39,9 +43,10 @@ const CreatePassword = ({navigation}) => {
           setIsPasswordsNotMatch(true);
         }
         else{
+          var encodedPass = Base64.encode(passwordInput);
           dispatchPassword({
             type: 'SET_PASSWORD',
-            password: passwordInput
+            password: encodedPass
           });
           setPasswordInput("");
           setConfirmedPassword("");

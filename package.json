@@ -23,6 +23,7 @@
     "axios": "^0.21.0",
     "galio-framework": "^0.7.1",
     "install": "^0.13.0",
+    "js-base64": "^3.6.0",
     "npm": "^6.14.8",
     "react": "16.13.1",
     "react-native": "^0.63.3",
