@@ -10,6 +10,7 @@ const OrderContextProvider = ({children}) => {
     const [orderTrainingCategory, dispatchOrderTrainingCategory] = useReducer(OrderReducer, "");
     const [orderStartTime, dispatchOrderStartTime] = useReducer(OrderReducer, "");
     const [orderEndTime, dispatchOrderEndTime] = useReducer(OrderReducer, "");
+    const [orderDate, dispatchOrderDate] = useReducer(OrderReducer, "");
     
     return(
         <OrderContext.Provider value={{
@@ -17,7 +18,8 @@ const OrderContextProvider = ({children}) => {
             orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
             orderTrainingCategory, dispatchOrderTrainingCategory,
             orderStartTime, dispatchOrderStartTime,
-            orderEndTime, dispatchOrderEndTime
+            orderEndTime, dispatchOrderEndTime,
+            orderDate, dispatchOrderDate,
 
         }}>
             {children}

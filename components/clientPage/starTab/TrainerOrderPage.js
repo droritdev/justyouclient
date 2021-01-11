@@ -52,6 +52,7 @@ const TrainerOrderPage = ({navigation}) => {
     const {orderObejct, dispatchOrderObject,
             orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
                 orderTrainingCategory, dispatchOrderTrainingCategory,
+                orderDate,
                     orderStartTime, dispatchOrderStartTime,
                         orderEndTime, dispatchOrderEndTime}
             = useContext(OrderContext);
@@ -90,8 +91,14 @@ const TrainerOrderPage = ({navigation}) => {
     
     const locations = trainerObject.location
 
-    // var StartTime = orderStartTime;
-    // var EndTime = orderEndTime;
+    var orderDateClean = orderDate;
+    console.log('orderDateClean' +orderDateClean);
+    var startTime = orderDate + ' '+ orderStartTime;
+    var endTime = orderDate + ' '+ orderEndTime;
+    
+    console.log('orderDate' + orderDateClean)
+        console.log('orderStartTime: '+ startTime)
+        console.log('orderEndTime: '+ endTime)
 
     const orderToUpload = [
         { 
@@ -111,8 +118,8 @@ const TrainerOrderPage = ({navigation}) => {
             type: 'couple outdoor', 
             category: categorySelected, 
             trainingDate: {
-                startTime: '',
-                endTime: '',
+                startTime: startTime,
+                endTime: endTime
             },
             cost: cleanedPrice,
             status: 'a',
@@ -199,8 +206,8 @@ const TrainerOrderPage = ({navigation}) => {
                 type: 'couple outdoor', 
                 category: categorySelected, 
                 trainingDate: {
-                    startTime: new Date(),
-                    endTime: new Date(),
+                    startTime: startTime,
+                    endTime: endTime,
                 },
                 cost: 10,
                 // status: 'pending',
@@ -596,9 +603,9 @@ const TrainerOrderPage = ({navigation}) => {
                                                     <Text style={styles.dateSelectedDetailsText}>End Time: </Text>
                                                 </View>
                                                 <View style={styles.dateSelectedDetails}>
-                                                    <Text style={styles.dateSelectedDetailsText}>{orderStartTime.slice(0,10)}</Text>
-                                                    <Text style={styles.dateSelectedDetailsText}>{orderStartTime.slice(11,16)}</Text>
-                                                    <Text style={styles.dateSelectedDetailsText}>{orderEndTime.slice(11,16)}</Text>
+                                                    <Text style={styles.dateSelectedDetailsText}>{orderDateClean+''.slice(0,10)}</Text>
+                                                    <Text style={styles.dateSelectedDetailsText}>{orderStartTime}</Text>
+                                                    <Text style={styles.dateSelectedDetailsText}>{orderEndTime}</Text>
                                                 </View>
                                             </View>
                                             <TouchableOpacity

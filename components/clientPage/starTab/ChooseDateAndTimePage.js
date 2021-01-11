@@ -27,6 +27,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
     const {orderObejct, dispatchOrderObject,
         orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
             orderTrainingCategory, dispatchOrderTrainingCategory,
+            dispatchOrderDate,
                  dispatchOrderStartTime,
                      dispatchOrderEndTime}
         = useContext(OrderContext);
@@ -43,11 +44,15 @@ const ChooseDateAndTimePage = ({navigation}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [date, setDate] = useState(new Date(1598051730000));
     const [currentDisplayedDate, setCurrentDisplayedDate] = useState("");
+    var dateToDisplay = '';
 
 
     const [allEvents, setAllEvents] = useState([]);
-    const [startTimeToPass, setStartTimeToPass] = useState('');
-    const [endTimeToPass, setEndTimeToPass] = useState('');
+    // const [startTimeToPass, setStartTimeToPass] = useState('');
+    // const [endTimeToPass, setEndTimeToPass] = useState('');
+    var startTimeToPass = ''
+    var endTimeToPass = ''
+    var orderDateToPass =  ''
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
     var trainerMongoDB = {};
@@ -541,22 +546,36 @@ const ChooseDateAndTimePage = ({navigation}) => {
                 setModalVisible(true);
                 // setTimeSelectedDialogVisible(true);
                 //pass the times through the Dialog
-                setStartTimeToPass(event.start);
-                setEndTimeToPass(event.end);
+                // setStartTimeToPass(event.start);
+                // setEndTimeToPass(event.end);
                 
             }
         }
 
         //Save value from start time picker
-    const onStartTimeChage = (event) => {
+    const onStartTimeChange = (event) => {
         var selectedTime = new Date(event.nativeEvent.timestamp);
-        setCurrentDisplayedDate(selectedTime);
-
         selectedTime.setHours(selectedTime.getHours()-selectedTime.getTimezoneOffset()/60);
-        new Date(selectedTime.toISOString());
-        setStartTimeToPass(new Date(selectedTime.toISOString()));
-        setCurrentDisplayedDate(selectedTime);
-        console.log(startTimeToPass);
+        selectedTime = new Date(selectedTime.toISOString());
+
+     
+        var endTimeToPassInto = new Date(event.nativeEvent.timestamp);
+        endTimeToPassInto.setHours(endTimeToPassInto.getHours()-endTimeToPassInto.getTimezoneOffset()/60);
+        endTimeToPassInto = new Date(selectedTime.toISOString());
+        endTimeToPassInto.setHours(endTimeToPassInto.getHours()+1);
+
+      
+        startTimeToPass = selectedTime.toISOString().toString();
+
+        endTimeToPass = endTimeToPassInto.toISOString().toString();
+        orderDateToPass = startTimeToPass.slice(0,10);
+        startTimeToPass = startTimeToPass.slice(11,19);
+        endTimeToPass = endTimeToPass.slice(11,19);
+        console.log('date: ' + startTimeToPass.slice(0,10))
+        console.log('startTimeToPass ' + startTimeToPass.slice(11,19));
+        console.log('endTimeToPass ' + endTimeToPass.slice(11,19))
+
+
     }
 
     //Save value from end time picker
@@ -571,8 +590,24 @@ const ChooseDateAndTimePage = ({navigation}) => {
     const handleShowAddEvent = () => {
         setDatePickerVisible(true);
     }
-    const handleAddEvent = (time) => {
+    const handleSubmitButton = () => {
+        setModalVisible(false);
+
         console.log(startTimeToPass);
+        dispatchOrderStartTime({
+            type: 'SET_ORDER_START_TIME',
+            orderStartTime : startTimeToPass
+        });
+        dispatchOrderEndTime({
+            type: 'SET_ORDER_END_TIME',
+            orderEndTime : endTimeToPass
+        });
+        dispatchOrderDate({
+            type: 'SET_ORDER_DATE',
+            orderDate : orderDateToPass
+        });
+
+        navigation.navigate('TrainerOrderPage' );
 
         
         setDatePickerVisible(false);
@@ -595,18 +630,17 @@ const ChooseDateAndTimePage = ({navigation}) => {
             type: 'SET_ORDER_END_TIME',
             orderEndTime : endTimeForOrder
         });
-        navigation.navigate('TrainerOrderPage'
-        // ,{
-        //     params: { orderStartTime: startTimeForOrder, orderEndTime: endTimeForOrder },
-        //     orderStartTime: startTimeForOrder,
-        //     orderEndTime: endTimeForOrder
-        // }
-        );
+        navigation.navigate('TrainerOrderPage' );
 
         // setTimeSelectedDialogVisible(false);
 
        
 
+    }
+
+    //Update current displayed date
+    const handleOnDateChange = (date) => {
+        setCurrentDisplayedDate(date);
     }
     
 
@@ -642,7 +676,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
                             mode={'time'}
                             is24Hour={true}
                             display="default"
-                            onChange={(time) => onStartTimeChage(time)}
+                            onChange={(time) => onStartTimeChange(time)}
                         
                         />
                         
@@ -659,7 +693,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
                             <TouchableOpacity
                                 style={styles.submitButton}
                                 onPress={() => {
-                                    handleAddEvent();
+                                    handleSubmitButton();
                                     // setModalVisible(!modalVisible);
                                 }}
                             >
@@ -713,6 +747,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
                             width={Dimensions.get('window').width}
                             style ={styles.event}
                             initDate={getCurrentDate()}
+                            dateChanged={(date)=> handleOnDateChange(date)}
                             upperCaseHeader
                             uppercase
                             scrollToFirst
@@ -740,7 +775,8 @@ const styles = StyleSheet.create({
     partnerText: {
         color: 'deepskyblue',
         fontWeight: 'bold',
-        fontSize: Dimensions.get('window').height * .018
+        fontSize: Dimensions.get('window').height * .018,
+        
     },
     dialogTitle: {
         fontWeight: 'bold',
@@ -753,6 +789,8 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     container: {
+        marginTop: Dimensions.get('window').height * .01,
+
         flex: 1
     },
     justYouHeader: {
