@@ -6,18 +6,20 @@ export const ClientContext = React.createContext();
 
 const ClientContextProvider = ({children}) => {
     const [clientObject, dispatchClientObject] = useReducer(ClientReducer, []);
-    const [clientId, dispatClientId] = useReducer(ClientReducer, "");
-    const [clientEmail, dispatClientEmail] = useReducer(ClientReducer, "");
-    const [clientFirstName, dispatFirstName] = useReducer(ClientReducer, "");
-    const [clientLastName, dispatLastName] = useReducer(ClientReducer, "");
+    const [clientId, dispatchClientId] = useReducer(ClientReducer, "");
+    const [clientEmail, dispatchClientEmail] = useReducer(ClientReducer, "");
+    const [clientFirstName, dispatchFirstName] = useReducer(ClientReducer, "");
+    const [clientLastName, dispatchLastName] = useReducer(ClientReducer, "");
+    const [clientBirthday, dispatchBirthday] = useReducer(ClientReducer, "");
 
     return(
     <ClientContext.Provider value={{
         clientObject, dispatchClientObject,
-        clientId, dispatClientId,
-        clientEmail, dispatClientEmail,
-        clientFirstName, dispatFirstName,
-        clientLastName, dispatLastName
+        clientId, dispatchClientId,
+        clientEmail, dispatchClientEmail,
+        clientFirstName, dispatchFirstName,
+        clientLastName, dispatchLastName,
+        clientBirthday, dispatchBirthday
 
     }}>
         {children}

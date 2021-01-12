@@ -7,9 +7,21 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Dialog from "react-native-dialog";
 import AppButton from '../../GlobalComponents/AppButton';
 import FlipToggleButton from '../../GlobalComponents/FlipToggleButton';
+import FastImage from 'react-native-fast-image'
+import ImagePicker from 'react-native-image-crop-picker';
+
+import BirthdayPicker from '../../GlobalComponents/BirthdayPicker';
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
+
+
+//for Firebase Storage
+import storage from '@react-native-firebase/storage';
+//for Firebase Auth
+import auth from '@react-native-firebase/auth';
 
 import {NameContext} from '../../../context/NameContext';
 import {BirthdayContext} from '../../../context/BirthdayContext';
+import {ClientContext} from '../../../context/ClientContext'
 
 //Edit profile page
 const EditProfile = ({navigation}) => {
@@ -17,13 +29,24 @@ const EditProfile = ({navigation}) => {
     const {lastName, dispatchLast} = useContext(NameContext);
 
     const {birthday, dispatchBirthday} = useContext(BirthdayContext);
+    const {clientObject, dispatchClientObject} = useContext(ClientContext);
+    
 
     const [firstNameInput, setFirstNameInput] = useState("");
     const [lastNameInput, setLastNameInput] = useState("");
+    const [profileImageUrl, setProfileImageUrl] = useState("");
+    const [birthdayInput, setBirthdayInput] = useState("");
+
+    const [isNewImageSelected, setIsNewImageSelected] = useState(false);
+    const [isBirthdaySelected, setIsBirthdaySelected] = useState(false);
+
+
+    var profileImage = '';
+    
     //const [profileImageSource, setProfileImageSource] = useState(require('../../images/profilePic.png'));
     const [minimumDate, setMinimumDate] = useState("");
     const [maximumDate, setMaximumDate] = useState("");
-    const [birthdaySelected, setBirthdaySelected] = useState("Set your birthday");
+    const [birthdaySelected, setBirthdaySelected] = useState(clientObject.birthday);
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     const [dialogVisible, setDialogVisible] = useState(false);
     const [isLocationPermission, setIsLocationPermission] = useState(true);
@@ -43,50 +66,117 @@ const EditProfile = ({navigation}) => {
 
     //First off all, the component loads the user details from the data base and sets the variables to the data
     useEffect(() => {
-        axios
-            .get('/clients/omero@gmail.com',
-            config
-        )
-        .then((doc) => {
-            if(doc){
-                dispatchFirst({
-                    type: 'SET_FIRST_NAME',
-                    firstName: doc.data[0].name.first
-                });
-                setFirstNameInput(doc.data[0].name.first);
+        
+        console.log('clientObject.name.first ' + clientObject.name.first)
+        setFirstNameInput(clientObject.name.first);
+        setLastNameInput(clientObject.name.last);
+        setProfileImageUrl(clientObject.image);
+        setBirthdayInput(clientObject.birthday);
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        let currentDay = new Date().getDate();
+        setMaximumDate(new Date().setFullYear(currentYear - 18, currentMonth, currentDay));
+        setMinimumDate(new Date().setFullYear(currentYear - 120, currentMonth, currentDay));
 
-                dispatchLast({
-                    type: 'SET_LAST_NAME',
-                    lastName: doc.data[0].name.last
-                })
-                setLastNameInput(doc.data[0].name.last);
-
-                dispatchBirthday({
-                    type: 'SET_BIRTHDAY',
-                    birthday: doc.data[0].birthday
-                })
-                setBirthdaySelected(doc.data[0].birthday);
-            }
-            else{
-                alert("No trainer");
-            }
-        })
-        .then(() => {
-            let date = new Date();
-            let date2 = new Date();
-            let currentYear = new Date().getFullYear();
-            let currentMonth = new Date().getMonth();
-            let currentDay = new Date().getDate();
-            date.setFullYear(currentYear - 70, currentMonth, currentDay)
-            date2.setFullYear(currentYear - 18, currentMonth, currentDay)
-            setMinimumDate(date);
-            setMaximumDate(date2);
-        })
-        .catch((err) => alert(err))
     },[])
+
+    // console.log(clientObject.name.first)
+
+    //User picks an image from the gallery/camera and sets it to his profile picture
+    const handleProfileImage = () => {
+        //   const granted = checkForPermissions();
+      
+        //   if(granted) {
+  
+          ImagePicker.openPicker({
+            width: 400,
+            height: 400,
+            cropping: true,
+            mediaType: 'photo',
+          }).then(image => {
+            console.log(image);
+            const source = {uri :'file://'+image.path}
+            setProfileImageUrl(source);
+            profileImage = source;
+        }).catch((err) => {
+              
+          })
+          setIsNewImageSelected(true);
+            const options = {
+              title: 'Select photo',
+              base64: true
+            };
+      }
+
+    const getFormat = (uri) => {
+        indexOfDot = uri.indexOf('.', uri.length-6);
+        console.log("format : " +uri.slice(indexOfDot));
+        return uri.slice(indexOfDot);
+    }
+
+    const uploadImage = async (filePath, imageUri) => {
+        let reference = await storage().ref(filePath);
+        const task = reference.putFile(imageUri);
+        
+          task.on('state_changed', taskSnapshot => {
+            console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
+            const bytesTransferred = taskSnapshot.bytesTransferred;
+            const totalByteCount = taskSnapshot.totalByteCount;
+            const progress = (bytesTransferred / totalByteCount);
+            
+          });
+          
+          task.then(() => {
+            console.log('Image uploaded to the bucket!');
+            reference.getDownloadURL().then((url) => {
+
+                updateUserInMongoDB(url);
+            })
+          })
+          .catch((e) => {
+              console.log(e)
+            });
+      }
+
+    const fullUploadImageProccess = () => {
+        const user = auth().currentUser;
+        console.log(user.uid);
+        const userUid = "/clients/" + user.uid + '/profileImage'+getFormat(profileImageUrl.uri); 
+        uploadImage(userUid, profileImageUrl.uri)
+    }
+
+    const updateUserInMongoDB = (uri) => {
+        axios
+                .put('/clients/settings/edit-profile/' + clientObject.email , {
+                    name: {
+                        first: firstNameInput,
+                        last: lastNameInput
+                    },
+                    birthday: birthdaySelected,
+                    image : uri,
+                },
+                config
+                )
+                .then((doc) => {
+                    if(doc){
+                        // navigation.navigate('ProfilePage');
+                        //for refresh the target page (get updated info from mongoDB)
+                        navigation.push('ProfilePage');
+                    }
+                    else{
+                        alert("error");
+                    }
+                })
+                .catch((err) => alert(err.data));
+        
+    }
+    
+    
+
 
     //Handle when the user presses the yes button in the dialog
     const handleYesDialog = () => {
+
         setDialogVisible(false);
         navigation.navigate('ProfilePage');
     };
@@ -126,11 +216,7 @@ const EditProfile = ({navigation}) => {
 
     //Shows the date picker when user press the button
     const handleDateInputPressed = () => {
-        // setIsNamesError(false);
-        // setIsBirthdayErrorMessage(false);
-        // setIsCategoryError(false);
-        // setIsTrainingSiteError(false);
-        // setIsPriceError(false);
+        setIsBirthdaySelected(true);
         setDatePickerVisible(!datePickerVisible);
     }
 
@@ -151,51 +237,59 @@ const EditProfile = ({navigation}) => {
     }
 
     //Handle when user presses the approve button
-    const handleOnApprovePressed = () => {
-        if(firstNameInput === "" || lastNameInput === ""){
-            if(firstNameInput === "" || lastNameInput === ""){
-                setIsNamesError(true);
-            }
-        }
-        else{
-            if(firstNameInput !== firstName){
-                dispatchFirst({
-                    type: 'SET_FIRST_NAME',
-                    firstName: firstNameInput
-                });
-            }
-            if(lastNameInput !== lastName){
-                dispatchLast({
-                    type: 'SET_LAST_NAME',
-                    lastName: lastNameInput
-                })
-            }
-            if(birthdaySelected !== birthday){
-                dispatchBirthday({
-                    type: 'SET_BIRTHDAY',
-                    birthday: birthdaySelected
-                })
-            }
+    const handleOnApprovePressed = (uri) => {
+        if(isNewImageSelected){
 
-            axios
-                .put('/clients/settings/edit-profile/omero@gmail.com' , {
-                    name: {
-                        first: firstNameInput,
-                        last: lastNameInput
-                    },
-                    birthday: birthdaySelected,
-                },
-                config
-                )
-                .then((doc) => {
-                    if(doc){
-                        navigation.navigate('ProfilePage');
-                    }
-                    else{
-                        alert("error");
-                    }
-                })
-                .catch((err) => alert(err.data));
+        
+        fullUploadImageProccess();
+
+            if(firstNameInput === "" || lastNameInput === ""){
+                if(firstNameInput === "" || lastNameInput === ""){
+                    setIsNamesError(true);
+                }
+            }
+            else{
+                if(firstNameInput !== clientObject.name.first){
+                    // dispatchFirst({
+                    //     type: 'SET_FIRST_NAME',
+                    //     firstName: firstNameInput
+                    // });
+                }
+                if(lastNameInput !== clientObject.name.last){
+                    // dispatchLast({
+                    //     type: 'SET_LAST_NAME',
+                    //     lastName: lastNameInput
+                    // })
+                }
+                if(birthdaySelected !== clientObject.birthday){
+                    // dispatchBirthday({
+                    //     type: 'SET_BIRTHDAY',
+                    //     birthday: birthdaySelected
+                    // })
+                }
+                // axios
+                //     .put('/clients/settings/edit-profile/' + clientObject.email , {
+                //         name: {
+                //             first: firstNameInput,
+                //             last: lastNameInput
+                //         },
+                //         birthday: birthdaySelected,
+                //         image : uri,
+                //     },
+                //     config
+                //     )
+                //     .then((doc) => {
+                //         if(doc){
+                //             navigation.navigate('ProfilePage');
+                //         }
+                //         else{
+                //             alert("error");
+                //         }
+                //     })
+                //     .catch((err) => alert(err.data));
+            }
+        }else{
+            updateUserInMongoDB(clientObject.image);
         }
     }
 
@@ -222,11 +316,14 @@ const EditProfile = ({navigation}) => {
             <View style={styles.headerContainer}>
                 <Text style={styles.justYouHeader}>Just You</Text>
             </View>
+                {/* <ArrowBackButton
+                     onPress={handleOnArrowPress()}
+                /> */}
             <TouchableOpacity
                     onPress={() => handleOnArrowPress()}
                 >
                 <Image
-                    source={require('../../../images/blackArrow.png')}
+                    source={require('../../../images/leftArrow.png')}
                     style={styles.arrowImage}
                 />
             </TouchableOpacity>
@@ -234,13 +331,20 @@ const EditProfile = ({navigation}) => {
             <View style={styles.namesContainer}>
                 <View style={styles.namesAndErrorContainer}>
                     <View style={styles.namesRowContainer}>
-                    <TouchableOpacity 
-                            //onPress={handleProfileImage}
-                        >
-                            <Image
-                                source={require('../../../images/profileImage.png')}
+                        <TouchableOpacity onPress={handleProfileImage}>
+                            {isNewImageSelected ? <Image
+                            source={profileImageUrl}
+                            style={styles.profileImage}
+                          />: 
+                          <FastImage
                                 style={styles.profileImage}
-                            />
+                                source={{
+                                    uri: profileImageUrl,
+                                    priority: FastImage.priority.normal,
+                                        }}
+                                resizeMode={FastImage.resizeMode.stretch}
+                            />}
+                           
                         </TouchableOpacity>
                         <TextInput
                             style={styles.namesInput}
@@ -269,7 +373,8 @@ const EditProfile = ({navigation}) => {
                     <TouchableOpacity
                     onPress={() => handleDateInputPressed()}
                     >
-                    <Text style={styles.birthdayPicked}>{birthdaySelected}</Text>
+                    {isBirthdaySelected ? <Text style={styles.birthdayPicked}>{birthdaySelected}</Text> :<Text style={styles.birthdayUnPicked}>{birthdaySelected}</Text>}    
+                    {/* <Text style={styles.birthdayPicked}>{birthdaySelected}</Text> */}
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => handleDateInputPressed()}
@@ -291,31 +396,7 @@ const EditProfile = ({navigation}) => {
                     headerTextIOS="Pick a date - minimum 18"
                 />
             </View>
-            <View style={styles.permissionsContainer}>
-                <Text style={styles.permissionsText}>Permissions</Text>
-                <View style={styles.permissionsSection}>
-                    <Text style={{fontWeight: 'bold', fontSize: 20}}>Location</Text>
-                    <FlipToggleButton
-                        value={isLocationPermission}
-                        onToggle={(newState) => handleLocationToggleChange(newState)}
-                    />
-                </View>
-                <Text style={{color: 'grey'}}>By sharing your location you'll see which instructors and sport clubs are next to you</Text>
-                <View style={styles.permissionsSection}>
-                    <Text 
-                        style={{fontWeight: 'bold', fontSize: 20}}>Allow push notifications</Text>
-                    <FlipToggleButton
-                        value={isPushPermission}
-                        onToggle={(newState) => handlePermissionToggleChange(newState)}
-                    />
-                </View>
-                <Text style={{color: 'grey'}}>
-                    We'll let you know how your order is doing
-                </Text>
-            </View>
-                {isPermissionsNotConfirmed ?
-                    <Text style={styles.permissionsErrorText}>Please allow both permissions to continue the registration</Text>
-                :null}
+            
             <View style={styles.nextButtonContainer}>
                 <AppButton
                     title="APPROVE"
@@ -337,19 +418,22 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     justYouHeader: {
-        fontSize: 30,
+        fontSize : Dimensions.get('window').height * .035,
         fontWeight: 'bold'
     },
     arrowImage: {
-        marginLeft: 20
+        marginLeft: Dimensions.get('window').width * .038,
+        width: Dimensions.get('window').width * .080,
+        height: Dimensions.get('window').height * .050,    
     },
     editProfileTitle: {
         fontWeight: 'bold',
-        fontSize: 30,
-        marginLeft: 20,
-        marginTop: 30
+        fontSize: Dimensions.get('window').height * .035, 
+        marginLeft: Dimensions.get('window').width * .05,
+        marginTop: Dimensions.get('window').height * .025,
     },
     namesAndErrorContainer: {
+        marginTop: Dimensions.get('window').height * .01,
         height: Dimensions.get('window').height * .11,
     }, 
     namesRowContainer: {
@@ -367,32 +451,35 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height * .065,
         width: Dimensions.get('window').width * .34,
         justifyContent: 'center',
-        fontSize: 18
+        fontSize: Dimensions.get('window').height * .022,
     },
     profileImage: {
+        marginTop: Dimensions.get('window').height * 0.015,
+        marginLeft: Dimensions.get('window').width * 0.01,
         width: Dimensions.get('window').width * .200,
-        height: Dimensions.get('window').height * .113,
-        borderRadius: 5
+        height: Dimensions.get('window').height * .095,
+        overflow: 'hidden',
+        borderRadius: 70,
     },
     nameErrorMessage: {
         color: 'red',
-        marginLeft: 20
+        marginLeft: Dimensions.get('window').width * 0.025,
     },  
     nameExplination: {
         color: 'grey',
         textAlign: 'center',
-        marginTop: 10
+        marginTop: Dimensions.get('window').height * 0.015,
     },
     birthdayText: {
-        marginTop: 30,
+        marginLeft: Dimensions.get('window').width * 0.0483,
+        marginTop: Dimensions.get('window').height * 0.035,
         fontWeight: 'bold',
-        fontSize: 25,
-        marginLeft: 20
+        fontSize: Dimensions.get('window').height * 0.0278,
     },
     birthdayContainer: {
-        height: 65,
+        height: Dimensions.get('window').height * 0.07,
         alignItems: 'center',
-        marginTop: 10
+        marginTop: Dimensions.get('window').height * 0.015,
     },
     birthdayBoxContainer: {
         height: Dimensions.get('window').height * .065,
@@ -412,35 +499,37 @@ const styles = StyleSheet.create({
     birthdayUnPicked: {
         textAlign: 'center',
         color: 'grey',
-        fontSize: 20,
+        fontSize: Dimensions.get('window').height * 0.025,
         fontWeight: '300',
-        marginLeft: Dimensions.get('window').width * .3
+        marginLeft: Dimensions.get('window').width * .35,
     },
     birthdayPicked: {
         textAlign: 'center',
-        fontSize: 20,
-        marginLeft: Dimensions.get('window').width * .3,
-        color: 'lightgrey'
+        fontSize: Dimensions.get('window').height * 0.025,
+        marginLeft: Dimensions.get('window').width * .35,
+        color: 'black'
     },
     calendarIcon: {
         height: Dimensions.get('window').height * .04,
         width: Dimensions.get('window').height * .04,
     },
     birthdayErrorMessage: {
-        marginLeft: 20,
+        marginLeft: Dimensions.get('window').width * .25,
         color: 'red',
-        marginTop: 5
+        marginTop: Dimensions.get('window').height * .001,
     },  
     datePicker: {
-        marginTop: 10,
+        marginTop: Dimensions.get('window').height * .001,
         width: Dimensions.get('window').width * .9,
-        marginLeft: 20
+        marginLeft: Dimensions.get('window').width * .025
     },
     nextButtonContainer: {
         alignItems: 'center',
         flex: 1,
+        // marginTop: Dimensions.get('window').height * 0.15,
+
         justifyContent: 'flex-end',
-        marginBottom: 90
+        marginBottom: Dimensions.get('window').height * .1
     },
     dialogTitle: {
         fontWeight: 'bold',

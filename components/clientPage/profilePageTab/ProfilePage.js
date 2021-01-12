@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useReducer} from 'react';
 import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -29,7 +29,12 @@ const ProfilePage = ({navigation}) => {
     const {dispatchClientObject} = useContext(ClientContext);
     const [clientObject, setClientObject] = useState([]);
 
+    const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
+
+    var clientObjectToPass = []
+
+    // forceUpdate();
 
     function onAuthStateChanged(user) {
         setUser(user);
@@ -56,11 +61,18 @@ const ProfilePage = ({navigation}) => {
                     )
                     .then((doc) => {
                         if(doc) {
-                          const currectUserData = doc.data[0];
-                          setFirstName(currectUserData.name.first);
-                          setLastName(currectUserData.name.last);
-                          setProfileImageUrl(currectUserData.image);
+                        //   const currectUserData = doc.data[0];
+                        //   setFirstName(currectUserData.name.first);
+                        //   setLastName(currectUserData.name.last);
+                        //   setProfileImageUrl(currectUserData.image);
+                        //   clientObjectToPass = doc.data[0];
+                        console.log(doc.data[0]);
+                          dispatchClientObject({
+                            type: 'SET_CLIENT_OBJECT',
+                            clientObject : doc.data[0]
+                        });
                         //   setClientObject(currectUserData);
+                        
                         //   console.log(profileImageUrl);
                           if(doc.data[0].email!=null){
                             
@@ -75,29 +87,35 @@ const ProfilePage = ({navigation}) => {
     //First off all, the component loads the user details from the data base and sets the variables to the data
     useEffect(() => {
 
+        forceUpdate();
+
         const subscriber = auth().onAuthStateChanged((user) => {
                     // console.log('🚨userStatus:' , user)
                     setUser(user);
-                    getUserFromMongoDB();
+                    // getUserFromMongoDB();
 
                     if(user){
                         setInitializing(true);
-                        setEmailAddress(user.email); 
+                        // setEmailAddress(user.email); 
                         
                         
                         axios
                         .get('/clients/'
-                        +emailAddress.toLocaleLowerCase(),
+                        +user.email.toLocaleLowerCase(),
                         config
                     )
                     .then((doc) => {
                         if(doc) {
-                        //   console.log("doc.data" , doc.data);
+                          console.log("doc.data" , doc.data);
                           const currectUserData = doc.data[0];
                           setFirstName(currectUserData.name.first);
                           setLastName(currectUserData.name.last);
                           setProfileImageUrl(currectUserData.image);
-                        //   console.log(profileImageUrl);
+
+                          dispatchClientObject({
+                            type: 'SET_CLIENT_OBJECT',
+                            clientObject : doc.data[0]
+                        });
                           if(doc.data[0].email!=null){
                             
                           }
@@ -148,7 +166,7 @@ const ProfilePage = ({navigation}) => {
 
 
     if(user){
-        getUserFromMongoDB();
+        // getUserFromMongoDB();
         
     }
     // dispatchClientObject({
@@ -160,25 +178,7 @@ const ProfilePage = ({navigation}) => {
 
     
 
-    const profileImage = () => (
-        <FastImage
-            style={s.image}
-            source={{
-                uri: profileImageUrl,
-                priority: FastImage.priority.normal,
-            }}
-           resizeMode={FastImage.resizeMode.stretch}
-        />
-    //     <FastImage
-    //         style={{ width: 200, height: 200 }}
-    //         source={{
-    //             uri: profileImageUrl,
-    //             headers: { Authorization: 'someAuthToken' },
-    //             priority: FastImage.priority.normal,
-    //         }}
-    //         resizeMode={FastImage.resizeMode.contain}
-    //     />
-    );
+    
 
     //Handle when the user presses the ConfirmedOrders button
     const handleOnConfirmedOrdersPRessed = () => {

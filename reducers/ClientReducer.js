@@ -12,10 +12,12 @@ const ClientReducer = (state, action) => {
                 
         case 'SET_CLIENT_FIRST_NAME':
             return action.clientFirstName; 
-                    
         
         case 'SET_CLIENT_LAST_NAME)':
-            return action.clientLastName; 
+            return action.clientLastName;
+            
+        case 'SET_CLIENT_BIRTHDAY)':
+            return action.clientBirthday;    
         
         default:
             return state;

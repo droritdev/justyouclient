@@ -10,7 +10,8 @@ exports.editProfile = (req, res) => {
                 first: req.body.name.first,
                 last: req.body.name.last
             },
-            birthday: req.body.birthday, 
+            birthday: req.body.birthday,
+            image: req.body.image, 
         }
     )
     .then((doc) => res.send(doc))
