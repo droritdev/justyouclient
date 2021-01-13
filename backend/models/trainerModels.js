@@ -18,46 +18,76 @@ const trainerProfileSchema = new Schema(
                trim: true
            }
        },
-       calendar: {
-            usersInvolved :{
-                    trainerID: {
-                        type: String,
-                        required: true,
-                        trim: true
-                    },
-                    clinetID:{
-                        type: String,
-                        required: true,
-                        trim: true
+       reviews: {
+            type:
+            [
+                {
+                    review : {
+                        userID: {
+                            type: String,
+                            trim: true
+                        },
+                        userImage: {
+                            type: String,
+                            trim: true
+                        },
+                        userFirstName: {
+                            type: String,
+                            trim: true
+                        },
+                        userLastName: {
+                            type: String,
+                            trim: true
+                        },
+                        stars: {
+                            type: Number
+                        },
+                        reviewContent: {
+                            type: String,
+                            trim: true
+                        }
                     }
-                },
-            event:{
-                start: {
-                    type: String,
-                    required: true,
-                    trim: true
-                },
-                end:{
-                    type: String,
-                    required: true,
-                    trim: true
-                },
-                title:{
-                    type: String,
-                    required: true,
-                    trim: true
-                },
-                summary:{
-                    type: String,
-                    required: true,
-                    trim: true
-                },
-                color:{
-                    type: String,
-                    required: true,
-                    trim: true
                 }
-            }
+            ]
+       },
+       calendar: {
+            type: 
+            [
+                {
+                    usersInvolved :{
+                            trainerID: {
+                                type: String,
+                                trim: true
+                            },
+                            clinetID: {
+                                type: String,
+                                trim: true
+                            }
+                        },
+                    event:{
+                        start: {
+                            type: String,
+                            trim: true
+                        },
+                        end:{
+                            type: String,
+                            trim: true
+                        },
+                        title:{
+                            type: String,
+                            trim: true
+                        },
+                        summary:{
+                            type: String,
+                            trim: true
+                        },
+                        color:{
+                            type: String,
+                            trim: true
+                        }
+                    }
+                }
+            ]
         },
        birthday: {
            type: String,
@@ -136,60 +166,6 @@ const trainerProfileSchema = new Schema(
                trim: true
            }
        },
-       commentReviews: {
-           type: 
-           [
-               {
-                   clientId: {
-                       type: String,
-                       trim: true
-                   },
-                   trainerId: {
-                       type: String,
-                       trim: true
-                   },
-                   clientComment: {
-                       type: String,
-                       trim: true
-                   }
-               }
-            ]
-       },
-       starReviews: {
-           type:
-           [
-               {
-                    clientId: {
-                       type: String,
-                       trim: true
-                    },
-                    clientStarReview: {
-                        type: Number,
-                        trim: true
-                    }
-                }
-            ]           
-       },
-       starCounter: {
-           numberOfStars: {
-               type: Number,
-               default: 0
-           },
-           numberOfStarComments: {
-               type: Number,
-               default: 0
-           }
-       },
-       incomes: {
-           type:
-           [
-               {
-                    orderId: {
-                        type: String 
-                    }
-               }
-           ]
-       },
        location: {
             trainingSite1: {
                 address: {
@@ -218,49 +194,3 @@ const trainerProfileSchema = new Schema(
 const trainerProfileModel = mongoose.model("trainers Profile", trainerProfileSchema);
 
 module.exports = trainerProfileModel;
-
-
-
-
-
-// calender: {
-//     usersInvolved :{
-//             trainerID: {
-//                 type: String,
-//                 required: true,
-//                 trim: true
-//             },
-//             clinetID:{
-//                 type: String,
-//                 required: true,
-//                 trim: true
-//             }
-//         },
-//     event:{
-//         start: {
-//             type: String,
-//             required: true,
-//             trim: true
-//         },
-//         end:{
-//             type: String,
-//             required: true,
-//             trim: true
-//         },
-//         title:{
-//             type: String,
-//             required: true,
-//             trim: true
-//         },
-//         summary:{
-//             type: String,
-//             required: true,
-//             trim: true
-//         },
-//         color:{
-//             type: String,
-//             required: true,
-//             trim: true
-//         }
-//     }
-// },

@@ -1,20 +1,8 @@
 //Mongoose library to create new schemas
 const mongoose = require("mongoose");
-
 //Create new mongoose schema variable
 const Schema = mongoose.Schema;
 
-// const geoSchema = new schema(
-//     {
-//         type: {
-//             type: String,
-//             default: "Point"
-//         },
-//         coordinates: {
-//             type: [Number]
-//         }
-//     }
-// )
 //Create new "trainer profile" schema
 const trainerProfileSchema = new Schema(
     {
@@ -30,6 +18,47 @@ const trainerProfileSchema = new Schema(
                trim: true
            }
        },
+       calendar: {
+            usersInvolved :{
+                    trainerID: {
+                        type: String,
+                        required: true,
+                        trim: true
+                    },
+                    clinetID:{
+                        type: String,
+                        required: true,
+                        trim: true
+                    }
+                },
+            event:{
+                start: {
+                    type: String,
+                    required: true,
+                    trim: true
+                },
+                end:{
+                    type: String,
+                    required: true,
+                    trim: true
+                },
+                title:{
+                    type: String,
+                    required: true,
+                    trim: true
+                },
+                summary:{
+                    type: String,
+                    required: true,
+                    trim: true
+                },
+                color:{
+                    type: String,
+                    required: true,
+                    trim: true
+                }
+            }
+        },
        birthday: {
            type: String,
            required: true,
@@ -52,7 +81,7 @@ const trainerProfileSchema = new Schema(
            trim: true
        },
        categories: {
-           type: [String],
+           type: Object,
            required: true
        },
        about_me: {
@@ -62,45 +91,47 @@ const trainerProfileSchema = new Schema(
        },
        certifications: {
            type: String,
+           trim: true,
            default: "Personal trainer"
        },
-    //    images: {
-    //        type: [images]
-    //    },
+       media: {
+            images: {
+                type: [String]
+            },
+            videos: {
+                type: [String]
+            }
+       },
        maximumDistance: {
            type: Number,
            required: true
        },
-       trainingSites: {
-           type: [String],
-           default: "Outdoor"
-       },
        prices: {
            single: {
                singleAtTrainer: {
-                   type: Number
+                   type: String
                },
-               singleAtClient: {
-                   type: Number
+               singleOutdoor: {
+                   type: String
                }
            },
            couple: {
                coupleAtTrainer: {
-                   type: Number
+                   type: String
                },
-               coupleAtClient: {
-                   type: Number
+               coupleOutdoor: {
+                   type: String
                }
            }
        },
        phone: {
            areaCode: {
-               type: Number,
+               type: String,
                required: true,
                trim: true
            },
            phoneNumber: {
-               type: Number,
+               type: String,
                required: true,
                trim: true
            }
@@ -160,15 +191,23 @@ const trainerProfileSchema = new Schema(
            ]
        },
        location: {
-           type: {
-               type: String,
-               enum: ['Point']
-           },
-           coordinates: {
-               type: [Number],
-               index: '2dsphere'
-           }
-       }
+            trainingSite1: {
+                address: {
+                    type: String
+                },
+                coordinates: {
+                    type: [Number]
+                }
+            },
+            trainingSite2: {
+                address: {
+                    type: String
+                },
+                coordinates: {
+                    type: [Number]
+                }
+            }
+        },
     }, 
     {
         timestamps: true,
@@ -179,3 +218,49 @@ const trainerProfileSchema = new Schema(
 const trainerProfileModel = mongoose.model("trainers Profile", trainerProfileSchema);
 
 module.exports = trainerProfileModel;
+
+
+
+
+
+// calender: {
+//     usersInvolved :{
+//             trainerID: {
+//                 type: String,
+//                 required: true,
+//                 trim: true
+//             },
+//             clinetID:{
+//                 type: String,
+//                 required: true,
+//                 trim: true
+//             }
+//         },
+//     event:{
+//         start: {
+//             type: String,
+//             required: true,
+//             trim: true
+//         },
+//         end:{
+//             type: String,
+//             required: true,
+//             trim: true
+//         },
+//         title:{
+//             type: String,
+//             required: true,
+//             trim: true
+//         },
+//         summary:{
+//             type: String,
+//             required: true,
+//             trim: true
+//         },
+//         color:{
+//             type: String,
+//             required: true,
+//             trim: true
+//         }
+//     }
+// },

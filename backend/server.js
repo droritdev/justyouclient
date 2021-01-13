@@ -21,7 +21,10 @@ const findTrainerByEmail = require('./findTrainerByEmail/findTrainerByEmail');
         //**Client imports**//
 const clientRegister = require('./register/clientRegister');
 const findTrainerByCategory = require('./findTrainersByCategory/findTrainersByCategory');
+//**Orders
 const makeOrder = require('./orders/makeOrder');
+const getOrdersByClientID = require('./orders/getOrdersByClientID');
+
 const updateClientCredit = require('./clientCredit/updateClientCredit');
 const clientFindPlaces = require('./clientFindPlaces/clientFindPlaces');
 const clientEditProfile = require('./clientEditProfile/clientEditProfile');
@@ -142,6 +145,10 @@ app.get('/clients/trainers/category', findTrainerByCategory.getTrainersByCategor
 
 //End point for booking an order
 app.post('/clients/orders/book-order', makeOrder.makeOrder);
+
+//End point for get orders by Client ID
+app.get('/orders/by-client-id/:id', getOrdersByClientID.getOrdersByClientID);
+
 
 //End point for updating the client's credit
 app.put('/clients/update-credit', updateClientCredit.updateClientCredit);

@@ -27,12 +27,14 @@ const ProfilePage = ({navigation}) => {
     const [profileImageUrl, setProfileImageUrl] = useState("");
 
     const {dispatchClientObject} = useContext(ClientContext);
+    const {clientId, dispatchClientId} = useContext(ClientContext);
     const [clientObject, setClientObject] = useState([]);
+    const [clientIdToPass, setClientIdToPass] = useState('[]');
 
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
 
-    var clientObjectToPass = []
+    // var clientIdToPass = ''
 
     // forceUpdate();
 
@@ -111,6 +113,9 @@ const ProfilePage = ({navigation}) => {
                           setFirstName(currectUserData.name.first);
                           setLastName(currectUserData.name.last);
                           setProfileImageUrl(currectUserData.image);
+                        //   clientIdToPass = doc.data[0]._id
+                          setClientIdToPass(doc.data[0]._id);
+                          console.log('clientIdToPass: '+ clientIdToPass)
 
                           dispatchClientObject({
                             type: 'SET_CLIENT_OBJECT',
@@ -187,6 +192,11 @@ const ProfilePage = ({navigation}) => {
 
     //Handle when the user presses the PendingOrders button
     const handleOnPendingOrdersPRessed = () => {
+        dispatchClientId
+        dispatchClientId({
+            type: 'SET_CLIENT_ID',
+            clientId : clientIdToPass
+        });
         navigation.navigate('PendingOrders');
     }
 

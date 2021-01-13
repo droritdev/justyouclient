@@ -20,6 +20,7 @@ const StarPage = ({route, navigation}) => {
 
     const [doc, setDoc] = useState();
     const [isRefreshing,setIsRefreshing] = useState(false);
+    const [reviewsArray,setReviewsArray] = useState([]);
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
     const {
@@ -66,15 +67,31 @@ const StarPage = ({route, navigation}) => {
     },[]);
      
      
+    const getTrainerStarRating = () => {
+        var starsCounter = 0
+        var finalStarRating = 0
+        for (let index = 0; index < reviewsArray.length; index++) {
+            const element = reviewsArray[index];
+            console.log('element.stars: ' + element.stars)
+            starsCounter += Number(element.stars)
+            console.log('starsCounter.starsCounter: ' + starsCounter)
+
+        }
+
+        finalStarRating = ((reviewsArray.length)/starsCounter).toFixed(1);
+        console.log('finalStarRating: ' + finalStarRating)
+        return finalStarRating;
+    }
 
 
 
+    const Item = ({ trainerObject, name,media,categories, trainerTrainingSite1 ,trainerTrainingSite2 ,date, prices }) => (
 
-    const Item = ({ trainerObject, name,media, numberOfStars, numberOfStarComments,categories, trainerTrainingSite1 ,trainerTrainingSite2 ,date, prices }) => (
+        
         
         <View style={styles.inSectionView}>
             <TouchableOpacity
-                onPress={() => handleOnTrainerPressed(trainerObject, name,media, numberOfStars, numberOfStarComments,categories,trainerTrainingSite1 ,trainerTrainingSite2 ,date, prices )}
+                onPress={() => handleOnTrainerPressed(trainerObject, name,media,categories,trainerTrainingSite1 ,trainerTrainingSite2 ,date, prices )}
             >
         <View style={styles.inSectionImageViewContainer}>
             
@@ -93,12 +110,15 @@ const StarPage = ({route, navigation}) => {
             <Text style={styles.trainerText1}>{name}</Text>
             <Text style={styles.trainerText2}>Personal Trainer</Text>
             <View style={styles.ratingRow}>
-                 {numberOfStarComments === 0 ? 
+                 {getTrainerStarRating() === 0 ? 
                  <Text style={styles.trainerText3}>no comments</Text> 
                  :
-                 <Text style={styles.trainerText3}>{(numberOfStars/numberOfStarComments).toFixed(1)}</Text>} 
+                 <Text style={styles.trainerText3}>
+                     {/* {(numberOfStars/numberOfStarComments).toFixed(1)} */}
+                     {getTrainerStarRating()}
+                     </Text>} 
 
-                 {numberOfStarComments === 0 ? 
+                 {getTrainerStarRating() === 0 ? 
                  <Image 
                     // source={require('../../../images/ratingStar.png')}
                     style={styles.starIcon}/> 
@@ -126,11 +146,18 @@ const StarPage = ({route, navigation}) => {
 
     const renderItem = ({ item }) => (
         <Item name = {`${item.name.first} ${item.name.last}`}
-        numberOfStars = {item.starCounter.numberOfStars}
-        numberOfStarComments = {item.starCounter.numberOfStarComments}
+        // numberOfStars = {item.starCounter.numberOfStars}
+        // numberOfStarComments = {item.starCounter.numberOfStarComments}
+        // new type of reviews
+        //first get the total number of stars than (/) at number of reviews
+        // numberOfStarsGives = {items.reviews}
         media = {item.media}
         categories = {item.categories}
         trainerObject = {item}
+        // {...setNumberOfStarts(item.reviews)}
+        
+        {...setReviewsArray(item.reviews)}
+        
         
         ></Item>
         
@@ -143,7 +170,7 @@ const StarPage = ({route, navigation}) => {
 
 
     //Handle when the client presses on a trainer button
-    const handleOnTrainerPressed = (trainerObject, name,media, numberOfStars, numberOfStarComments, categories, trainerTrainingSite1 ,trainerTrainingSite2, date, prices  ) => {
+    const handleOnTrainerPressed = (trainerObject, name,media, categories, trainerTrainingSite1 ,trainerTrainingSite2, date, prices  ) => {
         // console.log('item: '+ name)
 
             dispatchTrainerObject({
@@ -159,14 +186,14 @@ const StarPage = ({route, navigation}) => {
                 type: 'SET_MEDIA_PICTURES',
                 trainerMediaPictures: media
             });
-            dispatchTrainerNumberOfStars({
-                type:'SET_NUMBER_OF_STARS',
-                trainerNumberOfStars:numberOfStars
-            })
-            dispatchTrainerNumberOfStarComments({
-                type: 'SET_NUMBER_OF_STARS_COMMENTS',
-                trainerNumberOfStarComments: numberOfStarComments
-            })
+            // dispatchTrainerNumberOfStars({
+            //     type:'SET_NUMBER_OF_STARS',
+            //     trainerNumberOfStars:numberOfStars
+            // })
+            // dispatchTrainerNumberOfStarComments({
+            //     type: 'SET_NUMBER_OF_STARS_COMMENTS',
+            //     trainerNumberOfStarComments: numberOfStarComments
+            // })
             dispatchTrainerCategories({
                 type: 'SET_CATEGORIES',
                 trainerCategories: categories
