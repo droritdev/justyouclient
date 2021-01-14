@@ -12,6 +12,7 @@ import axios from 'axios';
 
 import {TrainerContext} from '../../../context/TrainerContext';
 import {EmailContext} from '../../../context/EmailContext';
+import { signOut } from '../../../backend/signOut/signOut';
 
 
 
@@ -21,17 +22,45 @@ const StarPage = ({route, navigation}) => {
     const [doc, setDoc] = useState();
     const [isRefreshing,setIsRefreshing] = useState(false);
     const [reviewsArray,setReviewsArray] = useState([]);
+    const [mainCategoryArray,setMainCategoryArray] = useState([]);
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
     const {
         dispatchTrainerFirst,
                 dispatchTrainerMediaPictures,
-                        dispatchTrainerNumberOfStars,
+                        // dispatchTrainerNumberOfStars,
                                  dispatchTrainerNumberOfStarComments,
+                                    dispatchFinalStarRating,
                                                 dispatchTrainerCategories ,
                                                         dispatchTrainerObject
                                              }
          = useContext(TrainerContext);
+
+
+         const categories = [
+            { id: 1, label: 'HIT' },
+            { id: 2, label: 'KIK BOX' },
+            { id: 3, label: 'MARTIAL ARTS' },
+            { id: 4, label: 'PILATIS' },
+            { id: 5, label: 'CLIMBING' },
+            { id: 6, label: 'TRX' },
+            { id: 7, label: 'DANCING' },
+            { id: 8, label: 'SWIMMING' },
+            { id: 9, label: 'RUNNING' }
+        ];
+
+
+
+    var hitArray = []
+    var kickBoxArray = []
+    var martialArtsArray = []
+    var pilatisArray = []
+    var climbingArray = []
+    var trxArray = []
+    var dancingArray = []
+    var swimmingArray = []
+    var runningArray = []
+
 
     const config = {
         withCredentials: true,
@@ -41,19 +70,26 @@ const StarPage = ({route, navigation}) => {
         },
     };     
 
-    const getAllTrainers = () => {
-        console.log('🚨click')
+    const sortByCategory = (trainerArray) => {
+        console.log('in sort sdasdasdadasdasdasdasd')
+        console.log(trainerArray)
+        for (let index = 0; index < trainerArray.length; index++) {
+            const element = trainerArray[index];
+            console.log(element)
+            
+        }
+    }
+
+    const getAllTrainers = async () => {
         setIsRefreshing(true);
         
-        axios  
+        await axios  
             .get('/trainers/getAllTrainers',
             config)
             .then((doc) => {
-                console.log('🚨doc' + doc)
 
                 if(doc) {
                     setDoc(doc.data);
-                    console.log("is any doc here " + doc.data);
                     setIsRefreshing(false);
 
                 }
@@ -64,7 +100,34 @@ const StarPage = ({route, navigation}) => {
 
     useEffect(() => {
         getAllTrainers();
+        console.log('🚨click')
+
+        // getTrainersByCategory();
+        
     },[]);
+
+    const getTrainersByCategory = () => {
+        console.log('🚨click')
+        setIsRefreshing(true);
+        
+        axios  
+            .get('/trainers/getAllTrainers/TRX',
+            config)
+            .then((doc) => {
+                console.log('🚨doc' + doc)
+
+                if(doc) {
+                    setDoc(doc.data);
+                    console.log("is any doc here " + doc.data);
+                    setIsRefreshing(false);
+                    sortByCategory(doc.data);
+
+                }
+            })
+            .catch((err) =>  {
+                console.log('🚨err' + err)
+            });
+    }
      
      
     const getTrainerStarRating = () => {
@@ -72,14 +135,11 @@ const StarPage = ({route, navigation}) => {
         var finalStarRating = 0
         for (let index = 0; index < reviewsArray.length; index++) {
             const element = reviewsArray[index];
-            console.log('element.stars: ' + element.stars)
             starsCounter += Number(element.stars)
-            console.log('starsCounter.starsCounter: ' + starsCounter)
 
         }
 
         finalStarRating = ((reviewsArray.length)/starsCounter).toFixed(1);
-        console.log('finalStarRating: ' + finalStarRating)
         return finalStarRating;
     }
 
@@ -186,14 +246,14 @@ const StarPage = ({route, navigation}) => {
                 type: 'SET_MEDIA_PICTURES',
                 trainerMediaPictures: media
             });
-            // dispatchTrainerNumberOfStars({
-            //     type:'SET_NUMBER_OF_STARS',
-            //     trainerNumberOfStars:numberOfStars
-            // })
-            // dispatchTrainerNumberOfStarComments({
-            //     type: 'SET_NUMBER_OF_STARS_COMMENTS',
-            //     trainerNumberOfStarComments: numberOfStarComments
-            // })
+            dispatchTrainerNumberOfStarComments({
+                type:'SET_NUMBER_OF_STARS',
+                trainerNumberOfStars:reviewsArray.length
+            })
+            dispatchFinalStarRating({
+                type: 'SET_FINAL_STAR_RATING',
+                trainerFinalStarRating: getTrainerStarRating()
+            })
             dispatchTrainerCategories({
                 type: 'SET_CATEGORIES',
                 trainerCategories: categories

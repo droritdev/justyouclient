@@ -25,11 +25,13 @@ const TrainerReducer = (state, action) => {
         case 'SET_COUPLE_OUTDOOR':
             return action.coupleOutdoor; 
 
-        case 'SET_NUMBER_OF_STARS':
-            return action.trainerNumberOfStars;
+        // case 'SET_NUMBER_OF_STARS':
+        //     return action.trainerNumberOfStars;
 
         case 'SET_NUMBER_OF_STARS_COMMENTS':
             return action.trainerNumberOfStarComments;
+        case 'SET_FINAL_STAR_RATING':
+            return action.trainerFinalStarRating;    
 
         case 'SET_TRAINING_SITE_1':
             return action.trainerTrainingSite1;

@@ -13,8 +13,9 @@ const TrainerContextProvider = ({children}) => {
     const [singlePriceOutdoor, dispatchSingleOutdoor] = useReducer(TrainerReducer, "");
     const [couplePriceAtTrainer, dispatchCoupleAtTrainer] = useReducer(TrainerReducer, "");
     const [couplePriceOutdoor, dispatchCoupleOutdoor] = useReducer(TrainerReducer, "");
-    const [trainerNumberOfStars, dispatchTrainerNumberOfStars] = useReducer(TrainerReducer, "");
+    // const [trainerNumberOfStars, dispatchTrainerNumberOfStars] = useReducer(TrainerReducer, "");
     const [trainerNumberOfStarComments, dispatchTrainerNumberOfStarComments] = useReducer(TrainerReducer, "");
+    const [trainerFinalStarRating, dispatchFinalStarRating,] = useReducer(TrainerReducer, "");
     const [trainerTrainingSite1, dispatchTrainerTrainingSite1] = useReducer(TrainerReducer, "");
     const [trainerTrainingSite2, dispatchTrainerTrainingSite2] = useReducer(TrainerReducer, "");
     const [trainerCoordinates1, dispatchTrainerCoordinates1] = useReducer(TrainerReducer, []);
@@ -42,8 +43,9 @@ const TrainerContextProvider = ({children}) => {
             singlePriceOutdoor, dispatchSingleOutdoor,
             couplePriceAtTrainer, dispatchCoupleAtTrainer,
             couplePriceOutdoor, dispatchCoupleOutdoor,           
-            trainerNumberOfStars, dispatchTrainerNumberOfStars,           
+            // trainerNumberOfStars, dispatchTrainerNumberOfStars,           
             trainerNumberOfStarComments, dispatchTrainerNumberOfStarComments,            
+            trainerFinalStarRating, dispatchFinalStarRating,            
             trainerTrainingSite1, dispatchTrainerTrainingSite1,         
             trainerTrainingSite2, dispatchTrainerTrainingSite2,
             trainerCoordinates1, dispatchTrainerCoordinates1,

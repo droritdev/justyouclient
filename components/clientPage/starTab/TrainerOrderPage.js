@@ -7,6 +7,9 @@ import FastImage from 'react-native-fast-image'
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/Feather';
 
+import auth from '@react-native-firebase/auth';
+
+
 
 import Geocoder from 'react-native-geocoding';
 import axios from 'axios';
@@ -47,7 +50,13 @@ const TrainerOrderPage = ({navigation}) => {
     // const [isDateSelected, setIsDateSelected] = useState('none');
     var isDateSelected = 'none';
     var isDateSelectedForButtonShow = 'flex';
-    
+
+
+    const [clientID, setClientID] = useState("");
+    const [clientFirstName, setClientFirstName] = useState("");
+    const [clientLastName, setClientLastName] = useState("");
+    const [clientProfilePic, setClientProfilePic] = useState("");
+
 
     const {orderObejct, dispatchOrderObject,
             orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
@@ -57,16 +66,17 @@ const TrainerOrderPage = ({navigation}) => {
                         orderEndTime, dispatchOrderEndTime}
             = useContext(OrderContext);
     
-    const {clientID, dispathClientID,
-            clientEmail,dispathClientEmail,
-                clientFirstName,dispathClientFirstName,
-                    clientlastName,dispathClientLastName } 
-        = useContext(ClientContext);
+    // const {clientID, dispathClientID,
+    //         clientEmail,dispathClientEmail,
+    //             clientFirstName,dispathClientFirstName,
+    //                 clientlastName,dispathClientLastName } 
+    //     = useContext(ClientContext);
 
     const {trainerFirstName , dispatchTrainerFirst,
             trainerMediaPictures, dispatchTrainerMediaPictures,
-                trainerNumberOfStars,dispatchTrainerNumberOfStars,
+                // trainerNumberOfStars,dispatchTrainerNumberOfStars,
                     trainerNumberOfStarComments, dispatchTrainerNumberOfStarComments,
+                trainerFinalStarRating,
                         trainerCategories, dispatchTrainerCategories,
                             trainerObject, dispatchTrainerObject}
         = useContext(TrainerContext);
@@ -74,6 +84,18 @@ const TrainerOrderPage = ({navigation}) => {
         
 
     // const {clientObject} = useContext(ClientContext);
+
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getClientFromMongoDB();
+        });
+    
+        
+        return unsubscribe;
+      }, [navigation]);
+    
+    
+
 
 
     const config = {
@@ -84,12 +106,36 @@ const TrainerOrderPage = ({navigation}) => {
         },
     };
 
-    const starRating = (trainerNumberOfStars/trainerNumberOfStarComments).toFixed(1);
+    // const starRating = (trainerNumberOfStars/trainerNumberOfStarComments).toFixed(1);
     const cleanedPrice = typeOfTrainingSelected.replace(/[^0-9]/g,'');
 
     const prices = trainerObject.prices   
     
     const locations = trainerObject.location
+
+    const getClientFromMongoDB = () => {
+        const user = auth().currentUser;
+        console.log(user.email);
+        axios
+                        .get('/clients/'
+                        +user.email.toLocaleLowerCase(),
+                        config
+                    )
+                    .then((doc) => {
+                        if(doc) {
+                            const currectUserData = doc.data[0];
+                        setClientID(currectUserData._id);
+                        setClientFirstName(currectUserData.name.first);
+                        setClientLastName(currectUserData.name.last);
+                        setClientProfilePic(currectUserData.image);
+                        
+                          if(doc.data[0].email!=null){
+                            
+                          }
+                        }
+                      })
+                    .catch((err) => console.log(err));
+                    }
 
     var orderDateClean = orderDate;
     console.log('orderDateClean' +orderDateClean);
@@ -185,16 +231,18 @@ const TrainerOrderPage = ({navigation}) => {
 
     const registerOrder = () => {
         
+        
+
         axios
             .post('/clients/orders/book-order', {
 
 
 
                 client: {
-                    id: '5fe9c0ccd33a98041163aedd',
-                    firstName: 'shahar',
-                    lastName: 'keisar',
-                    profilePic: 'profilePisadasdadadadc'
+                    id: clientID,
+                    firstName: clientFirstName,
+                    lastName: clientLastName,
+                    profilePic: clientProfilePic
                 },
                 trainer:{
                     id: trainerObject._id,
@@ -209,7 +257,7 @@ const TrainerOrderPage = ({navigation}) => {
                     startTime: startTime,
                     endTime: endTime,
                 },
-                cost: 10,
+                cost: cleanedPrice,
                 // status: 'pending',
                 location: {
                     address: trainingSiteSelected,
@@ -424,7 +472,7 @@ const TrainerOrderPage = ({navigation}) => {
                                     {trainerNumberOfStarComments === 0 ? 
                                     <Text style={styles.trainerStarRating}>no comments</Text> 
                                     :
-                                    <Text style={styles.trainerStarRating}>{starRating}</Text>} 
+                                    <Text style={styles.trainerStarRating}>{trainerFinalStarRating}</Text>} 
 
                                     {trainerNumberOfStarComments === 0 ? 
                                     <Image 

@@ -31,6 +31,9 @@ const ProfilePage = ({navigation}) => {
     const [clientObject, setClientObject] = useState([]);
     const [clientIdToPass, setClientIdToPass] = useState('[]');
 
+    const [pendingOrders, setPendingOrders] = useState([]);
+    const [approvedOrders, setApprovedOrders] = useState([]);
+
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
 
@@ -53,6 +56,40 @@ const ProfilePage = ({navigation}) => {
           "Content-Type": "application/json",
         },
     };
+
+    const getClientOrders = () => {
+        console.log('clientId: in pending:' + clientId)
+
+        axios
+        .get('/orders/by-client-id/'+clientId, 
+        config
+        )
+        .then((doc) => {
+            var allOrders = doc.data;
+            var pendingOrders = [];
+            var approvedOrders = [];
+            console.log('****************doc.data*****************');
+            console.log(doc.data);
+
+            for (let index = 0; index < allOrders.length; index++) {
+                const singleOrder = allOrders[index];
+                if (singleOrder.status === "pending") {
+                    pendingOrders.push(singleOrder);
+                } else if (singleOrder.status === "approved") {
+                    approvedOrders.push(singleOrder);
+                }
+            }
+
+            // pendingOrders = sortOrders(pendingOrders);
+            // approvedOrders = sortOrders(approvedOrders);
+
+            setPendingOrders(pendingOrders);
+            setApprovedOrders(approvedOrders);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
 
 
     const getUserFromMongoDB = () => {
@@ -164,6 +201,7 @@ const ProfilePage = ({navigation}) => {
             // }   
         
          });
+         getClientOrders();
 
          return subscriber; // unsubscribe on unmount
 
@@ -187,12 +225,15 @@ const ProfilePage = ({navigation}) => {
 
     //Handle when the user presses the ConfirmedOrders button
     const handleOnConfirmedOrdersPRessed = () => {
-        navigation.navigate('ConfirmedOrders');
-    }
+        dispatchClientId({
+            type: 'SET_CLIENT_ID',
+            clientId : clientIdToPass
+        });
+        navigation.navigate('PendingOrders' );    }
 
     //Handle when the user presses the PendingOrders button
     const handleOnPendingOrdersPRessed = () => {
-        dispatchClientId
+        
         dispatchClientId({
             type: 'SET_CLIENT_ID',
             clientId : clientIdToPass
@@ -267,19 +308,19 @@ const ProfilePage = ({navigation}) => {
                                 <Text style={styles.creditText}>Credit (USD)</Text>
                             </View>
                             <View style={styles.confirmedOrders}>
-                                <Text style={styles.confirmedOrdersValue}>1</Text>
+                                <Text style={styles.confirmedOrdersValue}>{approvedOrders.length}</Text>
                                 <TouchableOpacity
                                     onPress={() => handleOnConfirmedOrdersPRessed()}
                                 >
-                                    <Text style={styles.confirmedOrdersText}>Confirmed Orders</Text>
+                                    <Text style={styles.confirmedOrdersText}>Approved Orders</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.pandingOrders}>
-                                <Text style={styles.pandingOrdersValue}>1</Text>
+                                <Text style={styles.pandingOrdersValue}>{pendingOrders.length}</Text>
                                 <TouchableOpacity
                                     onPress={() => handleOnPendingOrdersPRessed()}
                                 >
-                                    <Text style={styles.pandingOrdersText}>Panding Orders</Text>
+                                    <Text style={styles.pandingOrdersText}>Pending Orders</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

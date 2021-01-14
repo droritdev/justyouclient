@@ -6,6 +6,7 @@ import ComingSoon from './ComingSoon';
 import ReceiptsHistory from './ReceiptsHistory';
 import ConfirmedOrders from './ConfirmedOrders';
 import PendingOrders from './PendingOrders';
+import PendingApprovalOrder from './PendingApprovalOrder';
 import History from './History';
 import EditProfile from './EditProfile';
 import CustomerService from './CustomerService';
@@ -25,6 +26,7 @@ const TrainerProfilePageStack = ({navigation}) => {
             <Stack.Screen name='ProfilePage' component={ProfilePage}/>
             <Stack.Screen name='ConfirmedOrders' component={ConfirmedOrders}/>
             <Stack.Screen name='PendingOrders' component={PendingOrders}/>
+            <Stack.Screen name='PendingApprovalOrder' component={PendingApprovalOrder}/>
             <Stack.Screen name='ComingSoon' component={ComingSoon}/>
             <Stack.Screen name='ReceiptsHistory' component={ReceiptsHistory}/>
             <Stack.Screen name='History' component={History}/>
