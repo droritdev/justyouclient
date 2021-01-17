@@ -17,9 +17,12 @@ const trainerEditProfile = require('./trainerEditProfile/trainerEditProfile');
 const getAllTrainers = require('./getAllTrainers/getAllTrainers');
 const findTrainerByPopularity = require('./findTrainerByPopularity/findTrainerByPopularity');
 const findTrainerByEmail = require('./findTrainerByEmail/findTrainerByEmail');
+const findTrainerByID = require('./findTrainerByID/findTrainerByID');
+
 
         //**Client imports**//
 const clientRegister = require('./register/clientRegister');
+
 const findTrainerByCategory = require('./findTrainersByCategory/findTrainersByCategory');
 //**Orders
 const makeOrder = require('./orders/makeOrder');
@@ -124,6 +127,7 @@ app.put('/sign-out', signOut.signOut);
 app.put('/settings/visibility', changeVisibility.changeVisibility);
 
 
+
             ////**Trainer end points**////
 //End point for confirming the registration and add a new trainer to the dataBase
 app.post('/trainers/register', trainerRegister.register);
@@ -133,6 +137,7 @@ app.put('/trainers/settings/edit-profile', trainerEditProfile.editProfile);
 
 app.get('/trainers/:allTrainer', getAllTrainers.allTrainers);
 app.get('/trainers/email/:email', findTrainerByEmail.getTrainerByEmail);
+app.get('/trainers/id/:id', findTrainerByID.findTrainerByID);
 // app.get('clients', getAllTrainers.allTrainers);
 
 

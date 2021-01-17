@@ -58,43 +58,6 @@ const PendingApprovalOrder = ({navigation}) => {
     }
 
 
-    //Prompt approve pop-up
-    const handleApproveButton = () => {
-        setApproveClicked(true);
-    }
-
-
-    //Prompt decline pop-up
-    const handleDeclineButton = () => {
-        setDeclineClicked(true);
-    }
-
-
-
-
-    //Update order status to declined
-    const handleDeclineClicked = () => {
-        axios  
-        .post('/orders/update-status', {
-            _id: orderObject._id, 
-            status: 'decline'
-        },
-        config
-        )
-        .then((res) => {
-            if (res.data.type === "success") {
-                handleDismiss();
-                handleArrowButton();
-            }
-        })
-        .catch((err) =>  {
-            handleDismiss();
-            alert("Something went wrong, please try again later.");
-        });
-    }
-
-
-
     //Dismiss pop-up
     const handleDismiss = () => {
         setDeclineClicked(false);

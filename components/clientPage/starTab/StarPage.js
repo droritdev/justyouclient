@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect, useReducer} from 'react';
 import { Button, Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions, Image, FlatList } from 'react-native';
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
 import * as Progress from 'react-native-progress';
 
 // import { ListItem } from 'react-native-elements'
@@ -11,6 +11,7 @@ import axios from 'axios';
 
 
 import {TrainerContext} from '../../../context/TrainerContext';
+import {CategoryContext} from '../../../context/CategoryContext';
 import {EmailContext} from '../../../context/EmailContext';
 import { signOut } from '../../../backend/signOut/signOut';
 
@@ -21,9 +22,14 @@ const StarPage = ({route, navigation}) => {
 
     const [doc, setDoc] = useState();
     const [isRefreshing,setIsRefreshing] = useState(false);
+
+    
     const [reviewsArray,setReviewsArray] = useState([]);
+
     const [mainCategoryArray,setMainCategoryArray] = useState([]);
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
+
+    const {category, dispatchCategory} = useContext(CategoryContext)
 
     const {
         dispatchTrainerFirst,
@@ -37,16 +43,29 @@ const StarPage = ({route, navigation}) => {
          = useContext(TrainerContext);
 
 
+        const [hitArrayCount,setHitArrayCount] = useState(0);
+        const [kickBoxArrayCount,setKickBoxArrayCount] = useState(0);
+        const [martialArtsArrayCount,setMartialArtsArrayCount] = useState(0);
+        const [pilatisArrayCount,setPilatisArrayCount] = useState(0);
+        const [climbingArrayCount,setClimbingArrayCount] = useState(0);
+        const [trxArrayCount,setTrxArrayCount] = useState(0);
+        const [dancingArrayCount,setDancingArrayCount] = useState(0);
+        const [swimmingArrayCount,setSwimmingArrayCount] = useState(0);
+        const [runningArrayCount,setRunningArrayCount] = useState(0);
+        const [powerLiftingArrayCount,setPowerLiftingArrayCount] = useState(0);
+        const [streetWorkoutArrayCount,setStreetWorkoutArrayCount] = useState(0);
+        
          const categories = [
             { id: 1, label: 'HIT' },
-            { id: 2, label: 'KIK BOX' },
+            { id: 2, label: 'KICK BOX' },
             { id: 3, label: 'MARTIAL ARTS' },
             { id: 4, label: 'PILATIS' },
             { id: 5, label: 'CLIMBING' },
             { id: 6, label: 'TRX' },
             { id: 7, label: 'DANCING' },
             { id: 8, label: 'SWIMMING' },
-            { id: 9, label: 'RUNNING' }
+            { id: 9, label: 'RUNNING' },
+            { id: 10, label: 'POWERLIFTING' }
         ];
 
 
@@ -60,6 +79,8 @@ const StarPage = ({route, navigation}) => {
     var dancingArray = []
     var swimmingArray = []
     var runningArray = []
+    var powerLiftingArray = []
+    var streetWorkoutArray = []
 
 
     const config = {
@@ -72,12 +93,62 @@ const StarPage = ({route, navigation}) => {
 
     const sortByCategory = (trainerArray) => {
         console.log('in sort sdasdasdadasdasdasdasd')
-        console.log(trainerArray)
+        // console.log(trainerArray)
         for (let index = 0; index < trainerArray.length; index++) {
             const element = trainerArray[index];
-            console.log(element)
-            
+            if(element.categories.includes('HIT')){
+                hitArray.push(element);
+            }
+            if(element.categories.includes('KICK BOX')){
+                kickBoxArray.push(element);
+            }
+            if(element.categories.includes('MARTIAL ARTS')){
+                martialArtsArray.push(element);
+            }
+            if(element.categories.includes('PILATIS')){
+                pilatisArray.push(element);
+            }
+            if(element.categories.includes('CLIMBING')){
+                climbingArray.push(element);
+            }
+            if(element.categories.includes('TRX')){
+                trxArray.push(element);
+            }
+            if(element.categories.includes('DANCING')){
+                dancingArray.push(element);
+            }
+            if(element.categories.includes('SWIMMING')){
+                swimmingArray.push(element);
+            }
+            if(element.categories.includes('RUNNING')){
+                runningArray.push(element);
+                
+            }if(element.categories.includes('POWER LIFTING')){
+                powerLiftingArray.push(element);
+            }
+            if(element.categories.includes('STREET WORKOUT')){
+                streetWorkoutArray.push(element);
+            }
+
+            // console.log('***************************************');
+            // console.log(element.categories.includes('TRX'));
+            // console.log('***************************************');            
         }
+        //    {/* MARK */}
+
+        setHitArrayCount(hitArray.length);
+        setKickBoxArrayCount(kickBoxArray.length);
+        setMartialArtsArrayCount(martialArtsArray.length);
+        setPilatisArrayCount(pilatisArray.length);
+        setClimbingArrayCount(climbingArray.length);
+        setTrxArrayCount(trxArray.length);
+        setDancingArrayCount(dancingArray.length);
+        setSwimmingArrayCount(swimmingArray.length);
+        setRunningArrayCount(runningArray.length);
+        setPowerLiftingArrayCount(powerLiftingArray.length);
+        setStreetWorkoutArrayCount(streetWorkoutArray.length);
+        console.log('trxArray:')
+        console.log(trxArray)
     }
 
     const getAllTrainers = async () => {
@@ -91,6 +162,8 @@ const StarPage = ({route, navigation}) => {
                 if(doc) {
                     setDoc(doc.data);
                     setIsRefreshing(false);
+                    sortByCategory(doc.data);
+
 
                 }
             })
@@ -120,7 +193,7 @@ const StarPage = ({route, navigation}) => {
                     setDoc(doc.data);
                     console.log("is any doc here " + doc.data);
                     setIsRefreshing(false);
-                    sortByCategory(doc.data);
+                    // sortByCategory(doc.data);
 
                 }
             })
@@ -139,7 +212,7 @@ const StarPage = ({route, navigation}) => {
 
         }
 
-        finalStarRating = ((reviewsArray.length)/starsCounter).toFixed(1);
+        finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
         return finalStarRating;
     }
 
@@ -276,6 +349,14 @@ const StarPage = ({route, navigation}) => {
         navigation.navigate('TrainerOrderPage',{params: ''})
     }
 
+    const handleOnCategoryPressed = (category) => {
+        dispatchCategory({
+            type: 'SET_CATEGORY',
+            category: category
+        })
+        navigation.navigate('SearchPage');
+    }
+
     //Handle when the client presses on Why Us button
     const handleOnWhyUsPressed = () => {
         navigation.navigate('WhyUs');
@@ -366,43 +447,216 @@ const StarPage = ({route, navigation}) => {
                              <View style={styles.inSectionImageViewContainer}>
                                 <TouchableOpacity
                                     style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('HIT')}
                                 >
                                     <Image
                                         style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/hit.jpg')}
+
+
                                     />
                                 </TouchableOpacity>
                             </View>
                             <View
                                 style={styles.categoryPreviewText}
                             >
-                                <Text style={styles.categoryText1}>RUNNING</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: 25</Text>
+                                <Text style={styles.categoryText1}>HIT</Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {hitArrayCount}</Text>
                             </View>
+
+
                         </View>
                         <View style={styles.inSectionView}>
-                            <View style={styles.inSectionImageViewContainer}>
+                             <View style={styles.inSectionImageViewContainer}>
                                 <TouchableOpacity
                                     style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('KICK BOX')}
+
                                 >
                                     <Image
                                         style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/kickBox.jpg')}
+
                                     />
                                 </TouchableOpacity>
                             </View>
                             <View
                                 style={styles.categoryPreviewText}
                             >
-                                <Text style={styles.categoryText1}>TRX </Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: 30</Text>
+                                <Text style={styles.categoryText1}>KICK BOXING</Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {kickBoxArrayCount}</Text>
+                            </View>
+                        </View>
+
+
+                        <View style={styles.inSectionView}>
+                             <View style={styles.inSectionImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('MARTIAL ARTS')}
+
+                                >
+                                    <Image
+                                        style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/martialArts.jpg')}
+
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.categoryPreviewText}
+                            >
+                                <Text style={styles.categoryText1}>MARTIAL ARTS</Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {martialArtsArrayCount}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.inSectionView}>
+                             <View style={styles.inSectionImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('PILATES')}
+
+                                >
+                                    <Image
+                                        style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/pilates.jpg')}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.categoryPreviewText}
+                            >
+
+                                <Text style={styles.categoryText1}>PILATIS</Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {pilatisArrayCount}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.inSectionView}>
+                             <View style={styles.inSectionImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('CLIMBING')}
+
+                                >
+                                    <Image
+                                        style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/climbing.jpg')}
+
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.categoryPreviewText}
+                            >
+
+                                <Text style={styles.categoryText1}>CLIMBING</Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {climbingArrayCount}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.inSectionView}>
+                             <View style={styles.inSectionImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('TRX')}
+
+                                >
+                                    <Image
+                                        style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/trx.jpg')}
+
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.categoryPreviewText}
+                            >
+
+                                <Text style={styles.categoryText1}>TRX</Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text>
+                            </View>
+                        </View>
+                            
+
+                            {/* MARK */}
+                        <View style={styles.inSectionView}>
+                            <View style={styles.inSectionImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('SWIMMING')}
+
+                                >
+                                    <Image
+                                        style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/swimming.jpg')}
+
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.categoryPreviewText}
+                            >
+                                <Text style={styles.categoryText1}>SWIMMING </Text>
+
+                                <Text style={styles.categoryText2}>Amount of trainrs: {swimmingArrayCount}</Text>
                             </View>
                         </View>
                         <View style={styles.inSectionView}>
                             <View style={styles.inSectionImageViewContainer}>
                                 <TouchableOpacity
                                     style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('RUNNING')}
+
                                 >
                                     <Image
                                         style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/running.jpg')}
+
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.categoryPreviewText}
+                            >
+                                <Text style={styles.categoryText1}>RUNNING </Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {runningArrayCount}</Text>
+                            </View>
+                        </View>
+                        
+                        <View style={styles.inSectionView}>
+                            <View style={styles.inSectionImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('DANCING')}
+
+                                >
+                                    <Image
+                                        style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/dancing.jpg')}
+
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.categoryPreviewText}
+                            >
+                                <Text style={styles.categoryText1}>DANCING </Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {dancingArrayCount}</Text>
+                            </View>
+                        </View>
+                        
+                        <View style={styles.inSectionView}>
+                            <View style={styles.inSectionImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('POWER LIFTING')}
+
+                                >
+                                    <Image
+                                        style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/powerLifting.jpg')}
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -410,26 +664,32 @@ const StarPage = ({route, navigation}) => {
                                 style={styles.categoryPreviewText}
                             >
                                 <Text style={styles.categoryText1}>POWER LIFTING</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: 78</Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {powerLiftingArrayCount}</Text>
                             </View>
                         </View>
+
                         <View style={styles.inSectionView}>
                             <View style={styles.inSectionImageViewContainer}>
                                 <TouchableOpacity
                                     style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed('STREET WORKOUT')}
+
                                 >
                                     <Image
                                         style={styles.categoryImage}
+                                        source = {require('../../../images/categoriesImages/streetWorkout.jpg')}
+
                                     />
                                 </TouchableOpacity>
                             </View>
                             <View
                                 style={styles.categoryPreviewText}
                             >
-                                <Text style={styles.categoryText1}>SWIMMING</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: 75</Text>
+                                <Text style={styles.categoryText1}>STREET</Text>
+                                <Text style={styles.categoryText2}>Amount of trainrs: {streetWorkoutArrayCount}</Text>
                             </View>
                         </View>
+                        
                     </ScrollView>
                 </View>
                 {/* <View style={styles.sectionContainer}>
@@ -689,6 +949,13 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     categoryImage: {
+        height: Dimensions.get('window').height * .0745,
+        width: Dimensions.get('window').width * .29,
+        backgroundColor: 'gainsboro',
+        borderTopRightRadius: 15,
+        borderTopLeftRadius: 15,
+        // height: Dimensions.get('window').height * .08,
+        // width: Dimensions.get('window').width * .29,
 
     },
     categoryPreviewText: {

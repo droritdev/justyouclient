@@ -135,7 +135,7 @@ const TrainerOrderPage = ({navigation}) => {
                         }
                       })
                     .catch((err) => console.log(err));
-                    }
+    }
 
     var orderDateClean = orderDate;
     console.log('orderDateClean' +orderDateClean);
