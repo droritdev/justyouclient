@@ -28,8 +28,8 @@ const categoriesData = [
     { id: 7, label: 'DANCING' },
     { id: 8, label: 'SWIMMING' },
     { id: 9, label: 'RUNNING' },
-    { id: 10, label: 'POWERLIFTING' },
-    { id: 11, label: 'STREET' }
+    { id: 10,label: 'POWERLIFTING' },
+    { id: 11,label: 'STREET' }
 
 ];
 
@@ -44,44 +44,59 @@ const SearchPage = ({navigation}) => {
     const [selectedItems, setSelectedItems] = useState([]);
     // const [clientID, setClientID] = useState("");
     const [items, setItems] = useState(categoriesData);
-    const [doc, setDoc] = useState();
-    const [recentOrders, setRecentOrders] = useState([]);
-    var recentTrainerArray = []
+    const [doc, setDoc] = useState([]);
+    // const [recentOrders, setRecentOrders] = useState([]);
+    var recentTrainerArray = [];
     const [reviewsArray,setReviewsArray] = useState([]);
+    // var reviewsArray = [];
 
-    var trainersByCategory = []
+    var trainersByCategory = [];
     const [categoryTitle, setCategoryTitle] = useState('');
     const [isCategoryMode, setIsCategoryMode] = useState(false);
     const [displayCategories, setDisplayCategories] = useState('none');
-    const [displayRecentOrders, setDisplayRecentOrders] = useState('none');
+    const [displayRecentOrders, setDisplayRecentOrders] = useState('flex');
 
 
     const [isLoadingCircle, setIsLoadingCircle] = useState(true);
 
 
-
+    // React.useCallback(() => {
+    //     // Do something when the screen is focused
+  
+    //     return () => {
+    //       // Do something when the screen is unfocused
+    //       // Useful for cleanup functions
+    //     };
+    //   }, []);
 
 
     // React.useEffect(() => {
     //     getClientFromMongoDB();
-    //     console.log('🚨click')
+    //     if(category != ''){
+    //             console.log('from star page: ' + category);
+    //             setIsCategoryMode(true);
+    //             setCategoryTitle(category);
+    //             getAllTrainers(category);
+    //             setDisplayCategories('flex');
+    //             setDisplayRecentOrders('none');
+                
+    //          }
 
     //     // getTrainersByCategory();
         
     // },[]);
 
-
+//MARKA
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getClientFromMongoDB();
-            if(category != ''){
-                setIsCategoryMode(true);
-                setCategoryTitle(category);
-                setDisplayCategories('flex');
-                setDisplayRecentOrders('none');
-                console.log('category')
-                console.log(category)
-            }
+            // if(category != ''){
+            //     setIsCategoryMode(true);
+            //     setCategoryTitle(category);
+            //     setDisplayCategories('flex');
+            //     setDisplayRecentOrders('none');
+                
+            // }
         });
         return unsubscribe;
       }, [navigation]);
@@ -95,10 +110,10 @@ const SearchPage = ({navigation}) => {
         },
     };
     
-    const getClientFromMongoDB = () => {
+    const getClientFromMongoDB = async () => {
         const user = auth().currentUser;
         console.log(user.email);
-        axios
+            await axios
                         .get('/clients/'
                         +user.email.toLocaleLowerCase(),
                         config
@@ -128,8 +143,7 @@ const SearchPage = ({navigation}) => {
                 var allOrders = doc.data;    
                 allOrders = sortOrders(allOrders);
     
-                setRecentOrders(allOrders);
-                console.log(allOrders[0].trainer.id)
+                // setRecentOrders(allOrders);
                 getTrainerFromRecentOrders(allOrders)
                 
             })
@@ -167,39 +181,52 @@ const SearchPage = ({navigation}) => {
 
     const getTrainerFromRecentOrders = (allOrders) => {
         
-        //limit recent order to 5
+        //limit recent orders to 5
         var limit = 5
         if (allOrders.length < limit){
             limit = allOrders.length
         }
         for (let index = 0; index < limit; index++) {
             const trainerID = allOrders[index].trainer.id;
-            console.log(trainerID);
             getTrainerFromMongoDB(trainerID);
         }
+        console.log('DOCDOCDOC');
+
+        console.log(recentTrainerArray);
         setDoc(recentTrainerArray);
-        forceUpdate();
         if(doc){
             setIsLoadingCircle(false);
-            forceUpdate();
+            // forceUpdate();
 
         }
         
     }
 
-    const getTrainerFromMongoDB = (trainerID) => {
-        axios
+    const getTrainerFromMongoDB = async (trainerID) => {
+            await axios
                         .get('/trainers/id/'
                         +trainerID,
                         config
                     )
                     .then((doc) => {
                         if(doc) {
-                            console.log(doc.data)
-                            recentTrainerArray.push(doc.data);
-                            setIsLoadingCircle(false);
-
-                            forceUpdate();
+                            console.log('recentTrainerArray')
+                            console.log(recentTrainerArray[0]);
+                            // recentTrainerArray.push(doc.data);
+                            console.log(recentTrainerArray.includes(doc.data));
+                            
+                            //for no duplicates
+                            if(!recentTrainerArray.includes(doc.data)){
+                                console.log('notInclude*******************************');
+                                console.log(recentTrainerArray);
+                                recentTrainerArray.push(doc.data);
+                                // setIsLoadingCircle(false);
+                                // forceUpdate();
+                            }else{
+                                alert('Included');
+                            }
+                            
+                            
 
                         }
                       })
@@ -227,6 +254,7 @@ const SearchPage = ({navigation}) => {
         media = {item.media.images[0]}
         trainerObject = {item}        
         {...setReviewsArray(item.reviews)}
+        // {...reviewsArray = (item.reviews)}
         {...console.log(`${item.name.first} ${item.name.last}`)}
         ></Item>
       );
@@ -263,23 +291,25 @@ const SearchPage = ({navigation}) => {
         
       )
 
-    const getAllTrainers = async () => {
-        setIsRefreshing(true);
+    const getAllTrainers = async (category) => {
         
-        await axios  
+         await axios  
             .get('/trainers/getAllTrainers',
             config)
             .then((doc) => {
 
                 if(doc) {
                     // setDoc(doc.data);
-                    setIsRefreshing(false);
                     // sortByCategory(doc.data);
+                    getTrainersByCategory(doc.data, category);
+                    setDisplayCategories('flex');
+                    setDisplayRecentOrders('none');
 
 
                 }
             })
             .catch((err) =>  {
+                console.log(err)
             });
     }
 
@@ -290,26 +320,36 @@ const SearchPage = ({navigation}) => {
         for (let index = 0; index < trainersArray.length; index++) {
             const trainer = trainersArray[index];
             if(trainer.categories.includes(category)){
-                trainersByCategory.push(element);
+                trainersByCategory.push(trainer);
+                console.log(trainer);
+                console.log('trainersByCategory ' + trainersByCategory)
             }
-            
+            setDoc(trainersByCategory);
+            setIsLoadingCircle(false);
+            forceUpdate();
         }
     }
 
     //When the user chooses category it whill be displayed on the input bellow
     const handleOnItemPress = (item) => {
+        console.log('itemLabel: ' +item.label)
         if(selectedItems.includes(item.label)){
             let index = selectedItems.indexOf(item.label);
             selectedItems.splice(index, 1);
             setSelectedItems(selectedItems.filter(element => element !== item.label));
+            console.log('selectedItemsTop: ' + item.label)
         }
         else{
             setSelectedItems(selectedItems => [...selectedItems, item.label]);
+            console.log('selectedItemsbuttom: ' + item.label);
+            console.log('sendTOMONGO: ' + item.label);
+            getAllTrainers(item.label);
         }
     }
 
     const handleOnInputChange = (text) => {
         if(text.length > 0){
+            console.log('text '+ text)
             setItems(items.filter(item => item.label.toLowerCase().includes(text.toLowerCase())));
         }
         else{
@@ -346,12 +386,14 @@ const SearchPage = ({navigation}) => {
                     />
                 </View>
             </View>
-            {isCategoryMode?
+            <View display = {displayCategories}>
                 <Text style={styles.recentOrdersTitle}>{categoryTitle}</Text>
-            :            
+            </View>
+
+            <View display = {displayRecentOrders}>
                 <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
-            }
-            <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
+            </View>
+                       
             {isLoadingCircle?            
              <View>
                 <View style={styles.progressView}>
@@ -363,7 +405,8 @@ const SearchPage = ({navigation}) => {
              </View>
             : 
             <ScrollView>
-                <View display = {'flex'}>
+                {/* recent orders */}
+                <View display = {displayRecentOrders}>
                     <FlatList
                             vertical
                             data={doc}
@@ -371,7 +414,8 @@ const SearchPage = ({navigation}) => {
                             keyExtractor={item => item.id}   
                     />
                 </View>
-                <View display = {'none'}>
+                {/* trainersByCategory */}
+                <View display = {displayCategories}>
                     <FlatList
                             vertical
                             data={doc}
@@ -379,7 +423,7 @@ const SearchPage = ({navigation}) => {
                             keyExtractor={item => item.id}   
                     />
                 </View>
-                <View style={styles.trainerView}>
+                {/* <View style={styles.trainerView}>
                     <View style={styles.trainerViewRow}>
                         <TouchableOpacity
                             style={styles.trainerImage}
@@ -465,8 +509,8 @@ const SearchPage = ({navigation}) => {
                                 />
                             </View>
                         </View>
-                    </View>
-                </View>
+                    </View> 
+                 </View> */}
             </ScrollView>
             }
         </SafeAreaView>

@@ -1,5 +1,7 @@
 import React, {useState, useContext, useEffect, useReducer} from 'react';
 import { Button, Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions, Image, FlatList } from 'react-native';
+import { StackActions } from '@react-navigation/native';
+
 import FastImage from 'react-native-fast-image';
 import * as Progress from 'react-native-progress';
 
@@ -353,8 +355,13 @@ const StarPage = ({route, navigation}) => {
         dispatchCategory({
             type: 'SET_CATEGORY',
             category: category
-        })
-        navigation.navigate('SearchPage');
+        });
+        //for refresh the target page 
+        // navigation.navigate('SearchPage');
+        // const pushAction = StackActions.push('SearchPageStack', { screen: 'SearchPage' });
+
+        // navigation.dispatch(pushAction);
+        navigation.navigate('SearchPageStack', { screen: 'SearchPage' });
     }
 
     //Handle when the client presses on Why Us button
