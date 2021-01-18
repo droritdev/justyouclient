@@ -34,7 +34,8 @@ const categoriesData = [
 ];
 
 //The claint's search page
-const SearchPage = ({navigation}) => {
+const SearchPage = ({navigation, route}) => {
+    // const { categoryFromStarPage } = route.params
 
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
@@ -47,8 +48,8 @@ const SearchPage = ({navigation}) => {
     const [doc, setDoc] = useState([]);
     // const [recentOrders, setRecentOrders] = useState([]);
     var recentTrainerArray = [];
-    const [reviewsArray,setReviewsArray] = useState([]);
-    // var reviewsArray = [];
+    // const [reviewsArray,setReviewsArray] = useState([]);
+    var reviewsArray = [];
 
     var trainersByCategory = [];
     const [categoryTitle, setCategoryTitle] = useState('');
@@ -70,36 +71,38 @@ const SearchPage = ({navigation}) => {
     //   }, []);
 
 
-    // React.useEffect(() => {
-    //     getClientFromMongoDB();
-    //     if(category != ''){
-    //             console.log('from star page: ' + category);
-    //             setIsCategoryMode(true);
-    //             setCategoryTitle(category);
-    //             getAllTrainers(category);
-    //             setDisplayCategories('flex');
-    //             setDisplayRecentOrders('none');
+    React.useEffect(() => {
+        getClientFromMongoDB();
+        // console.log('categoryFromStarPage: '+ categoryFromStarPage);
+        if(category != ''){
+                alert('in category');
+                console.log('from star page: ' + category);
+                setIsCategoryMode(true);
+                setCategoryTitle('category');
+                getAllTrainers(category);
+                setDisplayCategories('flex');
+                setDisplayRecentOrders('none');
                 
-    //          }
+             }
 
-    //     // getTrainersByCategory();
+        // getTrainersByCategory();
         
-    // },[]);
+    },[]);
 
 //MARKA
-    React.useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            getClientFromMongoDB();
-            // if(category != ''){
-            //     setIsCategoryMode(true);
-            //     setCategoryTitle(category);
-            //     setDisplayCategories('flex');
-            //     setDisplayRecentOrders('none');
+    // React.useEffect(() => {
+    //     const unsubscribe = navigation.addListener('focus', () => {
+    //         getClientFromMongoDB();
+    //         // if(category != ''){
+    //         //     setIsCategoryMode(true);
+    //         //     setCategoryTitle(category);
+    //         //     setDisplayCategories('flex');
+    //         //     setDisplayRecentOrders('none');
                 
-            // }
-        });
-        return unsubscribe;
-      }, [navigation]);
+    //         // }
+    //     });
+    //     return unsubscribe;
+    //   }, [navigation]);
 
 
     const config = {
@@ -110,10 +113,10 @@ const SearchPage = ({navigation}) => {
         },
     };
     
-    const getClientFromMongoDB = async () => {
+    const getClientFromMongoDB =  () => {
         const user = auth().currentUser;
         console.log(user.email);
-            await axios
+             axios
                         .get('/clients/'
                         +user.email.toLocaleLowerCase(),
                         config
@@ -196,7 +199,7 @@ const SearchPage = ({navigation}) => {
         setDoc(recentTrainerArray);
         if(doc){
             setIsLoadingCircle(false);
-            // forceUpdate();
+            forceUpdate();
 
         }
         
@@ -221,7 +224,7 @@ const SearchPage = ({navigation}) => {
                                 console.log(recentTrainerArray);
                                 recentTrainerArray.push(doc.data);
                                 // setIsLoadingCircle(false);
-                                // forceUpdate();
+                                forceUpdate();
                             }else{
                                 alert('Included');
                             }
@@ -253,8 +256,8 @@ const SearchPage = ({navigation}) => {
         name = {`${item.name.first} ${item.name.last}`}
         media = {item.media.images[0]}
         trainerObject = {item}        
-        {...setReviewsArray(item.reviews)}
-        // {...reviewsArray = (item.reviews)}
+        // {...setReviewsArray(item.reviews)}
+        {...reviewsArray = (item.reviews)}
         {...console.log(`${item.name.first} ${item.name.last}`)}
         ></Item>
       );
@@ -408,7 +411,7 @@ const SearchPage = ({navigation}) => {
                 {/* recent orders */}
                 <View display = {displayRecentOrders}>
                     <FlatList
-                            vertical
+                            
                             data={doc}
                             renderItem={renderItem}
                             keyExtractor={item => item.id}   
@@ -417,7 +420,6 @@ const SearchPage = ({navigation}) => {
                 {/* trainersByCategory */}
                 <View display = {displayCategories}>
                     <FlatList
-                            vertical
                             data={doc}
                             renderItem={renderItem}
                             keyExtractor={item => item.id}   

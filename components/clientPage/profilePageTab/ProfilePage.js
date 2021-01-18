@@ -85,6 +85,7 @@ const ProfilePage = ({navigation}) => {
 
             setPendingOrders(pendingOrders);
             setApprovedOrders(approvedOrders);
+            forceUpdate();
         })
         .catch((err) => {
             console.log(err);

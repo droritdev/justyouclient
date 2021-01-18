@@ -20,13 +20,16 @@ import { signOut } from '../../../backend/signOut/signOut';
 
 
 //The client's start area page
-const StarPage = ({route, navigation}) => {
+const StarPage = ({ navigation}) => {
+    
 
     const [doc, setDoc] = useState();
     const [isRefreshing,setIsRefreshing] = useState(false);
 
     
-    const [reviewsArray,setReviewsArray] = useState([]);
+    // const [reviewsArray,setReviewsArray] = useState([]);
+    var reviewsArray = [];
+
 
     const [mainCategoryArray,setMainCategoryArray] = useState([]);
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
@@ -291,7 +294,9 @@ const StarPage = ({route, navigation}) => {
         trainerObject = {item}
         // {...setNumberOfStarts(item.reviews)}
         
-        {...setReviewsArray(item.reviews)}
+        // {...setReviewsArray(item.reviews)}
+        {...reviewsArray = (item.reviews)}
+
         
         
         ></Item>
@@ -361,7 +366,10 @@ const StarPage = ({route, navigation}) => {
         // const pushAction = StackActions.push('SearchPageStack', { screen: 'SearchPage' });
 
         // navigation.dispatch(pushAction);
-        navigation.navigate('SearchPageStack', { screen: 'SearchPage' });
+        navigation.navigate('SearchPageStack',
+             { screen: 'SearchPage' ,
+             params: { categoryFromStarPage: category}
+            });
     }
 
     //Handle when the client presses on Why Us button
