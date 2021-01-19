@@ -28,7 +28,7 @@ const ProfilePage = ({navigation}) => {
 
     const {dispatchClientObject} = useContext(ClientContext);
     const {clientId, dispatchClientId} = useContext(ClientContext);
-    const [clientObject, setClientObject] = useState([]);
+    const [clientObjectToPass, setClientObjectToPass] = useState([]);
     const [clientIdToPass, setClientIdToPass] = useState('[]');
 
     const [pendingOrders, setPendingOrders] = useState([]);
@@ -153,6 +153,7 @@ const ProfilePage = ({navigation}) => {
                           setProfileImageUrl(currectUserData.image);
                         //   clientIdToPass = doc.data[0]._id
                           setClientIdToPass(doc.data[0]._id);
+                          setClientObjectToPass(doc.data[0]);
                           console.log('clientIdToPass: '+ clientIdToPass)
 
                           dispatchClientObject({
@@ -230,7 +231,14 @@ const ProfilePage = ({navigation}) => {
             type: 'SET_CLIENT_ID',
             clientId : clientIdToPass
         });
-        navigation.navigate('PendingOrders' );    }
+
+        dispatchClientObject({
+            type: 'SET_CLIENT_OBJECT',
+            clientObject : clientObjectToPass
+        });
+
+       
+        navigation.navigate('PendingApprovalOrders');}
 
     //Handle when the user presses the PendingOrders button
     const handleOnPendingOrdersPRessed = () => {
@@ -239,7 +247,14 @@ const ProfilePage = ({navigation}) => {
             type: 'SET_CLIENT_ID',
             clientId : clientIdToPass
         });
-        navigation.navigate('PendingOrders');
+
+        dispatchClientObject({
+            type: 'SET_CLIENT_OBJECT',
+            clientObject : clientObjectToPass
+        });
+
+        
+        navigation.navigate('PendingApprovalOrders');
     }
 
     //Handle when the user presses the Invite friends button

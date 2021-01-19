@@ -9,6 +9,16 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+module.exports.mongoose = mongoose;
+
+
+
+
+// chat messages
+const findMessageByIDS = require('./messages/findMessageByIDS');
+const newMessage = require('./messages/newMessage');
+const watchForUpdates = require('./messages/watchForUpdates');
+
 
         //**Trainer imports**//
 const trainerRegister = require('./register/trainerRegister');
@@ -135,7 +145,7 @@ app.post('/trainers/register', trainerRegister.register);
 //End point for editing the trainer profile
 app.put('/trainers/settings/edit-profile', trainerEditProfile.editProfile);
 
-app.get('/trainers/:allTrainer', getAllTrainers.allTrainers);
+app.get('/trainers/allTrainer', getAllTrainers.allTrainers);
 app.get('/trainers/email/:email', findTrainerByEmail.getTrainerByEmail);
 app.get('/trainers/id/:id', findTrainerByID.findTrainerByID);
 // app.get('clients', getAllTrainers.allTrainers);
@@ -213,3 +223,13 @@ app.put('/places/trainers/remove', removeTrainerFromPlace.removeTrainerFromPlace
 
 //End point for editing the place profile
 app.put('/places/settings/edit-profile', placeEditProfile.editProfile);
+
+
+//chat messages
+//End point to get chat message by clientID and trainerID (receiver and sender)
+app.get('/messages/findMessageByIDS/:ids', findMessageByIDS.getMesssageByIDS);
+
+//End point to create new chat message
+app.post('/messages/newMessage', newMessage.createMessage);
+
+app.get('/messages/watchForUpdates/:receiver', watchForUpdates.watchForUpdates);

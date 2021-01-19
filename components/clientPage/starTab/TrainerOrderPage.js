@@ -188,16 +188,7 @@ const TrainerOrderPage = ({navigation}) => {
 
     
 
-    const pickerItems = []
-    // trainerCategories.map(i => {
-    //             pickerItems.push({
-    //                 value: i,
-    //                 label: i
-    //             })
-    //         });   
-    // const PickerItemsaaa = trainerCategories.array.forEach(element => {
-    //     return value = {element}, label = {element}
-    // });
+  
 
 
     
@@ -458,14 +449,14 @@ const TrainerOrderPage = ({navigation}) => {
                             <FastImage
                             style={styles.trainerImageView}
                             source={{
-                                uri: trainerMediaPictures.images[0],
+                                uri: trainerObject.media.images[0],
                                 priority: FastImage.priority.normal,
                                     }}
                             resizeMode={FastImage.resizeMode.stretch}
                                 />
                             </View>
                         <View style={styles.trainerDetailsContainer} >
-                            <Text style={styles.trainerNameTitle}> {trainerFirstName}</Text>
+                            <Text style={styles.trainerNameTitle}> {trainerObject.name.first + ' '+ trainerObject.name.last}</Text>
 
 
                             <View style={styles.trainerStarRatingContainer}>

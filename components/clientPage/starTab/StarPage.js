@@ -160,7 +160,7 @@ const StarPage = ({ navigation}) => {
         setIsRefreshing(true);
         
         await axios  
-            .get('/trainers/getAllTrainers',
+            .get('/trainers/allTrainer',
             config)
             .then((doc) => {
 
@@ -180,7 +180,6 @@ const StarPage = ({ navigation}) => {
         getAllTrainers();
         console.log('🚨click')
 
-        // getTrainersByCategory();
         
     },[]);
 
@@ -198,7 +197,6 @@ const StarPage = ({ navigation}) => {
                     setDoc(doc.data);
                     console.log("is any doc here " + doc.data);
                     setIsRefreshing(false);
-                    // sortByCategory(doc.data);
 
                 }
             })
@@ -366,8 +364,8 @@ const StarPage = ({ navigation}) => {
         // const pushAction = StackActions.push('SearchPageStack', { screen: 'SearchPage' });
 
         // navigation.dispatch(pushAction);
-        navigation.navigate('SearchPageStack',
-             { screen: 'SearchPage' ,
+        navigation.navigate('StarPageStack',
+             { screen: 'TrainersByCategories' ,
              params: { categoryFromStarPage: category}
             });
     }
@@ -408,7 +406,7 @@ const StarPage = ({ navigation}) => {
                 </View>
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Popular</Text>
-                    <ScrollView 
+                    <View 
                     
                         style={styles.sectionScrollView} 
                         // horizontal={true} 
@@ -419,37 +417,12 @@ const StarPage = ({ navigation}) => {
                                 horizontal
                                 data={doc}
                                 renderItem={renderItem}
-                                keyExtractor={item => item.email}
+                                keyExtractor={item => item._id}
                                 
                                 
                             />
-                        {/* example for dummy triner item */}
-                        {/* <View style={styles.inSectionView}>
-                            <View style={styles.inSectionImageViewContainer}>
-                                <TouchableOpacity
-                                    style={styles.inSectionImageView}
-                                    onPress={() => handleOnTrainerPressed()}
-                                >
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View> */}
-                    </ScrollView>
+                        
+                    </View>
                 </View>
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Categories</Text>
@@ -466,7 +439,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/hit.jpg')}
+                                        source = {require('../../../images/categoriesImages/HIT.jpg')}
 
 
                                     />
@@ -490,7 +463,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/kickBox.jpg')}
+                                        source = {require('../../../images/categoriesImages/KICKBOX.jpg')}
 
                                     />
                                 </TouchableOpacity>
@@ -513,7 +486,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/martialArts.jpg')}
+                                        source = {require('../../../images/categoriesImages/MARTIALARTS.jpg')}
 
                                     />
                                 </TouchableOpacity>
@@ -535,7 +508,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/pilates.jpg')}
+                                        source = {require('../../../images/categoriesImages/PILATES.jpg')}
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -557,7 +530,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/climbing.jpg')}
+                                        source = {require('../../../images/categoriesImages/CLIMBING.jpg')}
 
                                     />
                                 </TouchableOpacity>
@@ -580,7 +553,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/trx.jpg')}
+                                        source = {require('../../../images/categoriesImages/TRX.jpg')}
 
                                     />
                                 </TouchableOpacity>
@@ -605,7 +578,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/swimming.jpg')}
+                                        source = {require('../../../images/categoriesImages/SWIMMING.jpg')}
 
                                     />
                                 </TouchableOpacity>
@@ -627,7 +600,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/running.jpg')}
+                                        source = {require('../../../images/categoriesImages/RUNNING.jpg')}
 
                                     />
                                 </TouchableOpacity>
@@ -649,7 +622,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/dancing.jpg')}
+                                        source = {require('../../../images/categoriesImages/DANCING.jpg')}
 
                                     />
                                 </TouchableOpacity>
@@ -671,7 +644,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/powerLifting.jpg')}
+                                        source = {require('../../../images/categoriesImages/POWERLIFTING.jpg')}
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -692,7 +665,7 @@ const StarPage = ({ navigation}) => {
                                 >
                                     <Image
                                         style={styles.categoryImage}
-                                        source = {require('../../../images/categoriesImages/streetWorkout.jpg')}
+                                        source = {require('../../../images/categoriesImages/STREETWORKOUT.jpg')}
 
                                     />
                                 </TouchableOpacity>
@@ -707,83 +680,7 @@ const StarPage = ({ navigation}) => {
                         
                     </ScrollView>
                 </View>
-                {/* <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionTitle}>Places</Text>
-                    <ScrollView 
-                        style={styles.sectionScrollView} 
-                        horizontal={true} 
-                        showsHorizontalScrollIndicator={false}
-                    >
-                        <View style={styles.inSectionView}>
-                            <View style={styles.inSectionImageViewContainer}>
-                                <TouchableOpacity
-                                    style={styles.inSectionImageView}
-                                >
-                                    <Image
-                                        style={styles.placeImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.placePreviewText}
-                            >
-                                <Text style={styles.placeText1}>STUDIO SPRING</Text>
-                                <Text style={styles.placeText2}>4 km - $$$</Text>
-                            </View>
-                        </View>
-                        <View style={styles.inSectionView}>
-                            <View style={styles.inSectionImageViewContainer}>
-                                <TouchableOpacity
-                                    style={styles.inSectionImageView}
-                                >
-                                    <Image
-                                        style={styles.placeImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.placePreviewText}
-                            >
-                                <Text style={styles.placeText1}>GET FIT Studio</Text>
-                                <Text style={styles.placeText2}>5 km - $$$</Text>
-                            </View>
-                        </View>
-                        <View style={styles.inSectionView}>
-                            <View style={styles.inSectionImageViewContainer}>
-                                <TouchableOpacity
-                                    style={styles.inSectionImageView}
-                                >
-                                    <Image
-                                        style={styles.placeImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.placePreviewText}
-                            >
-                                <Text style={styles.placeText1}>LENA Studio</Text>
-                                <Text style={styles.placeText2}>5 km - $$$</Text>
-                            </View>
-                        </View>
-                        <View style={styles.inSectionView}>
-                            <View style={styles.inSectionImageViewContainer}>
-                                <TouchableOpacity
-                                    style={styles.inSectionImageView}
-                                >
-                                    <Image
-                                        style={styles.placeImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.placePreviewText}
-                            >
-                                <Text style={styles.placeText1}>XP Studio</Text>
-                                <Text style={styles.placeText2}>4 km - $$$</Text>
-                            </View>
-                        </View>
-                    </ScrollView>
-                </View> */}
+                
                 <View style={styles.whyShareQandAUpdatesButtonsView}>
                     <View style={styles.whyShareQandAUpdatesButtonsRow}>
                         <TouchableOpacity 

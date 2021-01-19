@@ -12,10 +12,10 @@ import FastImage from 'react-native-fast-image';
 
 
 //The clients's order page - pennding + approved
-const PendingOrders = ({route, navigation}) => {
+const PendingApprovalOrders = ({route, navigation}) => {
     // const { routeIsPending } = route.params.isPending;
 
-    const {clientId, dispatchClientId} = useContext(ClientContext);
+    const {clientId} = useContext(ClientContext);
     const {orderObject, dispatchOrderObject} = useContext(OrderContext);
 
 
@@ -202,24 +202,38 @@ const PendingOrders = ({route, navigation}) => {
     }
 
     const handleOnArrowPendingPressed = (index) => {
+        console.log('pendingOrders[index]')
+        console.log(pendingOrders[index])
         
         dispatchOrderObject({
             type: 'SET_ORDER_OBJECT',
             orderObject: pendingOrders[index]
         });
 
-        navigation.navigate('PendingApprovalOrder');
+        
+
+        navigation.navigate('ProfilePageStack',
+             { screen: 'PendingApprovalOrderDetails' ,
+             params: { orderObject: pendingOrders[index]}
+            });
+
     }
 
 
     const handleArrowApprovedPressed = (index) => {
 
+        console.log('pendingOrders[index]')
+        console.log(pendingOrders[index])
         dispatchOrderObject({
             type: 'SET_ORDER_OBJECT',
             orderObject: approvedOrders[index]
         });
 
-        navigation.navigate('PendingApprovalOrder');
+        navigation.navigate('ProfilePageStack',
+             { screen: 'PendingApprovalOrderDetails' ,
+             params: { orderObject: pendingOrders[index]}
+            });
+
     }
 
     return(
@@ -228,7 +242,6 @@ const PendingOrders = ({route, navigation}) => {
                 <View style={styles.headerContainer}>
                     <Text style={styles.justYouHeader}>Just You</Text>
                     
-                    {/* <Text style={styles.partnerText}>Partner</Text> */}
                     <View style={styles.backButton}>
                     <ArrowBackButton
                         onPress={handleArrowButton}
@@ -470,7 +483,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default PendingOrders;
+export default PendingApprovalOrders;
 
 
 

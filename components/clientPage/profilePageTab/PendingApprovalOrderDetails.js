@@ -11,9 +11,11 @@ import Dialog from 'react-native-dialog';
 
 
 //The trainer's order page - pennding + approved
-const PendingApprovalOrder = ({navigation}) => {
+const PendingApprovalOrderDetails = ({navigation, route}) => {
 
-    const {orderObject} = useContext(OrderContext);
+    // const {orderObject} = useContext(OrderContext);
+    const { orderObject } = route.params;
+
     const [orderStatus, setOrderStatus] = useState('');
     const [approveClicked, setApproveClicked] = useState(false);
     const [declineClicked, setDeclineClicked] = useState(false);
@@ -24,9 +26,9 @@ const PendingApprovalOrder = ({navigation}) => {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     }
 
-
     //Hide bottom navgation UI
     useEffect(() => {
+
        navigation.dangerouslyGetParent().setOptions({
         tabBarVisible: false
        })
@@ -49,12 +51,16 @@ const PendingApprovalOrder = ({navigation}) => {
         navigation.dangerouslyGetParent().setOptions({
             tabBarVisible: true
         })
-        navigation.navigate('PendingOrders');
+        navigation.navigate('PendingApprovalOrders');
     }
 
 
     const handleChatPressed = () => {
-        navigation.navigate('Chat', orderObject.client.id);
+        // navigation.navigate('Chat', orderObject.trainer.id);
+        navigation.navigate('ProfilePageStack', { 
+            screen: 'Chat' ,
+            params: { trainerID: orderObject.trainer.id}});
+
     }
 
 
@@ -393,4 +399,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default PendingApprovalOrder;
+export default PendingApprovalOrderDetails;

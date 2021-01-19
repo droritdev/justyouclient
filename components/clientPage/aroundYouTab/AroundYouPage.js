@@ -3,24 +3,212 @@ import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'r
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
+import axios from 'axios';
+import {getDistance} from 'geolib';
+import Geolocation from '@react-native-community/geolocation';
+import FastImage from 'react-native-fast-image';
+import Icon from 'react-native-vector-icons/Feather';
 
 //The claint's around you area page
 const ProfilePage = ({navigation}) => {
-
-    const [isTrainers, setIsTrainers] = useState(true);
     const [maxDistanceSelected, setMaxDistanceSelected] = useState("1");
     const [sliderValue, setSliderValue] = useState("1 MILES");
+    const [trainersAroundMe, setTrainersAroundMe] = useState([]);
+
+    var maxDistance = 1;
 
     //Sets the slider value to the value
     const handleSliderValueChange = (value) => {
-        setSliderValue(value+" MILE");
-        setMaxDistanceSelected(value);
+        maxDistance = value;
+        getTrainersByDistance();
     }
 
-    //Handle when the flip Toggle button changes
-    const handleFlipToggle = () => {
-        setIsTrainers(!isTrainers);
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            console.log('*********inPage*******');
+            getTrainersByDistance();
+        });
+    
+        
+        return unsubscribe;
+      }, [navigation]);
+
+
+    const config = {
+        withCredentials: true,
+        baseURL: 'http://localhost:3000/',
+        headers: {
+              "Content-Type": "application/json",
+        },
+    };
+
+    //GET request using axios, to fetch trainers by distance
+    const getTrainersByDistance = async () => {
+        await axios  
+        .get('/trainers/allTrainer',
+        config)
+        .then((doc) => {
+            var trainers = doc.data;
+            sortByDistance(trainers);
+
+        })
+        .catch((err) =>  {
+            
+        });
     }
+
+
+    //Sort trainers by distance
+    const sortByDistance = (trainers) => {
+        Geolocation.getCurrentPosition(info => {
+            //Array to be filled with all the trainers that meet the distance requirement
+            var trainersAround = [];
+
+            //Client current location cords
+            var clientLatitude = info.coords.latitude;
+            var clientLongitude = info.coords.longitude;
+
+            //Run thrhough all trainers and check if they meet the requirments
+            for (let index = 0; index < trainers.length; index++) {
+                //Trainer object
+                const singleTrainer = trainers[index];
+
+                //Trainer trainingsite1 cords
+                var trainingSite1Cord = singleTrainer.location.trainingSite1.coordinates;
+
+                //Check if the first location cords array isn't empty
+                if (trainingSite1Cord !== []) {
+                    //Calculate the distance between trainingsite1 and client cords
+                    //Return if the cords are in the selected range
+                    var isInRange = calculateDistance(
+                        {latitude: clientLatitude, longitude: clientLongitude},
+                        {latitude: trainingSite1Cord[0], longitude: trainingSite1Cord[1]});
+
+                    //If the cords are in range
+                    if(isInRange) {
+                        //Check if trainer isn't already in the array
+                        if (!trainersAround.includes(singleTrainer)) {
+                            //Push trainer into the array
+                            trainersAround.push(singleTrainer);
+                        }
+                    }
+                }
+            
+                //Check the second location of the trainer (if exists)
+                try {
+                    //Trainer trainingsite2 cords
+                    trainingSite2Cord = singleTrainer.location.trainingSite2.coordinates;
+
+                     //Check if the second location cords array isn't empty
+                    if (trainingSite2Cord !== []) {
+                        //Calculate the distance between trainingsite2 and client cords
+                        //Return if the cords are in the selected range
+                        var isInRange = calculateDistance(
+                            {latitude: clientLatitude, longitude: clientLongitude},
+                            {latitude: trainingSite2Cord[0], longitude: trainingSite2Cord[1]});
+
+                        //If the cords are in range
+                        if(isInRange) {
+                             //Check if trainer isn't already in the array
+                            if (!trainersAround.includes(singleTrainer)) {
+                                //Push trainer into the array
+                                trainersAround.push(singleTrainer);
+                            }
+                        }
+                    }
+                } catch (error) {}
+           }
+           setTrainersAroundMe(trainersAround);
+           setSliderValue(maxDistance+" MILE");
+           setMaxDistanceSelected(maxDistance);
+        });
+    }
+
+
+
+    //Parmas: cords of the client location, cords of the trainer location
+    //Returns: if the trainer location is within the seleced distance from the client location
+    const calculateDistance = (clientCords, trainerCords) => {
+        var metersInMile = 1609.344;
+
+        //Calculate distance between client location to trainer cords
+        var dis = getDistance(clientCords, trainerCords);
+        
+        //Distance received in meters - amount of meters in mile
+        var distanceInMiles = dis/metersInMile;
+        
+        //If the distance is in the selected range
+        if (distanceInMiles<maxDistance) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //Format the categories list to lower case with first letter upper case
+    const categoryDisplayFormat = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
+
+
+    //Load trainer star rating
+    const getStarRating = (reviews) => {
+        if (reviews.length === 0) {
+            setStarRating(0);
+        } else {
+            var sumStars = 0;
+            for (let index = 0; index < reviews.length; index++) {
+                const singleReviewStar = reviews[index].stars;
+                sumStars += Number(singleReviewStar);
+            }
+            return ((sumStars/reviews.length).toFixed(1));
+        }
+    }
+
+
+
+    //Show trainers over the UI
+    const getTrainersAroundMePattern = () => {
+        let repeats = [];
+        if (trainersAroundMe !== []) {
+            for(let i = 0; i < trainersAroundMe.length; i++) {
+                console.log(trainersAroundMe[i].media.images[0]);
+                repeats.push(
+                    <View key={'trainerRow'+i} style={styles.trainerView}>
+                    <View style={styles.trainerViewRow}>
+                        <TouchableOpacity
+                            style={styles.trainerImage}
+                        >
+                            <FastImage
+                                        style={styles.trainerImage}
+                                        source={{
+                                        uri: trainersAroundMe[i].media.images[0],
+                                        priority: FastImage.priority.normal,
+                                        }}
+                                        resizeMode={FastImage.resizeMode.contain}
+                            />
+                        </TouchableOpacity>
+                        <View style={styles.trainerDetails}>
+                            <Text style={styles.trainerDetail1}>{trainersAroundMe[i].name.first + ' ' + trainersAroundMe[i].name.last}</Text>
+                            <Text style={styles.trainerDetail2}>{categoryDisplayFormat(trainersAroundMe[i].categories.join(', '))}</Text>
+                            <View style={styles.ratingRow}>
+                                <Text style={styles.trainerDetail3}> {getStarRating(trainersAroundMe[i].reviews)} </Text>
+                                <Image
+                                    source={require('../../../images/ratingStar.png')}
+                                    
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </View>
+                )
+            }
+        }
+        return repeats;
+    };
+
+
 
     return(
         <SafeAreaView style={styles.safeArea}>
@@ -31,192 +219,35 @@ const ProfilePage = ({navigation}) => {
                 <Text style={styles.aroundYouText}>Around You</Text>
             </View>
             <View style={styles.sliderContainer}>
-                <Text style={styles.maxDistanceText}>DISTANCE RANGE</Text>
-                <Text style={styles.sliderValueTitle}>{sliderValue}</Text>
-                <Slider
-                    style={styles.slider}
-                    minimumValue={1}
-                    maximumValue={100}
-                    minimumTrackTintColor="deepskyblue"
-                    maximumTrackTintColor="#000000"
-                    onValueChange={(value) => handleSliderValueChange(value)}
-                    step={1}
-                    thumbTintColor='deepskyblue'
-                />
+                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                    <Text style={styles.maxDistanceText}>Distance range - </Text>
+                    <Text style={styles.sliderValueTitle}>{sliderValue}</Text>
+                    <Icon name="map-pin" size={23} style={styles.locationIcon} /> 
+                </View>
+                    <Slider
+                        style={styles.slider}
+                        minimumValue={1}
+                        maximumValue={100}
+                        minimumTrackTintColor="deepskyblue"
+                        maximumTrackTintColor="#000000"
+                        onValueChange={(value) => handleSliderValueChange(value)}
+                        step={1}
+                        thumbTintColor='deepskyblue'
+                    />
             </View>
-            <View style={ styles.pricingLabels}>
-              <TouchableOpacity 
-                style={isTrainers ? styles.trainersPricing : styles.trainersPricingLabeld}
-                onPress={handleFlipToggle}
-              >
-                <Text style={isTrainers ? styles.trainersText : styles.trainersTextLabeld}>TRAINERS</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={isTrainers ? styles.placesPricing : styles.placesPricingLabeld}
-                onPress={handleFlipToggle}
-              >
-                <Text style={isTrainers ? styles.placesText : styles.placesTextLabeld}>PLACES</Text>
-              </TouchableOpacity>
+
+            <View style={styles.verifyExplenationContainer}>
+                <Text style={styles.verifyExplenationText}>We'll present all the trainers that provide workouts inside the radius of the selected distance range.</Text>
+              </View>
+
+
+              <View style={styles.aroundYouTitle}>
+                <Text style={styles.aroundYouText}>Trainers </Text>
             </View>
-            {isTrainers ?
-                <ScrollView>
-                    <View style={styles.trainerView}>
-                        <View style={styles.trainerViewRow}>
-                            <TouchableOpacity
-                                style={styles.trainerImage}
-                            >
-                                <Image
-
-                                />
-                            </TouchableOpacity>
-                            <View style={styles.trainerDetails}>
-                                <Text style={styles.trainerDetail1}>Ivgeni Shatz</Text>
-                                <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerDetail3}>8.7 </Text>
-                                    <Image
-                                        source={require('../../../images/ratingStar.png')}
-                                        
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.trainerView}>
-                        <View style={styles.trainerViewRow}>
-                            <TouchableOpacity
-                                style={styles.trainerImage}
-                            >
-                                <Image
-
-                                />
-                            </TouchableOpacity>
-                            <View style={styles.trainerDetails}>
-                                <Text style={styles.trainerDetail1}>Koby Lamar</Text>
-                                <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerDetail3}>9.1 </Text>
-                                    <Image
-                                        source={require('../../../images/ratingStar.png')}
-                                        
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.trainerView}>
-                        <View style={styles.trainerViewRow}>
-                            <TouchableOpacity
-                                style={styles.trainerImage}
-                            >
-                                <Image
-
-                                />
-                            </TouchableOpacity>
-                            <View style={styles.trainerDetails}>
-                                <Text style={styles.trainerDetail1}>Judi Woods</Text>
-                                <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerDetail3}>7.9 </Text>
-                                    <Image
-                                        source={require('../../../images/ratingStar.png')}
-                                        
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.trainerView}>
-                        <View style={styles.trainerViewRow}>
-                            <TouchableOpacity
-                                style={styles.trainerImage}
-                            >
-                                <Image
-
-                                />
-                            </TouchableOpacity>
-                            <View style={styles.trainerDetails}>
-                                <Text style={styles.trainerDetail1}>Omer Ohana</Text>
-                                <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerDetail3}>8.0 </Text>
-                                    <Image
-                                        source={require('../../../images/ratingStar.png')}
-                                        
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </ScrollView>
-            : 
-                <ScrollView>
-                    <View style={styles.placeView}>
-                        <View style={styles.placeViewRow}>
-                            <TouchableOpacity
-                                style={styles.placeImage}
-                            >
-                                <Image
-
-                                />
-                            </TouchableOpacity>
-                            <View style={styles.placeDetails}>
-                                <Text style={styles.placeDetail1}>Studio XPT</Text>
-                                <Text style={styles.placeDetail2}>5th Ave, New York</Text>
-                                <Text style={styles.placeDetail3}>4 km</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.placeView}>
-                        <View style={styles.placeViewRow}>
-                            <TouchableOpacity
-                                style={styles.placeImage}
-                            >
-                                <Image
-
-                                />
-                            </TouchableOpacity>
-                            <View style={styles.placeDetails}>
-                                <Text style={styles.placeDetail1}>Lena Studio</Text>
-                                <Text style={styles.placeDetail2}>7th St., New York</Text>
-                                <Text style={styles.placeDetail3}>5 km</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.placeView}>
-                        <View style={styles.placeViewRow}>
-                            <TouchableOpacity
-                                style={styles.placeImage}
-                            >
-                                <Image
-
-                                />
-                            </TouchableOpacity>
-                            <View style={styles.placeDetails}>
-                                <Text style={styles.placeDetail1}>Get fit Studio</Text>
-                                <Text style={styles.placeDetail2}>8th St., New York</Text>
-                                <Text style={styles.placeDetail3}>6 km</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.placeView}>
-                        <View style={styles.placeViewRow}>
-                            <TouchableOpacity
-                                style={styles.placeImage}
-                            >
-                                <Image
-
-                                />
-                            </TouchableOpacity>
-                            <View style={styles.placeDetails}>
-                                <Text style={styles.placeDetail1}>Grate Shape</Text>
-                                <Text style={styles.placeDetail2}>10th Ave, New York</Text>
-                                <Text style={styles.placeDetail3}>7 km</Text>
-                            </View>
-                        </View>
-                    </View>
-                </ScrollView>
-            }
+        
+            <ScrollView>
+            {getTrainersAroundMePattern()}
+            </ScrollView>
         </SafeAreaView>
     )
 }
@@ -256,12 +287,12 @@ const styles = StyleSheet.create({
     },  
     sliderValueTitle: {
         //alignSelf: 'center',
-        fontSize: 17,
-        marginTop: 20,
+        fontSize: Dimensions.get('window').width * .05,
+        marginTop: Dimensions.get('window').height * .023,
         marginLeft: 15
     },
     slider: {
-        width: Dimensions.get('window').width * .95,
+        width: Dimensions.get('window').width * .85,
         alignSelf: 'center',
         marginTop: 10
     },
@@ -392,6 +423,22 @@ const styles = StyleSheet.create({
     },
     placeDetail3: {
         fontSize: 18
+    },
+    verifyExplenationContainer: {
+        width: Dimensions.get('window').width * .8,
+        alignSelf: 'center'
+    },
+    verifyExplenationText: {
+        fontWeight: '500',
+        color: 'grey',
+        fontSize: Dimensions.get('window').height * .019,
+        textAlign:'center',
+    },
+    locationIcon: {
+        marginTop: Dimensions.get('window').height * .024,
+        marginLeft: Dimensions.get('window').width * .02,
+        width: Dimensions.get('window').width * .060,
+        height: Dimensions.get('window').height * .03,
     },
 });
 

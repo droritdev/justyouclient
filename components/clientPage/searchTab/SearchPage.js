@@ -11,6 +11,8 @@ import * as Progress from 'react-native-progress';
 
 
 import {CategoryContext} from '../../../context/CategoryContext';
+import {TrainerContext} from '../../../context/TrainerContext';
+
 
 
 
@@ -39,7 +41,11 @@ const SearchPage = ({navigation, route}) => {
 
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
-    const {category, dispatchCategory} = useContext(CategoryContext)
+    const {category, dispatchCategory} = useContext(CategoryContext);
+    const { dispatchTrainerObject,
+                dispatchTrainerNumberOfStarComments,
+                    dispatchFinalStarRating,
+            } = useContext(TrainerContext);
 
 
     const [selectedItems, setSelectedItems] = useState([]);
@@ -74,16 +80,16 @@ const SearchPage = ({navigation, route}) => {
     React.useEffect(() => {
         getClientFromMongoDB();
         // console.log('categoryFromStarPage: '+ categoryFromStarPage);
-        if(category != ''){
-                alert('in category');
-                console.log('from star page: ' + category);
-                setIsCategoryMode(true);
-                setCategoryTitle('category');
-                getAllTrainers(category);
-                setDisplayCategories('flex');
-                setDisplayRecentOrders('none');
+        // if(category != ''){
+        //         // alert('in category');
+        //         console.log('from star page: ' + category);
+        //         setIsCategoryMode(true);
+        //         setCategoryTitle('category');
+        //         getAllTrainers(category);
+        //         setDisplayCategories('flex');
+        //         setDisplayRecentOrders('none');
                 
-             }
+        //      }
 
         // getTrainersByCategory();
         
@@ -263,33 +269,37 @@ const SearchPage = ({navigation, route}) => {
       );
 
       const Item = ({ trainerObject, name,media }) => (
-
+       
         <View style={styles.trainerView}>
-        <View style={styles.trainerViewRow}>
-            <TouchableOpacity
-                style={styles.trainerImage}
-            >
-                <FastImage
+             <TouchableOpacity
+                            onPress={() => handleOnTrainerPressed(trainerObject)}
+                            >
+                <View style={styles.trainerViewRow}>
+                    <TouchableOpacity
                         style={styles.trainerImage}
-                        source={{
-                            uri: media,
-                            priority: FastImage.priority.normal,
-                                }}
-                        resizeMode={FastImage.resizeMode.stretch}
-                    />
-            </TouchableOpacity>
-            <View style={styles.trainerDetails}>
-                <Text style={styles.trainerDetail1}> {name}</Text>
-                <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                <View style={styles.ratingRow}>
-                    <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
-                    <Image
-                        source={require('../../../images/ratingStar.png')}
-                        
-                    />
+                    >
+                        <FastImage
+                                style={styles.trainerImage}
+                                source={{
+                                    uri: media,
+                                    priority: FastImage.priority.normal,
+                                        }}
+                                resizeMode={FastImage.resizeMode.stretch}
+                            />
+                    </TouchableOpacity>
+                    <View style={styles.trainerDetails}>
+                        <Text style={styles.trainerDetail1}> {name}</Text>
+                        <Text style={styles.trainerDetail2}>Personal Trainer</Text>
+                        <View style={styles.ratingRow}>
+                            <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
+                            <Image
+                                source={require('../../../images/ratingStar.png')}
+                                
+                            />
+                        </View>
+                    </View>
                 </View>
-            </View>
-        </View>
+        </TouchableOpacity>
     </View>
         
       )
@@ -297,18 +307,15 @@ const SearchPage = ({navigation, route}) => {
     const getAllTrainers = async (category) => {
         
          await axios  
-            .get('/trainers/getAllTrainers',
+            .get('/trainers/allTrainer',
             config)
             .then((doc) => {
-
                 if(doc) {
                     // setDoc(doc.data);
                     // sortByCategory(doc.data);
                     getTrainersByCategory(doc.data, category);
                     setDisplayCategories('flex');
                     setDisplayRecentOrders('none');
-
-
                 }
             })
             .catch((err) =>  {
@@ -360,6 +367,27 @@ const SearchPage = ({navigation, route}) => {
         }
     }
 
+    const handleOnTrainerPressed = (trainerObject ) => {
+
+        dispatchTrainerObject({
+            type: 'SET_TRAINER_OBJECT',
+            trainerObject: trainerObject
+        })
+        dispatchTrainerNumberOfStarComments({
+            type:'SET_NUMBER_OF_STARS',
+            trainerNumberOfStars:reviewsArray.length
+        })
+        dispatchFinalStarRating({
+            type: 'SET_FINAL_STAR_RATING',
+            trainerFinalStarRating: getTrainerStarRating()
+        })
+
+
+        navigation.navigate('StarPageStack',
+             { screen: 'TrainerOrderPage'  });
+    // navigation.navigate('StarPageStack',{params: ''})
+}
+
     return(
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
@@ -407,7 +435,7 @@ const SearchPage = ({navigation, route}) => {
                 </View> */}
              </View>
             : 
-            <ScrollView>
+            <View>
                 {/* recent orders */}
                 <View display = {displayRecentOrders}>
                     <FlatList
@@ -513,7 +541,7 @@ const SearchPage = ({navigation, route}) => {
                         </View>
                     </View> 
                  </View> */}
-            </ScrollView>
+            </View>
             }
         </SafeAreaView>
     )

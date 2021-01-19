@@ -5,14 +5,15 @@ import ProfilePage from './ProfilePage';
 import ComingSoon from './ComingSoon';
 import ReceiptsHistory from './ReceiptsHistory';
 import ConfirmedOrders from './ConfirmedOrders';
-import PendingOrders from './PendingOrders';
-import PendingApprovalOrder from './PendingApprovalOrder';
+import PendingApprovalOrders from './PendingApprovalOrders';
+import PendingApprovalOrderDetails from './PendingApprovalOrderDetails';
 import History from './History';
 import EditProfile from './EditProfile';
 import CustomerService from './CustomerService';
 import Settings from './Settings';
 import ChangeEmailAddress from './ChangeEmailAddress';
 import ChangePhoneNumber from './ChangePhoneNumber';
+import Chat from './Chat';
 
 const Stack = createStackNavigator();
 
@@ -25,8 +26,8 @@ const TrainerProfilePageStack = ({navigation}) => {
         >
             <Stack.Screen name='ProfilePage' component={ProfilePage}/>
             <Stack.Screen name='ConfirmedOrders' component={ConfirmedOrders}/>
-            <Stack.Screen name='PendingOrders' component={PendingOrders}/>
-            <Stack.Screen name='PendingApprovalOrder' component={PendingApprovalOrder}/>
+            <Stack.Screen name='PendingApprovalOrders' component={PendingApprovalOrders}/>
+            <Stack.Screen name='PendingApprovalOrderDetails' component={PendingApprovalOrderDetails}/>
             <Stack.Screen name='ComingSoon' component={ComingSoon}/>
             <Stack.Screen name='ReceiptsHistory' component={ReceiptsHistory}/>
             <Stack.Screen name='History' component={History}/>
@@ -35,6 +36,7 @@ const TrainerProfilePageStack = ({navigation}) => {
             <Stack.Screen name='Settings' component={Settings}/>
             <Stack.Screen name='ChangeEmailAddress' component={ChangeEmailAddress}/>
             <Stack.Screen name='ChangePhoneNumber' component={ChangePhoneNumber}/>
+            <Stack.Screen name='Chat' component={Chat}/>
         </Stack.Navigator>
     )
 }
