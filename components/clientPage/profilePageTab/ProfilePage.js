@@ -6,10 +6,6 @@ import axios from 'axios';
 import FastImage from 'react-native-fast-image'
 import auth from '@react-native-firebase/auth';
 
-
-
-import {EmailContext} from '../../../context/EmailContext';
-import {NameContext} from '../../../context/NameContext';
 import {ClientContext} from '../../../context/ClientContext';
 
 //The client's profile page area page
@@ -18,28 +14,23 @@ const ProfilePage = ({navigation}) => {
     const [initializing, setInitializing] = useState(false);
     const [user, setUser] = useState();
 
-
-    // const {emailAddress} = useContext(EmailContext);
-    const [emailAddress, setEmailAddress] = useState("");
-
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [profileImageUrl, setProfileImageUrl] = useState("");
 
     const {dispatchClientObject} = useContext(ClientContext);
-    const {clientId, dispatchClientId} = useContext(ClientContext);
+    const {dispatchClientId} = useContext(ClientContext);
     const [clientObjectToPass, setClientObjectToPass] = useState([]);
     const [clientIdToPass, setClientIdToPass] = useState('[]');
 
-    const [pendingOrders, setPendingOrders] = useState([]);
-    const [approvedOrders, setApprovedOrders] = useState([]);
+    const [pendingOrdersArrived, setPendingOrdersArrived] = useState([]);
+    const [approvedOrdersArrived, setApprovedOrdersArrived] = useState([]);
+
+    var ordersHistoryTrainerArrayToPush = [];
+    const [ordersHistoryTrainerArray, setOrdersHistoryTrainerArray] = useState([]);
 
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
-
-    // var clientIdToPass = ''
-
-    // forceUpdate();
 
     function onAuthStateChanged(user) {
         setUser(user);
@@ -57,9 +48,8 @@ const ProfilePage = ({navigation}) => {
         },
     };
 
-    const getClientOrders = () => {
-        console.log('clientId: in pending:' + clientId)
-
+    const getClientOrders = (clientId) => {
+        console.log(clientId)
         axios
         .get('/orders/by-client-id/'+clientId, 
         config
@@ -68,24 +58,23 @@ const ProfilePage = ({navigation}) => {
             var allOrders = doc.data;
             var pendingOrders = [];
             var approvedOrders = [];
-            console.log('****************doc.data*****************');
-            console.log(doc.data);
+            
 
             for (let index = 0; index < allOrders.length; index++) {
                 const singleOrder = allOrders[index];
                 if (singleOrder.status === "pending") {
                     pendingOrders.push(singleOrder);
+                    
+
                 } else if (singleOrder.status === "approved") {
                     approvedOrders.push(singleOrder);
+                    
                 }
             }
-
-            // pendingOrders = sortOrders(pendingOrders);
-            // approvedOrders = sortOrders(approvedOrders);
-
-            setPendingOrders(pendingOrders);
-            setApprovedOrders(approvedOrders);
-            forceUpdate();
+            
+            getTrainerFromRecentOrders(approvedOrders);
+            setPendingOrdersArrived(pendingOrders);
+            setApprovedOrdersArrived(approvedOrders);
         })
         .catch((err) => {
             console.log(err);
@@ -93,35 +82,6 @@ const ProfilePage = ({navigation}) => {
     }
 
 
-    const getUserFromMongoDB = () => {
-        axios
-                        .get('/clients/'
-                        +emailAddress.toLocaleLowerCase(),
-                        config
-                    )
-                    .then((doc) => {
-                        if(doc) {
-                        //   const currectUserData = doc.data[0];
-                        //   setFirstName(currectUserData.name.first);
-                        //   setLastName(currectUserData.name.last);
-                        //   setProfileImageUrl(currectUserData.image);
-                        //   clientObjectToPass = doc.data[0];
-                        console.log(doc.data[0]);
-                          dispatchClientObject({
-                            type: 'SET_CLIENT_OBJECT',
-                            clientObject : doc.data[0]
-                        });
-                        //   setClientObject(currectUserData);
-                        
-                        //   console.log(profileImageUrl);
-                          if(doc.data[0].email!=null){
-                            
-                          }
-                        }
-                      })
-                    .catch((err) => console.log(err));
-                    }
-        
     
 
     //First off all, the component loads the user details from the data base and sets the variables to the data
@@ -132,11 +92,9 @@ const ProfilePage = ({navigation}) => {
         const subscriber = auth().onAuthStateChanged((user) => {
                     // console.log('🚨userStatus:' , user)
                     setUser(user);
-                    // getUserFromMongoDB();
 
                     if(user){
                         setInitializing(true);
-                        // setEmailAddress(user.email); 
                         
                         
                         axios
@@ -146,23 +104,20 @@ const ProfilePage = ({navigation}) => {
                     )
                     .then((doc) => {
                         if(doc) {
-                          console.log("doc.data" , doc.data);
                           const currectUserData = doc.data[0];
                           setFirstName(currectUserData.name.first);
                           setLastName(currectUserData.name.last);
                           setProfileImageUrl(currectUserData.image);
-                        //   clientIdToPass = doc.data[0]._id
                           setClientIdToPass(doc.data[0]._id);
                           setClientObjectToPass(doc.data[0]);
-                          console.log('clientIdToPass: '+ clientIdToPass)
 
                           dispatchClientObject({
                             type: 'SET_CLIENT_OBJECT',
                             clientObject : doc.data[0]
-                        });
-                          if(doc.data[0].email!=null){
-                            
-                          }
+                            });
+                            //for filling the recent orders scrollView
+                           getClientOrders(doc.data[0]._id);  
+                          
                         }
                       })
                     .catch((err) => console.log(err));
@@ -170,60 +125,110 @@ const ProfilePage = ({navigation}) => {
                         setInitializing(true);
                     }
 
-                    
-
-                 
-                 
-        // auth().onAuthStateChanged((user) => {
-        //     if (user === null){
-        //         console.log('userStatus:' , user)
-        //         }else{
-        //         setEmailAddress(user.email); 
-        //         console.log('🚨firebase: ' + user.email);
-
-        //         axios
-        //         .get('/clients/'
-        //         +emailAddress.toLocaleLowerCase(),
-        //         config
-        //     )
-        //     .then((doc) => {
-        //         if(doc) {
-        //           console.log("doc.data" , doc.data);
-        //           const currectUserData = doc.data[0];
-        //           setFirstName(currectUserData.name.first);
-        //           setLastName(currectUserData.name.last);
-        //           setProfileImageUrl(currectUserData.image);
-        //           console.log(profileImageUrl);
-        //           if(doc.data[0].email!=null){
-                    
-        //           }
-        //         }
-        //       })
-        //     .catch((err) => console.log(err))
-            // }   
         
          });
-         getClientOrders();
+         
 
          return subscriber; // unsubscribe on unmount
 
     } ,[]);
 
+    //run for all approved orders to get trainer id
+    //using func as async for waiting trainers array to fill from MongoDB
+    const getTrainerFromRecentOrders = async (ordersHistoryArray) => {
+        
+        for (let index = 0; index < ordersHistoryArray.length; index++) {
+            const trainerID = ordersHistoryArray[index].trainer.id;
+            //waiting for trainer to come from mongo for each order
+            await getTrainerFromMongoDB(trainerID);
+            //when for loop is ended fill the scrollView (set the scrollView array)
+            if(index === ordersHistoryArray.length-1 ){
+                setOrdersHistoryTrainerArray(ordersHistoryTrainerArrayToPush);
+            }
+        }
 
-    if(user){
-        // getUserFromMongoDB();
+                
         
     }
-    // dispatchClientObject({
-    //     type: 'SET_CLIENT_OBJECT',
-    //     ClientObject: clientObject
-    // });
+    //getting the trainer from mongoDb => recent orders use
+    const getTrainerFromMongoDB = async (trainerID) => {
+        await axios
+                    .get('/trainers/id/'
+                    +trainerID,
+                    config
+                )
+                .then((doc) => {
+                    if(doc) {
+                        //filling the the array
+                        ordersHistoryTrainerArrayToPush.push(doc.data);
+                    }
+                  })
+                .catch((err) => console.log(err));
+    }
+
+    //Load trainer star rating
+    const getStarRating = (reviews) => {
+        if (reviews.length === 0) {
+            setStarRating(0);
+        } else {
+            var sumStars = 0;
+            for (let index = 0; index < reviews.length; index++) {
+                const singleReviewStar = reviews[index].stars;
+                sumStars += Number(singleReviewStar);
+            }
+            return ((sumStars/reviews.length).toFixed(1));
+        }
+    }
+
+    //scrollView of trainers (working like flatList)
+    const getApprovedOrdersPattern = () => {
+        let repeats = [];
+        if (ordersHistoryTrainerArray !== []) {
+            for(let i = 0; i < ordersHistoryTrainerArray.length; i++) {
+                //pushing each trainer UI into the array
+                repeats.push(
+                    <TouchableOpacity 
+                        key = {'ordersRow' + i}
+                        onPress={() => handleArrowApprovedPressed(i)}
+                        >
+
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerImageView}>
+                                <TouchableOpacity>
+                                    <FastImage
+                                        style={styles.trainerImage}
+                                        source={{
+                                            uri: ordersHistoryTrainerArray[i].media.images[0],
+                                            priority: FastImage.priority.normal,
+                                                }}
+                                        resizeMode={FastImage.resizeMode.stretch}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.trainerPreviewText}
+                            >
+                                <Text style={styles.trainerText1}>{ordersHistoryTrainerArray[i].name.first +' '+ordersHistoryTrainerArray[i].name.last}</Text>
+                                <Text style={styles.trainerText2}>Personal Trainer</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerText3}>{getStarRating(ordersHistoryTrainerArray[i].reviews)} </Text>
+                                    <Image 
+                                        source={require('../../../images/ratingStar.png')}
+                                        style={styles.starIcon}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                        
+                    </TouchableOpacity>
+                )
+            }
+        }
+        return repeats;
+    };
 
     
 
-    
-
-    
 
     //Handle when the user presses the ConfirmedOrders button
     const handleOnConfirmedOrdersPRessed = () => {
@@ -288,7 +293,6 @@ const ProfilePage = ({navigation}) => {
     }
     
     return(
-        // initializing?
         <SafeAreaView style={styles.safeArea}>
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
@@ -306,17 +310,7 @@ const ProfilePage = ({navigation}) => {
                         resizeMode={FastImage.resizeMode.stretch}
                     />
               </TouchableOpacity>
-                    {/* <View
-                        style={styles.imageView}
-                        
-                    >
-                        <TouchableOpacity>
-                            <Image
-                                //  source={profileImage}
-
-                            />
-                        </TouchableOpacity>
-                    </View> */}
+                    
                     <View style={styles.nameAndDetailsView}>        
                         <View style={styles.detailsRow}>
                             <View style={styles.credits}>
@@ -324,7 +318,7 @@ const ProfilePage = ({navigation}) => {
                                 <Text style={styles.creditText}>Credit (USD)</Text>
                             </View>
                             <View style={styles.confirmedOrders}>
-                                <Text style={styles.confirmedOrdersValue}>{approvedOrders.length}</Text>
+                                <Text style={styles.confirmedOrdersValue}>{approvedOrdersArrived.length}</Text>
                                 <TouchableOpacity
                                     onPress={() => handleOnConfirmedOrdersPRessed()}
                                 >
@@ -332,7 +326,7 @@ const ProfilePage = ({navigation}) => {
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.pandingOrders}>
-                                <Text style={styles.pandingOrdersValue}>{pendingOrders.length}</Text>
+                                <Text style={styles.pandingOrdersValue}>{pendingOrdersArrived.length}</Text>
                                 <TouchableOpacity
                                     onPress={() => handleOnPendingOrdersPRessed()}
                                 >
@@ -493,94 +487,8 @@ const ProfilePage = ({navigation}) => {
                         horizontal={true} 
                         showsHorizontalScrollIndicator={false}
                     >
-                        <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
+                        {getApprovedOrdersPattern()}
+                        
                     </ScrollView>
                 </View>
                 <View style={styles.pageMainTitlesContainer}>
@@ -767,7 +675,10 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 15,
     },
     trainerImage: {
-
+        height: Dimensions.get('window').height * .0745,
+        backgroundColor: 'gainsboro',
+        borderTopRightRadius: 15,
+        borderTopLeftRadius: 15,
     },
     trainerPreviewText: {
         height: Dimensions.get('window').height * .045,

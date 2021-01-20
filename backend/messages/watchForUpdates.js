@@ -9,12 +9,14 @@ exports.watchForUpdates = (req, res) => {
     //ID of the receiver of the message
     var receiver = req.params.receiver;
 
+    console.log("woho");
     let watch = messagesCollection.watch();
-    watch.on('change', function(change) { 
-        if(change.operationType === 'insert') {
-            if (change.fullDocument.receiver === receiver) {
+    watch.on('change', (changeEvent) => { 
+        if(changeEvent.operationType === 'insert') {
+            console.log(changeEvent.fullDocument);
+            if (changeEvent.fullDocument.receiver === receiver) {
                 watch.close();
-                res.send(change.fullDocument.message);
+                res.send(changeEvent.fullDocument.message);
             }
         }
      });

@@ -181,21 +181,7 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
                     </View>
                 </View>
 
-                {/* {orderStatus === 'pending' ?
-                 <TouchableOpacity
-                        onPress={()=>handleApproveButton()}
-                        style={styles.approveButton}
-                >
-                        <Text style={styles.approveButtonText}>Pending</Text>
-                </TouchableOpacity> 
-                : 
-                <TouchableOpacity
-                onPress={()=>handleDeclineButton()}
-                    style={styles.declineButton}
-                >
-                        <Text style={styles.approveButtonText}>Approved</Text>
-                </TouchableOpacity>
-                 } */}
+               
 
                 
 

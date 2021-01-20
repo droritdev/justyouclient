@@ -55,37 +55,35 @@ const PendingApprovalOrders = ({route, navigation}) => {
 
     //Get all orders by Client ID, sort by time created, assaign to designated const
     const getClientOrders = () => {
-        console.log('clientId: in pending:' + clientId)
-
         axios
-        .get('/orders/by-client-id/'+clientId, 
-        config
-        )
-        .then((doc) => {
-            var allOrders = doc.data;
-            var pendingOrders = [];
-            var approvedOrders = [];
-            console.log('****************doc.data*****************');
-            console.log(doc.data);
+            .get('/orders/by-client-id/'+clientId, 
+            config
+            )
+            .then((doc) => {
+                var allOrders = doc.data;
+                var pendingOrders = [];
+                var approvedOrders = [];
+                console.log('****************doc.data*****************');
+                console.log(doc.data);
 
-            for (let index = 0; index < allOrders.length; index++) {
-                const singleOrder = allOrders[index];
-                if (singleOrder.status === "pending") {
-                    pendingOrders.push(singleOrder);
-                } else if (singleOrder.status === "approved") {
-                    approvedOrders.push(singleOrder);
+                for (let index = 0; index < allOrders.length; index++) {
+                    const singleOrder = allOrders[index];
+                    if (singleOrder.status === "pending") {
+                        pendingOrders.push(singleOrder);
+                    } else if (singleOrder.status === "approved") {
+                        approvedOrders.push(singleOrder);
+                    }
                 }
-            }
 
-            pendingOrders = sortOrders(pendingOrders);
-            approvedOrders = sortOrders(approvedOrders);
+                pendingOrders = sortOrders(pendingOrders);
+                approvedOrders = sortOrders(approvedOrders);
 
-            setPendingOrders(pendingOrders);
-            setApprovedOrders(approvedOrders);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+                setPendingOrders(pendingOrders);
+                setApprovedOrders(approvedOrders);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
 
@@ -162,31 +160,32 @@ const PendingApprovalOrders = ({route, navigation}) => {
         if (approvedOrders !== []) {
             for(let i = 0; i < approvedOrders.length; i++) {
                 repeats.push(
-                    <TouchableOpacity
-                    onPress={() => handleArrowApprovedPressed(i)}
-                    >
-                    <View style={i % 2 === 0? styles.pendingOrder : styles.pendingOrderSecond}>
-                    <FastImage
-                                style={styles.image}
-                                source={{
-                                uri: approvedOrders[i].trainer.profilePic,
-                                priority: FastImage.priority.normal,
-                                }}
-                                resizeMode={FastImage.resizeMode.stretch}
-                    />
-                    <View style={styles.nameBox}>
-                        <Text style={styles.nameText}>{approvedOrders[i].trainer.firstName + " " + approvedOrders[i].trainer.lastName }</Text>
-                    </View>
-                    <View style={styles.dateBox}>
-                        <Text style={styles.dateText}>{approvedOrders[i].trainingDate.startTime.slice(0, 10)}</Text>
-                    </View>
                     <TouchableOpacity 
-                        style={styles.arrowButton}
+                        key = {'ordersRow' + i}
                         onPress={() => handleArrowApprovedPressed(i)}
-                    >
+                        >
+                        <View style={i % 2 === 0? styles.pendingOrder : styles.pendingOrderSecond}>
+                            <FastImage
+                                        style={styles.image}
+                                        source={{
+                                        uri: approvedOrders[i].trainer.profilePic,
+                                        priority: FastImage.priority.normal,
+                                        }}
+                                        resizeMode={FastImage.resizeMode.stretch}
+                            />
+                        <View style={styles.nameBox}>
+                            <Text style={styles.nameText}>{approvedOrders[i].trainer.firstName + " " + approvedOrders[i].trainer.lastName }</Text>
+                        </View>
+                        <View style={styles.dateBox}>
+                            <Text style={styles.dateText}>{approvedOrders[i].trainingDate.startTime.slice(0, 10)}</Text>
+                        </View>
+                        <TouchableOpacity 
+                            style={styles.arrowButton}
+                            onPress={() => handleArrowApprovedPressed(i)}
+                        >
                             <Icon name="chevron-right" size={18} style={styles.arrow} />
-                    </TouchableOpacity>
-                </View>
+                        </TouchableOpacity>
+                    </View>
                 </TouchableOpacity>
                 )
             }
@@ -490,182 +489,3 @@ export default PendingApprovalOrders;
 
 
 
-
-
-
-// import React from 'react';
-// import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
-// import { TouchableOpacity } from 'react-native-gesture-handler';
-// import axios from 'axios';
-
-// import {OrderContext} from '../../../context/OrderContext';
-
-
-// import { SafeAreaView } from 'react-native-safe-area-context';
-
-// //The Pending orders page
-// const PendingOrders = ({navigation}) => {
-
-//     //Axios post config
-//     const config = {
-//         withCredentials: true,
-//         baseURL: 'http://localhost:3000/',
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//     };
-
-//     //Navigates back to the profile page
-//     const handleOnArrowPress = () => {
-//         navigation.navigate('ProfilePage');
-//     }
-
-//     return(
-//         <SafeAreaView style={styles.safeArea}>
-//             <View style={styles.header}>
-//                 <Text style={styles.headerText}>Just You</Text>
-//             </View>
-//             <TouchableOpacity
-//                     onPress={() => handleOnArrowPress()}
-//                 >
-//                 <Image
-//                     source={require('../../../images/blackArrow.png')}
-//                     style={styles.arrowBackImage}
-//                 />
-//             </TouchableOpacity>
-//             <View style={styles.receiptsHistoryTitle}>
-//                 <Text style={styles.receiptsHistoryText}>PENDING</Text>
-//             </View>
-//             <ScrollView>
-//                 <View style={styles.orderContainer}>
-//                     <View style={styles.orderView}>
-//                         <View style={styles.order}>
-//                             <TouchableOpacity>
-//                                 <Image
-//                                     style={styles.image}
-//                                 />
-//                             </TouchableOpacity>
-//                             <View style={styles.nameBox}>
-//                                 <Text style={styles.nameText}>Erez Buganim</Text>
-//                             </View>
-//                             <View style={styles.dateBox}>
-//                                 <Text style={styles.dateText}>3.6.2020</Text>
-//                             </View>
-//                             <TouchableOpacity 
-//                                 style={styles.arrowButton}
-//                                 onPress={() => handleOnArrowPendingPressed()}
-//                             >
-//                                 <Image
-//                                     source={require('../../../images/arrowBlueButton.png')}
-//                                     style={styles.arrowImage}
-//                                 />
-//                             </TouchableOpacity>
-//                         </View>
-//                     </View>
-//                     <View style={styles.orderView}>
-//                         <View style={styles.order}>
-//                             <TouchableOpacity>
-//                                 <Image
-//                                     style={styles.image}
-//                                 />
-//                             </TouchableOpacity>
-//                             <View style={styles.nameBox}>
-//                                 <Text style={styles.nameText}>Daniel Neeman</Text>
-//                             </View>
-//                             <View style={styles.dateBox}>
-//                                 <Text style={styles.dateText}>4.6.2020</Text>
-//                             </View>
-//                             <TouchableOpacity 
-//                                 style={styles.arrowButton}
-//                                 onPress={() => handleOnArrowPendingPressed()}
-//                             >
-//                                 <Image
-//                                     source={require('../../../images/arrowBlueButton.png')}
-//                                     style={styles.arrowImage}
-//                                 />
-//                             </TouchableOpacity>
-//                         </View>
-//                     </View>
-//                 </View>
-//             </ScrollView>
-//         </SafeAreaView>
-//     )
-// }
-
-// const styles = StyleSheet.create({
-//     safeArea: {
-//         backgroundColor: 'white',
-//         width: Dimensions.get('window').width,
-//         height: Dimensions.get('window').height,
-//     },
-//     header: {
-//         alignSelf: 'center'
-//     },
-//     headerText: {
-//         fontSize: 25,
-//         fontWeight: 'bold'
-//     },
-//     arrowBackImage: {
-//         marginLeft: 20
-//     },
-//     receiptsHistoryTitle: {
-//         marginLeft: 20,
-//         marginTop: 30
-//     },
-//     receiptsHistoryText: {
-//         fontWeight: 'bold',
-//         fontSize: 25
-//     },
-//     orderContainer: {
-//         marginTop: 30,
-//         borderBottomWidth: 2,
-//         borderBottomColor: 'lightgrey',
-//     },
-//     orderView: {
-//         borderTopWidth: 2,
-//         borderTopColor: 'lightgrey',
-//     },
-//     order: {
-//         flexDirection: 'row',
-//         marginTop: 10,
-//         marginBottom: 10,
-//         width: Dimensions.get('window').width * .95,
-//         alignSelf: 'center',
-//         justifyContent: 'space-between',
-//     },
-//     image: {
-//         height: 60,
-//         width: 60,
-//         backgroundColor: 'gainsboro',
-//         borderRadius: 30
-//     },
-//     nameBox: {
-//         backgroundColor: 'gainsboro',
-//         borderRadius: 20,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         width: Dimensions.get('window').width * .375
-//     },
-//     nameText: {
-//         fontSize: 18,
-//         fontWeight: '500'
-//     },
-//     dateBox: {
-//         backgroundColor: 'gainsboro',
-//         borderRadius: 20,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         width: Dimensions.get('window').width * .275
-//     },
-//     dateText: {
-//         fontSize: 18,
-//         fontWeight: '500'
-//     },
-//     arrowImage: {
-//         marginTop: 5
-//     },
-//     arrowButton: {
-//     },
-// });
-
-// export default PendingOrders;

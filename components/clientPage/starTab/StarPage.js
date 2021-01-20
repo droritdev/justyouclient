@@ -281,22 +281,12 @@ const StarPage = ({ navigation}) => {
     
 
     const renderItem = ({ item }) => (
-        <Item name = {`${item.name.first} ${item.name.last}`}
-        // numberOfStars = {item.starCounter.numberOfStars}
-        // numberOfStarComments = {item.starCounter.numberOfStarComments}
-        // new type of reviews
-        //first get the total number of stars than (/) at number of reviews
-        // numberOfStarsGives = {items.reviews}
+        <Item 
+        name = {`${item.name.first} ${item.name.last}`}
         media = {item.media}
         categories = {item.categories}
         trainerObject = {item}
-        // {...setNumberOfStarts(item.reviews)}
-        
-        // {...setReviewsArray(item.reviews)}
         {...reviewsArray = (item.reviews)}
-
-        
-        
         ></Item>
         
       );
@@ -308,7 +298,7 @@ const StarPage = ({ navigation}) => {
 
 
     //Handle when the client presses on a trainer button
-    const handleOnTrainerPressed = (trainerObject, name,media, categories, trainerTrainingSite1 ,trainerTrainingSite2, date, prices  ) => {
+    const handleOnTrainerPressed = (trainerObject, name,media, categories  ) => {
         // console.log('item: '+ name)
 
             dispatchTrainerObject({
@@ -336,21 +326,8 @@ const StarPage = ({ navigation}) => {
                 type: 'SET_CATEGORIES',
                 trainerCategories: categories
             })
-            // trainerTrainingSite1({
-            //     type: 'SET_TRAINING_SITE_1',
-            //     trainerTrainingSite1: trainerTrainingSite1
-            // })
-            // trainerTrainingSite2({
-            //     type: 'SET_TRAINING_SITE_2',
-            //     trainerTrainingSite2: trainerTrainingSite2
-            // })
             
-
-    
             
-
-        // getPopularTrainers();
-
         navigation.navigate('TrainerOrderPage',{params: ''})
     }
 
@@ -359,11 +336,7 @@ const StarPage = ({ navigation}) => {
             type: 'SET_CATEGORY',
             category: category
         });
-        //for refresh the target page 
-        // navigation.navigate('SearchPage');
-        // const pushAction = StackActions.push('SearchPageStack', { screen: 'SearchPage' });
-
-        // navigation.dispatch(pushAction);
+        
         navigation.navigate('StarPageStack',
              { screen: 'TrainersByCategories' ,
              params: { categoryFromStarPage: category}
@@ -745,24 +718,7 @@ const StarPage = ({ navigation}) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={styles.eachRowContainer}>
-                        <View style={styles.navigationsRows}>
-                            <TouchableOpacity
-                                onPress={() => handleOnCustomerSrvicePressed()}
-                            >
-                                <Text style={styles.navigationsRowsTitle}>Customer Service</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={styles.arrowButton}
-                                onPress={() => handleOnCustomerSrvicePressed()}
-                            >
-                                <Image
-                                    source={require('../../../images/arrowButton.png')}
-                                    style={styles.arrowImage}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                   
                     <View style={styles.eachRowContainer}>
                         <View style={styles.navigationsRows}>
                             <TouchableOpacity

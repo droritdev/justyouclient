@@ -8,12 +8,14 @@ const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //Send email by: to --> destination address, from --> sender address, subject --> message subject, text --> message content
-exports.sendEmail = (req, res) => {
+exports.sendAutomaticResponse = (req, res) => {
     const msg = {
         to: req.body.to,
         from: req.body.from,
-        subject: req.body.subject,
-        text: req.body.text,
+        templateId: 'd-4d6995388d78433a95efa20a6de6b0b7',
+        dynamicTemplateData: {
+            name: req.body.name,
+          },
     }
 
     sgMail

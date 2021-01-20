@@ -62,7 +62,6 @@ const removeTrainerFromPlace = require('./removeTrainerFromPlace/removeTrainerFr
 const placeEditProfile = require('./placeEditProfile/placeEditProfile');
 
         //**Common imports**//
-const sendEmail = require('./sendGrid/sendEmail');
 const verificationSms = require('./twilio/verificationSms');
 const updatePaymentMethods = require('./updatePaynemtMethods/updatePaymentMethods');
 const updateEmailAddress = require('./updateEmailAddress/updateEmailAddress');
@@ -71,6 +70,10 @@ const updateOrderStatus = require('./orders/updateOrderStatus');
 const getOrdersByStatus = require('./orders/getOrdersByStatus');
 const logIn = require('./logIn/logIn');
 const signOut = require('./signOut/signOut');
+
+        //for sendGrid email//
+const sendEmail = require('./sendGrid/sendEmail');
+const sendAutomaticResponse = require('./sendGrid/sendAutomaticResponse');
 
         //**In-app variables**//
 const port = 3000;
@@ -101,8 +104,11 @@ mongoose.connect(process.env.MONGO_URI, {
 
 //db.records.find( { a: { $exists: true } } )
 
-//End point for sending emails
+//End point for sending email to support
 app.post('/send-email', sendEmail.sendEmail);
+
+//End point for sending automatic response
+app.post('/send-automatic-response', sendAutomaticResponse.sendAutomaticResponse);
 
 //End point for sending verification code
 app.post('/send-verification-code', verificationSms.sendVerificationCode);

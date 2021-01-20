@@ -38,6 +38,7 @@ const TrainerOrderPage = ({navigation}) => {
     const [inputText, setInputText] = useState("");
     const [isAddressSelected,setIsAddressSelected] = useState("none");
     const [isSearchingForLocation,setIsSearchingForLocation] = useState("none");
+    const [isTrainerHasOneLocation,setIsTrainerHasOneLocation] = useState(true);
 
     const [categorySelected, setCategorySelected] = useState("");
     const [typeOfTrainingSelected, setTypeOfTrainingSelected] = useState("");
@@ -88,6 +89,9 @@ const TrainerOrderPage = ({navigation}) => {
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getClientFromMongoDB();
+            checkForLocationsCount();
+            console.log('isTrainerHasOneLocation');
+            console.log(isTrainerHasOneLocation);
         });
     
         
@@ -108,10 +112,29 @@ const TrainerOrderPage = ({navigation}) => {
 
     // const starRating = (trainerNumberOfStars/trainerNumberOfStarComments).toFixed(1);
     const cleanedPrice = typeOfTrainingSelected.replace(/[^0-9]/g,'');
-
+    //get price from trainer object
     const prices = trainerObject.prices   
-    
+    //get location from trainer object
     const locations = trainerObject.location
+
+    //check for location count in trainer
+    const checkForLocationsCount = () => {
+        console.log('MYMARK');
+        console.log(locations.trainingSite2.coordinates);
+        //if there is no second training site    
+        //don't show dropDownPicker   
+        if (locations.trainingSite2.coordinates.length === 0)  {
+            setIsTrainerHasOneLocation(true);
+            setLocationLongitudeCoordinate(locations.trainingSite1.coordinates[0]);
+            setLocationLatitudeCoordinate(locations.trainingSite1.coordinates[1]);
+            setTrainingSiteSelected(locations.trainingSite1.address);
+
+        }else{
+            //there are two training sites => showing dropDownPicker
+            setIsTrainerHasOneLocation(false);
+        }
+    }
+
 
     const getClientFromMongoDB = () => {
         const user = auth().currentUser;
@@ -188,7 +211,8 @@ const TrainerOrderPage = ({navigation}) => {
 
     
 
-  
+    const pickerItems = []
+
 
 
     
@@ -249,37 +273,14 @@ const TrainerOrderPage = ({navigation}) => {
                     endTime: endTime,
                 },
                 cost: cleanedPrice,
-                // status: 'pending',
                 location: {
                     address: trainingSiteSelected,
-                    // latitude: 1,
                     latitude: locationLatitudeCoordinate,
-                    // longitude: 1
                     longitude: locationLongitudeCoordinate
                 },
 
 
 
-                // client: {
-                //     id: req.body.client.id, 
-                //     first_name: req.body.client.firstName, 
-                //     last_name: req.body.client.lastName
-                // }, 
-                // trainer: {
-                //     id: req.body.trainer.id, 
-                //     first_name: req.body.trainer.firstName, 
-                //     last_name: req.body.trainer.lastName
-                // }, 
-                // type: req.body.type, 
-                // category: req.body.category, 
-                // trainingDate: req.body.trainingDate, 
-                // cost: req.body.cost,
-                // status: req.body.status,
-                // location: {
-                //     address: req.body.location.address,
-                //     latitude:req.body.location.latitude,
-                //     longitude:req.body.location.longitude
-                // },
             },
             config
             )
@@ -287,14 +288,7 @@ const TrainerOrderPage = ({navigation}) => {
             })
             .catch((err) => console.log(err));
     }
-    // const dateAndTimeArrived = () => {
-    //     if(orderEndTime === ''){
-
-    //     }else{
-    //         setIsDateSelected('flex');
-
-    //     }
-    // }
+    
     //for show/hide chooseDateAndTimeButton
     if(orderEndTime === ''){
         var isDateSelectedForButtonShow = 'flex';
@@ -487,13 +481,7 @@ const TrainerOrderPage = ({navigation}) => {
 
 
                         <DropDownPicker 
-                                        // items={[
-                                            
-                                        //     {label: 'USA', value: 'usa', icon: () => <Icon name="flag" size={18} color="#900" />, hidden: true},
-                                        //     {label: 'UK', value: 'uk', icon: () => <Icon name="flag" size={18} color="#900" />},
-                                        //     {label: 'France', value: 'france', icon: () => <Icon name="flag" size={18} color="#900" />},
-                                        // ]}
-                                        // items = {pickerItems}
+                                        
                                         {...trainerCategories.map(i => {
                                             pickerItems.push({
                                                 value: i,
@@ -503,14 +491,7 @@ const TrainerOrderPage = ({navigation}) => {
                                         }) } 
                                         items = {pickerItems} 
 
-                                        // items = {PickerItems}
-                                        // {...trainerCategories.map(i =>{
-                                        //     return <DropDownPicker.Item value={i} label={i}> </DropDownPicker.Item>
-                                        // })}
 
-                                        // items = {[...trainerCategories.map(i => {
-                                        //     return <DropDownPicker.Item value={i} label={i}> </DropDownPicker.Item>
-                                        // })]}
                                         defaultValue={""}
                                         containerStyle={styles.innerContainerViewObject}
                                         style={styles.dropBoxA}
@@ -590,23 +571,38 @@ const TrainerOrderPage = ({navigation}) => {
                                 />
 
                             {/* </View> */}
+                            {/* MARK */}
                         </View>
                         <View display={isAtTrainerTraining}>
-                        <DropDownPicker
-                                        items={[
-                                            {label: locations.trainingSite1.address, value: 'usa', icon: () => <Icon name="map-pin" size={Dimensions.get('window').height * .02} color="#00bfff" />, hidden: true},
-                                            {label: locations.trainingSite2.address, value: 'uk', icon: () => <Icon name="map-pin" size={Dimensions.get('window').height * .02} color="#00bfff" />},
-                                            
-                                        ]}
-                                        defaultValue={""}
-                                        containerStyle={styles.innerContainerViewObject}
-                                        style={styles.dropBoxC}
-                                        itemStyle={{
-                                            justifyContent: 'flex-start'
-                                        }}
-                                        dropDownStyle={{backgroundColor: '#fafafa'}}
-                                        onChangeItem={item => handleOnTrainingSiteSelected(item)}
-                                    />
+
+                            {isTrainerHasOneLocation ? 
+
+                                <View style={styles.onlyOneLocationContainer}>
+                                    <View style={styles.onlyOneLocationIcon}>
+                                        <Icon name="map-pin" size={Dimensions.get('window').height * .02} color="#00bfff" />
+                                    </View>
+                                    <Text style={styles.onlyOneLocationText}> 
+                                        {locations.trainingSite1.address}</Text>
+                                </View>
+                                
+                            :
+                                <DropDownPicker
+                                items={[
+                                    {label: locations.trainingSite1.address, value: 'usa', icon: () => <Icon name="map-pin" size={Dimensions.get('window').height * .02} color="#00bfff" />, hidden: true},
+                                    {label: locations.trainingSite2.address, value: 'uk', icon: () => <Icon name="map-pin" size={Dimensions.get('window').height * .02} color="#00bfff" />},
+                                    
+                                ]}
+                                defaultValue={""}
+                                containerStyle={styles.innerContainerViewObject}
+                                style={styles.dropBoxC}
+                                itemStyle={{
+                                    justifyContent: 'flex-start'
+                                }}
+                                dropDownStyle={{backgroundColor: '#fafafa'}}
+                                onChangeItem={item => handleOnTrainingSiteSelected(item)}
+                                />
+                            }
+                            
                         </View>
 
                         
@@ -923,6 +919,25 @@ const styles = StyleSheet.create({
         marginRight: Dimensions.get('window').width * .040,
         zIndex: 8,
 
+    },
+    onlyOneLocationContainer:{
+        height: Dimensions.get('window').height * .050,
+        width: Dimensions.get('window').width * 0.915,
+        backgroundColor: '#fafafa',
+        borderWidth:1,
+        borderRadius:5,
+        borderColor:'gainsboro',
+        flexDirection: 'row',
+        alignSelf: 'center',
+        alignItems: 'center' ,
+
+
+    },
+    onlyOneLocationIcon:{
+        marginLeft: Dimensions.get('window').width * .020,
+    },
+    onlyOneLocationText:{
+        marginLeft: Dimensions.get('window').width * .015,
     },
     searchResultsContainer: {
         width: Dimensions.get('window').width * 0.915,

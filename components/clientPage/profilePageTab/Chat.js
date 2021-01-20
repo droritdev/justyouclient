@@ -25,9 +25,7 @@ const Chat = ({navigation, route}) => {
     const [trainerUser, setTrainerUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
-    //Cancel token for the watcher
-    var cancelTokenSource = axios.CancelToken.source();
-
+    
     //trainer ID from previous page
     const {trainerID} = route.params;
 
@@ -36,17 +34,8 @@ const Chat = ({navigation, route}) => {
     //Client Info:
     const {clientObject} = useContext(ClientContext);
     const clientID = clientObject._id;
-    const {firstName} = clientObject.name.first;
-    const {lastName} = clientObject.name.last;
-    const {mediaPictures} = clientObject.image;
 
 
-    // //Information of the trainer
-    // const trainerUser = {
-    //     _id: trainerID,
-    //     name: firstName + ' ' + lastName,
-    //     avatar: mediaPictures[0],
-    // };
 
     //Information of the trainer
     const clientUser = {
@@ -68,7 +57,6 @@ const Chat = ({navigation, route}) => {
 
     //Show bottom navgation UI
     const handleArrowButton = () => {
-        cancelTokenSource.cancel();
         navigation.navigate('PendingApprovalOrderDetails');
     }
 
@@ -308,22 +296,19 @@ const Chat = ({navigation, route}) => {
     //Listener to mongodb to check if a new message was sent
     //Update UI and display the new message that was sent
     const watchForUpdates = async () => {
-        cancelTokenSource = axios.CancelToken.source();
+        var message = [];
         await axios
-            .get('/messages/watchForUpdates/'+clientID, {
-                cancelToken: cancelTokenSource.token
-            },
-            config
-            )
+
+            .get('/messages/watchForUpdates/'+clientID, config)
             .then((doc) => {
-                var message = doc.data;
+                message = doc.data;
                 if (message) {
-                    setMessages(previousMessages => GiftedChat.append(previousMessages, message));
+                    setTimeout(() => watchForUpdates(), 1000);
                 }
             })
-            .catch((err) => {});
+            .catch((err) => {}); 
+        setMessages(previousMessages => GiftedChat.append(previousMessages, message));
 
-        watchForUpdates();
     }
 
 

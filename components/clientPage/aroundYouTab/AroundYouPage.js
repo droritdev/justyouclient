@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,11 +9,20 @@ import Geolocation from '@react-native-community/geolocation';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Feather';
 
+//for using trainerContext
+import {TrainerContext} from '../../../context/TrainerContext';
+
+
 //The claint's around you area page
 const ProfilePage = ({navigation}) => {
     const [maxDistanceSelected, setMaxDistanceSelected] = useState("1");
     const [sliderValue, setSliderValue] = useState("1 MILES");
     const [trainersAroundMe, setTrainersAroundMe] = useState([]);
+
+    const { dispatchTrainerObject,
+                dispatchTrainerNumberOfStarComments,
+                    dispatchFinalStarRating,
+        } = useContext(TrainerContext);
 
     var maxDistance = 1;
 
@@ -25,7 +34,6 @@ const ProfilePage = ({navigation}) => {
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            console.log('*********inPage*******');
             getTrainersByDistance();
         });
     
@@ -166,6 +174,25 @@ const ProfilePage = ({navigation}) => {
         }
     }
 
+    const handleOnTrainerPressed = (trainerObject ) => {
+
+        dispatchTrainerObject({
+            type: 'SET_TRAINER_OBJECT',
+            trainerObject: trainerObject
+        })
+        dispatchTrainerNumberOfStarComments({
+            type:'SET_NUMBER_OF_STARS',
+            trainerNumberOfStars:trainerObject.reviews.length
+        })
+        dispatchFinalStarRating({
+            type: 'SET_FINAL_STAR_RATING',
+            trainerFinalStarRating: getStarRating(trainerObject.reviews)
+        })
+
+
+        navigation.navigate('StarPageStack',
+        { screen: 'TrainerOrderPage'  });}
+
 
 
     //Show trainers over the UI
@@ -173,34 +200,37 @@ const ProfilePage = ({navigation}) => {
         let repeats = [];
         if (trainersAroundMe !== []) {
             for(let i = 0; i < trainersAroundMe.length; i++) {
-                console.log(trainersAroundMe[i].media.images[0]);
                 repeats.push(
                     <View key={'trainerRow'+i} style={styles.trainerView}>
-                    <View style={styles.trainerViewRow}>
-                        <TouchableOpacity
-                            style={styles.trainerImage}
-                        >
-                            <FastImage
-                                        style={styles.trainerImage}
-                                        source={{
-                                        uri: trainersAroundMe[i].media.images[0],
-                                        priority: FastImage.priority.normal,
-                                        }}
-                                        resizeMode={FastImage.resizeMode.contain}
-                            />
-                        </TouchableOpacity>
-                        <View style={styles.trainerDetails}>
-                            <Text style={styles.trainerDetail1}>{trainersAroundMe[i].name.first + ' ' + trainersAroundMe[i].name.last}</Text>
-                            <Text style={styles.trainerDetail2}>{categoryDisplayFormat(trainersAroundMe[i].categories.join(', '))}</Text>
-                            <View style={styles.ratingRow}>
-                                <Text style={styles.trainerDetail3}> {getStarRating(trainersAroundMe[i].reviews)} </Text>
-                                <Image
-                                    source={require('../../../images/ratingStar.png')}
-                                    
-                                />
-                            </View>
+                        <TouchableOpacity 
+                                        onPress={() => handleOnTrainerPressed(trainersAroundMe[i])}
+                                            >
+                            <View style={styles.trainerViewRow}>
+                                <TouchableOpacity
+                                    style={styles.trainerImage}
+                                >
+                                    <FastImage
+                                                style={styles.trainerImage}
+                                                source={{
+                                                uri: trainersAroundMe[i].media.images[0],
+                                                priority: FastImage.priority.normal,
+                                                }}
+                                                resizeMode={FastImage.resizeMode.contain}
+                                    />
+                                </TouchableOpacity>
+                                <View style={styles.trainerDetails}>
+                                    <Text style={styles.trainerDetail1}>{trainersAroundMe[i].name.first + ' ' + trainersAroundMe[i].name.last}</Text>
+                                    <Text style={styles.trainerDetail2}>{categoryDisplayFormat(trainersAroundMe[i].categories.join(', '))}</Text>
+                                    <View style={styles.ratingRow}>
+                                        <Text style={styles.trainerDetail3}> {getStarRating(trainersAroundMe[i].reviews)} </Text>
+                                        <Image
+                                            source={require('../../../images/ratingStar.png')}
+                                            
+                                        />
+                                    </View>
+                                </View>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 </View>
                 )
             }
