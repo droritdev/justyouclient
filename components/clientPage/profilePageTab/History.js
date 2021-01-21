@@ -178,21 +178,20 @@ const History = ({navigation, route}) => {
                 </View>
 
                 <View style={styles.iconsContainer}>
-                    <TouchableOpacity
-                        onPress= {() => handleOnAddReviewButton(trainerID)}>
+                    
                             {checkIfTrainerAlreadyGotReviewByClient() ? 
                             <TouchableOpacity
-                                onPress= {() => handleOnAddReviewButton(trainerID)}>                   
+                                onPress= {() => handleOnAlreadyGotReview()}>                   
                                 <Icon name="check-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
                             </TouchableOpacity>
                             :
                             <TouchableOpacity
-                            onPress= {() => handleOnAlreadyGotReview()}>                  
+                                onPress= {() => handleOnAddReviewButton(trainerID)}>                  
                                 <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
                             </TouchableOpacity>
                             }
                         {/* <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" /> */}
-                    </TouchableOpacity>
+                    
                 </View>
             </View>
         </View>
