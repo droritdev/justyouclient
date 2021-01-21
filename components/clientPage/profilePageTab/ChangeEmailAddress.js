@@ -1,24 +1,26 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Button, Text, View, SafeAreaView, Image, StyleSheet, Dimensions, ImageBackground, TextInput} from 'react-native';
+import {Alert, Button, Text, View, SafeAreaView, Image, StyleSheet, Dimensions, ImageBackground, TextInput} from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
+import AppButton from '../../GlobalComponents/AppButton';
+// import {EmailContext} from '../../../../context/EmailContext';
+// import {PasswordContext} from '../../../../context/trainerContextes/PasswordContext';
+// import {IdContext} from '../../../../context/trainerContextes/IdContext';
+import auth from '@react-native-firebase/auth';
+import {ClientContext} from '../../../context/ClientContext';
 
-import {EmailContext} from '../../../context//EmailContext';
-
-//The change email address page
 const ChangeEmailAddress = ({navigation}) => {
-    const {emailAddress, dispatchEmail} = useContext(EmailContext);
-
     const [emailAddressInput, setEmailAddressInput] = useState("");
     const [codeInput, setCodeInput] = useState("");
 
-    const [isCodeSent, setIsCodeSent] = useState(false);
+    const [isCodeSent, setIsCodeSent] = useState('none');
     const [isEmailError, setIsEmailError] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
     const [isCodeError, setIsCodeError] = useState(false);
     const [codeErrorMessage, setCodeErrorMessage] = useState("");
-    const [isCodeSentDisplayMode,setIsCodeSentDisplayMode] = useState("none");
-
+    //Client information
+    const {clientObject} = useContext(ClientContext);
 
     const config = {
         withCredentials: true,
@@ -29,44 +31,61 @@ const ChangeEmailAddress = ({navigation}) => {
     };
 
     const mailformat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    
-    //The function that sends the verify code to the user's email
     const sendVerifyEmail = () => {
-        alert("Code sent");
-        // setIsCodeSent(true);
-        //   axios
-        //     .post('/send-verification-code', {
-        //       to: emailAddress,
-        //       channel: "email"
-        //     },
-        //     config
-        //   )
-        //   .then((res) => {
-        //     if(res !== null) {
-        //       if(res.data.status === 'pending'){
-        //           alert("Code sent");
-        //       }
-        //       else{
-        //         alert(res.data);
-        //       }
-        //     }
-        //     else{
-        //       alert("Error 2");
-        //     }
-        //   }
-        //   )
-        //   .catch((error) => {
-        //     alert(error)
-        //   })
+          axios
+            .post('/send-verification-code', {
+              to: emailAddressInput.toLowerCase(),
+              channel: "email"
+            },
+            config
+          )
+          .then((res) => {
+            if(res !== null) {
+              if(res.data.status === 'pending'){
+                setIsCodeSent('flex');
+                Alert.alert(
+                    'Code sent',
+                    'Please check your email for the verification code.',
+                    [
+                        {text: 'OK'},
+                      ],
+                      { cancelable: false }
+                    )
+              }
+              else {
+                Alert.alert(
+                    'System failure',
+                    "Couldn't send code to this email address. Please try again.",
+                    [
+                        {text: 'OK'},
+                      ],
+                      { cancelable: false }
+                    )
+              }
+            }
+            else {
+                Alert.alert(
+                    'System failure',
+                    "Couldn't send code to this email address. Please try again.",
+                    [
+                        {text: 'OK'},
+                      ],
+                      { cancelable: false }
+                    )
+            }
+          }
+          )
+          .catch((error) => {
+            alert(error)
+          })
     }
 
-    //Navigates back to the settings page
+    //Navigates back to the profile page
     const handleOnArrowPress = () => {
         navigation.navigate('Settings');
     }
 
-    //Handle when the users presses the get code button
-    const handleGetCodePressed = () => {
+    const handleVerify = () => {
         setIsEmailError(false);
         if(emailAddressInput === ""){
             setIsEmailError(true);
@@ -76,35 +95,28 @@ const ChangeEmailAddress = ({navigation}) => {
             setIsEmailError(true);
             setEmailErrorMessage("Enter a valid email address");
         }
-        // else if(emailAddressInput.toLowerCase() !== emailAddress){
-        //     setIsEmailError(true);
-        //     setEmailErrorMessage("Enter your current email address");
-        // }
+        
         else{
-            setIsCodeSent(true);
-            sendVerifyEmail();
+            checkEmailIsUsed();
         }
     }
 
-    //Sets the emailInput to the input the user enters
     const HandleOnEmailInputChange = (value) => {
         setIsEmailError(false);
         setEmailAddressInput(value);
     }
 
-    //Sets the codeInput to the input the user enters
     const handleOnCodeInputChange = (value) => {
         setIsEmailError(false);
         setIsCodeError(false);
         setCodeInput(value);
     }
 
-    //Handle when the user presses the approve button
-    const handleApprovePressed = () => {
-        if(isCodeSent){
+    const handleSubmit = () => {
+        if(isCodeSent === 'flex') {
             if(codeInput === ""){
                 setIsCodeError(true);
-                setCodeErrorMessage("Enter the code");
+                setCodeErrorMessage("Please enter the verifcation code");
             }
             else if(!(Number(codeInput))){
                 setIsCodeError(true);
@@ -115,33 +127,33 @@ const ChangeEmailAddress = ({navigation}) => {
                 setCodeErrorMessage("Code is 5 digits");
             }
             else{
-                navigation.navigate('Settings');
-                // axios
-                // .post('/verify-code', {
-                //   to: emailAddress,
-                //   code: codeInput
-                // },
-                // config
-                // )
-                // .then((res) => {
-                //     if(res !== null) {
-                //     if(res.data.status === 'approved'){
-                //         setIsCodeError(false);
-                //         navigation.navigate('TrainerSettings');
-                //     }
-                //     else{
-                //         setIsCodeError(true);
-                //         setCodeErrorMessage("Wrong Code - try again")
-                //     }
-                //     }
-                //     else{
-                //     alert("Error2")
-                //     }
-                // }
-                // )
-                // .catch((error) => {
-                //     alert(error)
-                // })
+                // navigation.navigate('TrainerSettings');
+                axios
+                .post('/verify-code', {
+                  to: emailAddressInput.toLowerCase(),
+                  code: codeInput
+                },
+                config
+                )
+                .then((res) => {
+                    if(res !== null) {
+                    if(res.data.status === 'approved'){
+                        updateDB();
+                    }
+                    else{
+                        setIsCodeError(true);
+                        setCodeErrorMessage("Incorrect code, please try again.")
+                    }
+                    }
+                    else{
+                        setIsCodeError(true);
+                        setCodeErrorMessage("Incorrect code, please try again.")
+                    }
+                }
+                )
+                .catch((error) => {
+                    alert(error)
+                })
             }
         }
         else{
@@ -150,26 +162,109 @@ const ChangeEmailAddress = ({navigation}) => {
         }
     }
 
+
+    //Send GET request to mongodb using axios, to check if email is already used
+    const checkEmailIsUsed = () => {
+        axios  
+        .get('/clients/'+emailAddressInput.toLowerCase(), config)
+        .then((doc) => {
+            if(doc) {
+                if(doc.data[0].email!=null) {
+                    setEmailErrorMessage("Email address is already used");
+                    setIsEmailError(true);
+                }
+            }
+        })
+        .catch((err) =>  {
+            setIsEmailError(false);
+            sendVerifyEmail();
+        });
+    }
+
+
+
+    //Update database with the new email adddress
+    const updateDB = () => {
+        axios  
+        .post('/clients/updateClientInfo', {
+            _id: clientObject._id,
+            email: emailAddressInput.toLowerCase()
+        },
+        config
+        )
+        .then((res) => {
+            if (res.data.type === "success") {
+                updateFirebaseEmail();           
+            }
+        })
+        .catch((err) => console.log(err));
+        
+    }
+
+
+    //Update the firebase email of the trainer
+    const updateFirebaseEmail = () => {
+        var user = auth().currentUser;
+
+        var authCred = auth.EmailAuthProvider.credential(
+            user.email, clientObject.password);
+
+
+        user.reauthenticateWithCredential(authCred).then(() => {
+            user.updateEmail(emailAddressInput.toLowerCase()).then(() => {
+                // Update successful.
+
+                Alert.alert(
+                    'Update',
+                    'Your new email address has been successfully updated.',
+                    [
+                        {text: 'OK', onPress: () => handleOnArrowPress()},
+                    ],
+                    { cancelable: false }
+                )
+            }).catch((error) => {
+                // An error happened.
+                Alert.alert(
+                    'System failure',
+                    "Couldn't update your new email address. Please try again.",
+                    [
+                        {text: 'OK'},
+                      ],
+                      { cancelable: false }
+                    )
+            });
+        }).catch((error) => {
+            // An error happened.
+            Alert.alert(
+                'System failure',
+                "Couldn't update your new email address. Please try again.",
+                [
+                    {text: 'OK'},
+                  ],
+                  { cancelable: false }
+                )
+        });
+        
+        
+    }
+
+
     return(
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.titlesContainer}>
                 <Text style={styles.justYouHeader}>Just You</Text>
+                <Text style={styles.partnerText}>Partner</Text>
             </View>
-            <TouchableOpacity
-                    style={styles.arrowBackButton} 
-                    onPress={() => handleOnArrowPress()}
-                >
-                <Image
-                    source={require('../../../images/blackArrow.png')}
-                />
-            </TouchableOpacity>
+            <ArrowBackButton
+                onPress={handleOnArrowPress}
+            />
             <Text style={styles.changeEmailTitle}>Change email address</Text>
             <View style={styles.emailAndErrorContainer}>
                 <View style={styles.emailInput}>
                     <TextInput
                         style={{fontSize: 25}}
                         textAlign='center'
-                        placeholder='Enter your email address'
+                        placeholder='youremail@adress.com'
                         onChangeText={text => HandleOnEmailInputChange(text)}
                     />
                 </View>
@@ -177,40 +272,73 @@ const ChangeEmailAddress = ({navigation}) => {
                     <Text style={styles.emailErrorMessage}>{emailErrorMessage}</Text>
                 : null}
             </View>
-            <Text style={styles.codeExplination}>A 5 digit code will be sent to you to confirm your new address</Text>
+            <View style={styles.verifyExplenationContainer}>
+                <Text style={styles.verifyExplenationText}>We'll send you an email with a 5-digit code to verify your new email address.</Text>
+              </View>
             <View style={styles.getCodeButtonContainer}>
                 <TouchableOpacity
                 style={styles.getCodeButton}
-                onPress={() => handleGetCodePressed()}
+                onPress={() => handleVerify()}
                 >
-                <Text style={styles.getcodeButtonText}>Get Code</Text>
+                    <Text style={styles.getcodeButtonText}>Verify</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.codeAndErrorContainer}>
-                <View style={styles.codelInput}>
-                    <TextInput
-                        style={{fontSize: 25}}
-                        textAlign='center'
-                        placeholder='Enter your code'
-                        onChangeText={text => handleOnCodeInputChange(text)}
-                    />
+
+            <View  display={isCodeSent} style={styles.greyBorder}></View>
+
+            <View display={isCodeSent}>
+                <Text style={styles.verificationText}>
+                    We just sent you an email with a code.
+                </Text>
+
+                <Text style={styles.verificationText}>
+                    Please note that email delivery can take a minute or more.
+                </Text>
+
+
+                <Text style={styles.verificationTitle}>
+                    Enter your verification code  
+                </Text>
+            </View>
+
+                <View display={isCodeSent} style={styles.codeAndErrorContainer}>
+                    <View style={styles.codelInput}>
+                        <TextInput
+                            style={{fontSize: 25}}
+                            textAlign='center'
+                            placeholder='00000'
+                            onChangeText={text => handleOnCodeInputChange(text)}
+                        />
+                    </View>
                 </View>
+
+                <View display={isCodeSent} style={{flexDirection:'row'}}>
+                    <View>
+                    <Text style={styles.resendCodeText}>{"Didn't recive an email?"}</Text> 
+                    </View>
+                    <View>
+                        <TouchableOpacity 
+                        onPress={() => sendVerifyEmail()}
+                        >
+                        <Text style={styles.resendButton}>{"resend"}</Text> 
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            
                 {isCodeError ? 
                     <Text style={styles.codeErrorMessage}>{codeErrorMessage}</Text>
                 : null}
+
+            <View display={isCodeSent} style={styles.submitButtonContainer}>
+                <AppButton
+                    title="Submit"
+                    onPress={handleSubmit}
+                />
             </View>
-            <Text style={styles.codeExplination2}>Enter the code you recived to approve your new address</Text>
-            <View style={styles.approveCodeButtonContainer}>
-                <TouchableOpacity
-                style={styles.approveCodeButton}
-                onPress={() => handleApprovePressed()}
-                >
-                <Text style={styles.approveButtonText}>Approve</Text>
-                </TouchableOpacity>
-            </View>
+        
         </SafeAreaView>
     )
-}   
+} 
 
 const styles = StyleSheet.create({
     safeArea: {
@@ -222,52 +350,52 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     justYouHeader: {
-        fontSize: 30,
+        fontSize: Dimensions.get('window').height * .033,
         fontWeight: 'bold'
     },
     partnerText: {
         color: 'deepskyblue',
         fontWeight: 'bold',
-        fontSize: 20
+        fontSize: Dimensions.get('window').height * .022
     },
     arrowBackButton: {
         alignItems: 'flex-start',
-        marginLeft: 15
+        marginLeft: Dimensions.get('window').width * .047
     },
     changeEmailTitle: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .0278,
         fontWeight: 'bold',
-        marginLeft: 20,
-        marginTop: Dimensions.get('window').height * .03,
+        marginLeft: Dimensions.get('window').width * .0483,
+        marginTop: Dimensions.get('window').height * .015,
     },
     emailAndErrorContainer: {
-        height: Dimensions.get('window').height * .15
+        height: Dimensions.get('window').height * .14
     },
     emailInput: {
       borderColor: 'deepskyblue',
       borderRadius: 20,
       borderWidth: 3,
-      height: Dimensions.get('window').height * .085,
-      marginRight: 20,
-      marginTop: 40,
+      height: Dimensions.get('window').height * .07,
+      marginRight: Dimensions.get('window').width * .0483,
+      marginTop: Dimensions.get('window').height * .033,
       justifyContent: 'center',
-      marginLeft: 20,
+      marginLeft: Dimensions.get('window').width * .0483,
     },
     emailErrorMessage: {
         color: 'red',
         textAlign: 'center',
-        marginTop: 3
+        marginTop: Dimensions.get('window').height * .0033
     },
     codeExplination: {
         color: 'grey',
-        fontSize: 15,
+        fontSize: Dimensions.get('window').height * .017,
         width: Dimensions.get('window').width * .6,
         alignSelf: 'center',
         textAlign: 'center',
-        marginTop: 10
+        marginTop: Dimensions.get('window').height * .011
     },
     getCodeButtonContainer: {
-        marginTop: 40
+        marginTop: Dimensions.get('window').height * .044
     },
     getCodeButton: {
         width: Dimensions.get('window').width * .9,
@@ -279,40 +407,38 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     getcodeButtonText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .0278,
         fontWeight: 'bold',
         color: 'white'
     },
     codeAndErrorContainer: {
-        height: Dimensions.get('window').height * .2
+        height: Dimensions.get('window').height * .1
     },
     codelInput: {
         borderColor: 'deepskyblue',
         borderRadius: 20,
         borderWidth: 3,
-        height: Dimensions.get('window').height * .085,
-        marginRight: 20,
-        marginTop: 80,
+        height: Dimensions.get('window').height * .07,
+        marginRight: Dimensions.get('window').width * .0483,
+        marginTop: Dimensions.get('window').height * .03,
         justifyContent: 'center',
-        marginLeft: 20
+        marginLeft: Dimensions.get('window').width * .0483
     },
     codeErrorMessage: {
         color: 'red',
         textAlign: 'center',
-        marginTop: 3
+        marginTop: Dimensions.get('window').height * .030
     },
     codeExplination2: {
         color: 'grey',
-        fontSize: 15,
+        fontSize: Dimensions.get('window').height * .017,
         width: Dimensions.get('window').width * .7,
         alignSelf: 'center',
         textAlign: 'center',
-        marginTop: 10
+        marginTop: Dimensions.get('window').height * .011
     },
     approveCodeButtonContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        marginBottom: 100
+        marginTop: Dimensions.get('window').height * .010,
     },
     approveCodeButton: {
         width: Dimensions.get('window').width * .9,
@@ -324,10 +450,59 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     approveButtonText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .0278,
         fontWeight: 'bold',
         color: 'white'
     },
+    verificationText: {
+        fontWeight: '500',
+        color: 'grey',
+        fontSize: Dimensions.get('window').height * .019,
+        alignSelf: 'center',
+        width: Dimensions.get('window').width * .8,
+      },
+      verificationTitle: {
+        marginTop: Dimensions.get('window').height * .02,
+        fontWeight: 'bold',
+        fontSize: Dimensions.get('window').height * .022,
+        alignSelf: 'center',
+      },
+      greyBorder: {
+        marginTop: Dimensions.get('window').height * .04,
+        marginBottom: Dimensions.get('window').height * .04,
+        alignSelf: 'center',
+        width: Dimensions.get('window').width * .85,
+        borderTopWidth: 3,
+        borderTopColor: 'lightgrey',
+    },
+    verifyExplenationContainer: {
+        width: Dimensions.get('window').width * .8,
+        alignSelf: 'center'
+    },
+    verifyExplenationText: {
+        fontWeight: '500',
+        color: 'grey',
+        fontSize: Dimensions.get('window').height * .019,
+        textAlign:'center',
+    },
+    resendCodeText: {
+        marginTop: Dimensions.get('window').height * .01,
+        marginLeft: Dimensions.get('window').width * .0483,
+        fontSize: Dimensions.get('window').height * .022,
+        fontWeight: '500',
+      },
+      resendButton: {
+        color: 'deepskyblue', 
+        marginTop: Dimensions.get('window').height * .01,
+        marginLeft: Dimensions.get('window').width * .01,
+        fontSize: Dimensions.get('window').height * .022,
+        fontWeight: '600',
+      },
+      submitButtonContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+      }
 });
 
 export default ChangeEmailAddress;

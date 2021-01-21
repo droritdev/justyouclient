@@ -45,10 +45,7 @@ const TrainerOrderPage = ({navigation}) => {
     const [trainingSiteSelected, setTrainingSiteSelected] = useState("");
     const [locationLatitudeCoordinate, setLocationLatitudeCoordinate] = useState("");
     const [locationLongitudeCoordinate, setLocationLongitudeCoordinate] = useState("");
-    // var locationLatitudeCoordinate = 0;
-    // var locationLongitudeCoordinate = 0;
-    const [dateAndTimeSelected, setDateAndTimeSelected] = useState("");
-    // const [isDateSelected, setIsDateSelected] = useState('none');
+ 
     var isDateSelected = 'none';
     var isDateSelectedForButtonShow = 'flex';
 
@@ -67,25 +64,11 @@ const TrainerOrderPage = ({navigation}) => {
                         orderEndTime, dispatchOrderEndTime}
             = useContext(OrderContext);
     
-    // const {clientID, dispathClientID,
-    //         clientEmail,dispathClientEmail,
-    //             clientFirstName,dispathClientFirstName,
-    //                 clientlastName,dispathClientLastName } 
-    //     = useContext(ClientContext);
+    
 
-    const {trainerFirstName , dispatchTrainerFirst,
-            trainerMediaPictures, dispatchTrainerMediaPictures,
-                // trainerNumberOfStars,dispatchTrainerNumberOfStars,
-                    trainerNumberOfStarComments, dispatchTrainerNumberOfStarComments,
-                trainerFinalStarRating,
-                        trainerCategories, dispatchTrainerCategories,
-                            trainerObject, dispatchTrainerObject}
-        = useContext(TrainerContext);
+    const {trainerObject,dispatchTrainerObject} = useContext(TrainerContext);
 
         
-
-    // const {clientObject} = useContext(ClientContext);
-
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getClientFromMongoDB();
@@ -109,6 +92,26 @@ const TrainerOrderPage = ({navigation}) => {
               "Content-Type": "application/json",
         },
     };
+
+    //setting trainer details at page:
+    
+
+    //trainer reviews array
+    const trainerReviewsArray = trainerObject.reviews
+
+    //for trainer star count
+    const getTrainerStarRating = () => {
+        var starsCounter = 0
+        var finalStarRating = 0
+        for (let index = 0; index < trainerReviewsArray.length; index++) {
+            const element = trainerReviewsArray[index];
+            starsCounter += Number(element.stars)
+
+        }
+
+        finalStarRating = (starsCounter/(trainerReviewsArray.length)).toFixed(1);
+        return finalStarRating;
+    }
 
     // const starRating = (trainerNumberOfStars/trainerNumberOfStarComments).toFixed(1);
     const cleanedPrice = typeOfTrainingSelected.replace(/[^0-9]/g,'');
@@ -454,12 +457,12 @@ const TrainerOrderPage = ({navigation}) => {
 
 
                             <View style={styles.trainerStarRatingContainer}>
-                                    {trainerNumberOfStarComments === 0 ? 
+                                    {trainerReviewsArray.length === 0 ? 
                                     <Text style={styles.trainerStarRating}>no comments</Text> 
                                     :
-                                    <Text style={styles.trainerStarRating}>{trainerFinalStarRating}</Text>} 
+                                    <Text style={styles.trainerStarRating}>{getTrainerStarRating()}</Text>} 
 
-                                    {trainerNumberOfStarComments === 0 ? 
+                                    {trainerReviewsArray.length === 0 ? 
                                     <Image 
                                         // source={require('../../../images/ratingStar.png')}
                                         style={styles.starIcon}/> 
@@ -482,7 +485,7 @@ const TrainerOrderPage = ({navigation}) => {
 
                         <DropDownPicker 
                                         
-                                        {...trainerCategories.map(i => {
+                                        {...trainerObject.categories.map(i => {
                                             pickerItems.push({
                                                 value: i,
                                                 label: i,
@@ -568,7 +571,7 @@ const TrainerOrderPage = ({navigation}) => {
                                     }}
                                     keyExtractor={(item) => item.id}
                                     style={styles.searchResultsContainer}  
-                                />
+                            />
 
                             {/* </View> */}
                             {/* MARK */}

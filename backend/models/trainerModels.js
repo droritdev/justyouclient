@@ -22,31 +22,19 @@ const trainerProfileSchema = new Schema(
             type:
             [
                 {
-                    review : {
-                        userID: {
-                            type: String,
-                            trim: true
-                        },
-                        userImage: {
-                            type: String,
-                            trim: true
-                        },
-                        userFirstName: {
-                            type: String,
-                            trim: true
-                        },
-                        userLastName: {
-                            type: String,
-                            trim: true
-                        },
-                        stars: {
-                            type: Number
-                        },
-                        reviewContent: {
-                            type: String,
-                            trim: true
-                        }
+                
+                    userID: {
+                        type: String,
+                        trim: true
+                    },
+                    stars: {
+                        type: Number
+                    },
+                    reviewContent: {
+                        type: String,
+                        trim: true
                     }
+                    
                 }
             ]
        },

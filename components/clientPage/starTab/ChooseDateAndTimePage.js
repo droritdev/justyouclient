@@ -811,7 +811,6 @@ const styles = StyleSheet.create({
         marginTop:Dimensions.get('window').height * .01,
     },
     modalView: {
-        // margin: Dimensions.get('window').height * .25,
         backgroundColor: "white",
         borderRadius: 20,
         height: Dimensions.get('window').height * .25,
@@ -843,12 +842,10 @@ const styles = StyleSheet.create({
         textAlign: "center"
       },
       buttonsRow: {
-        // marginTop:  Dimensions.get('window').height * .02,
         flexDirection: 'row',
         justifyContent: 'space-between'
       },
       pickerStyle: {
-        // marginTop:  Dimensions.get('window').height * .025,
         alignSelf: 'center',
         marginRight: Dimensions.get('window').width * -.25,
         width: Dimensions.get('window').width * .5,

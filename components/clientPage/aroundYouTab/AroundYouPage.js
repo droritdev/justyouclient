@@ -268,7 +268,7 @@ const ProfilePage = ({navigation}) => {
 
             <View style={styles.verifyExplenationContainer}>
                 <Text style={styles.verifyExplenationText}>We'll present all the trainers that provide workouts inside the radius of the selected distance range.</Text>
-              </View>
+            </View>
 
 
               <View style={styles.aroundYouTitle}>

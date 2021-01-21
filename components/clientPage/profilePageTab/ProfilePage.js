@@ -7,6 +7,8 @@ import FastImage from 'react-native-fast-image'
 import auth from '@react-native-firebase/auth';
 
 import {ClientContext} from '../../../context/ClientContext';
+import {TrainerContext} from '../../../context/TrainerContext';
+
 
 //The client's profile page area page
 const ProfilePage = ({navigation}) => {
@@ -22,6 +24,9 @@ const ProfilePage = ({navigation}) => {
     const {dispatchClientId} = useContext(ClientContext);
     const [clientObjectToPass, setClientObjectToPass] = useState([]);
     const [clientIdToPass, setClientIdToPass] = useState('[]');
+    // dispatch trainer values for use in TrainerOrderPage
+    const {dispatchTrainerObject } = useContext(TrainerContext);
+
 
     const [pendingOrdersArrived, setPendingOrdersArrived] = useState([]);
     const [approvedOrdersArrived, setApprovedOrdersArrived] = useState([]);
@@ -38,7 +43,6 @@ const ProfilePage = ({navigation}) => {
       }
     
     
-
 
     const config = {
         withCredentials: true,
@@ -81,57 +85,65 @@ const ProfilePage = ({navigation}) => {
         });
     }
 
+    const getUserByFirebaseAuth = () => {
+        const subscriber = auth().onAuthStateChanged((user) => {
+            // console.log('🚨userStatus:' , user)
+            setUser(user);
 
+            if(user){
+                setInitializing(true);
+                
+                
+                axios
+                .get('/clients/'
+                +user.email.toLocaleLowerCase(),
+                config
+            )
+            .then((doc) => {
+                if(doc) {
+                  const currectUserData = doc.data[0];
+                  console.log(doc.data[0]);
+                  setFirstName(currectUserData.name.first);
+                  setLastName(currectUserData.name.last);
+                  setProfileImageUrl(currectUserData.image);
+                  setClientIdToPass(doc.data[0]._id);
+                  setClientObjectToPass(doc.data[0]);
+
+                  dispatchClientObject({
+                    type: 'SET_CLIENT_OBJECT',
+                    clientObject : doc.data[0]
+                    });
+                    //for filling the recent orders scrollView
+                   getClientOrders(doc.data[0]._id);  
+                  
+                }
+              })
+            .catch((err) => console.log(err));
+            }else{
+                setInitializing(true);
+            }
+
+
+        });
+        return subscriber; // unsubscribe on unmount
+    }
     
 
     //First off all, the component loads the user details from the data base and sets the variables to the data
     useEffect(() => {
+        getUserByFirebaseAuth();
 
         forceUpdate();
 
-        const subscriber = auth().onAuthStateChanged((user) => {
-                    // console.log('🚨userStatus:' , user)
-                    setUser(user);
-
-                    if(user){
-                        setInitializing(true);
-                        
-                        
-                        axios
-                        .get('/clients/'
-                        +user.email.toLocaleLowerCase(),
-                        config
-                    )
-                    .then((doc) => {
-                        if(doc) {
-                          const currectUserData = doc.data[0];
-                          setFirstName(currectUserData.name.first);
-                          setLastName(currectUserData.name.last);
-                          setProfileImageUrl(currectUserData.image);
-                          setClientIdToPass(doc.data[0]._id);
-                          setClientObjectToPass(doc.data[0]);
-
-                          dispatchClientObject({
-                            type: 'SET_CLIENT_OBJECT',
-                            clientObject : doc.data[0]
-                            });
-                            //for filling the recent orders scrollView
-                           getClientOrders(doc.data[0]._id);  
-                          
-                        }
-                      })
-                    .catch((err) => console.log(err));
-                    }else{
-                        setInitializing(true);
-                    }
-
-        
-         });
-         
-
-         return subscriber; // unsubscribe on unmount
+    
 
     } ,[]);
+
+    // React.useEffect(() => {
+    //     const unsubscribe = navigation.addListener('focus', () => {
+    //     });
+    //     return unsubscribe;
+    //   }, [navigation]);
 
     //run for all approved orders to get trainer id
     //using func as async for waiting trainers array to fill from MongoDB
@@ -189,21 +201,19 @@ const ProfilePage = ({navigation}) => {
                 repeats.push(
                     <TouchableOpacity 
                         key = {'ordersRow' + i}
-                        onPress={() => handleArrowApprovedPressed(i)}
+                        onPress={() => handleOnTrainerInRecentOrderScrollViewPressed(ordersHistoryTrainerArray[i])}
                         >
 
                         <View style={styles.trainerView}>
                             <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
-                                    <FastImage
+                                <FastImage
                                         style={styles.trainerImage}
                                         source={{
                                             uri: ordersHistoryTrainerArray[i].media.images[0],
                                             priority: FastImage.priority.normal,
                                                 }}
                                         resizeMode={FastImage.resizeMode.stretch}
-                                    />
-                                </TouchableOpacity>
+                                />
                             </View>
                             <View
                                 style={styles.trainerPreviewText}
@@ -274,8 +284,28 @@ const ProfilePage = ({navigation}) => {
 
     //Handle when the user presses the History button
     const handleOnHistoryPressed = () => {
-        navigation.navigate('History');
+
+        navigation.navigate('ProfilePageStack',
+             { screen: 'History' ,
+             params: { ordersHistoryTrainerArray: ordersHistoryTrainerArray}
+            });
     }
+
+    //Handle when the user presses on Trainer in recent orders scrollview
+    const handleOnTrainerInRecentOrderScrollViewPressed = (trainerObject) => {
+
+        console.log('trainerObject');
+        console.log(trainerObject);
+        dispatchTrainerObject({
+            type: 'SET_TRAINER_OBJECT',
+            trainerObject: trainerObject
+        })
+
+        navigation.navigate('StarPageStack',
+        { screen: 'TrainerOrderPage' });
+    }
+
+    
 
     //Handle when the user presses the Edit profile button
     const handleOnEditProfilePressed = () => {

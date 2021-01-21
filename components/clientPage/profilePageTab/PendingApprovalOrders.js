@@ -242,9 +242,9 @@ const PendingApprovalOrders = ({route, navigation}) => {
                     <Text style={styles.justYouHeader}>Just You</Text>
                     
                     <View style={styles.backButton}>
-                    <ArrowBackButton
-                        onPress={handleArrowButton}
-                    />
+                        <ArrowBackButton
+                            onPress={handleArrowButton}
+                        />
                     </View>
                     
                 </View>

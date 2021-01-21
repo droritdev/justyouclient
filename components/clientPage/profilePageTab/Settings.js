@@ -3,6 +3,9 @@ import { Button, Text, View, SafeAreaView, Image, StyleSheet, Dimensions, ImageB
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Dialog from "react-native-dialog";
 import {Accordion, Block} from 'galio-framework';
+
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
+
 import auth from '@react-native-firebase/auth';
 
 
@@ -10,6 +13,14 @@ import auth from '@react-native-firebase/auth';
 const Settings = ({navigation}) => {
 
     const [dialogVisible, setDialogVisible] = useState(false);
+
+
+    useEffect (() => {
+        //Hide bottom navigation UI
+        navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible: false
+        })
+    }, []);
 
     //Handle when the user presses yes in the sign out dialog
     const handleYesDialog = () => {
@@ -30,6 +41,9 @@ const Settings = ({navigation}) => {
 
     //Navigates back to the profile page
     const handleOnArrowPress = () => {
+        navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible: true
+        })
         navigation.navigate('ProfilePage');
     }
 
@@ -57,14 +71,9 @@ const Settings = ({navigation}) => {
                 <View style={styles.titlesContainer}>
                     <Text style={styles.justYouHeader}>Just You</Text>
                 </View>
-                <TouchableOpacity
-                        style={styles.arrowBackButton} 
-                        onPress={() => handleOnArrowPress()}
-                    >
-                    <Image
-                        source={require('../../../images/blackArrow.png')}
+                    <ArrowBackButton
+                        onPress={handleOnArrowPress}
                     />
-                </TouchableOpacity>
                 <Text style={styles.settingsTitle}>Settings</Text>
                 <View style={styles.settingsContainer1}>
                     <View style={styles.paymentsRow}>

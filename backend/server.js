@@ -38,6 +38,7 @@ const findTrainerByCategory = require('./findTrainersByCategory/findTrainersByCa
 const makeOrder = require('./orders/makeOrder');
 const getOrdersByClientID = require('./orders/getOrdersByClientID');
 
+const updateClientInfo = require('./updateClientInfo/updateClientInfo');
 const updateClientCredit = require('./clientCredit/updateClientCredit');
 const clientFindPlaces = require('./clientFindPlaces/clientFindPlaces');
 const clientEditProfile = require('./clientEditProfile/clientEditProfile');
@@ -170,6 +171,8 @@ app.post('/clients/orders/book-order', makeOrder.makeOrder);
 //End point for get orders by Client ID
 app.get('/orders/by-client-id/:id', getOrdersByClientID.getOrdersByClientID);
 
+//End point to update client info
+app.post('/clients/updateClientInfo', updateClientInfo.updateClientInfo);
 
 //End point for updating the client's credit
 app.put('/clients/update-credit', updateClientCredit.updateClientCredit);

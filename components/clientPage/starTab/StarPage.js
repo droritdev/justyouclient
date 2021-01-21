@@ -36,16 +36,7 @@ const StarPage = ({ navigation}) => {
 
     const {category, dispatchCategory} = useContext(CategoryContext)
 
-    const {
-        dispatchTrainerFirst,
-                dispatchTrainerMediaPictures,
-                        // dispatchTrainerNumberOfStars,
-                                 dispatchTrainerNumberOfStarComments,
-                                    dispatchFinalStarRating,
-                                                dispatchTrainerCategories ,
-                                                        dispatchTrainerObject
-                                             }
-         = useContext(TrainerContext);
+    const {dispatchTrainerObject } = useContext(TrainerContext);
 
 
         const [hitArrayCount,setHitArrayCount] = useState(0);
@@ -94,7 +85,14 @@ const StarPage = ({ navigation}) => {
         headers: {
               "Content-Type": "application/json",
         },
-    };     
+    }; 
+    
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getAllTrainers();
+        });
+        return unsubscribe;
+      }, [navigation]);
 
     const sortByCategory = (trainerArray) => {
         console.log('in sort sdasdasdadasdasdasdasd')
@@ -176,35 +174,9 @@ const StarPage = ({ navigation}) => {
             });
     }
 
-    useEffect(() => {
-        getAllTrainers();
-        console.log('🚨click')
+    
 
-        
-    },[]);
-
-    const getTrainersByCategory = () => {
-        console.log('🚨click')
-        setIsRefreshing(true);
-        
-        axios  
-            .get('/trainers/getAllTrainers/TRX',
-            config)
-            .then((doc) => {
-                console.log('🚨doc' + doc)
-
-                if(doc) {
-                    setDoc(doc.data);
-                    console.log("is any doc here " + doc.data);
-                    setIsRefreshing(false);
-
-                }
-            })
-            .catch((err) =>  {
-                console.log('🚨err' + err)
-            });
-    }
-     
+    
      
     const getTrainerStarRating = () => {
         var starsCounter = 0
@@ -289,7 +261,7 @@ const StarPage = ({ navigation}) => {
         {...reviewsArray = (item.reviews)}
         ></Item>
         
-      );
+    );
 
     
 
@@ -304,27 +276,6 @@ const StarPage = ({ navigation}) => {
             dispatchTrainerObject({
                 type: 'SET_TRAINER_OBJECT',
                 trainerObject: trainerObject
-            })
-        
-            dispatchTrainerFirst({
-                type: 'SET_FIRST_NAME',
-                trainerFirstName: name
-            });
-            dispatchTrainerMediaPictures({
-                type: 'SET_MEDIA_PICTURES',
-                trainerMediaPictures: media
-            });
-            dispatchTrainerNumberOfStarComments({
-                type:'SET_NUMBER_OF_STARS',
-                trainerNumberOfStars:reviewsArray.length
-            })
-            dispatchFinalStarRating({
-                type: 'SET_FINAL_STAR_RATING',
-                trainerFinalStarRating: getTrainerStarRating()
-            })
-            dispatchTrainerCategories({
-                type: 'SET_CATEGORIES',
-                trainerCategories: categories
             })
             
             
