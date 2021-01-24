@@ -1,11 +1,13 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Text, View, SafeAreaView, Image, StyleSheet, Dimensions, TextInput, Button,FlatList} from 'react-native';
+import { Text, View, SafeAreaView, Image, StyleSheet, Dimensions, TextInput, Button,FlatList, Modal} from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Dialog from "react-native-dialog";
 import {Accordion, Block, Radio} from 'galio-framework';
 import FastImage from 'react-native-fast-image'
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/Feather';
+import { WebView } from 'react-native-webview';
+
 
 import auth from '@react-native-firebase/auth';
 
@@ -68,6 +70,10 @@ const TrainerOrderPage = ({navigation}) => {
 
     const {trainerObject,dispatchTrainerObject} = useContext(TrainerContext);
 
+    //paypal modal
+    const [modalVisible, setModalVisible] = useState(false);
+
+
         
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -82,6 +88,30 @@ const TrainerOrderPage = ({navigation}) => {
       }, [navigation]);
     
     
+      //paypal payment
+      const paypalPayment = () => {
+        axios
+                        .get('/paypal/',config
+                    )
+                    .then((doc) => {
+                        if(doc) {
+                            console.log('PAYPAL DOC')
+                            console.log(doc)
+                        }
+                      })
+                    .catch((err) => console.log(err));
+    }
+    //handle paypal response
+    const handleResponse = (data) => {
+        if(data.title === 'success'){
+            setModalVisible(!modalVisible)
+        }else if (data.title === 'cancel'){
+            setModalVisible(!modalVisible)
+        }else{
+            return;
+        }
+    }
+
 
 
 
@@ -413,7 +443,11 @@ const TrainerOrderPage = ({navigation}) => {
 
     //Handle when the client presses on Discount Code button
     const handleOnReviewsPressed = () => {
-        registerOrder();
+        // registerOrder();
+        navigation.navigate('TrainerReviews');
+
+        // setModalVisible(!modalVisible);
+        // paypalPayment();
 
         // navigation.navigate('ComingSoon');
     }
@@ -810,6 +844,20 @@ const TrainerOrderPage = ({navigation}) => {
                     </TouchableOpacity>
                 </View>
             </View> */}
+
+            <Modal
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(!modalVisible)}>
+
+                <WebView
+                    source={{uri: 'http://localhost:3000/'}}
+                    // onNavigationStateChange={ data => handleResponse(data)}
+                    injectedJavaScript={`document.f1.sumbit()`}>
+                        
+                </WebView> 
+            </Modal>
+
+
         </SafeAreaView>
     )
 }   

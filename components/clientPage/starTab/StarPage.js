@@ -92,7 +92,9 @@ const StarPage = ({ navigation}) => {
             getAllTrainers();
         });
         return unsubscribe;
-      }, [navigation]);
+    }, [navigation]);
+
+
 
     const sortByCategory = (trainerArray) => {
         console.log('in sort sdasdasdadasdasdasdasd')

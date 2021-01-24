@@ -8,9 +8,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const paypal = require('paypal-rest-sdk');
+const engines = require("consolidate");
 
 module.exports.mongoose = mongoose;
 
+
+//paypal payment
+
+const paypalPayment = require('./paypalPayment/paypalPayment');
 
 
 
@@ -32,6 +38,8 @@ const findTrainerByID = require('./findTrainerByID/findTrainerByID');
 
         //**Client imports**//
 const clientRegister = require('./register/clientRegister');
+const findMultipleClients = require('./findMultipleClients/findMultipleClients');
+
 
 const findTrainerByCategory = require('./findTrainersByCategory/findTrainersByCategory');
 //**Orders
@@ -105,6 +113,9 @@ mongoose.connect(process.env.MONGO_URI, {
 
 //db.records.find( { a: { $exists: true } } )
 
+
+
+
 //End point for sending email to support
 app.post('/send-email', sendEmail.sendEmail);
 
@@ -170,6 +181,10 @@ app.post('/clients/orders/book-order', makeOrder.makeOrder);
 
 //End point for get orders by Client ID
 app.get('/orders/by-client-id/:id', getOrdersByClientID.getOrdersByClientID);
+
+//End point getting clients array by id
+app.get('/clients/findMultipleClients/:idArray', findMultipleClients.getMultipleClients);
+
 
 //End point to update client info
 app.post('/clients/updateClientInfo', updateClientInfo.updateClientInfo);
@@ -242,3 +257,100 @@ app.get('/messages/findMessageByIDS/:ids', findMessageByIDS.getMesssageByIDS);
 app.post('/messages/newMessage', newMessage.createMessage);
 
 app.get('/messages/watchForUpdates/:receiver', watchForUpdates.watchForUpdates);
+
+
+//for paypal set:
+app.engine("ejs", engines.ejs);
+app.set("views", "./paypalViews");
+app.set("view engine", "ejs");
+
+
+//for Paypal
+
+app.get('/' ,(req, res) => {
+        res.render("paypalIndex");
+})
+paypal.configure({
+        'mode': 'sandbox', //sandbox or live
+        'client_id': 'AWWnlKwlkexa-FcYLtU-lXbbG7TcjDnO1fZBvjMCahAOhUvmQ8pN8i3BPJpi3L1VRR8XRUM-4SdfYZJR',
+        'client_secret': 'EDsuT2KTJE-WValxvJzw5-a9syJfofILTJ8UV_FrfS_UKY4aAni0H6vrhuBC0nF7xb1v8T-YMl5DQ_39'
+      });
+
+
+app.get('/paypal', (req, res) => {
+
+        var create_payment_json = {
+            "intent": "sale",
+            "payer": {
+                "payment_method": "paypal"
+            },
+            "redirect_urls": {
+                "return_url": "http://localhost:3000/success",
+                "cancel_url": "http://localhost:3000/cancel"
+            },
+            "transactions": [{
+                "item_list": {
+                    "items": [{
+                        "name": "item",
+                        "sku": "item",
+                        "price": "1.00",
+                        "currency": "USD",
+                        "quantity": 1
+                    }]
+                },
+                "amount": {
+                    "currency": "USD",
+                    "total": "1.00"
+                },
+                "description": "This is the payment description."
+            }]
+        };
+        
+        
+        paypal.payment.create(create_payment_json, function (error, payment) {
+            if (error) {
+                throw error;
+            } else {
+                console.log("Create Payment Response");
+                console.log(payment);
+                res.redirect(payment.links[1].href);
+            }
+        });
+    });
+
+    app.get('/success' ,(req, res) =>{
+        // res.render('success');
+
+        // res.send('Success')
+        var PayerID = req.query.PayerID;
+        var paymentId = req.query.paymentId;
+        var execute_payment_json = {
+                "payer_id": PayerID,
+                "transactions": [{
+                    "amount": {
+                        "currency": "USD",
+                        "total": "1.00"
+                    }
+                }]
+            };
+            
+        //     var paymentId = 'PAYMENT id created in previous step';
+            
+            paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
+                if (error) {
+                    console.log(error.response);
+                    throw error;
+                } else {
+                    console.log("Get Payment Response");
+                    console.log(JSON.stringify(payment));
+                    res.render('success')
+                }
+            });
+    })
+
+    app.get('cancel' ,(req, res) =>{
+        res.render('cancel')
+        })
+    
+
+

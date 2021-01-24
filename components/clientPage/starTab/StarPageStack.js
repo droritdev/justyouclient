@@ -10,6 +10,7 @@ import ComingSoon from './ComingSoon';
 import CustomerService from './CustomerService';
 import ChooseDateAndTimePage from './ChooseDateAndTimePage';
 import TrainersByCategories from './TrainersByCategories';
+import TrainerReviews from './TrainerReviews';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,7 @@ const TrainerProfilePageStack = ({navigation}) => {
             <Stack.Screen name='CustomerService' component={CustomerService}/>
             <Stack.Screen name='ChooseDateAndTimePage' component={ChooseDateAndTimePage}/>
             <Stack.Screen name='TrainersByCategories' component={TrainersByCategories}/>
+            <Stack.Screen name='TrainerReviews' component={TrainerReviews}/>
         </Stack.Navigator>
     )
 }

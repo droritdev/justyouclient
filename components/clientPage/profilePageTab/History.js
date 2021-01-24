@@ -190,7 +190,6 @@ const History = ({navigation, route}) => {
                                 <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
                             </TouchableOpacity>
                             }
-                        {/* <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" /> */}
                     
                 </View>
             </View>
