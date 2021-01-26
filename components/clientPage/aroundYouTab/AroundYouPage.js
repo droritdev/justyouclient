@@ -12,17 +12,13 @@ import Icon from 'react-native-vector-icons/Feather';
 //for using trainerContext
 import {TrainerContext} from '../../../context/TrainerContext';
 
-
 //The claint's around you area page
-const ProfilePage = ({navigation}) => {
+const AroundYouPage = ({navigation}) => {
     const [maxDistanceSelected, setMaxDistanceSelected] = useState("1");
     const [sliderValue, setSliderValue] = useState("1 MILES");
     const [trainersAroundMe, setTrainersAroundMe] = useState([]);
 
-    const { dispatchTrainerObject,
-                dispatchTrainerNumberOfStarComments,
-                    dispatchFinalStarRating,
-        } = useContext(TrainerContext);
+        const { dispatchTrainerObject,} = useContext(TrainerContext);
 
     var maxDistance = 1;
 
@@ -53,7 +49,7 @@ const ProfilePage = ({navigation}) => {
     //GET request using axios, to fetch trainers by distance
     const getTrainersByDistance = async () => {
         await axios  
-        .get('/trainers/allTrainer',
+        .get('/trainers/getAllTrainers',
         config)
         .then((doc) => {
             var trainers = doc.data;
@@ -61,7 +57,7 @@ const ProfilePage = ({navigation}) => {
 
         })
         .catch((err) =>  {
-            
+            console.log(err)
         });
     }
 
@@ -163,7 +159,7 @@ const ProfilePage = ({navigation}) => {
     //Load trainer star rating
     const getStarRating = (reviews) => {
         if (reviews.length === 0) {
-            setStarRating(0);
+            return 0;
         } else {
             var sumStars = 0;
             for (let index = 0; index < reviews.length; index++) {
@@ -174,25 +170,6 @@ const ProfilePage = ({navigation}) => {
         }
     }
 
-    const handleOnTrainerPressed = (trainerObject ) => {
-
-        dispatchTrainerObject({
-            type: 'SET_TRAINER_OBJECT',
-            trainerObject: trainerObject
-        })
-        dispatchTrainerNumberOfStarComments({
-            type:'SET_NUMBER_OF_STARS',
-            trainerNumberOfStars:trainerObject.reviews.length
-        })
-        dispatchFinalStarRating({
-            type: 'SET_FINAL_STAR_RATING',
-            trainerFinalStarRating: getStarRating(trainerObject.reviews)
-        })
-
-
-        navigation.navigate('StarPageStack',
-        { screen: 'TrainerOrderPage'  });}
-
 
 
     //Show trainers over the UI
@@ -200,35 +177,36 @@ const ProfilePage = ({navigation}) => {
         let repeats = [];
         if (trainersAroundMe !== []) {
             for(let i = 0; i < trainersAroundMe.length; i++) {
+                console.log(trainersAroundMe[i].media.images[0]);
                 repeats.push(
                     <View key={'trainerRow'+i} style={styles.trainerView}>
-                        <TouchableOpacity 
-                                        onPress={() => handleOnTrainerPressed(trainersAroundMe[i])}
-                                            >
-                            <View style={styles.trainerViewRow}>
-                                <TouchableOpacity
-                                    style={styles.trainerImage}
-                                >
-                                    <FastImage
-                                                style={styles.trainerImage}
-                                                source={{
-                                                uri: trainersAroundMe[i].media.images[0],
-                                                priority: FastImage.priority.normal,
-                                                }}
-                                                resizeMode={FastImage.resizeMode.contain}
+
+                     <TouchableOpacity 
+                        onPress={() => handleOnTrainerPressed(trainersAroundMe[i])}>
+                        <View style={styles.trainerViewRow}>
+                            <TouchableOpacity
+                                style={styles.trainerImage}
+                            >
+                                <FastImage
+                                            style={styles.trainerImage}
+                                            source={{
+                                            uri: trainersAroundMe[i].media.images[0],
+                                            priority: FastImage.priority.normal,
+                                            }}
+                                            resizeMode={FastImage.resizeMode.strech}
+                                />
+                            </TouchableOpacity>
+                            <View style={styles.trainerDetails}>
+                                <Text style={styles.trainerDetail1}>{trainersAroundMe[i].name.first + ' ' + trainersAroundMe[i].name.last}</Text>
+                                <Text style={styles.trainerDetail2}>{categoryDisplayFormat(trainersAroundMe[i].categories.join(', '))}</Text>
+                                <View style={styles.ratingRow}>
+                                    <Text style={styles.trainerDetail3}> {getStarRating(trainersAroundMe[i].reviews)} </Text>
+                                    <Image
+                                        source={require('../../../images/ratingStar.png')}
+                                        
                                     />
-                                </TouchableOpacity>
-                                <View style={styles.trainerDetails}>
-                                    <Text style={styles.trainerDetail1}>{trainersAroundMe[i].name.first + ' ' + trainersAroundMe[i].name.last}</Text>
-                                    <Text style={styles.trainerDetail2}>{categoryDisplayFormat(trainersAroundMe[i].categories.join(', '))}</Text>
-                                    <View style={styles.ratingRow}>
-                                        <Text style={styles.trainerDetail3}> {getStarRating(trainersAroundMe[i].reviews)} </Text>
-                                        <Image
-                                            source={require('../../../images/ratingStar.png')}
-                                            
-                                        />
-                                    </View>
                                 </View>
+                            </View>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -237,6 +215,17 @@ const ProfilePage = ({navigation}) => {
         }
         return repeats;
     };
+
+        const handleOnTrainerPressed = (trainerObject ) => {
+
+        dispatchTrainerObject({
+            type: 'SET_TRAINER_OBJECT',
+            trainerObject: trainerObject
+        })
+
+
+        navigation.navigate('StarPageStack',
+        { screen: 'TrainerOrderPage'  });}
 
 
 
@@ -268,7 +257,7 @@ const ProfilePage = ({navigation}) => {
 
             <View style={styles.verifyExplenationContainer}>
                 <Text style={styles.verifyExplenationText}>We'll present all the trainers that provide workouts inside the radius of the selected distance range.</Text>
-            </View>
+              </View>
 
 
               <View style={styles.aroundYouTitle}>
@@ -295,41 +284,41 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     headerText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * 0.03,
         fontWeight: 'bold'
     },
     aroundYouTitle: {
-        marginLeft: 15,
-        marginTop: 40
+        marginLeft: Dimensions.get('window').width * 0.022,
+        marginTop: Dimensions.get('window').height * 0.04
     },
     aroundYouText: {
         fontWeight: 'bold',
-        fontSize: 25
+        fontSize: Dimensions.get('window').height * 0.03,
     },
     sliderContainer: {
-        marginTop: 20
+        marginTop: Dimensions.get('window').height * 0.025,
     },  
     maxDistanceText: {
-        fontSize: 20,
-        marginTop: 20,
-        marginLeft: 15,
+        fontSize: Dimensions.get('window').height * 0.022,
+        marginTop: Dimensions.get('window').height * 0.025,
+        marginLeft: Dimensions.get('window').width * 0.019,
         fontWeight: '500'
     },  
     sliderValueTitle: {
         //alignSelf: 'center',
         fontSize: Dimensions.get('window').width * .05,
         marginTop: Dimensions.get('window').height * .023,
-        marginLeft: 15
+        marginLeft: Dimensions.get('window').width * 0.019
     },
     slider: {
         width: Dimensions.get('window').width * .85,
         alignSelf: 'center',
-        marginTop: 10
+        marginTop: Dimensions.get('window').height * .015
     },
     pricingLabels: {
-        marginTop: 15,
-        marginLeft: 15,
-        marginBottom: 15,
+        marginTop: Dimensions.get('window').height * 0.019,
+        marginLeft: Dimensions.get('window').width * 0.019,
+        marginBottom: Dimensions.get('window').height * 0.019,
         flexDirection: 'row'
     },  
     trainersPricing: {
@@ -353,12 +342,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     trainersText: {
-        fontSize: 20,
+        fontSize: Dimensions.get('window').height * 0.022,
         color: 'white',
         fontWeight: 'bold'
     },
     trainersTextLabeld: {
-        fontSize: 20,
+        fontSize: Dimensions.get('window').height * 0.022,
         color: 'deepskyblue',
         fontWeight: 'bold'
     },
@@ -382,19 +371,19 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     placesText: {
-        fontSize: 20,
+        fontSize: Dimensions.get('window').height * 0.022,
         color: 'deepskyblue',
         fontWeight: 'bold'
     },
     placesTextLabeld: {
-        fontSize: 20,
+        fontSize: Dimensions.get('window').height * 0.022,
         color: 'white',
         fontWeight: 'bold'
     },
     trainerView: {
         width: Dimensions.get('window').width,
-        marginLeft: 15,
-        marginTop: 20
+        marginLeft: Dimensions.get('window').width * 0.019,
+        marginTop: Dimensions.get('window').height * 0.022
     },
     trainerViewRow: {
         flexDirection: 'row',
@@ -407,29 +396,29 @@ const styles = StyleSheet.create({
     },
     trainerDetails: {
         justifyContent: 'center',
-        marginLeft: 20
+        marginLeft: Dimensions.get('window').width * 0.022
     },
     trainerDetail1: {
         fontWeight: 'bold',
-        fontSize: 23
+        fontSize: Dimensions.get('window').height * 0.029
     },
     trainerDetail2: {
-        fontSize: 18
+        fontSize: Dimensions.get('window').height * 0.021
     },
     ratingRow: {
         flexDirection: 'row',
         alignItems: 'center'
     },
     trainerDetail3: {
-        fontSize: 18
+        fontSize: Dimensions.get('window').height * 0.021
     },
     ratingIcon: {
 
     },
     placeView: {
         width: Dimensions.get('window').width,
-        marginLeft: 15,
-        marginTop: 20
+        marginLeft: Dimensions.get('window').width * 0.018,
+        marginTop: Dimensions.get('window').height * 0.022
     },
     placeViewRow: {
         flexDirection: 'row',
@@ -442,7 +431,7 @@ const styles = StyleSheet.create({
     },
     placeDetails: {
         justifyContent: 'center',
-        marginLeft: 20
+        marginLeft: Dimensions.get('window').width * 0.018
     },
     placeDetail1: {
         fontWeight: 'bold',
@@ -472,4 +461,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProfilePage;
+export default AroundYouPage;

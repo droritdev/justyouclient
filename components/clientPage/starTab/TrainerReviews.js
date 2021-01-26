@@ -96,6 +96,7 @@ const TrainerReviews = ({navigation}) => {
             const singleReviewUserID = reviews[index].userID;
             idArray.push(singleReviewUserID);
         }
+        
 
 
         //fetch the client of all clients from mongodb using axios

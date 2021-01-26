@@ -34,6 +34,8 @@ const getAllTrainers = require('./getAllTrainers/getAllTrainers');
 const findTrainerByPopularity = require('./findTrainerByPopularity/findTrainerByPopularity');
 const findTrainerByEmail = require('./findTrainerByEmail/findTrainerByEmail');
 const findTrainerByID = require('./findTrainerByID/findTrainerByID');
+const findMultipleTrainers = require('./findMultipleTrainers/findMultipleTrainers');
+
 
 
         //**Client imports**//
@@ -163,9 +165,11 @@ app.post('/trainers/register', trainerRegister.register);
 //End point for editing the trainer profile
 app.put('/trainers/settings/edit-profile', trainerEditProfile.editProfile);
 
-app.get('/trainers/allTrainer', getAllTrainers.allTrainers);
+app.get('/trainers/getAllTrainers', getAllTrainers.allTrainers);
 app.get('/trainers/email/:email', findTrainerByEmail.getTrainerByEmail);
 app.get('/trainers/id/:id', findTrainerByID.findTrainerByID);
+app.get('/trainers/findMultipleTrainers/:idArray', findMultipleTrainers.getMultipleTrainers);
+
 // app.get('clients', getAllTrainers.allTrainers);
 
 
@@ -259,7 +263,7 @@ app.post('/messages/newMessage', newMessage.createMessage);
 app.get('/messages/watchForUpdates/:receiver', watchForUpdates.watchForUpdates);
 
 
-//for paypal set:
+//for paypal views set:
 app.engine("ejs", engines.ejs);
 app.set("views", "./paypalViews");
 app.set("view engine", "ejs");
@@ -275,7 +279,7 @@ paypal.configure({
         'client_id': 'AWWnlKwlkexa-FcYLtU-lXbbG7TcjDnO1fZBvjMCahAOhUvmQ8pN8i3BPJpi3L1VRR8XRUM-4SdfYZJR',
         'client_secret': 'EDsuT2KTJE-WValxvJzw5-a9syJfofILTJ8UV_FrfS_UKY4aAni0H6vrhuBC0nF7xb1v8T-YMl5DQ_39'
       });
-
+// app.get('/paypal', paypalPayment.sendPaymentWithPaypal);
 
 app.get('/paypal', (req, res) => {
 
@@ -291,18 +295,21 @@ app.get('/paypal', (req, res) => {
             "transactions": [{
                 "item_list": {
                     "items": [{
-                        "name": "item",
+                        "name": "training",
                         "sku": "item",
-                        "price": "1.00",
+                        "price": "34.00",
                         "currency": "USD",
                         "quantity": 1
                     }]
                 },
                 "amount": {
                     "currency": "USD",
-                    "total": "1.00"
+                    "total": "34.00"
                 },
-                "description": "This is the payment description."
+                "payee":{
+                        "email" : "sb-dfmun4870920@business.example.com"
+                },
+                "description": "Trx training couple, outdoor."
             }]
         };
         
@@ -329,7 +336,7 @@ app.get('/paypal', (req, res) => {
                 "transactions": [{
                     "amount": {
                         "currency": "USD",
-                        "total": "1.00"
+                        "total": "34.00"
                     }
                 }]
             };

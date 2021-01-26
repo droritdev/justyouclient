@@ -1,10 +1,13 @@
-import React, {useContext, useState, useEffect, useReducer} from 'react';
-import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
+import React, {useContext, useState, useEffect, useReducer, useRef} from 'react';
+import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image, Modal } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import FastImage from 'react-native-fast-image'
 import auth from '@react-native-firebase/auth';
+import DropdownAlert from 'react-native-dropdownalert';
+import Icon from 'react-native-vector-icons/Feather';
+
 
 import {ClientContext} from '../../../context/ClientContext';
 import {TrainerContext} from '../../../context/TrainerContext';
@@ -33,9 +36,12 @@ const ProfilePage = ({navigation}) => {
 
     var ordersHistoryTrainerArrayToPush = [];
     const [ordersHistoryTrainerArray, setOrdersHistoryTrainerArray] = useState([]);
+    const [completedOrdersToPass, setCompletedOrdersToPass] = useState([]);
 
-    const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
-
+    //ref to show covid alert
+    let dropDownAlertRef = useRef(null);
+    //Modal to display for covid-19 alert tap
+    const [covidModalVisible, setCovidModalVisible] = useState(false);
 
     function onAuthStateChanged(user) {
         setUser(user);
@@ -62,6 +68,7 @@ const ProfilePage = ({navigation}) => {
             var allOrders = doc.data;
             var pendingOrders = [];
             var approvedOrders = [];
+            var completedOrders = [];
             
 
             for (let index = 0; index < allOrders.length; index++) {
@@ -70,15 +77,19 @@ const ProfilePage = ({navigation}) => {
                     pendingOrders.push(singleOrder);
                     
 
-                } else if (singleOrder.status === "approved") {
+                }if (singleOrder.status === "approved") {
                     approvedOrders.push(singleOrder);
                     
+                }else if(singleOrder.status === "completed") {
+                    completedOrders.push(singleOrder);
                 }
+
             }
             
-            getTrainerFromRecentOrders(approvedOrders);
+            getAllTrainersInfo(completedOrders);
             setPendingOrdersArrived(pendingOrders);
             setApprovedOrdersArrived(approvedOrders);
+            setCompletedOrdersToPass(completedOrders);
         })
         .catch((err) => {
             console.log(err);
@@ -130,40 +141,57 @@ const ProfilePage = ({navigation}) => {
     
 
     //First off all, the component loads the user details from the data base and sets the variables to the data
-    useEffect(() => {
-        getUserByFirebaseAuth();
 
-        forceUpdate();
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            
+            //Check if covid alert was dismissed
+            if(global.covidAlert) {
+                if(dropDownAlertRef.state.isOpen === false) {
+                    //Show covid alert
+                    dropDownAlertRef.alertWithType('info', 'Latest information on CVOID-19', 'Click here to learn more.');
+                }
+            } else {
+                dropDownAlertRef.closeAction();
+            }
 
-    
+            getUserByFirebaseAuth();
 
-    } ,[]);
+        });
+        return unsubscribe;
+      }, [navigation]);
 
-    // React.useEffect(() => {
-    //     const unsubscribe = navigation.addListener('focus', () => {
-    //     });
-    //     return unsubscribe;
-    //   }, [navigation]);
+      //Update the covid alert var to false (will not display coivd alert anymore)
+    const covidAlertCancel = () => {
+        global.covidAlert = false;
+    }
+
+
+    //Show the covid information modal
+    const covidAlertTap = () => {
+        setCovidModalVisible(true);
+    }
 
     //run for all approved orders to get trainer id
     //using func as async for waiting trainers array to fill from MongoDB
-    const getTrainerFromRecentOrders = async (ordersHistoryArray) => {
+    // const getTrainerFromRecentOrders = async (ordersHistoryArray) => {
         
-        for (let index = 0; index < ordersHistoryArray.length; index++) {
-            const trainerID = ordersHistoryArray[index].trainer.id;
-            //waiting for trainer to come from mongo for each order
-            await getTrainerFromMongoDB(trainerID);
-            //when for loop is ended fill the scrollView (set the scrollView array)
-            if(index === ordersHistoryArray.length-1 ){
-                setOrdersHistoryTrainerArray(ordersHistoryTrainerArrayToPush);
-            }
-        }
+    //     for (let index = 0; index < ordersHistoryArray.length; index++) {
+    //         const trainerID = ordersHistoryArray[index].trainer.id;
+    //         //waiting for trainer to come from mongo for each order
+    //         await getTrainerFromMongoDB(trainerID);
+    //         //when for loop is ended fill the scrollView (set the scrollView array)
+    //         if(index === ordersHistoryArray.length-1 ){
+    //             setOrdersHistoryTrainerArray(ordersHistoryTrainerArrayToPush);
+    //         }
+    //     }
 
                 
         
-    }
+    // }
     //getting the trainer from mongoDb => recent orders use
     const getTrainerFromMongoDB = async (trainerID) => {
+        
         await axios
                     .get('/trainers/id/'
                     +trainerID,
@@ -177,11 +205,45 @@ const ProfilePage = ({navigation}) => {
                   })
                 .catch((err) => console.log(err));
     }
+    const getAllTrainersInfo = async (ordersHistoryArray) => {
+        console.log('inThatFunction');
+        //Array to to be filled with the ids of the clients that left reviews
+        var idArray = [];
+
+        //Push into the idArray all of the clientID
+        for (let index = 0; index < ordersHistoryArray.length; index++) {
+            const singleTrainerID = ordersHistoryArray[index].trainer.id;
+            idArray.push(singleTrainerID);
+        }
+        console.log(idArray);
+
+
+        //fetch the trainer of all trainers from mongodb using axios
+        await axios
+        .get('/trainers/findMultipleTrainers/'+idArray, 
+        config
+        )
+        .then((doc) => {
+            for (let index = 0; index < doc.data.length; index++) {
+                const element = doc.data[index];
+                console.log('findMultipleTrainers');
+                console.log(element);
+            }
+            
+           var allTrainersInfo = doc.data;
+           allTrainersInfo.reverse();
+
+           setOrdersHistoryTrainerArray(allTrainersInfo);
+           
+
+        })
+        .catch((err) => {console.log(err)});
+    }
 
     //Load trainer star rating
     const getStarRating = (reviews) => {
         if (reviews.length === 0) {
-            setStarRating(0);
+            return 0;
         } else {
             var sumStars = 0;
             for (let index = 0; index < reviews.length; index++) {
@@ -287,7 +349,7 @@ const ProfilePage = ({navigation}) => {
 
         navigation.navigate('ProfilePageStack',
              { screen: 'History' ,
-             params: { ordersHistoryTrainerArray: ordersHistoryTrainerArray}
+             params: { ordersHistoryTrainerArray: completedOrdersToPass}
             });
     }
 
@@ -324,6 +386,50 @@ const ProfilePage = ({navigation}) => {
     
     return(
         <SafeAreaView style={styles.safeArea}>
+
+            <Modal
+                
+                animationType="slide"
+                transparent={true}
+                cancelable={true}
+                visible={covidModalVisible}
+                onRequestClose={()=>{}}
+            >
+                <View style={styles.covidContainer}>
+                    
+                    <View style={styles.covidModalContainer}>
+                        <Icon
+                            name="x-circle" 
+                            size={Dimensions.get('window').width * .05} 
+                            style={styles.covidCloseIcon} 
+                            onPress={()=> {setCovidModalVisible(false)}}
+                        />
+                        <Text style={styles.covidTitle}>COVID-19 Information</Text>
+                        <Text style={styles.covidMessage}>{"We at JustYou take care to follow the changing guidelines of the Ministry of Health regarding the coronavirus. Before ordering, the personal trainer and the client will fill out a statement that they do indeed meet the requirements of the law regarding the coronavirus. \nAs Everyone knows, the guidelines may change at any time and we will make the adujstments according to the changes to be determined by the Ministry of Health. Adherence to these requirments is for all of us for your health and safety and we will know better days"}.</Text>
+                    </View>
+                </View>
+
+            </Modal>
+
+            <View style={styles.covidAlertView}>
+                <DropdownAlert
+                        ref={(ref) => {
+                        if (ref) {
+                            dropDownAlertRef = ref;
+                        }
+                        }}
+                        containerStyle={styles.covidAlertContainer}
+                        showCancel={true}
+                        infoColor ={'deepskyblue'}
+                        onCancel={covidAlertCancel}
+                        closeInterval = {0}
+                        onTap={covidAlertTap}
+                        titleNumOfLines={1}
+                        messageNumOfLines={1}
+                />
+            </View>
+
+
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Just You</Text>
@@ -795,6 +901,49 @@ const styles = StyleSheet.create({
     },
     recentOrdersScrollView: {
         marginTop: Dimensions.get('window').height * .005,
+    },
+    covidAlertView: {
+        zIndex: 2,
+        opacity: 0.9
+    },
+    covidAlertContainer: {
+        backgroundColor: 'deepskyblue',
+    },
+    covidContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    },
+    covidModalContainer: {
+        backgroundColor: "white",
+        height: Dimensions.get('window').height * .45,
+        width: Dimensions.get('window').width * .9,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+    covidTitle: {
+        marginTop: Dimensions.get('window').height * .01,
+        alignSelf: 'center',
+        fontSize: Dimensions.get('window').height * .0278,
+        fontWeight: 'bold'
+    },
+    covidMessage: {
+        flex: 1,
+        marginTop: Dimensions.get('window').height * .013,
+        alignSelf: 'center',
+        marginLeft: Dimensions.get('window').width * .020,
+        fontSize: Dimensions.get('window').height * .02,
+    },
+    covidCloseIcon: {
+        marginTop: Dimensions.get('window').height * .015,
+        marginRight: Dimensions.get('window').width * .015,
+        alignSelf: 'flex-end',
     }
 });
 

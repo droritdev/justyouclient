@@ -36,7 +36,6 @@ const PendingApprovalOrders = ({route, navigation}) => {
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getClientOrders();
-            // setIsPending(routeIsPending);
         });
     
         
@@ -209,8 +208,6 @@ const PendingApprovalOrders = ({route, navigation}) => {
             orderObject: pendingOrders[index]
         });
 
-        
-
         navigation.navigate('ProfilePageStack',
              { screen: 'PendingApprovalOrderDetails' ,
              params: { orderObject: pendingOrders[index]}
@@ -230,7 +227,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
 
         navigation.navigate('ProfilePageStack',
              { screen: 'PendingApprovalOrderDetails' ,
-             params: { orderObject: pendingOrders[index]}
+             params: { orderObject: approvedOrders[index]}
             });
 
     }

@@ -32,6 +32,9 @@ const History = ({navigation, route}) => {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             checkForOrders();
+            getAllTrainersInfo();
+            console.log('ordersHistoryTrainerArray');
+            console.log(ordersHistoryTrainerArray);
         });
         return unsubscribe;
       }, [navigation]);
@@ -63,155 +66,188 @@ const History = ({navigation, route}) => {
 
     }
 
+    const getAllTrainersInfo = async () => {
+        console.log('inThatFunction');
+        //Array to to be filled with the ids of the clients that left reviews
+        var idArray = [];
+
+        //Push into the idArray all of the clientID
+        for (let index = 0; index < ordersHistoryTrainerArray.length; index++) {
+            const singleTrainerID = ordersHistoryTrainerArray[index].trainer.id;
+            idArray.push(singleTrainerID);
+        }
+        console.log(idArray);
+
+
+        //fetch the trainer of all trainers from mongodb using axios
+        await axios
+        .get('/trainers/findMultipleTrainers/'+idArray, 
+        config
+        )
+        .then((doc) => {
+            for (let index = 0; index < doc.data.length; index++) {
+                const element = doc.data[index];
+                console.log('findMultipleTrainers');
+                console.log(element);
+            }
+            
+           var allTrainersInfo = doc.data;
+
+           
+
+        })
+        .catch((err) => {console.log(err)});
+    }
+
     //Load trainer star rating
          //Todo: check if needed in sunday
 
-    // const getStarRating = (reviews) => {
-    //     if (reviews.length === 0) {
-    //         setStarRating(0);
-    //     } else {
-    //         var sumStars = 0;
-    //         for (let index = 0; index < reviews.length; index++) {
-    //             const singleReviewStar = reviews[index].stars;
-    //             sumStars += Number(singleReviewStar);
-    //         }
-    //         return ((sumStars/reviews.length).toFixed(1));
-    //     }
-    // }
+    const getStarRating = (reviews) => {
+        if (reviews.length === 0) {
+            setStarRating(0);
+        } else {
+            var sumStars = 0;
+            for (let index = 0; index < reviews.length; index++) {
+                const singleReviewStar = reviews[index].stars;
+                sumStars += Number(singleReviewStar);
+            }
+            return ((sumStars/reviews.length).toFixed(1));
+        }
+    }
 
      //scrollView of trainers (working like flatList)
      //Todo: check if needed in sunday
-    // const getApprovedOrdersPattern = () => {
-    //     let repeats = [];
-    //     if (ordersHistoryTrainerArray !== []) {
-    //         for(let i = 0; i < ordersHistoryTrainerArray.length; i++) {
-    //             var reviewBool = checkIfTrainerAlreadyGotReviewByClient(ordersHistoryTrainerArray[i]);
-    //             // setAlreadyHasReview(reviewBool);
-    //             //pushing each trainer UI into the array
-    //             repeats.push(
-    //                 <TouchableOpacity 
-    //                     key = {'ordersRow' + i}
-    //                     >
-    //                     <View style={styles.trainerView}>
-    //                         <View style={styles.trainerViewRow}>
-    //                             <FastImage
-    //                                     style={styles.trainerImage}
-    //                                     source={{
-    //                                         uri: ordersHistoryTrainerArray[i].media.images[0],
-    //                                         priority: FastImage.priority.normal,
-    //                                             }}
-    //                                     resizeMode={FastImage.resizeMode.stretch}
-    //                             />
-    //                             <View style={styles.trainerDetails}>
-    //                                 <Text style={styles.trainerDetail1}>{ordersHistoryTrainerArray[i].name.first +' '+ordersHistoryTrainerArray[i].name.last}</Text>
-    //                                 <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-    //                                 <View style={styles.ratingRow}>
-    //                                     <Text style={styles.trainerDetail3}>{getStarRating(ordersHistoryTrainerArray[i].reviews)} </Text>
-    //                                     <Image
-    //                                             source={require('../../../images/ratingStar.png')}
-                                                
-    //                                     />
-    //                                 </View>
-    //                             </View>
+    const getApprovedOrdersPattern = () => {
+        let repeats = [];
+        if (ordersHistoryTrainerArray !== []) {
+            for(let i = 0; i < ordersHistoryTrainerArray.length; i++) {
+                var reviewBool = checkIfTrainerAlreadyGotReviewByClient(ordersHistoryTrainerArray[i]);
+                // setAlreadyHasReview(reviewBool);
+                //pushing each trainer UI into the array
+                repeats.push(
+                    <TouchableOpacity 
+                        key = {'ordersRow' + i}
+                        >
+                        <View style={styles.trainerView}>
+                            <View style={styles.trainerViewRow}>
+                                <FastImage
+                                        style={styles.trainerImage}
+                                        source={{
+                                            uri: ordersHistoryTrainerArray[i].trainer.profilePic,
+                                            priority: FastImage.priority.normal,
+                                                }}
+                                        resizeMode={FastImage.resizeMode.stretch}
+                                />
+                                <View style={styles.trainerDetails}>
+                                    <Text style={styles.trainerDetail1}>{ordersHistoryTrainerArray[i].trainer.firstName +' '+ordersHistoryTrainerArray[i].trainer.lastName}</Text>
+                                    <Text style={styles.trainerDetail2}>{ordersHistoryTrainerArray[i].trainingDate.startTime.slice(0, 10)}</Text>
+                                    <View style={styles.ratingRow}>
+                                        
+                                    </View>
+                                </View>
 
-    //                             <View style={styles.iconsContainer}>
-    //                                 <TouchableOpacity
-    //                                     onPress= {() => handleOnAddReviewButton(ordersHistoryTrainerArray[i]._id)}>
-    //                                         {checkIfTrainerAlreadyGotReviewByClient(ordersHistoryTrainerArray[i]) ? 
-    //                                             <Icon name="check-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
-    //                                         :
-    //                                             <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
-    //                                         }
-    //                                     {/* <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" /> */}
-    //                                 </TouchableOpacity>
-    //                             </View>
-    //                         </View>
-    //                     </View>
+
+
+                                <View style={styles.iconsContainer}>
+                                    <TouchableOpacity
+                                        onPress= {() => handleOnAddReviewButton(ordersHistoryTrainerArray[i].trainer.id)}>
+                                            <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
+
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
                                    
-    //                 </TouchableOpacity>
-    //                 )
-    //             }
+                    </TouchableOpacity>
+                    )
+                }
+            }
+            return repeats;
+    };
+
+    //TODO: use flat list if need to use the review boolean
+    // const getTrainerStarRating = () => {
+    //     var starsCounter = 0
+    //     var finalStarRating = 0
+    //     if(reviewsArray.length === 0){
+    //         return 0
+    //     }else{
+    //         for (let index = 0; index < reviewsArray.length; index++) {
+    //             const element = reviewsArray[index];
+    //             starsCounter += Number(element.stars)
+    
     //         }
-    //         return repeats;
-    // };
-
-    const getTrainerStarRating = () => {
-        var starsCounter = 0
-        var finalStarRating = 0
-        for (let index = 0; index < reviewsArray.length; index++) {
-            const element = reviewsArray[index];
-            starsCounter += Number(element.stars)
-
-        }
-
-        finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
-        return finalStarRating;
-    }
-
-    const Item = ({ uri, name, trainerID }) => (
-
+    
+    //         finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
+    //         return finalStarRating;
+    //     }
         
+    // }
+
+    //TODO: use flat list if need to use the review boolean
+    // const Item = ({ uri, name, trainerID }) => (
         
-        <TouchableOpacity 
-        // key = {'ordersRow' + i}
-        >
-        <View style={styles.trainerView}>
-            <View style={styles.trainerViewRow}>
-                <FastImage
-                        style={styles.trainerImage}
-                        source={{
-                            uri: uri,
-                            priority: FastImage.priority.normal,
-                                }}
-                        resizeMode={FastImage.resizeMode.stretch}
-                />
-                <View style={styles.trainerDetails}>
-                    <Text style={styles.trainerDetail1}>{name}</Text>
-                    <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                    <View style={styles.ratingRow}>
-                        <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
-                        <Image
-                                source={require('../../../images/ratingStar.png')}
+    //     <TouchableOpacity 
+    //     // key = {'ordersRow' + i}
+    //     >
+    //     <View style={styles.trainerView}>
+    //         <View style={styles.trainerViewRow}>
+    //             <FastImage
+    //                     style={styles.trainerImage}
+    //                     source={{
+    //                         uri: uri,
+    //                         priority: FastImage.priority.normal,
+    //                             }}
+    //                     resizeMode={FastImage.resizeMode.stretch}
+    //             />
+    //             <View style={styles.trainerDetails}>
+    //                 <Text style={styles.trainerDetail1}>{name}</Text>
+    //                 <Text style={styles.trainerDetail2}>Personal Trainer</Text>
+    //                 <View style={styles.ratingRow}>
+    //                     <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
+    //                     <Image
+    //                             source={require('../../../images/ratingStar.png')}
                                 
-                        />
-                    </View>
-                </View>
+    //                     />
+    //                 </View>
+    //             </View>
 
-                <View style={styles.iconsContainer}>
+    //             <View style={styles.iconsContainer}>
                     
-                            {checkIfTrainerAlreadyGotReviewByClient() ? 
-                            <TouchableOpacity
-                                onPress= {() => handleOnAlreadyGotReview()}>                   
-                                <Icon name="check-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity
-                                onPress= {() => handleOnAddReviewButton(trainerID)}>                  
-                                <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
-                            </TouchableOpacity>
-                            }
                     
-                </View>
-            </View>
-        </View>
+    //                         {/* {checkIfTrainerAlreadyGotReviewByClient() ? 
+    //                         <TouchableOpacity
+    //                             onPress= {() => handleOnAlreadyGotReview()}>                   
+    //                             <Icon name="check-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
+    //                         </TouchableOpacity>
+    //                         :
+    //                         <TouchableOpacity
+    //                             onPress= {() => handleOnAddReviewButton(trainerID)}>                  
+    //                             <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
+    //                         </TouchableOpacity>
+    //                         } */}
+                    
+    //             </View>
+    //         </View>
+    //     </View>
                    
-    </TouchableOpacity>
+    // </TouchableOpacity>
 
         
-      )
+    //   )
 
 
 
-    const renderItem = ({ item }) => (
-        <Item 
-        uri = {item.media.images[0]}
-        name = {`${item.name.first} ${item.name.last}`}
-        trainerID = {item._id}
+    // const renderItem = ({ item }) => (
+    //     <Item 
+    //     uri = {item.trainer.profilePic}
+    //     name = {`${item.trainer.firstName} ${item.trainer.lastName}`}
+    //     trainerID = {item._id}
         
-        {...reviewsArray = (item.reviews)}
-        ></Item>
+    //     // {...reviewsArray = (item.reviews)}
+    //     ></Item>
         
-    );
+    // );
 
 
 
@@ -296,14 +332,16 @@ const History = ({navigation, route}) => {
 
                 {isTrainers ? 
                     <ScrollView>
-                        <FlatList
+                        {/* use flat list if need to use the review boolean */}
+                        {/* <FlatList
                                 horizontal
                                 data={ordersHistoryTrainerArray}
                                 renderItem={renderItem}
                                 keyExtractor={item => item._id}
                                 
                                 
-                            />
+                            /> */}
+                            {getApprovedOrdersPattern()}
                             
                     </ScrollView>
                 : 
@@ -436,6 +474,7 @@ const styles = StyleSheet.create({
     },
     trainerViewRow: {
         flexDirection: 'row',
+        justifyContent:'space-between'
     },
     trainerImage: {
         height: Dimensions.get('window').height * .1,
@@ -478,7 +517,8 @@ const styles = StyleSheet.create({
 
     iconsContainer:{
         alignSelf: 'flex-end',
-        marginLeft: Dimensions.get('window').width * .275,
+        // alignItems:'flex-end',
+        marginRight: Dimensions.get('window').width * .05,
         marginBottom: Dimensions.get('window').height * .035,
     },
     centeredView: {

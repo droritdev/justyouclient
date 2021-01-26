@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/Feather';
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 import {TrainerContext} from '../../../context/TrainerContext';
 import {ClientContext} from '../../../context/ClientContext';
 import {OrderContext} from '../../../context/OrderContext';
@@ -18,46 +19,34 @@ import axios from 'axios';
 //The settings page
 const ChooseDateAndTimePage = ({navigation}) => {
 
-    const {clientID, dispathClientID,
-        clientEmail,dispathClientEmail,
-            clientFirstName,dispathClientFirstName,
-                clientlastName,dispathClientLastName } 
-    = useContext(ClientContext);
+    
 
-    const {orderObejct, dispatchOrderObject,
-        orderTrainingSiteAddress, dispatchOrderTrainingSiteAddress,
-            orderTrainingCategory, dispatchOrderTrainingCategory,
+    const {
             dispatchOrderDate,
                  dispatchOrderStartTime,
                      dispatchOrderEndTime}
         = useContext(OrderContext);
 
-    const {trainerObject, dispatchTrainerObject} = useContext(TrainerContext);
+    const {trainerObject } = useContext(TrainerContext);
 
         
-    const [dialogVisible, setDialogVisible] = useState(false);
-    const [timeSelectedDialogVisible, setTimeSelectedDialogVisible] = useState(false);
+    
     const [unavailableDialogVisible, setUnavailableDialogVisible] = useState(false);
-    const [trainerObjectMongoDB, setTrainerObjectMongoDB] = useState({});
     const [datePickerVisible, setDatePickerVisible] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
-    const [date, setDate] = useState(new Date(1598051730000));
     const [currentDisplayedDate, setCurrentDisplayedDate] = useState("");
-    var dateToDisplay = '';
 
 
     const [allEvents, setAllEvents] = useState([]);
-    // const [startTimeToPass, setStartTimeToPass] = useState('');
-    // const [endTimeToPass, setEndTimeToPass] = useState('');
+  
     var startTimeToPass = ''
     var endTimeToPass = ''
     var orderDateToPass =  ''
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
     var trainerMongoDB = {};
-    // var startTimeToPass = "";
-    // var endTimeToPass = "";
+    
     
 
     useEffect(() => {
@@ -122,85 +111,9 @@ const ChooseDateAndTimePage = ({navigation}) => {
         }
 
         setAllEvents(events);
-        // forceUpdate();
-        
-        // setAvailabele();
-
-            //change color of event to lightgrey for Unavailable mode
-        // const eventsToPush = events
-        // .map(event => {
-        //     if (event.color === 'deepskyblue') {
-        //     return Object.assign({}, event, {color: 'lightgrey'},{title: 'UNAVAILABLE'},{summary: ''});
-        //     } 
-        //     return event      
-        //     });
-                
-        //     setAllEvents(eventsToPush);
-        //     forceUpdate();
-        //     console.log(allEvents);
+       
     }
 
-    // cleanTrainerUnavailable = () => {
-    //     var events = allEvents;
-
-    //     for (let index = 0; index < trainerObject.calendar.length; index++) {
-    //         const element = trainerObject.calendar[index].event;
-            
-    //         events.splice(element, 1);
-            
-            
-    //     }
-    // }
-
-        //Return if the addAbleEvent is on occupiedHours and can't add him
-        const checkIfTimeIsOccupied = (event, occupiedHours) => {
-            var isOccupied = false;
-            
-            if (occupiedHours === []) {
-                return false;
-            }
-
-            //Full date + time of the start of the addAbleEvent
-            var eventStartDate = new Date((event.start.replace(/ /g, 'T')) + '.000Z'); //2021-01-03T07:00:00.000Z
-            //Full date + time of the end of the addAbleEvent
-            var eventEndDate = new Date((event.end.replace(/ /g, 'T')) + '.000Z'); // 2021-01-03T08:00:00.000Z
-
-            //Set time according to Timezone
-            eventStartDate.setHours(eventStartDate.getHours()+eventStartDate.getTimezoneOffset()/60);
-            eventEndDate.setHours(eventEndDate.getHours()+eventStartDate.getTimezoneOffset()/60);
-
-            for (let index = 0; index < occupiedHours.length; index++) {
-                const hoursRange = occupiedHours[index]; //example: "05:00:00-06:00:00"
-
-                var occupiedEventStartDate = new Date(event.start.slice(0, 10));  // 2021-01-03T00:00:00.000Z
-                var occupiedEventEndDate = new Date(event.start.slice(0, 10)); // 2021-01-03T00:00:00.000Z
-                
-                var startTime = hoursRange.slice(0, 8); //example: "05:00:00"
-                var endTime = hoursRange.slice(9); //example: "06:00:00"
-
-                //example: 2021-01-03T05:00:00.000Z
-                occupiedEventStartDate.setHours(startTime.split(":")[0]);
-                occupiedEventStartDate.setMinutes(startTime.split(":")[1]);
-                occupiedEventStartDate.setSeconds(startTime.split(":")[2]);
-
-                //example: 2021-01-03T06:00:00.000Z
-                occupiedEventEndDate.setHours(endTime.split(":")[0]);
-                occupiedEventEndDate.setMinutes(endTime.split(":")[1]);
-                occupiedEventEndDate.setSeconds(endTime.split(":")[2]);
-
-                //example 1609707700000 >=  1609707600000 && 1609711000000 <= 1609711200000 
-                isOccupied = (eventStartDate.getTime() >= occupiedEventStartDate.getTime() && eventEndDate.getTime() <= occupiedEventEndDate.getTime())
-                 || (eventStartDate.getTime() > occupiedEventStartDate.getTime() && eventStartDate.getTime() < occupiedEventEndDate.getTime())
-                 || (eventEndDate.getTime() > occupiedEventStartDate.getTime() && eventEndDate.getTime() < occupiedEventEndDate.getTime());
-
-                //Break loop and return answer if time is occupied (no need to continue)
-                if (isOccupied) {
-                    break;
-                }
-            }
-
-            return isOccupied;
-    }
     const getOccupiedHours = (events) => {
         var occupiedHours = [];
 
@@ -226,16 +139,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
         var date = new Date();
 
         
-        // for (let index = 0; index <= 60; index+=10) {
-        //     date.setHours(date.getHours(),date.getMinutes()+ 10,0,0);
-        //     console.log('adding minutes:'+ date);
-
-        // }
-        //  addAbleEvent = {start: '2021-01-08 '+ '07:00:00', end: '2021-01-08 ' + '08:00:00', title: 'AVAILABLE', color: 'deepskyblue'};
-        //  events.push(addAbleEvent);
-        //  setAllEvents(events);
-        //  forceUpdate();
-        // console.log(events);
+        
 
 
 
@@ -330,81 +234,10 @@ const ChooseDateAndTimePage = ({navigation}) => {
                    
                 }
 
-                // //unite UNAVILAVLE EVENTS
-                // var todayEvents = getEventsFromDate(fullDate);
-                // console.log('todayEvents: ' + todayEvents[0]);
-                // todayEvents.sort()
-                // console.log('todayEvents: ' +  + todayEvents[0]);
-
-                // for (let index = 0; index < todayEvents.length; index++) {
-                //     // const element = array[index];
-                    
-                // }
-
-
-                
-                
-
-
-
-                        
-            // for (let index = 0; index < 24; index++) {
-            //     if(index<9) {
-            //         addAbleEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
-            //         if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
-
-                        
-            //             events.push(addAbleEvent);
-                        
-            //         }
-            //         // else{
-            //         //     //if trainer already has an event in that time 
-            //         //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
-            //         //     events.push(unavailableEvent)
-            //         // }
-            //     } else if (index === 9) {
-            //         addAbleEvent =  {start: fullDate+' 0'+index+':00:00', end: fullDate+' '+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
-            //         if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
-            //             events.push(addAbleEvent);
-            //         }
-            //         // else{
-            //         //     //if trainer already has an event in that time 
-            //         //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
-            //         //     events.push(unavailableEvent)
-            //         // }
-            //     } else {
-            //         addAbleEvent =  { start: fullDate+' '+index+':00:00', end: fullDate+' '+(index+1)+':00:00', title: 'AVAILABLE', color: 'deepskyblue'};
-            //         if (checkIfTimeIsOccupied(addAbleEvent, occupiedHours) === false) {
-            //             events.push(addAbleEvent);
-            //         }
-            //         // else{
-            //         //     //if trainer already has an event in that time 
-            //         //     const unavailableEvent = {start: fullDate+' 0'+index+':00:00', end: fullDate+' 0'+(index+1)+':00:00', title: 'UNAVAILABLE', color: 'lightgrey'}
-            //         //     events.push(unavailableEvent)
-            //         // }
-            //     }
-            // }
-
-
-        
-        
-        
-        
         }
         
-
-        
-
-        // setAllEvents(events)
-                
-        // updateTrainerUnavailable(events);
-
-
-
         forceUpdate();
-        // cleanTrainerUnavailable();
 
-       
     }
 
     
@@ -456,39 +289,6 @@ const ChooseDateAndTimePage = ({navigation}) => {
     }
 
 
-
-
-
-
-    //Get all the events in a day (real events + addable event) 
-    //and return an array with all the unavailable events united
-    const uniteAllAvailable = (allDayEvents) => {
-        //Create customevent for future usage
-        var customEvent = {};
-
-        //Sort all the events by time in the array
-        allDayEvents = bubbleSort(allDayEvents);
-
-        // console.log('allDayEvents:   '+ allDayEvents)
-
-        for (let index = 0; index < allDayEvents.length-1;) {
-            const firstEvent = allDayEvents[index]; //00:00:00
-            const secondEvent = allDayEvents[index+1]; //01:00:00
-
-            
-            if(firstEvent.color === 'deepskyblue' && secondEvent.color === 'deepskyblue') {
-                customEvent = {start: firstEvent.start, end: secondEvent.end, title: 'AVAILABLE', color: 'deepskyblue'};
-                allDayEvents.splice(index, 1);
-                allDayEvents[index] = customEvent;
-                
-            }  else {
-                index++;
-            }
-        }
-        
-        var unavailableEvents = removeCustomerEvents(allDayEvents);
-        return unavailableEvents;
-    }
 
     //Convert  2021-01-03 07:00:00 to 2021-01-03T07:00:00.000Z
     const getDateInFormat = (dateString) => {
@@ -542,12 +342,8 @@ const ChooseDateAndTimePage = ({navigation}) => {
             if(event.color === 'lightgrey'){
                 setUnavailableDialogVisible(true);
             }else{
-                // setDatePickerVisible(true);
                 setModalVisible(true);
-                // setTimeSelectedDialogVisible(true);
-                //pass the times through the Dialog
-                // setStartTimeToPass(event.start);
-                // setEndTimeToPass(event.end);
+                
                 
             }
         }
@@ -577,81 +373,64 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
 
     }
-
-    //Save value from end time picker
-    const onEndTimeChage = (event) => {
-        var selectedTime = new Date(event.nativeEvent.timestamp);
-        selectedTime.setHours(selectedTime.getHours()-selectedTime.getTimezoneOffset()/60);
-        blockEndTime = new Date(selectedTime.toISOString());
-    
-    }
-
-    //Show date picker
-    const handleShowAddEvent = () => {
-        setDatePickerVisible(true);
-    }
+   
+   
+    //passing selected order times to TrainerOrderPage
     const handleSubmitButton = () => {
-        setModalVisible(false);
+        if(startTimeToPass === ''){
+            alert('Please select start time for the training')
+        }else{
+            setModalVisible(false);
+            console.log('startTimeToPass');
+            console.log(startTimeToPass);
+            dispatchOrderStartTime({
+                type: 'SET_ORDER_START_TIME',
+                orderStartTime : startTimeToPass
+            });
+            dispatchOrderEndTime({
+                type: 'SET_ORDER_END_TIME',
+                orderEndTime : endTimeToPass
+            });
+            dispatchOrderDate({
+                type: 'SET_ORDER_DATE',
+                orderDate : orderDateToPass
+            });
+    
+            navigation.navigate('TrainerOrderPage' );
+    
+            setDatePickerVisible(false);
 
-        console.log(startTimeToPass);
-        dispatchOrderStartTime({
-            type: 'SET_ORDER_START_TIME',
-            orderStartTime : startTimeToPass
-        });
-        dispatchOrderEndTime({
-            type: 'SET_ORDER_END_TIME',
-            orderEndTime : endTimeToPass
-        });
-        dispatchOrderDate({
-            type: 'SET_ORDER_DATE',
-            orderDate : orderDateToPass
-        });
-
-        navigation.navigate('TrainerOrderPage' );
+        }
 
         
-        setDatePickerVisible(false);
     }
 
-    const handleBlockDayConfirm = (date) => {
-        setDatePickerVisible(false);
-    }
-
-    const handleCancelDialog = () => {
-        setTimeSelectedDialogVisible(false);
-    }
-    //passing selected order times to TrainerOrderPage
-    const handleSubmitDialog = (startTimeForOrder, endTimeForOrder) => {
-        dispatchOrderStartTime({
-            type: 'SET_ORDER_START_TIME',
-            orderStartTime : startTimeForOrder
-        });
-        dispatchOrderEndTime({
-            type: 'SET_ORDER_END_TIME',
-            orderEndTime : endTimeForOrder
-        });
-        navigation.navigate('TrainerOrderPage' );
-
-        // setTimeSelectedDialogVisible(false);
-
-       
-
-    }
+   
 
     //Update current displayed date
     const handleOnDateChange = (date) => {
         setCurrentDisplayedDate(date);
+    }
+    const handleArrowButton = () => {
+        navigation.navigate('TrainerOrderPage' );
     }
     
 
     return(
         <SafeAreaView style={styles.safeArea}>
             <View>
-
-            <View style={styles.headerContainer}>
-                    <Text style={styles.justYouHeader}>Just You</Text>
-                    <Text style={styles.partnerText}>Calendar</Text>
+            <View style={styles.arrowAndHeaderContainer}>
+            <ArrowBackButton
+                        onPress={handleArrowButton}
+                        />
+                <View style={styles.headerContainer}>
+                        <Text style={styles.justYouHeader}>Just You</Text>
+                        <Text style={styles.partnerText}>Calendar</Text>
+                        
+                </View>
+               
             </View>
+            
 
 
             <Modal
@@ -694,7 +473,6 @@ const ChooseDateAndTimePage = ({navigation}) => {
                                 style={styles.submitButton}
                                 onPress={() => {
                                     handleSubmitButton();
-                                    // setModalVisible(!modalVisible);
                                 }}
                             >
                                 <Text style={styles.submitTextStyle}>Submit</Text>
@@ -705,16 +483,6 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
                 </Modal>
 
-
-            
-               
-                {/* <Dialog.Container visible={timeSelectedDialogVisible}>
-                    <Dialog.Title >Confirmation </Dialog.Title>
-                    <Dialog.Description >{ 'Date: '+ startTimeToPass.slice(0,10)+' \n'+'Time: '+startTimeToPass.slice(11,16)+ '-'+endTimeToPass.slice(11,16)} </Dialog.Description>
-                    <Dialog.Button style={styles.cancelDialog} label="Cancel" onPress={(() => handleCancelDialog())} />
-                    <Dialog.Button style={styles.signOutDialog} label="Submit" onPress={() => handleSubmitDialog(startTimeToPass, endTimeToPass)} />
-
-                </Dialog.Container> */}
 
                 <Dialog.Container visible={unavailableDialogVisible}>
                     <Dialog.Title style={styles.dialogTitle}>The selected time is unavailable</Dialog.Title>
@@ -733,14 +501,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
             
             </View>
             <View style={styles.container}>
-                {/* <View>  </View> */}
-            {/* <Icon name="plus-square" size={Dimensions.get('window').height * .025} color="#00bfff" /> */}
-                {/* <View style={styles.eventCalendarContainer}> */}
-
-                    {/* <TouchableOpacity
-                        onPress= {() => handleShowAddEvent()}>
-                        <Text style={styles.addEventText}>Add event</Text>
-                    </TouchableOpacity> */}
+                
                         <EventCalendar
                             events={allEvents}
                             eventTapped={(event)=>handleEventTapped(event)}
@@ -753,7 +514,6 @@ const ChooseDateAndTimePage = ({navigation}) => {
                             scrollToFirst
                             format24h
                         />
-                {/* </View> */}
                
             </View>
         </SafeAreaView>
@@ -764,6 +524,11 @@ const styles = StyleSheet.create({
     safeArea: {
         backgroundColor: 'white',
         flex: 1
+    },
+    arrowAndHeaderContainer:{
+        marginRight: Dimensions.get('window').width * .35,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     headerContainer: {
         alignItems: 'center'

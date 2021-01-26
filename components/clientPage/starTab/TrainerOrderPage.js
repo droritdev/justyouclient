@@ -21,7 +21,6 @@ import axios from 'axios';
 
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 import {TrainerContext} from '../../../context/TrainerContext';
-import {ClientContext} from '../../../context/ClientContext';
 import {OrderContext} from '../../../context/OrderContext';
 
 var API_KEY = 'AIzaSyAKKYEMdjG_Xc6ZuvyzxHBi1raltggDA2c'; // TODO: move api key to .env
@@ -79,11 +78,8 @@ const TrainerOrderPage = ({navigation}) => {
         const unsubscribe = navigation.addListener('focus', () => {
             getClientFromMongoDB();
             checkForLocationsCount();
-            console.log('isTrainerHasOneLocation');
-            console.log(isTrainerHasOneLocation);
         });
     
-        
         return unsubscribe;
       }, [navigation]);
     
@@ -133,17 +129,19 @@ const TrainerOrderPage = ({navigation}) => {
     const getTrainerStarRating = () => {
         var starsCounter = 0
         var finalStarRating = 0
-        for (let index = 0; index < trainerReviewsArray.length; index++) {
-            const element = trainerReviewsArray[index];
-            starsCounter += Number(element.stars)
-
-        }
-
-        finalStarRating = (starsCounter/(trainerReviewsArray.length)).toFixed(1);
-        return finalStarRating;
+        if (trainerReviewsArray.length === 0){
+            return 0;
+        }else{
+            for (let index = 0; index < trainerReviewsArray.length; index++) {
+                const element = trainerReviewsArray[index];
+                starsCounter += Number(element.stars)
+    
+            }
+            finalStarRating = (starsCounter/(trainerReviewsArray.length)).toFixed(1);
+            return finalStarRating;
+        } 
     }
 
-    // const starRating = (trainerNumberOfStars/trainerNumberOfStarComments).toFixed(1);
     const cleanedPrice = typeOfTrainingSelected.replace(/[^0-9]/g,'');
     //get price from trainer object
     const prices = trainerObject.prices   
@@ -202,36 +200,7 @@ const TrainerOrderPage = ({navigation}) => {
         console.log('orderStartTime: '+ startTime)
         console.log('orderEndTime: '+ endTime)
 
-    const orderToUpload = [
-        { 
-            client: {
-                id: '5fe9c0ccd33a98041163aedd',
-                firstName: 'shahar',
-                lastName: 'keisar',
-                profilePic: 'a'
-            },
-            trainer:{
-                id: trainerObject._id,
-                firstName: trainerObject.name.first,
-                lastName: trainerObject.name.last,
-                profilePic: 'a'
-  
-            },
-            type: 'couple outdoor', 
-            category: categorySelected, 
-            trainingDate: {
-                startTime: startTime,
-                endTime: endTime
-            },
-            cost: cleanedPrice,
-            status: 'a',
-            location: {
-                address: 'a',
-                latitude:'a',
-                longitude:'a'
-            }
-    }]
-
+    
     const Item = ({ title }) => (
         <View style={styles.item}>
           <Text style={styles.title}>{title}</Text>
@@ -243,16 +212,9 @@ const TrainerOrderPage = ({navigation}) => {
       );
 
     
-
+    //array for the picker labels
     const pickerItems = []
 
-
-
-    
-
-    // items = {[...trainerCategories.map(i => {
-    //     return <DropDownPicker.Item value={i} label={i}> </DropDownPicker.Item>
-    // })]}
 
     const searchLocation = async (text) =>{
         setInputText(text);
@@ -313,7 +275,6 @@ const TrainerOrderPage = ({navigation}) => {
                 },
 
 
-
             },
             config
             )
@@ -332,7 +293,6 @@ const TrainerOrderPage = ({navigation}) => {
         isDateSelectedForButtonShow = 'none';
 
     }
-    // dateAndTimeArrived();
 
 
 
@@ -347,9 +307,6 @@ const TrainerOrderPage = ({navigation}) => {
         setDialogVisible(false);
     };
 
-    //Navigates back to the profile page
-    const handleOnArrowPress = () => {
-    }
 
     const handleArrowButton = () => {
         setDialogVisible(true);
@@ -361,7 +318,6 @@ const TrainerOrderPage = ({navigation}) => {
     }
 
     const handleOnTrainingTypePressed = (item) => {
-        // navigation.navigate('ComingSoon');
         setTypeOfTrainingSelected(item.label);
         const atTrainer = 'at Trainer'
         const outdoor = 'outdoor'
@@ -369,17 +325,12 @@ const TrainerOrderPage = ({navigation}) => {
         if(itemLabel.includes(outdoor)){
             setIsOutdoorTraining('flex');
             setIsAtTrainerTraining('none');
-             // console.log('Life Is Good');
         }else {
             setIsOutdoorTraining('none');
             setIsAtTrainerTraining('flex');
         }
-        // console.log(item.label);
     }
 
-    const handleLocationPressed = (item) => {
-        
-    }
 
     const handleSearchBoxPressed = (item) => {
         setListData({});
@@ -387,16 +338,13 @@ const TrainerOrderPage = ({navigation}) => {
         setTrainingSiteSelected(item);
         setIsAddressSelected('flex');
         console.log(trainingSiteSelected);
-        // setIsSearchingForLocation("none")
 
         Geocoder.from(item)
         .then(json => {
             var location = json.results[0].geometry.location;
             setLocationLatitudeCoordinate(location.lat);
-            // locationLatitudeCoordinate = location.lat;
             setLocationLongitudeCoordinate(location.lng)
-            // locationLongitudeCoordinate = location.lng;
-            // setLocationCoordinates([location.lat, location.lng]);
+            
             console.log(locationLongitudeCoordinate);
         })
         .catch(error => console.warn(error));
@@ -408,15 +356,13 @@ const TrainerOrderPage = ({navigation}) => {
         if(item.label === locations.trainingSite1.address){
             setLocationLongitudeCoordinate(locations.trainingSite1.coordinates[0]);
             setLocationLatitudeCoordinate(locations.trainingSite1.coordinates[1]);
-            // locationLatitudeCoordinate = locations.trainingSite1.coordinates[0];
-            // locationLongitudeCoordinate = locations.trainingSite1.coordinates[1];
+            
             console.log( 'locationLatitudeCoordinate'+ locationLatitudeCoordinate)
 
         }else{
             setLocationLongitudeCoordinate(locations.trainingSite2.coordinates[0]);
             setLocationLatitudeCoordinate(locations.trainingSite2.coordinates[1]);
-            // locationLatitudeCoordinate = locations.trainingSite2.coordinates[0];
-            // locationLongitudeCoordinate = locations.trainingSite2.coordinates[1];
+            
         }
     }
 
@@ -433,12 +379,14 @@ const TrainerOrderPage = ({navigation}) => {
             type: 'SET_ORDER_TRAINING_CATEGORY',
             orderTrainingCategory: trainingSiteSelected
         });
-        dispatchOrderObject({
-            type: 'SET_ORDER_OBJECT',
-            orderObject : orderToUpload
-        })
+        
         navigation.navigate('ChooseDateAndTimePage');
 
+    }
+
+    const handleOnPayPalBttonPressed = () =>{
+        setModalVisible(true);
+        paypalPayment();
     }
 
     //Handle when the client presses on Discount Code button
@@ -446,10 +394,9 @@ const TrainerOrderPage = ({navigation}) => {
         // registerOrder();
         navigation.navigate('TrainerReviews');
 
-        // setModalVisible(!modalVisible);
-        // paypalPayment();
+        
 
-        // navigation.navigate('ComingSoon');
+    // navigation.navigate('ComingSoon');
     }
 
     //Handle when the client presses on Customer Service button
@@ -491,7 +438,8 @@ const TrainerOrderPage = ({navigation}) => {
 
 
                             <View style={styles.trainerStarRatingContainer}>
-                                    {trainerReviewsArray.length === 0 ? 
+                                {/*     In case we want show message if no any rating yet */}
+                                    {/* {trainerReviewsArray.length === 0 ? 
                                     <Text style={styles.trainerStarRating}>no comments</Text> 
                                     :
                                     <Text style={styles.trainerStarRating}>{getTrainerStarRating()}</Text>} 
@@ -502,11 +450,13 @@ const TrainerOrderPage = ({navigation}) => {
                                         style={styles.starIcon}/> 
                                         : 
                                         <Icon name="star" size={Dimensions.get('window').height * .02} color="black" />
-                                    }
+                                    } */}
+                                    <Text style={styles.trainerStarRating}>{getTrainerStarRating()}</Text> 
+                                                                        
+                                    <Icon name="star" size={Dimensions.get('window').height * .02} color="black" />
                                         
                                     
                                 </View>
-                            {/* <Text style={styles.categoryAndCertificationText}> Category: {trainerCategories.join(", ")} </Text> */}
                             <Text style={styles.categoryAndCertificationText}> Certifications: NSCA-CSCS </Text>
 
                         </View>
@@ -608,7 +558,6 @@ const TrainerOrderPage = ({navigation}) => {
                             />
 
                             {/* </View> */}
-                            {/* MARK */}
                         </View>
                         <View display={isAtTrainerTraining}>
 
@@ -704,18 +653,25 @@ const TrainerOrderPage = ({navigation}) => {
                          <View style={styles.rowCostContainer}>
                              <Icon name="dollar-sign" size={Dimensions.get('window').height * .02} color="black" 
                              style={styles.dollarSign}> </Icon>
-                            {/* <Image 
-                                source={require('../../../images/dollarSign.jpeg')}
-                                style={styles.dollarSign}>
-                                
-                            </Image> */}
+                            
                             <TextInput 
                                 
                                 editable ={false} 
                                 style={styles.costTextBox}>
                             {cleanedPrice}</TextInput>
                          </View>
-                     </View>      
+                     </View> 
+
+                     <View style={styles.payContainer}>
+                        <TouchableOpacity
+                            onPress={handleOnPayPalBttonPressed}
+                            >
+                            <Image
+                                style={styles.paypalImage}
+                                source={require('../../../images/paypalbutton.png')}
+                            />
+                        </TouchableOpacity>
+                     </View>         
 
                 <View style={styles.moreContainer}>
                     <Text style={styles.moreTitle}>More Links</Text>
@@ -804,46 +760,7 @@ const TrainerOrderPage = ({navigation}) => {
 
                 </Dialog.Container>
             </View>
-{/*             
-            <View style={styles.trainerHeaderContainer}>
-                <View style={styles.trainerHeaderRow}>
-                    <View style={styles.imageAndAbout}>
-                        <Image
-                            style={styles.trainerProfileImage}
-                        />
-                        <TouchableOpacity
-                            style={styles.aboutMeButton}
-                        >
-                            <Text style={styles.aboutMeText}>About Me</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.nameRatingCategoryCertifications}>
-                        <Text style={styles.trainerName}>Ivgeny Shatz</Text>
-                        <View style={styles.ratingRow}>
-                            <Text style={styles.ratingNumber}>8.7</Text>
-                            <Image
-                                style={styles.ratingImageStar}
-                                source={require('../../../images/ratingStar.png')}
-                            />
-                        </View>
-                        <View style={styles.categoryRow}>
-                            <Text style={styles.categoryTitle}>Category: </Text>
-                            <Text style={styles.categoryText}>Yoga, Pilatis</Text>
-                        </View>
-                        <View style={styles.certificationsRow}>
-                            <Text style={styles.certificationsTitle}>Certifications: </Text>
-                            <Text style={styles.certificationsText}>NSCA-CSCS</Text>
-                        </View>
-                    </View>
-                    <TouchableOpacity
-                        style={styles.likeHeartButton}
-                    >
-                        <Image
-                            style={styles.likeHeartImage}
-                        />
-                    </TouchableOpacity>
-                </View>
-            </View> */}
+
 
             <Modal
                 visible={modalVisible}
@@ -1199,12 +1116,35 @@ const styles = StyleSheet.create({
         // height: Dimensions.get('window').height * .02,
         zIndex: 2
     },
+    payTextBox:{
+        marginTop: Dimensions.get('window').height * .005,
+        marginRight: Dimensions.get('window').width * .05,
+        width: Dimensions.get('window').width * .2,
+        height: Dimensions.get('window').height * .04,
+        backgroundColor: 'white',
+        textAlign: 'center',
+        fontSize: Dimensions.get('window').height * .02,
+        opacity:0.8,
+        borderWidth:1.5,
+        borderRadius: 17,
+        zIndex: 1
+    
+    },
+    
+    payContainer:{
+        marginTop: Dimensions.get('window').height * .020,
+        alignSelf: 'center'
+    },
+    paypalImage:{
+        width: Dimensions.get('window').width * .4,
+        height: Dimensions.get('window').height * .04,
+        borderRadius: 17,
+    },
     costText:{
         marginTop: Dimensions.get('window').height * .005,
         marginLeft: Dimensions.get('window').width * .01,
         fontSize: Dimensions.get('window').height * .025,
         zIndex: 1
-
     },
     moreContainer: {
         marginTop: Dimensions.get('window').height * .035,

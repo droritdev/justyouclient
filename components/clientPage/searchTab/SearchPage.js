@@ -245,14 +245,19 @@ const SearchPage = ({navigation, route}) => {
     const getTrainerStarRating = () => {
         var starsCounter = 0
         var finalStarRating = 0
-        for (let index = 0; index < reviewsArray.length; index++) {
-            const element = reviewsArray[index];
-            starsCounter += Number(element.stars)
-
+        if(reviewsArray.length === 0){
+            return 0
+        }else{
+            for (let index = 0; index < reviewsArray.length; index++) {
+                const element = reviewsArray[index];
+                starsCounter += Number(element.stars)
+    
+            }
+    
+            finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
+            return finalStarRating;
         }
-
-        finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
-        return finalStarRating;
+        
     }
 
    
@@ -307,12 +312,11 @@ const SearchPage = ({navigation, route}) => {
     const getAllTrainers = async (category) => {
         
          await axios  
-            .get('/trainers/allTrainer',
+            .get('/trainers/getAllTrainers',
             config)
             .then((doc) => {
                 if(doc) {
-                    // setDoc(doc.data);
-                    // sortByCategory(doc.data);
+                    
                     getTrainersByCategory(doc.data, category);
                     setDisplayCategories('flex');
                     setDisplayRecentOrders('none');

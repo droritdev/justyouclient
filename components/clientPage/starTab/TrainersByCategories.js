@@ -47,7 +47,7 @@ const TrainersByCategories = ({navigation, route}) => {
     var reviewsArray = [];
     var trainersByCategory = [];
 
-    const [nameForImage, setnameForImage] = useState("");
+    const [nameForImage, setNameForImage] = useState("");
     const {imageSource} = ''
 
     const [isLoadingCircle, setIsLoadingCircle] = useState(true);
@@ -71,7 +71,7 @@ const TrainersByCategories = ({navigation, route}) => {
         const unsubscribe = navigation.addListener('focus', () => {
             console.log(categoryFromStarPage);
             var imageName = categoryFromStarPage.toString();
-            setnameForImage(switchImages(imageName.replace(" ",'')));
+            setNameForImage(switchImages(imageName.replace(" ",'')));
 
             getAllTrainers(categoryFromStarPage);
             
@@ -108,10 +108,10 @@ const TrainersByCategories = ({navigation, route}) => {
       }
 
 
-      const getAllTrainers = (category) => {
+      const getAllTrainers = async (category) => {
         
-         axios  
-           .get('/trainers/allTrainer',
+        await axios  
+           .get('/trainers/getAllTrainers',
            config)
            .then((doc) => {
 
@@ -203,11 +203,24 @@ const TrainersByCategories = ({navigation, route}) => {
                         <Text style={styles.trainerDetail1}> {name}</Text>
                         <Text style={styles.trainerDetail2}>Personal Trainer</Text>
                         <View style={styles.ratingRow}>
-                            <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
-                            <Image
-                                source={require('../../../images/ratingStar.png')}
-                                
-                            />
+                            
+
+                            {reviewsArray.length === 0 ? 
+                                <Text style={styles.trainerDetail3}>no comments</Text> 
+                            :
+                                <Text style={styles.trainerDetail3}>
+                                    {getTrainerStarRating()}
+                                </Text>} 
+
+                            {reviewsArray.length === 0 ? 
+                                <Image 
+                                    style={styles.starIcon}/> 
+                            : 
+                                <Image 
+                                    source={require('../../../images/ratingStar.png')}
+                                    style={styles.starIcon}
+                            />}
+                            
                         </View>
                     </View>
                 </View>

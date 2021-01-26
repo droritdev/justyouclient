@@ -1,3 +1,4 @@
+const paypal = require('paypal-rest-sdk');
 
 exports.sendPaymentWithPaypal = (req, res) => {
 
@@ -23,6 +24,9 @@ exports.sendPaymentWithPaypal = (req, res) => {
             "amount": {
                 "currency": "USD",
                 "total": "5.00"
+            },
+            "payee":{
+                "email" : "sb-dfmun4870920@business.example.com"
             },
             "description": "This is the payment description."
         }]

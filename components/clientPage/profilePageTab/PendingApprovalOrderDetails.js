@@ -115,7 +115,7 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
 
                             <View style={styles.buttonsRowContaier}>
                                 <View style={styles.buttonsRow}>
-                                    <View style={styles.buttonAndTitle}>
+                                    {/* <View style={styles.buttonAndTitle}>
                                         <TouchableOpacity style={styles.iconBackStyle}>
                                             <Icon name="phone-call" size={30} style={styles.phoneCallIcon}/>
                                            
@@ -128,7 +128,21 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
                                         onPress={()=> handleChatPressed()}>
                                             <Icon name="message-circle" size={30} style={styles.messageIcon}/>
                                         </TouchableOpacity>
+                                        
                                         <Text style={styles.buttonTitle}>Chat</Text>
+                                    </View> */}
+                                    <View style={styles.buttonsRowContaier}>
+                                        <TouchableOpacity
+                                            onPress={()=>handleChatPressed()}
+                                            style={styles.chatButton}
+                                        >
+                                            <Icon name="message-circle" size={30} style={styles.messageIcon}/>
+                                            {orderObject.trainer.name!==undefined?
+                                                <Text style={styles.approveButtonText}>{'Contact ' + orderObject.trainer.name.first}</Text>
+                                            :
+                                            <Text style={styles.approveButtonText}>{'Contact'}</Text>
+                                            } 
+                                        </TouchableOpacity>
                                     </View>
 
                                 </View>
@@ -258,6 +272,22 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: Dimensions.get('window').height * .011
     },  
+    buttonsRowContaier: {
+        width: Dimensions.get('window').width * .35,
+        alignSelf: 'center'
+    },
+    chatButton: {
+        flexDirection: 'row',
+        marginLeft: Dimensions.get('window').width * .020,
+        marginTop: Dimensions.get('window').height * .015,
+        height: Dimensions.get('window').height * .035,
+        width: Dimensions.get('window').width * .65,
+        alignSelf: 'center',
+        backgroundColor: 'deepskyblue',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10
+    },
     approveButton: {
         flex: 1,
         marginTop: Dimensions.get('window').height * .15,

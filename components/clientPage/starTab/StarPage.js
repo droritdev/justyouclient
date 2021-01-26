@@ -14,8 +14,8 @@ import axios from 'axios';
 
 import {TrainerContext} from '../../../context/TrainerContext';
 import {CategoryContext} from '../../../context/CategoryContext';
-import {EmailContext} from '../../../context/EmailContext';
-import { signOut } from '../../../backend/signOut/signOut';
+import {OrderContext} from '../../../context/OrderContext';
+
 
 
 
@@ -37,6 +37,8 @@ const StarPage = ({ navigation}) => {
     const {category, dispatchCategory} = useContext(CategoryContext)
 
     const {dispatchTrainerObject } = useContext(TrainerContext);
+    const {orderEndTime, dispatchOrderEndTime} = useContext(OrderContext);
+    const [trainersInCategoryCount, setTrainersInCategoryCount] = useState(0)
 
 
         const [hitArrayCount,setHitArrayCount] = useState(0);
@@ -63,6 +65,9 @@ const StarPage = ({ navigation}) => {
             { id: 9, label: 'RUNNING' },
             { id: 10, label: 'POWERLIFTING' }
         ];
+
+    const categoriesArray = ['HIT','KICK BOX','MARTIAL ARTS','PILATIS','CLIMBING','TRX', 'DANCING', 'SWIMMING', 'RUNNING', 'POWER LIFTING' ]
+    const [nameForImage, setNameForImage] = useState("");
 
 
 
@@ -97,7 +102,6 @@ const StarPage = ({ navigation}) => {
 
 
     const sortByCategory = (trainerArray) => {
-        console.log('in sort sdasdasdadasdasdasdasd')
         // console.log(trainerArray)
         for (let index = 0; index < trainerArray.length; index++) {
             const element = trainerArray[index];
@@ -160,7 +164,7 @@ const StarPage = ({ navigation}) => {
         setIsRefreshing(true);
         
         await axios  
-            .get('/trainers/allTrainer',
+            .get('/trainers/getAllTrainers',
             config)
             .then((doc) => {
 
@@ -168,6 +172,7 @@ const StarPage = ({ navigation}) => {
                     setDoc(doc.data);
                     setIsRefreshing(false);
                     sortByCategory(doc.data);
+                    // getTrainersByCategory(doc.data);
 
 
                 }
@@ -183,14 +188,17 @@ const StarPage = ({ navigation}) => {
     const getTrainerStarRating = () => {
         var starsCounter = 0
         var finalStarRating = 0
-        for (let index = 0; index < reviewsArray.length; index++) {
-            const element = reviewsArray[index];
-            starsCounter += Number(element.stars)
-
-        }
-
-        finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
-        return finalStarRating;
+        if (reviewsArray.length === 0){
+            return 0;
+        }else{
+            for (let index = 0; index < reviewsArray.length; index++) {
+                const element = reviewsArray[index];
+                starsCounter += Number(element.stars)
+    
+            }
+            finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
+            return finalStarRating;
+        } 
     }
 
 
@@ -220,36 +228,34 @@ const StarPage = ({ navigation}) => {
             <Text style={styles.trainerText1}>{name}</Text>
             <Text style={styles.trainerText2}>Personal Trainer</Text>
             <View style={styles.ratingRow}>
-                 {getTrainerStarRating() === 0 ? 
-                 <Text style={styles.trainerText3}>no comments</Text> 
+                {/* if we want to change  */}
+                 {/* {reviewsArray.length === 0 ? 
+                 <Text style={styles.trainerText3}>no rating yet</Text> 
                  :
                  <Text style={styles.trainerText3}>
-                     {/* {(numberOfStars/numberOfStarComments).toFixed(1)} */}
                      {getTrainerStarRating()}
                      </Text>} 
 
-                 {getTrainerStarRating() === 0 ? 
+                 {reviewsArray.length === 0 ? 
                  <Image 
-                    // source={require('../../../images/ratingStar.png')}
                     style={styles.starIcon}/> 
                     : 
                 <Image 
                     source={require('../../../images/ratingStar.png')}
                     style={styles.starIcon}
-                />}
-                      
+                />} */}
+                    <Text style={styles.trainerText3}>
+                        {getTrainerStarRating()}
+                    </Text>
+                     <Image 
+                        source={require('../../../images/ratingStar.png')}
+                        style={styles.starIcon}
+                    />
                 
             </View>
         </View>
         </TouchableOpacity>
     </View>
-
-
-
-          
-
-
-        //   <Text style={styles.trainerText1}>{firstName + " " +lastName}</Text>
         
       )
     
@@ -265,6 +271,92 @@ const StarPage = ({ navigation}) => {
         
     );
 
+
+    //showing categories over ui
+    const getTrainersByCategory = (category) => {
+        if(doc !== []){
+        // categoriesArray.forEach(category => {
+            var trainerCountForEachCategory = 0;
+            var trainersByCategory = [];
+            for (let index = 0; index < doc.length; index++) {
+            const trainer = doc[index];
+                if(trainer.categories.includes(category)){
+                    trainersByCategory.push(trainer);
+                }
+                
+                console.log('trainersByCategory.length: '+ category);
+                console.log(trainersByCategory.length);
+                return (trainersByCategory.length); 
+
+        
+            }
+    // });
+        }
+    }
+
+    const switchImages = (category) => {
+        switch(category) {
+            case 'CLIMBING':
+                return (require('../../../images/categoriesImages/CLIMBING.jpg'));
+            case 'DANCING':
+                return (require('../../../images/categoriesImages/DANCING.jpg'));
+            case 'HIT':
+                return (require('../../../images/categoriesImages/HIT.jpg'));     
+            case 'KICKBOX':
+                return (require('../../../images/categoriesImages/KICKBOX.jpg'));         
+            case 'MARTIALARTS':
+                return (require('../../../images/categoriesImages/MARTIALARTS.jpg'));  
+            case 'PILATES':
+                return (require('../../../images/categoriesImages/PILATES.jpg'));  
+            case 'POWERLIFTING':
+                return (require('../../../images/categoriesImages/POWERLIFTING.jpg'));
+            case 'RUNNING':
+                return (require('../../../images/categoriesImages/RUNNING.jpg'));   
+            case 'STREETWORKOUT':
+                return require('../../../images/categoriesImages/STREETWORKOUT.jpg');     
+            case 'SWIMMING':
+                return (require('../../../images/categoriesImages/SWIMMING.jpg'));                                
+            case 'TRX':
+                return (require('../../../images/categoriesImages/TRX.jpg'));
+            
+        }
+      }
+
+    const showCategoriesOnUi = () =>{
+        let repeats = [];
+        for (let index = 0; index < categoriesArray.length; index++) {
+            const category = categoriesArray[index];
+            var imageName = category.toString();
+            // setNameForImage(switchImages(imageName.replace(" ",'')));
+
+            repeats.push(
+
+                <View style={styles.inSectionView}>
+                             <View style={styles.inSectionImageViewContainer}>
+                                <TouchableOpacity
+                                    style={styles.inSectionImageView}
+                                    onPress = {() => handleOnCategoryPressed(category)}
+
+                                >
+                                    <Image
+                                        style={styles.categoryImage}
+                                        source = {nameForImage}
+
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={styles.categoryPreviewText}
+                            >
+                                <Text style={styles.categoryText1}>{category}</Text>
+                                <Text style={styles.categoryText2}>Amount of trainers: {1}</Text>
+                            </View>
+                        </View>
+
+            )
+            
+        }
+    }
     
 
     
@@ -272,13 +364,17 @@ const StarPage = ({ navigation}) => {
 
 
     //Handle when the client presses on a trainer button
-    const handleOnTrainerPressed = (trainerObject, name,media, categories  ) => {
+    const handleOnTrainerPressed = (trainerObject ) => {
         // console.log('item: '+ name)
 
             dispatchTrainerObject({
                 type: 'SET_TRAINER_OBJECT',
                 trainerObject: trainerObject
             })
+            dispatchOrderEndTime({
+                type: 'SET_ORDER_END_TIME',
+                orderEndTime : ''
+            });
             
             
         navigation.navigate('TrainerOrderPage',{params: ''})
@@ -344,6 +440,8 @@ const StarPage = ({ navigation}) => {
                                 data={doc}
                                 renderItem={renderItem}
                                 keyExtractor={item => item._id}
+                                showsHorizontalScrollIndicator={false}
+
                                 
                                 
                             />
@@ -357,6 +455,7 @@ const StarPage = ({ navigation}) => {
                         horizontal={true} 
                         showsHorizontalScrollIndicator={false}
                     >
+                        {/* {showCategoriesOnUi()} */}
                         <View style={styles.inSectionView}>
                              <View style={styles.inSectionImageViewContainer}>
                                 <TouchableOpacity
@@ -494,7 +593,7 @@ const StarPage = ({ navigation}) => {
                         </View>
                             
 
-                            {/* MARK */}
+                            
                         <View style={styles.inSectionView}>
                             <View style={styles.inSectionImageViewContainer}>
                                 <TouchableOpacity
