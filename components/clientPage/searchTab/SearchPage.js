@@ -402,10 +402,7 @@ const SearchPage = ({navigation, route}) => {
                     style={styles.searchIcon}>
                     <Icon name="search" size={Dimensions.get('window').height * .04} color="deepskyblue" />
                 </View>
-                {/* <Image
-                    source={require('../../../images/searchFieldIcon.png')}
-                    style={styles.searchIcon}
-                /> */}
+                
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Search by category"

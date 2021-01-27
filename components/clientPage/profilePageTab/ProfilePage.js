@@ -17,7 +17,6 @@ import {TrainerContext} from '../../../context/TrainerContext';
 const ProfilePage = ({navigation}) => {
 
     const [initializing, setInitializing] = useState(false);
-    const [user, setUser] = useState();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -43,10 +42,7 @@ const ProfilePage = ({navigation}) => {
     //Modal to display for covid-19 alert tap
     const [covidModalVisible, setCovidModalVisible] = useState(false);
 
-    function onAuthStateChanged(user) {
-        setUser(user);
-        if (initializing) setInitializing(false);
-      }
+    
     
     
 
@@ -99,7 +95,6 @@ const ProfilePage = ({navigation}) => {
     const getUserByFirebaseAuth = () => {
         const subscriber = auth().onAuthStateChanged((user) => {
             // console.log('🚨userStatus:' , user)
-            setUser(user);
 
             if(user){
                 setInitializing(true);

@@ -8,15 +8,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const paypal = require('paypal-rest-sdk');
-const engines = require("consolidate");
+
 
 module.exports.mongoose = mongoose;
 
 
 //paypal payment
 
-const paypalPayment = require('./paypalPayment/paypalPayment');
+// const paypalPayment = require('./paypalPayment/paypalPayment');
 
 
 
@@ -190,6 +189,8 @@ app.get('/orders/by-client-id/:id', getOrdersByClientID.getOrdersByClientID);
 app.get('/clients/findMultipleClients/:idArray', findMultipleClients.getMultipleClients);
 
 
+
+
 //End point to update client info
 app.post('/clients/updateClientInfo', updateClientInfo.updateClientInfo);
 
@@ -263,101 +264,142 @@ app.post('/messages/newMessage', newMessage.createMessage);
 app.get('/messages/watchForUpdates/:receiver', watchForUpdates.watchForUpdates);
 
 
+const paypal = require('paypal-rest-sdk'); 
+const engines = require("consolidate");
+
 //for paypal views set:
 app.engine("ejs", engines.ejs);
 app.set("views", "./paypalViews");
 app.set("view engine", "ejs");
 
 
-//for Paypal
 
-app.get('/' ,(req, res) => {
-        res.render("paypalIndex");
-})
+
+    
+/*
+SAND BOX CONFIG
+*/
 paypal.configure({
-        'mode': 'sandbox', //sandbox or live
-        'client_id': 'AWWnlKwlkexa-FcYLtU-lXbbG7TcjDnO1fZBvjMCahAOhUvmQ8pN8i3BPJpi3L1VRR8XRUM-4SdfYZJR',
-        'client_secret': 'EDsuT2KTJE-WValxvJzw5-a9syJfofILTJ8UV_FrfS_UKY4aAni0H6vrhuBC0nF7xb1v8T-YMl5DQ_39'
-      });
-// app.get('/paypal', paypalPayment.sendPaymentWithPaypal);
+    'mode': 'sandbox',
+    'client_id': 'AWWnlKwlkexa-FcYLtU-lXbbG7TcjDnO1fZBvjMCahAOhUvmQ8pN8i3BPJpi3L1VRR8XRUM-4SdfYZJR',
+    'client_secret': 'EDsuT2KTJE-WValxvJzw5-a9syJfofILTJ8UV_FrfS_UKY4aAni0H6vrhuBC0nF7xb1v8T-YMl5DQ_39'
+});
+
+
+
+/*
+LIVE CONFIG
+*/
+// paypal.configure({
+//         'mode': 'live', 
+//         'client_id': 'AQxRq2oM-GEJ9N9VANffTk70Jl5ceGNlUXjbqaKOB0atMdgKLCeQQgi0fDSv1OmfnLLa1c5FNS2tgnPF',
+//         'client_secret': 'EOUgugmZl8_O6bYTrnUQpN1G_FQXgYRMUs3FJTp0C7ZvDg7NmV5D0KQmSrMlxYlTCvrdCiFFimXfOAMp'
+//       });
+
+
+
+var paymentAmount = []; 
 
 app.get('/paypal', (req, res) => {
 
-        var create_payment_json = {
-            "intent": "sale",
-            "payer": {
-                "payment_method": "paypal"
+    //Receive the choosen informatiom in the order page from the query
+    var price = req.query.price;
+    var category = req.query.category;
+    var trainingType = req.query.trainingType;
+
+    //Create payment json to pass to the paypal payment function
+    var create_payment_json = {
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": "http://localhost:3000/paypal/paymentSuccess",
+            "cancel_url": "http://localhost:3000/paypal/paymentCancel"
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": "JustYou - Personal Training",
+                    "sku": "1",
+                    "price": price,
+                    "currency": "USD",
+                    "quantity": 1
+                }]
             },
-            "redirect_urls": {
-                "return_url": "http://localhost:3000/success",
-                "cancel_url": "http://localhost:3000/cancel"
+            "amount": {
+                "currency": "USD",
+                "total": price
             },
+            "payee":{
+                    "email" : "sb-du47x34662085@business.example.com"
+            },
+            "description": trainingType + ' - ' + category
+        }]
+    };
+
+
+    //Create a payment, and redirect user to the payment form of paypal
+    paypal.payment.create(create_payment_json, function (error, payment) {
+        if (error) {
+            throw error;
+        } else {
+            //Insert the payment amount into an array,
+            //In the index of this specific transcation id
+            paymentAmount[payment.id] = payment.transactions[0].amount.total;
+
+            //Redirect to paypal login/payment
+            res.redirect(payment.links[1].href);
+        }
+    });
+});
+
+
+
+//Order was created, and user has approved to pay
+//Now we execute the payment
+app.get('/paypal/paymentSuccess' ,(req, res) => {
+
+    //Get the payerID from query
+    var PayerID = req.query.PayerID;
+
+    //Get the paymentID from query
+    var paymentId = req.query.paymentId;
+
+    //Create a json in order to pass it to paypal's execute payment function 
+    var execute_payment_json = {
+            "payer_id": PayerID,
             "transactions": [{
-                "item_list": {
-                    "items": [{
-                        "name": "training",
-                        "sku": "item",
-                        "price": "34.00",
-                        "currency": "USD",
-                        "quantity": 1
-                    }]
-                },
                 "amount": {
                     "currency": "USD",
-                    "total": "34.00"
-                },
-                "payee":{
-                        "email" : "sb-dfmun4870920@business.example.com"
-                },
-                "description": "Trx training couple, outdoor."
+                    "total": paymentAmount[paymentId]
+                }
             }]
         };
         
-        
-        paypal.payment.create(create_payment_json, function (error, payment) {
+        //Execute the payment
+        paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
             if (error) {
+                console.log(error.response);
                 throw error;
             } else {
-                console.log("Create Payment Response");
-                console.log(payment);
-                res.redirect(payment.links[1].href);
+            //logs for developer use
+            //     console.log("Get Payment Response");
+            //     console.log(JSON.stringify(payment));
+
+            //Show 'succes' page from our paypalviews
+            //The page currently has a button to redirect the client to the app
+            //(TODO: design the page and pass information back)
+                res.render('success');                    
             }
         });
-    });
+})
 
-    app.get('/success' ,(req, res) =>{
-        // res.render('success');
 
-        // res.send('Success')
-        var PayerID = req.query.PayerID;
-        var paymentId = req.query.paymentId;
-        var execute_payment_json = {
-                "payer_id": PayerID,
-                "transactions": [{
-                    "amount": {
-                        "currency": "USD",
-                        "total": "34.00"
-                    }
-                }]
-            };
-            
-        //     var paymentId = 'PAYMENT id created in previous step';
-            
-            paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
-                if (error) {
-                    console.log(error.response);
-                    throw error;
-                } else {
-                    console.log("Get Payment Response");
-                    console.log(JSON.stringify(payment));
-                    res.render('success')
-                }
-            });
+
+//Oreder was cancelled
+//Show 'cancel' page from our paypalviews
+app.get('/paypal/paymentCancel' ,(req, res) =>{
+    res.render('cancel')
     })
-
-    app.get('cancel' ,(req, res) =>{
-        res.render('cancel')
-        })
-    
-
 

@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Text, View, SafeAreaView, Image, StyleSheet, Dimensions, TextInput, Button,FlatList, Modal} from 'react-native';
+import { Text, View, SafeAreaView, Image, StyleSheet, Dimensions, TextInput, Button,FlatList, Modal, Linking} from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Dialog from "react-native-dialog";
 import {Accordion, Block, Radio} from 'galio-framework';
@@ -146,6 +146,8 @@ const TrainerOrderPage = ({navigation}) => {
     //get price from trainer object
     const prices = trainerObject.prices   
     //get location from trainer object
+
+    const typeOfTrainingSelectedWithoutPrice = typeOfTrainingSelected.split(':')[0];
     const locations = trainerObject.location
 
     //check for location count in trainer
@@ -261,7 +263,7 @@ const TrainerOrderPage = ({navigation}) => {
                     profilePic: trainerObject.media.images[0]
   
                 },
-                type: 'couple outdoor', 
+                type: typeOfTrainingSelectedWithoutPrice, 
                 category: categorySelected, 
                 trainingDate: {
                     startTime: startTime,
@@ -384,15 +386,48 @@ const TrainerOrderPage = ({navigation}) => {
 
     }
 
-    const handleOnPayPalBttonPressed = () =>{
-        setModalVisible(true);
-        paypalPayment();
+    const handleOnPayPalButtonPressed = async () => {
+        //Listener to when the client returns to the application
+        Linking.addEventListener('url', (responseUrl) => {
+            console.log("im back bitches");
+            console.log(responseUrl);
+        });
+
+        //The price selected
+        var price = typeOfTrainingSelected.replace(/[^0-9]/g,'');
+
+        //The training type selected (without cost)
+        var trainingType = typeOfTrainingSelected.split(':')[0];
+
+        //Default paypal url
+        var defaultUrl = 'http://localhost:3000/paypal'
+
+        //Symbols for the query
+        var querySymbol = '?'
+        var querySeprator = '&'
+
+        //Parameters for the query
+        // var clientIdQuery = 'clientID='+clientID
+        var priceQuery = 'price='+price
+        var trainingTypeQuery = 'trainingType='+trainingType
+        var categoryQuery = 'category='+categorySelected
+
+        //The finished url with all the parameters and symbols required.
+        var finishedUrl = defaultUrl + querySymbol + priceQuery + querySeprator + trainingTypeQuery + querySeprator + categoryQuery
+
+        //Check if the url is safe to open
+        const canOpen = await Linking.canOpenURL(finishedUrl)
+
+        if(canOpen) {
+            //Open the url using linking (open browser)
+            Linking.openURL(finishedUrl);
+        }
     }
 
     //Handle when the client presses on Discount Code button
     const handleOnReviewsPressed = () => {
-        // registerOrder();
-        navigation.navigate('TrainerReviews');
+        registerOrder();
+        // navigation.navigate('TrainerReviews');
 
         
 
@@ -664,7 +699,7 @@ const TrainerOrderPage = ({navigation}) => {
 
                      <View style={styles.payContainer}>
                         <TouchableOpacity
-                            onPress={handleOnPayPalBttonPressed}
+                            onPress={handleOnPayPalButtonPressed}
                             >
                             <Image
                                 style={styles.paypalImage}

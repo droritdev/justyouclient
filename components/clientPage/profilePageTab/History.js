@@ -1,10 +1,12 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useReducer} from 'react';
 import { Text,TextInput , View, StyleSheet, ScrollView, Dimensions, Image, Modal , FlatList} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image'
 import Icon from 'react-native-vector-icons/Feather';
 import StarRating from 'react-native-star-rating';
+import * as Progress from 'react-native-progress';
+
 
 
 import axios from 'axios';
@@ -16,67 +18,92 @@ import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 
 //The history page
 const History = ({navigation, route}) => {
-
+    //boolean to check if there are orders
     const [isTrainers, setIsTrainers] = useState(true);
+    //get the orders from the ProfilePage
     const { ordersHistoryTrainerArray } = route.params;
+    //get the client object
     const {clientObject} = useContext(ClientContext);
+    //trainer Id to use when uploading review
     const [trainerIdForReview, setTrainerIdForReview] = useState('');
-    const [alreadyHasReview, setAlreadyHasReview] = useState(false);
+    //visability for add review modal
     const [modalVisible, setModalVisible] = useState(false);
+    //TODO: star count in review modal
     const [starsCount, setStarsCount] = useState(0);
+    //review content to upload
     const [reviewContent, setReviewContent] = useState('');
+    //check if all the data we want to show in the UI is ready
+    const [listIsReadyToShow, setListIsReadyToShow] = useState('none');
+    //array of booleans to check which trainer already got review
+    const [reviewBooleanArray, setReviewBooleanArray] = useState([]);
 
-    var reviewsArray = [];
+    const [isLoadingCircle, setIsLoadingCircle] = useState(true);
 
+    const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
+    
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            checkForOrders();
-            getAllTrainersInfo();
-            console.log('ordersHistoryTrainerArray');
-            console.log(ordersHistoryTrainerArray);
+            checkForOrders();            
         });
         return unsubscribe;
       }, [navigation]);
 
     //check if there are any completed orders
     //if not => showing no orders View
-    const checkForOrders = () => {
+    const checkForOrders = async () => {
         if (ordersHistoryTrainerArray.length === 0){
             setIsTrainers(false);
         }else{
-            setIsTrainers(true);
+            getAllTrainersInfo();
         }
     }
 
     //check if client already given a review for trainer in the recent order list
-    const checkIfTrainerAlreadyGotReviewByClient = () => {
-        var reviewBool = false
-        for (let index = 0; index < reviewsArray.length; index++) {
-            const review = reviewsArray[index];
-            if(review.userID === clientObject._id){
-                reviewBool = true;
-                break;
-            }
-            
+    const checkIfTrainerAlreadyGotReviewByClient =  (allTrainers) => {
+        //array of booleans to push into reviewBooleanArray
+        var isReviewExistArray = []
+        
+        //for loop on all our orders
+        for (let index = 0; index < ordersHistoryTrainerArray.length; index++) {
+            const order = ordersHistoryTrainerArray[index];
+            //for each loop on trainers that are in orders(by id)
+            allTrainers.forEach(trainer => {
+                //check for same trainer id in order and for trainer
+                if (trainer._id === order.trainer.id){
+                    
+                    //check if client ID is found in the trainer's reviews
+                    if(trainer.reviews.some(i => i.userID.includes(clientObject._id ))){
+                        console.log('thereIsRviewThere')
+                        //our client ID is in the trainers reviews 
+                        isReviewExistArray.push(true);
+                    }else{
+                        //our client ID isn't in the trainers reviews 
+                        isReviewExistArray.push(false);
+                    }
+                }  
+            });
         }
-        // setAlreadyHasReview(true);
+        //the list is ready to show because now we know which trainer already got/not review by our client
+        setIsLoadingCircle(false);
+        setListIsReadyToShow('flex');
 
-        return reviewBool;
+        setReviewBooleanArray(isReviewExistArray);
+
+        
 
     }
 
+
     const getAllTrainersInfo = async () => {
-        console.log('inThatFunction');
-        //Array to to be filled with the ids of the clients that left reviews
+        //Array to to be filled with the ids of the trainers that left reviews
         var idArray = [];
 
-        //Push into the idArray all of the clientID
+        //Push into the idArray all of the trainerID
         for (let index = 0; index < ordersHistoryTrainerArray.length; index++) {
             const singleTrainerID = ordersHistoryTrainerArray[index].trainer.id;
             idArray.push(singleTrainerID);
         }
-        console.log(idArray);
 
 
         //fetch the trainer of all trainers from mongodb using axios
@@ -85,45 +112,22 @@ const History = ({navigation, route}) => {
         config
         )
         .then((doc) => {
-            for (let index = 0; index < doc.data.length; index++) {
-                const element = doc.data[index];
-                console.log('findMultipleTrainers');
-                console.log(element);
-            }
             
-           var allTrainersInfo = doc.data;
-
-           
+            checkIfTrainerAlreadyGotReviewByClient(doc.data);
 
         })
         .catch((err) => {console.log(err)});
     }
 
-    //Load trainer star rating
-         //Todo: check if needed in sunday
-
-    const getStarRating = (reviews) => {
-        if (reviews.length === 0) {
-            setStarRating(0);
-        } else {
-            var sumStars = 0;
-            for (let index = 0; index < reviews.length; index++) {
-                const singleReviewStar = reviews[index].stars;
-                sumStars += Number(singleReviewStar);
-            }
-            return ((sumStars/reviews.length).toFixed(1));
-        }
-    }
+    
 
      //scrollView of trainers (working like flatList)
      //Todo: check if needed in sunday
-    const getApprovedOrdersPattern = () => {
+    const getCompletedOrdersPattern = () => {
         let repeats = [];
-        if (ordersHistoryTrainerArray !== []) {
+        if (ordersHistoryTrainerArray !== [] && reviewBooleanArray !== []) {
             for(let i = 0; i < ordersHistoryTrainerArray.length; i++) {
-                var reviewBool = checkIfTrainerAlreadyGotReviewByClient(ordersHistoryTrainerArray[i]);
-                // setAlreadyHasReview(reviewBool);
-                //pushing each trainer UI into the array
+                 //pushing each trainer UI into the array
                 repeats.push(
                     <TouchableOpacity 
                         key = {'ordersRow' + i}
@@ -149,11 +153,19 @@ const History = ({navigation, route}) => {
 
 
                                 <View style={styles.iconsContainer}>
-                                    <TouchableOpacity
-                                        onPress= {() => handleOnAddReviewButton(ordersHistoryTrainerArray[i].trainer.id)}>
+                                                    {console.log('isReviewExistArray[i]: '+ reviewBooleanArray[i])}
+                                    {reviewBooleanArray[i] ? 
+                                        <TouchableOpacity
+                                            onPress= {() => handleOnAlreadyGotReview()}>                   
+                                            <Icon name="check-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
+                                        </TouchableOpacity>
+                                    :
+                                        <TouchableOpacity
+                                            onPress= {() => handleOnAddReviewButton(ordersHistoryTrainerArray[i].trainer.id)}>                  
                                             <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
-
-                                    </TouchableOpacity>
+                                        </TouchableOpacity>
+                                    }
+                                    
                                 </View>
                             </View>
                         </View>
@@ -165,94 +177,7 @@ const History = ({navigation, route}) => {
             return repeats;
     };
 
-    //TODO: use flat list if need to use the review boolean
-    // const getTrainerStarRating = () => {
-    //     var starsCounter = 0
-    //     var finalStarRating = 0
-    //     if(reviewsArray.length === 0){
-    //         return 0
-    //     }else{
-    //         for (let index = 0; index < reviewsArray.length; index++) {
-    //             const element = reviewsArray[index];
-    //             starsCounter += Number(element.stars)
-    
-    //         }
-    
-    //         finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
-    //         return finalStarRating;
-    //     }
-        
-    // }
-
-    //TODO: use flat list if need to use the review boolean
-    // const Item = ({ uri, name, trainerID }) => (
-        
-    //     <TouchableOpacity 
-    //     // key = {'ordersRow' + i}
-    //     >
-    //     <View style={styles.trainerView}>
-    //         <View style={styles.trainerViewRow}>
-    //             <FastImage
-    //                     style={styles.trainerImage}
-    //                     source={{
-    //                         uri: uri,
-    //                         priority: FastImage.priority.normal,
-    //                             }}
-    //                     resizeMode={FastImage.resizeMode.stretch}
-    //             />
-    //             <View style={styles.trainerDetails}>
-    //                 <Text style={styles.trainerDetail1}>{name}</Text>
-    //                 <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-    //                 <View style={styles.ratingRow}>
-    //                     <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
-    //                     <Image
-    //                             source={require('../../../images/ratingStar.png')}
-                                
-    //                     />
-    //                 </View>
-    //             </View>
-
-    //             <View style={styles.iconsContainer}>
-                    
-                    
-    //                         {/* {checkIfTrainerAlreadyGotReviewByClient() ? 
-    //                         <TouchableOpacity
-    //                             onPress= {() => handleOnAlreadyGotReview()}>                   
-    //                             <Icon name="check-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
-    //                         </TouchableOpacity>
-    //                         :
-    //                         <TouchableOpacity
-    //                             onPress= {() => handleOnAddReviewButton(trainerID)}>                  
-    //                             <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
-    //                         </TouchableOpacity>
-    //                         } */}
-                    
-    //             </View>
-    //         </View>
-    //     </View>
-                   
-    // </TouchableOpacity>
-
-        
-    //   )
-
-
-
-    // const renderItem = ({ item }) => (
-    //     <Item 
-    //     uri = {item.trainer.profilePic}
-    //     name = {`${item.trainer.firstName} ${item.trainer.lastName}`}
-    //     trainerID = {item._id}
-        
-    //     // {...reviewsArray = (item.reviews)}
-    //     ></Item>
-        
-    // );
-
-
-
-
-
+  
     const config = {
         withCredentials: true,
         baseURL: 'http://localhost:3000/',
@@ -288,6 +213,7 @@ const History = ({navigation, route}) => {
     const handleOnAddReviewButton = (trainerID) => {
         setModalVisible(true);
         setTrainerIdForReview(trainerID);
+        
     }
 
     const handleOnAlreadyGotReview = () => {
@@ -308,6 +234,11 @@ const History = ({navigation, route}) => {
         addReview();
         //dismiss the review modal window
         setModalVisible(false);
+        //MARK
+        setListIsReadyToShow('none');
+        setIsLoadingCircle(true);
+        checkForOrders();
+        // navigation.push('History');
     }
 
     return(
@@ -332,16 +263,19 @@ const History = ({navigation, route}) => {
 
                 {isTrainers ? 
                     <ScrollView>
-                        {/* use flat list if need to use the review boolean */}
-                        {/* <FlatList
-                                horizontal
-                                data={ordersHistoryTrainerArray}
-                                renderItem={renderItem}
-                                keyExtractor={item => item._id}
-                                
-                                
-                            /> */}
-                            {getApprovedOrdersPattern()}
+                        
+                            <View display={listIsReadyToShow}>
+                            {isLoadingCircle?            
+                                <View>
+                                    <View style={styles.progressView}>
+                                        <Progress.Circle size={Dimensions.get('window').height * .25} indeterminate={true} />
+                                    </View>
+                                    
+                                </View>
+                            : 
+                                getCompletedOrdersPattern()
+                            }
+                            </View>
                             
                     </ScrollView>
                 : 
@@ -606,6 +540,9 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
       },
+      progressView: {
+        alignSelf: 'center'
+    },
    
   
 });

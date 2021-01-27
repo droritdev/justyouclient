@@ -31,33 +31,38 @@ const SignUp = ({navigation}) => {
     }
 
     //Send the verification code to the user's email
-    const sendVerifyEmail = () => {
-      navigation.navigate('EmailVerification');
-        // axios
-        //   .post('/send-verification-code', {
-        //     to: emailAddress,
-        //     channel: "email"
-        //   },
-        //   config
-        // )
-        // .then((res) => {
-        //   if(res !== null) {
-        //     if(res.data.status === 'pending'){
-        //       alert('Pending');
-        //       navigation.navigate('EmailVerification');
-        //     }
-        //     else{
-        //       alert(res.data);
-        //     }
-        //   }
-        //   else{
-        //     alert("Error 2");
-        //   }
-        // }
-        // )
-        // .catch((error) => {
-        //   alert(error)
-        // })
+    const sendVerifyEmail = (emailAddressToVerify) => {
+      console.log('emailAddressInSignUp');
+      console.log(emailAddressToVerify);
+        axios
+          .post('/send-verification-code', {
+            to: emailAddressToVerify,
+            channel: "email"
+          },
+          config
+        )
+        .then((res) => {
+          if(res !== null) {
+            if(res.data.status === 'pending'){
+              alert('Pending');
+              navigation.navigate('EmailVerification');
+            }
+            else{
+              console.log(res.data)
+              alert(res.data);
+            }
+          }
+          else{
+            alert("Error 2");
+          }
+        }
+        )
+        .catch((error) => {
+          alert(error);
+          console.log(error);
+        })
+        navigation.navigate('EmailVerification');
+
     }
 
     //Set the emailAddressInput to the value in the text field
@@ -80,7 +85,6 @@ const SignUp = ({navigation}) => {
       .get('/clients/'+emailAddressInput.toLowerCase(),config)
       .then((doc) => {
         if(doc) {
-          console.log("doc.data" , doc.data);
           if(doc.data[0].email!=null){
             setEmailErrorMessage("Email address is already used");
             setEmailIsValidate(false);
@@ -93,7 +97,7 @@ const SignUp = ({navigation}) => {
           type: 'SET_EMAIL_ADDRESS',
           emailAddress: emailAddressInput.toLowerCase()
         });
-        sendVerifyEmail();
+        sendVerifyEmail(emailAddressInput.toLowerCase());
       })
     }
 

@@ -44,30 +44,35 @@ const EmailVerification = ({navigation}) => {
     //Re-send the verification code
     const sendVerifyEmail = () => {
       alert('Email sent');
-        // axios
-        //   .post('/send-verification-code', {
-        //     to: emailAddress,
-        //     channel: "email"
-        //   },
-        //   config
-        // )
-        // .then((res) => {
-        //   if(res !== null) {
-        //     if(res.data.status === 'pending'){
-        //       alert('pending')
-        //     }
-        //     else{
-        //       alert(res.data);
-        //     }
-        //   }
-        //   else{
-        //     alert("Error 2");
-        //   }
-        // }
-        // )
-        // .catch((error) => {
-        //   alert(error)
-        // })
+      console.log('emailAddressInResend');
+      console.log(emailAddress);
+        axios
+          .post('/send-verification-code', {
+            to: emailAddress,
+            channel: "email"
+          },
+          config
+        )
+        .then((res) => {
+          if(res !== null) {
+            if(res.data.status === 'pending'){
+              alert('pending')
+            }
+            else{
+              alert(res.data);
+              console.log(res.data);
+            }
+          }
+          else{
+            alert("Error 2");
+          }
+        }
+        )
+        .catch((error) => {
+          alert(error)
+          console.log(error);
+
+        })
     }
 
     //Handle the next button press
@@ -86,33 +91,35 @@ const EmailVerification = ({navigation}) => {
       }
       else{
         setIsErrorCodeMessage(false);
-        navigation.navigate('CreatePassword');
-        // axios
-        //   .post('/verify-code', {
-        //     to: emailAddress,
-        //     code: code
-        //   },
-        //   config
-        // )
-        // .then((res) => {
-        //   if(res !== null) {
-        //     if(res.data.status === 'approved'){
-        //       setIsErrorCodeMessage(false);
-        //       setCodeErrorMessage("");
-        //       navigation.navigate('CreatePassword');
-        //     }
-        //     else{
-        //       setCodeErrorMessage("Wrong Code - try again")
-        //     }
-        //   }
-        //   else{
-        //     alert("Error2")
-        //   }
-        // }
-        // )
-        // .catch((error) => {
-        //   alert(error)
-        // })
+        // navigation.navigate('CreatePassword');
+        axios
+          .post('/verify-code', {
+            to: emailAddress,
+            code: code
+          },
+          config
+        )
+        .then((res) => {
+          if(res !== null) {
+            if(res.data.status === 'approved'){
+              setIsErrorCodeMessage(false);
+              setCodeErrorMessage("");
+              navigation.navigate('CreatePassword');
+            }
+            else{
+              setCodeErrorMessage("Wrong Code - try again")
+            }
+          }
+          else{
+            alert("Error2")
+          }
+        }
+        )
+        .catch((error) => {
+          alert(error)
+          console.log(error);
+
+        })
       }
     }
 

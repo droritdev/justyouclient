@@ -52,6 +52,8 @@ const StarPage = ({ navigation}) => {
         const [runningArrayCount,setRunningArrayCount] = useState(0);
         const [powerLiftingArrayCount,setPowerLiftingArrayCount] = useState(0);
         const [streetWorkoutArrayCount,setStreetWorkoutArrayCount] = useState(0);
+
+        const [categoryTrainerCountArray , setCategoryTrainerCountArray] = useState([]);
         
          const categories = [
             { id: 1, label: 'HIT' },
@@ -103,8 +105,22 @@ const StarPage = ({ navigation}) => {
 
     const sortByCategory = (trainerArray) => {
         // console.log(trainerArray)
+        var categoryTrainerCountArray = []
         for (let index = 0; index < trainerArray.length; index++) {
             const element = trainerArray[index];
+            var categoryCount = 0;
+            // categoryTrainerCountArray.push(categoryCount)
+
+            for (let j = 0; j < categories.length; j++) {
+                const category = categories[j];
+
+                if(element.categories.includes(category.label)){
+                    categoryCount += 1;
+                    console.log('Category.count')
+                    console.log(category.label + ' : ' + categoryCount);
+
+                }
+            }
             if(element.categories.includes('HIT')){
                 hitArray.push(element);
             }
@@ -474,7 +490,7 @@ const StarPage = ({ navigation}) => {
                                 style={styles.categoryPreviewText}
                             >
                                 <Text style={styles.categoryText1}>HIT</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {hitArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {hitArrayCount}</Text> */}
                             </View>
 
 
@@ -497,7 +513,7 @@ const StarPage = ({ navigation}) => {
                                 style={styles.categoryPreviewText}
                             >
                                 <Text style={styles.categoryText1}>KICK BOXING</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {kickBoxArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {kickBoxArrayCount}</Text> */}
                             </View>
                         </View>
 
@@ -520,7 +536,7 @@ const StarPage = ({ navigation}) => {
                                 style={styles.categoryPreviewText}
                             >
                                 <Text style={styles.categoryText1}>MARTIAL ARTS</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {martialArtsArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {martialArtsArrayCount}</Text> */}
                             </View>
                         </View>
 
@@ -542,7 +558,7 @@ const StarPage = ({ navigation}) => {
                             >
 
                                 <Text style={styles.categoryText1}>PILATIS</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {pilatisArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {pilatisArrayCount}</Text> */}
                             </View>
                         </View>
 
@@ -565,7 +581,7 @@ const StarPage = ({ navigation}) => {
                             >
 
                                 <Text style={styles.categoryText1}>CLIMBING</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {climbingArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {climbingArrayCount}</Text> */}
                             </View>
                         </View>
 
@@ -588,7 +604,7 @@ const StarPage = ({ navigation}) => {
                             >
 
                                 <Text style={styles.categoryText1}>TRX</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
                             </View>
                         </View>
                             
@@ -613,7 +629,7 @@ const StarPage = ({ navigation}) => {
                             >
                                 <Text style={styles.categoryText1}>SWIMMING </Text>
 
-                                <Text style={styles.categoryText2}>Amount of trainrs: {swimmingArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {swimmingArrayCount}</Text> */}
                             </View>
                         </View>
                         <View style={styles.inSectionView}>
@@ -634,7 +650,7 @@ const StarPage = ({ navigation}) => {
                                 style={styles.categoryPreviewText}
                             >
                                 <Text style={styles.categoryText1}>RUNNING </Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {runningArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {runningArrayCount}</Text> */}
                             </View>
                         </View>
                         
@@ -656,7 +672,7 @@ const StarPage = ({ navigation}) => {
                                 style={styles.categoryPreviewText}
                             >
                                 <Text style={styles.categoryText1}>DANCING </Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {dancingArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {dancingArrayCount}</Text> */}
                             </View>
                         </View>
                         
@@ -677,7 +693,7 @@ const StarPage = ({ navigation}) => {
                                 style={styles.categoryPreviewText}
                             >
                                 <Text style={styles.categoryText1}>POWER LIFTING</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {powerLiftingArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {powerLiftingArrayCount}</Text> */}
                             </View>
                         </View>
 
@@ -699,7 +715,7 @@ const StarPage = ({ navigation}) => {
                                 style={styles.categoryPreviewText}
                             >
                                 <Text style={styles.categoryText1}>STREET</Text>
-                                <Text style={styles.categoryText2}>Amount of trainrs: {streetWorkoutArrayCount}</Text>
+                                {/* <Text style={styles.categoryText2}>Amount of trainrs: {streetWorkoutArrayCount}</Text> */}
                             </View>
                         </View>
                         
