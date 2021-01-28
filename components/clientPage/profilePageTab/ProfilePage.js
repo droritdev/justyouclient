@@ -7,6 +7,8 @@ import FastImage from 'react-native-fast-image'
 import auth from '@react-native-firebase/auth';
 import DropdownAlert from 'react-native-dropdownalert';
 import Icon from 'react-native-vector-icons/Feather';
+import * as Progress from 'react-native-progress';
+
 
 
 import {ClientContext} from '../../../context/ClientContext';
@@ -36,6 +38,8 @@ const ProfilePage = ({navigation}) => {
     var ordersHistoryTrainerArrayToPush = [];
     const [ordersHistoryTrainerArray, setOrdersHistoryTrainerArray] = useState([]);
     const [completedOrdersToPass, setCompletedOrdersToPass] = useState([]);
+    const [noRecentOrders, setNoRecentOrders] = useState('none')
+    const [isLoadingFinish, setIsLoadingFinish] = useState(false)
 
     //ref to show covid alert
     let dropDownAlertRef = useRef(null);
@@ -54,42 +58,42 @@ const ProfilePage = ({navigation}) => {
         },
     };
 
-    const getClientOrders = (clientId) => {
+    const getClientOrders = async (clientId) => {
         console.log(clientId)
-        axios
-        .get('/orders/by-client-id/'+clientId, 
-        config
-        )
-        .then((doc) => {
-            var allOrders = doc.data;
-            var pendingOrders = [];
-            var approvedOrders = [];
-            var completedOrders = [];
-            
+        await axios
+            .get('/orders/by-client-id/'+clientId, 
+            config
+            )
+            .then((doc) => {
+                var allOrders = doc.data;
+                var pendingOrders = [];
+                var approvedOrders = [];
+                var completedOrders = [];
+                
 
-            for (let index = 0; index < allOrders.length; index++) {
-                const singleOrder = allOrders[index];
-                if (singleOrder.status === "pending") {
-                    pendingOrders.push(singleOrder);
-                    
+                for (let index = 0; index < allOrders.length; index++) {
+                    const singleOrder = allOrders[index];
+                    if (singleOrder.status === "pending") {
+                        pendingOrders.push(singleOrder);
+                        
 
-                }if (singleOrder.status === "approved") {
-                    approvedOrders.push(singleOrder);
-                    
-                }else if(singleOrder.status === "completed") {
-                    completedOrders.push(singleOrder);
+                    }if (singleOrder.status === "approved") {
+                        approvedOrders.push(singleOrder);
+                        
+                    }else if(singleOrder.status === "completed") {
+                        completedOrders.push(singleOrder);
+                    }
+
                 }
-
-            }
-            
-            getAllTrainersInfo(completedOrders);
-            setPendingOrdersArrived(pendingOrders);
-            setApprovedOrdersArrived(approvedOrders);
-            setCompletedOrdersToPass(completedOrders);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+                
+                getAllTrainersInfo(completedOrders);
+                setPendingOrdersArrived(pendingOrders);
+                setApprovedOrdersArrived(approvedOrders);
+                setCompletedOrdersToPass(completedOrders);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     const getUserByFirebaseAuth = () => {
@@ -167,72 +171,49 @@ const ProfilePage = ({navigation}) => {
         setCovidModalVisible(true);
     }
 
-    //run for all approved orders to get trainer id
     //using func as async for waiting trainers array to fill from MongoDB
-    // const getTrainerFromRecentOrders = async (ordersHistoryArray) => {
-        
-    //     for (let index = 0; index < ordersHistoryArray.length; index++) {
-    //         const trainerID = ordersHistoryArray[index].trainer.id;
-    //         //waiting for trainer to come from mongo for each order
-    //         await getTrainerFromMongoDB(trainerID);
-    //         //when for loop is ended fill the scrollView (set the scrollView array)
-    //         if(index === ordersHistoryArray.length-1 ){
-    //             setOrdersHistoryTrainerArray(ordersHistoryTrainerArrayToPush);
-    //         }
-    //     }
-
-                
-        
-    // }
     //getting the trainer from mongoDb => recent orders use
-    const getTrainerFromMongoDB = async (trainerID) => {
-        
-        await axios
-                    .get('/trainers/id/'
-                    +trainerID,
-                    config
-                )
-                .then((doc) => {
-                    if(doc) {
-                        //filling the the array
-                        ordersHistoryTrainerArrayToPush.push(doc.data);
-                    }
-                  })
-                .catch((err) => console.log(err));
-    }
     const getAllTrainersInfo = async (ordersHistoryArray) => {
         console.log('inThatFunction');
         //Array to to be filled with the ids of the clients that left reviews
         var idArray = [];
-
-        //Push into the idArray all of the clientID
-        for (let index = 0; index < ordersHistoryArray.length; index++) {
-            const singleTrainerID = ordersHistoryArray[index].trainer.id;
-            idArray.push(singleTrainerID);
-        }
-        console.log(idArray);
-
-
-        //fetch the trainer of all trainers from mongodb using axios
-        await axios
-        .get('/trainers/findMultipleTrainers/'+idArray, 
-        config
-        )
-        .then((doc) => {
-            for (let index = 0; index < doc.data.length; index++) {
-                const element = doc.data[index];
-                console.log('findMultipleTrainers');
-                console.log(element);
+        if(ordersHistoryArray.length === 0){
+            setOrdersHistoryTrainerArray([]);
+            setNoRecentOrders('flex')
+        }else{
+            setNoRecentOrders('none')
+            //Push into the idArray all of the clientID
+            for (let index = 0; index < ordersHistoryArray.length; index++) {
+                const singleTrainerID = ordersHistoryArray[index].trainer.id;
+                idArray.push(singleTrainerID);
             }
+            console.log(idArray);
+
+
+            //fetch the trainer of all trainers from mongodb using axios
+            await axios
+            .get('/trainers/findMultipleTrainers/'+idArray, 
+            config
+            )
+            .then((doc) => {
+                for (let index = 0; index < doc.data.length; index++) {
+                    const element = doc.data[index];
+                    console.log('findMultipleTrainers');
+                    console.log(element);
+                }
+                
+            var allTrainersInfo = doc.data;
+            allTrainersInfo.reverse();
+            setIsLoadingFinish(true);
+            setOrdersHistoryTrainerArray(allTrainersInfo);
             
-           var allTrainersInfo = doc.data;
-           allTrainersInfo.reverse();
 
-           setOrdersHistoryTrainerArray(allTrainersInfo);
-           
-
-        })
-        .catch((err) => {console.log(err)});
+            })
+            .catch((err) => {
+                console.log('errorInTrainerReading')
+                console.log(err)
+            });
+        }
     }
 
     //Load trainer star rating
@@ -618,7 +599,23 @@ const ProfilePage = ({navigation}) => {
                         horizontal={true} 
                         showsHorizontalScrollIndicator={false}
                     >
-                        {getApprovedOrdersPattern()}
+                                <View 
+                                    display={noRecentOrders}
+                                    style={styles.noRecentOrdersTextContainer}>
+
+                                    <Text
+                                        style={styles.noRecentOrdersText} 
+                                        >There are no recent orders yet...
+                                    </Text>
+                                </View>
+                                {isLoadingFinish ?
+                                    getApprovedOrdersPattern()
+                                :
+                                    <View style={styles.progressView}>
+                                        <Progress.Circle size={Dimensions.get('window').height * .1} indeterminate={true} />
+                                    </View>
+                                }
+                        
                         
                     </ScrollView>
                 </View>
@@ -840,6 +837,34 @@ const styles = StyleSheet.create({
     pageMainTitlesContainer: {
         marginTop: Dimensions.get('window').height * .030,
     },
+    progressView: {
+        marginTop: Dimensions.get('window').height * .03,
+        marginLeft: Dimensions.get('window').width * .33,
+        
+        alignSelf: 'center'
+    },
+    noRecentOrdersTextContainer:{
+        backgroundColor: '#fafafa',
+        alignItems:'center',
+        borderTopColor:'gainsboro',
+        borderBottomColor:'gainsboro',
+        borderLeftColor: '#fafafa' ,
+        borderRightColor: '#fafafa',
+        borderWidth: 3,
+        width: Dimensions.get('window').width * 1.1,
+        height: Dimensions.get('window').height * .1,
+
+
+        
+    },
+    noRecentOrdersText:{
+        marginTop:Dimensions.get('window').height * .03,
+        alignSelf: 'center',
+        fontWeight: 'bold',
+        color: 'grey',
+        fontSize: Dimensions.get('window').height * .02,
+    },
+    
     linksTitle: {
         fontWeight: 'bold',
         fontSize: Dimensions.get('window').height * .0225,

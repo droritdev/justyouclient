@@ -1,13 +1,17 @@
-import React, {useState, useReducer, useContext} from 'react';
-import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image , FlatList} from 'react-native';
+import React, {useState, useReducer, useContext, useRef} from 'react';
+import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image , FlatList, Modal} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
+import DropdownAlert from 'react-native-dropdownalert';
 
 import FastImage from 'react-native-fast-image';
 import * as Progress from 'react-native-progress';
+
+import TagSelect from '../../GlobalComponents/tagSelect/TagSelect';
+
 
 
 import {CategoryContext} from '../../../context/CategoryContext';
@@ -37,7 +41,15 @@ const categoriesData = [
 
 //The claint's search page
 const SearchPage = ({navigation, route}) => {
+
+    //in all the main pages
+     //ref to show covid alert
+     let dropDownAlertRef = useRef(null);
+     //Modal to display for covid-19 alert tap
+     const [covidModalVisible, setCovidModalVisible] = useState(false);
     // const { categoryFromStarPage } = route.params
+
+    const tagSelectRef = useRef(null);
 
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
 
@@ -65,50 +77,24 @@ const SearchPage = ({navigation, route}) => {
 
 
     const [isLoadingCircle, setIsLoadingCircle] = useState(true);
-
-
-    // React.useCallback(() => {
-    //     // Do something when the screen is focused
-  
-    //     return () => {
-    //       // Do something when the screen is unfocused
-    //       // Useful for cleanup functions
-    //     };
-    //   }, []);
-
+    const [isThereAreTrainersInCategory, setIsThereAreTrainersInCategory] = useState('none');
 
     React.useEffect(() => {
-        getClientFromMongoDB();
-        // console.log('categoryFromStarPage: '+ categoryFromStarPage);
-        // if(category != ''){
-        //         // alert('in category');
-        //         console.log('from star page: ' + category);
-        //         setIsCategoryMode(true);
-        //         setCategoryTitle('category');
-        //         getAllTrainers(category);
-        //         setDisplayCategories('flex');
-        //         setDisplayRecentOrders('none');
-                
-        //      }
-
-        // getTrainersByCategory();
-        
-    },[]);
-
-//MARKA
-    // React.useEffect(() => {
-    //     const unsubscribe = navigation.addListener('focus', () => {
-    //         getClientFromMongoDB();
-    //         // if(category != ''){
-    //         //     setIsCategoryMode(true);
-    //         //     setCategoryTitle(category);
-    //         //     setDisplayCategories('flex');
-    //         //     setDisplayRecentOrders('none');
-                
-    //         // }
-    //     });
-    //     return unsubscribe;
-    //   }, [navigation]);
+        const unsubscribe = navigation.addListener('focus', () => {
+        if(global.covidAlert) {
+            if(dropDownAlertRef.state.isOpen === false) {
+                //Show covid alert
+                dropDownAlertRef.alertWithType('info', 'Latest information on CVOID-19', 'Click here to learn more.');
+            }
+        } else {
+            dropDownAlertRef.closeAction();
+        }
+        //clear the tag selected and title
+        clearTagAndTitle()
+            getClientFromMongoDB();
+        });
+        return unsubscribe;
+      }, [navigation]);
 
 
     const config = {
@@ -130,7 +116,6 @@ const SearchPage = ({navigation, route}) => {
                     .then((doc) => {
                         if(doc) {
                             const clientID = doc.data[0]._id;
-                        // setClientID(clientID);
                         getClientOrders(clientID)
                         
                           if(doc.data[0].email!=null){
@@ -152,7 +137,6 @@ const SearchPage = ({navigation, route}) => {
                 var allOrders = doc.data;    
                 allOrders = sortOrders(allOrders);
     
-                // setRecentOrders(allOrders);
                 getTrainerFromRecentOrders(allOrders)
                 
             })
@@ -219,24 +203,14 @@ const SearchPage = ({navigation, route}) => {
                     )
                     .then((doc) => {
                         if(doc) {
-                            console.log('recentTrainerArray')
-                            console.log(recentTrainerArray[0]);
-                            // recentTrainerArray.push(doc.data);
-                            console.log(recentTrainerArray.includes(doc.data));
                             
                             //for no duplicates
                             if(!recentTrainerArray.includes(doc.data)){
-                                console.log('notInclude*******************************');
-                                console.log(recentTrainerArray);
+                                
                                 recentTrainerArray.push(doc.data);
-                                // setIsLoadingCircle(false);
                                 forceUpdate();
                             }else{
-                                alert('Included');
-                            }
-                            
-                            
-
+                            }                
                         }
                       })
                     .catch((err) => console.log(err));
@@ -251,7 +225,6 @@ const SearchPage = ({navigation, route}) => {
             for (let index = 0; index < reviewsArray.length; index++) {
                 const element = reviewsArray[index];
                 starsCounter += Number(element.stars)
-    
             }
     
             finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
@@ -335,30 +308,52 @@ const SearchPage = ({navigation, route}) => {
             const trainer = trainersArray[index];
             if(trainer.categories.includes(category)){
                 trainersByCategory.push(trainer);
-                console.log(trainer);
-                console.log('trainersByCategory ' + trainersByCategory)
+                
             }
+            console.log('trainersByCategory');
+            console.log(trainersByCategory);
             setDoc(trainersByCategory);
             setIsLoadingCircle(false);
             forceUpdate();
         }
+        if(trainersByCategory.length === 0){
+            setIsThereAreTrainersInCategory('flex');
+        }else{setIsThereAreTrainersInCategory('none');}
     }
-
+    //MARK
     //When the user chooses category it whill be displayed on the input bellow
     const handleOnItemPress = (item) => {
-        console.log('itemLabel: ' +item.label)
-        if(selectedItems.includes(item.label)){
-            let index = selectedItems.indexOf(item.label);
-            selectedItems.splice(index, 1);
-            setSelectedItems(selectedItems.filter(element => element !== item.label));
-            console.log('selectedItemsTop: ' + item.label)
-        }
-        else{
-            setSelectedItems(selectedItems => [...selectedItems, item.label]);
-            console.log('selectedItemsbuttom: ' + item.label);
-            console.log('sendTOMONGO: ' + item.label);
-            getAllTrainers(item.label);
-        }
+        //TODO: show to user the recent orders if no any choice selected
+        // if(categoryTitle === item.label){
+        //     clearTagAndTitle()
+        // }
+        // console.log('itemLabel: ' +item.label)
+        // if(selectedItems.includes(item.label)){
+        //     let index = selectedItems.indexOf(item.label);
+        //     selectedItems.splice(index, 1);
+        //     setSelectedItems(selectedItems.filter(element => element !== item.label));
+        //     console.log('selectedItemsTop: ' + item.label)
+        // }
+        // else{
+        //     setSelectedItems(selectedItems => [...selectedItems, item.label]);
+        //     console.log('selectedItemsbuttom: ' + item.label);
+        //     console.log('sendTOMONGO: ' + item.label);
+        //     if(selectedItems){
+        //         getAllTrainers(item.label);
+        //     }else{
+        //         setCategoryTitle('select category ')
+
+        //     }
+        // }
+        getAllTrainers(item.label);
+
+    }
+
+    const clearTagAndTitle = () => {
+        tagSelectRef.current.setState({ value: {} });
+        setCategoryTitle('Recent orders');
+
+
     }
 
     const handleOnInputChange = (text) => {
@@ -390,10 +385,69 @@ const SearchPage = ({navigation, route}) => {
         navigation.navigate('StarPageStack',
              { screen: 'TrainerOrderPage'  });
     // navigation.navigate('StarPageStack',{params: ''})
-}
+    }
+
+    //Update the covid alert var to false (will not display coivd alert anymore)
+    const covidAlertCancel = () => {
+        global.covidAlert = false;
+        
+    }
+
+
+    //Show the covid information modal
+    const covidAlertTap = () => {
+        setCovidModalVisible(true);
+    }
 
     return(
         <SafeAreaView style={styles.safeArea}>
+
+            {/* Start of covid alert part */}
+
+            <Modal
+                
+                animationType="slide"
+                transparent={true}
+                cancelable={true}
+                visible={covidModalVisible}
+                onRequestClose={()=>{}}
+            >
+                <View style={styles.covidContainer}>
+                    
+                    <View style={styles.covidModalContainer}>
+                        <Icon
+                            name="x-circle" 
+                            size={Dimensions.get('window').width * .05} 
+                            style={styles.covidCloseIcon} 
+                            onPress={()=> {setCovidModalVisible(false)}}
+                        />
+                        <Text style={styles.covidTitle}>COVID-19 Information</Text>
+                        <Text style={styles.covidMessage}>{"We at JustYou take care to follow the changing guidelines of the Ministry of Health regarding the coronavirus. Before ordering, the personal trainer and the client will fill out a statement that they do indeed meet the requirements of the law regarding the coronavirus. \nAs Everyone knows, the guidelines may change at any time and we will make the adujstments according to the changes to be determined by the Ministry of Health. Adherence to these requirments is for all of us for your health and safety and we will know better days"}.</Text>
+                    </View>
+                </View>
+
+            </Modal>
+
+            <View style={styles.covidAlertView}>
+                <DropdownAlert
+                        ref={(ref) => {
+                        if (ref) {
+                            dropDownAlertRef = ref;
+                        }
+                        }}
+                        containerStyle={styles.covidAlertContainer}
+                        showCancel={true}
+                        infoColor ={'deepskyblue'}
+                        onCancel={covidAlertCancel}
+                        closeInterval = {0}
+                        onTap={covidAlertTap}
+                        titleNumOfLines={1}
+                        messageNumOfLines={1}
+                />
+            </View>
+            {/* End of covid alert part */}
+
+
             <View style={styles.header}>
                 <Text style={styles.headerText}>Just You</Text>
             </View>
@@ -412,10 +466,18 @@ const SearchPage = ({navigation, route}) => {
             </View>
             <View style={styles.categoryPickerContainer}>
                 <View style={styles.categorySelect}>
-                    <PickCategories
+                    {/* <PickCategories
                         data={items}
                         onItemPress={(item) => handleOnItemPress(item)}
-                    />
+                    /> */}
+                    <TagSelect
+                        data={items}
+                        ref={tagSelectRef}
+                        onItemPress={(item) => handleOnItemPress(item)}
+                        itemStyle={styles.item}
+                        itemLabelStyle={styles.label}
+                        itemStyleSelected={styles.itemSelected}
+                    ></TagSelect>
                 </View>
             </View>
             <View display = {displayCategories}>
@@ -446,7 +508,7 @@ const SearchPage = ({navigation, route}) => {
                             keyExtractor={item => item.id}   
                     />
                 </View>
-                {/* trainersByCategory */}
+                
                 <View display = {displayCategories}>
                     <FlatList
                             data={doc}
@@ -454,6 +516,17 @@ const SearchPage = ({navigation, route}) => {
                             keyExtractor={item => item.id}   
                     />
                 </View>
+                
+                <View 
+                    display={isThereAreTrainersInCategory}
+                    style={styles.listIsEmptyContainer}> 
+                    <Text style={styles.recentOrdersTitle}> No any Trainers in that category yet.. </Text>
+                </View>
+                 
+                 
+                
+
+                
                 {/* <View style={styles.trainerView}>
                     <View style={styles.trainerViewRow}>
                         <TouchableOpacity
@@ -594,6 +667,18 @@ const styles = StyleSheet.create({
         fontSize: 20,
         alignSelf: 'center'
     },
+    item: {
+        borderWidth: 1,
+        borderColor: 'deepskyblue',    
+        backgroundColor: '#FFF'
+    },
+    label: {
+        color: '#333',
+        fontWeight: 'bold'
+    },
+    itemSelected: {
+        backgroundColor: 'deepskyblue',
+    },
     recentOrdersTitle: {
         marginLeft: 15,
         marginTop: 30,
@@ -637,6 +722,49 @@ const styles = StyleSheet.create({
     },
     progressView: {
         alignSelf: 'center'
+    },
+    covidAlertView: {
+        zIndex: 2,
+        opacity: 0.9
+    },
+    covidAlertContainer: {
+        backgroundColor: 'deepskyblue',
+    },
+    covidContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    },
+    covidModalContainer: {
+        backgroundColor: "white",
+        height: Dimensions.get('window').height * .45,
+        width: Dimensions.get('window').width * .9,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+    covidTitle: {
+        marginTop: Dimensions.get('window').height * .01,
+        alignSelf: 'center',
+        fontSize: Dimensions.get('window').height * .0278,
+        fontWeight: 'bold'
+    },
+    covidMessage: {
+        flex: 1,
+        marginTop: Dimensions.get('window').height * .013,
+        alignSelf: 'center',
+        marginLeft: Dimensions.get('window').width * .020,
+        fontSize: Dimensions.get('window').height * .02,
+    },
+    covidCloseIcon: {
+        marginTop: Dimensions.get('window').height * .015,
+        marginRight: Dimensions.get('window').width * .015,
+        alignSelf: 'flex-end',
     },
 });
 

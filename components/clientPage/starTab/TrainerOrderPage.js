@@ -555,7 +555,7 @@ const TrainerOrderPage = ({navigation}) => {
                                         //     country: item.value
                                         // })
                                     }
-                                    />
+                        />
                     </View>  
 
                     <View style={styles.trainingSiteSelectContainer}> 

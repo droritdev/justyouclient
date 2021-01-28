@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet} from 'react-native'
 
 import { TagSelect } from 'react-native-tag-select';
+// import { TagSelect } from './tagSelect/TagSelect';
 
 //Common pick categories object
 const PickCategories = (props) => {
@@ -9,6 +10,10 @@ const PickCategories = (props) => {
         <TagSelect
             value={props.value}
             data={props.data}
+            max={1}
+            onMaxError={() => {
+                alert('please select only one category');
+              }}
             itemStyle={styles.item}
             itemLabelStyle={styles.label}
             itemStyleSelected={styles.itemSelected}

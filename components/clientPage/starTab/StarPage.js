@@ -1,12 +1,12 @@
-import React, {useState, useContext, useEffect, useReducer} from 'react';
-import { Button, Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions, Image, FlatList } from 'react-native';
+import React, {useState, useContext, useEffect, useReducer, useRef} from 'react';
+import { Button, Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions, Image, FlatList, Modal } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 
 import FastImage from 'react-native-fast-image';
 import * as Progress from 'react-native-progress';
 
-// import { ListItem } from 'react-native-elements'
-
+import Icon from 'react-native-vector-icons/Feather';
+import DropdownAlert from 'react-native-dropdownalert';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
@@ -21,7 +21,11 @@ import {OrderContext} from '../../../context/OrderContext';
 
 //The client's start area page
 const StarPage = ({ navigation}) => {
-    
+    //in all the main pages
+    //ref to show covid alert
+    let dropDownAlertRef = useRef(null);
+    //Modal to display for covid-19 alert tap
+    const [covidModalVisible, setCovidModalVisible] = useState(false);
 
     const [doc, setDoc] = useState();
     const [isRefreshing,setIsRefreshing] = useState(false);
@@ -96,6 +100,15 @@ const StarPage = ({ navigation}) => {
     
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
+            // Check if covid alert was dismissed
+            if(global.covidAlert) {
+                if(dropDownAlertRef.state.isOpen === false) {
+                    //Show covid alert
+                    dropDownAlertRef.alertWithType('info', 'Latest information on CVOID-19', 'Click here to learn more.');
+                }
+            } else {
+                dropDownAlertRef.closeAction();
+            }
             getAllTrainers();
         });
         return unsubscribe;
@@ -433,8 +446,68 @@ const StarPage = ({ navigation}) => {
         navigation.navigate('ComingSoon');
     }
 
+    //Update the covid alert var to false (will not display coivd alert anymore)
+    const covidAlertCancel = () => {
+        global.covidAlert = false;
+    }
+
+
+    //Show the covid information modal
+    const covidAlertTap = () => {
+        setCovidModalVisible(true);
+    }
+
     return(
         <SafeAreaView style={styles.safeArea}>
+            {/* Start of covid alert part */}
+
+            <Modal
+                
+                animationType="slide"
+                transparent={true}
+                cancelable={true}
+                visible={covidModalVisible}
+                onRequestClose={()=>{}}
+            >
+                <View style={styles.covidContainer}>
+                    
+                    <View style={styles.covidModalContainer}>
+                        <Icon
+                            name="x-circle" 
+                            size={Dimensions.get('window').width * .05} 
+                            style={styles.covidCloseIcon} 
+                            onPress={()=> {setCovidModalVisible(false)}}
+                        />
+                        <Text style={styles.covidTitle}>COVID-19 Information</Text>
+                        <Text style={styles.covidMessage}>{"We at JustYou take care to follow the changing guidelines of the Ministry of Health regarding the coronavirus. Before ordering, the personal trainer and the client will fill out a statement that they do indeed meet the requirements of the law regarding the coronavirus. \nAs Everyone knows, the guidelines may change at any time and we will make the adujstments according to the changes to be determined by the Ministry of Health. Adherence to these requirments is for all of us for your health and safety and we will know better days"}.</Text>
+                    </View>
+                </View>
+
+            </Modal>
+
+            <View style={styles.covidAlertView}>
+                <DropdownAlert
+                        ref={(ref) => {
+                        if (ref) {
+                            dropDownAlertRef = ref;
+                        }
+                        }}
+                        containerStyle={styles.covidAlertContainer}
+                        showCancel={true}
+                        infoColor ={'deepskyblue'}
+                        onCancel={covidAlertCancel}
+                        closeInterval = {0}
+                        onTap={covidAlertTap}
+                        titleNumOfLines={1}
+                        messageNumOfLines={1}
+                />
+            </View>
+            {/* End of covid alert part */}
+
+
+
+
+
             <ScrollView 
                     style={styles.container}
                     >
@@ -1094,9 +1167,52 @@ const styles = StyleSheet.create({
         marginVertical: 8,
         marginHorizontal: 16,
       },
-      title: {
+    title: {
         fontSize: 32,
       },
+    covidAlertView: {
+        zIndex: 2,
+        opacity: 0.9
+    },
+    covidAlertContainer: {
+        backgroundColor: 'deepskyblue',
+    },
+    covidContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    },
+    covidModalContainer: {
+        backgroundColor: "white",
+        height: Dimensions.get('window').height * .45,
+        width: Dimensions.get('window').width * .9,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+    covidTitle: {
+        marginTop: Dimensions.get('window').height * .01,
+        alignSelf: 'center',
+        fontSize: Dimensions.get('window').height * .0278,
+        fontWeight: 'bold'
+    },
+    covidMessage: {
+        flex: 1,
+        marginTop: Dimensions.get('window').height * .013,
+        alignSelf: 'center',
+        marginLeft: Dimensions.get('window').width * .020,
+        fontSize: Dimensions.get('window').height * .02,
+    },
+    covidCloseIcon: {
+        marginTop: Dimensions.get('window').height * .015,
+        marginRight: Dimensions.get('window').width * .015,
+        alignSelf: 'flex-end',
+    },
 });
 
 export default StarPage;

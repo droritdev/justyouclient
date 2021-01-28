@@ -44,8 +44,8 @@ const EditProfile = ({navigation}) => {
     var profileImage = '';
     
     //const [profileImageSource, setProfileImageSource] = useState(require('../../images/profilePic.png'));
-    const [minimumDate, setMinimumDate] = useState("");
-    const [maximumDate, setMaximumDate] = useState("");
+    const [minimumDate, setMinimumDate] = useState( new Date());
+    const [maximumDate, setMaximumDate] = useState( new Date());
     const [birthdaySelected, setBirthdaySelected] = useState(clientObject.birthday);
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     const [dialogVisible, setDialogVisible] = useState(false);
@@ -66,7 +66,14 @@ const EditProfile = ({navigation}) => {
 
     //First off all, the component loads the user details from the data base and sets the variables to the data
     useEffect(() => {
-        
+        const unsubscribe = navigation.addListener('focus', () => {
+            setValuesForPage();
+        });
+        return unsubscribe;
+      }, [navigation]);
+
+
+    const setValuesForPage = () => {
         console.log('clientObject.name.first ' + clientObject.name.first)
         setFirstNameInput(clientObject.name.first);
         setLastNameInput(clientObject.name.last);
@@ -77,10 +84,7 @@ const EditProfile = ({navigation}) => {
         let currentDay = new Date().getDate();
         setMaximumDate(new Date().setFullYear(currentYear - 18, currentMonth, currentDay));
         setMinimumDate(new Date().setFullYear(currentYear - 120, currentMonth, currentDay));
-
-    },[])
-
-    // console.log(clientObject.name.first)
+    }
 
     //User picks an image from the gallery/camera and sets it to his profile picture
     const handleProfileImage = () => {

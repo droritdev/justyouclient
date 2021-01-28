@@ -334,6 +334,7 @@ app.get('/paypal', (req, res) => {
             "payee":{
                     "email" : "sb-du47x34662085@business.example.com"
             },
+            
             "description": trainingType + ' - ' + category
         }]
     };
