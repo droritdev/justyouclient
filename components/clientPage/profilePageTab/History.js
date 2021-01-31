@@ -104,8 +104,6 @@ const History = ({navigation, route}) => {
             const singleTrainerID = ordersHistoryTrainerArray[index].trainer.id;
             idArray.push(singleTrainerID);
         }
-
-
         //fetch the trainer of all trainers from mongodb using axios
         await axios
         .get('/trainers/findMultipleTrainers/'+idArray, 

@@ -122,6 +122,8 @@ const PendingApprovalOrders = ({route, navigation}) => {
                 repeats.push(
                     <TouchableOpacity
                     onPress={() => handleArrowApprovedPressed(i)}
+                    key = {'ordersRow' + i}
+
                     >
                         <View style={i % 2 === 0? styles.pendingOrder : styles.pendingOrderSecond}>
                             <FastImage

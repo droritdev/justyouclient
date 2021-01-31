@@ -276,8 +276,8 @@ const StarPage = ({ navigation}) => {
                     <Text style={styles.trainerText3}>
                         {getTrainerStarRating()}
                     </Text>
-                     <Image 
-                        source={require('../../../images/ratingStar.png')}
+                    <Image
+                        source={require('../../../images/starIconBlue.png')}
                         style={styles.starIcon}
                     />
                 
@@ -950,7 +950,9 @@ const styles = StyleSheet.create({
     },
     trainerText3: {
         fontSize: Dimensions.get('window').height * .0112,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontWeight: 'bold',
+
     },
     starIcon: {
         height: Dimensions.get('window').height * .0112,

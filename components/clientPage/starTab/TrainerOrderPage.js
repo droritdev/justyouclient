@@ -202,16 +202,6 @@ const TrainerOrderPage = ({navigation}) => {
         console.log('orderStartTime: '+ startTime)
         console.log('orderEndTime: '+ endTime)
 
-    
-    const Item = ({ title }) => (
-        <View style={styles.item}>
-          <Text style={styles.title}>{title}</Text>
-        </View>
-      );
-
-    const renderItem = ({ item }) => (
-        <Item title={item.title} />
-      );
 
     
     //array for the picker labels
@@ -239,6 +229,29 @@ const TrainerOrderPage = ({navigation}) => {
                 console.log(e.response);
             });
     }
+
+    const getLocationsFromSearch = () => {
+        let repeats = [];
+        if (listData !== [] ) {
+            for(let i = 0; i < listData.length; i++) {
+                console.log('listData[i]');
+                console.log(listData[i]);
+                console.log(listData[i].title);
+                 //pushing each trainer UI into the array
+                repeats.push(
+                    <TouchableOpacity 
+                        onPress={() => handleSearchBoxPressed(listData[i].description)}
+                        key = {'listData' + i}
+                    >
+                        <View style={styles.resultItem}>
+                            <Text style={styles.itemText}>{listData[i].description}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    )
+                }
+            }
+            return repeats;
+    };
 
 
     const registerOrder = () => {
@@ -426,8 +439,8 @@ const TrainerOrderPage = ({navigation}) => {
 
     //Handle when the client presses on Discount Code button
     const handleOnReviewsPressed = () => {
-        registerOrder();
-        // navigation.navigate('TrainerReviews');
+        // registerOrder();
+        navigation.navigate('TrainerReviews');
 
         
 
@@ -442,6 +455,19 @@ const TrainerOrderPage = ({navigation}) => {
     const handleOnCallPressed = () => {
         // navigation.navigate('ComingSoon');
     }  
+
+    const getHeader = () => {
+        return 
+            
+        ;
+    };
+
+    const getFooter = () => {
+        if (this.state.loading) {
+            return null;
+        }
+        return <Text>{'Loading...'}</Text>;
+    };
 
 
     return(
@@ -487,8 +513,12 @@ const TrainerOrderPage = ({navigation}) => {
                                         <Icon name="star" size={Dimensions.get('window').height * .02} color="black" />
                                     } */}
                                     <Text style={styles.trainerStarRating}>{getTrainerStarRating()}</Text> 
+                                    <Image
+                                        source={require('../../../images/starIconBlue.png')}
+                                        style={styles.starIcon}
+                                    />
                                                                         
-                                    <Icon name="star" size={Dimensions.get('window').height * .02} color="black" />
+                                    {/* <Icon name="star" size={Dimensions.get('window').height * .02} color="black" /> */}
                                         
                                     
                                 </View>
@@ -528,7 +558,7 @@ const TrainerOrderPage = ({navigation}) => {
                                         //     country: item.value
                                         // })
                                     }
-                                    />
+                        />
                 
                     </View>    
 
@@ -576,21 +606,27 @@ const TrainerOrderPage = ({navigation}) => {
                                 />
                             </View>
                             {/* <View display={isSearchingForLocation}> */}
-                            <FlatList
-                                    data={listData}
-                                    renderItem={({item, index}) => {
-                                    return (
-                                        <TouchableOpacity
-                                        style={styles.resultItem}
-                                        onPress={() => handleSearchBoxPressed(item.description)}
-                                        >
-                                        <Text  style={styles.itemText}>{item.description}</Text>
-                                        </TouchableOpacity>
-                                    );
-                                    }}
-                                    keyExtractor={(item) => item.id}
-                                    style={styles.searchResultsContainer}  
-                            />
+                            <View>
+                                {getLocationsFromSearch()}
+                                {/* <FlatList
+                                        vertical
+                                        showsVerticalScrollIndicator = {true}
+                                        data={listData}
+                                        keyExtractor={item => item._id}
+                                        renderItem={({item, index}) => {
+                                        return (
+                                            <TouchableOpacity
+                                            style={styles.resultItem}
+                                            onPress={() => handleSearchBoxPressed(item.description)}
+                                            >
+                                            <Text  style={styles.itemText}>{item.description}</Text>
+                                            </TouchableOpacity>
+                                        );
+                                        }}
+                                        keyExtractor={(item) => item.id}
+                                        style={styles.searchResultsContainer}  
+                                /> */}
+                            </View>
 
                             {/* </View> */}
                         </View>
@@ -889,7 +925,12 @@ const styles = StyleSheet.create({
 
     },
     trainerStarRating:{
-        fontSize: Dimensions.get('window').height * .015,
+        fontWeight: 'bold',
+        fontSize: Dimensions.get('window').height * .02,
+    },
+    starIcon: {
+        height: Dimensions.get('window').height * .022,
+        width: Dimensions.get('window').height * .022
     },
 
     trainerCategoryAndCertification:{

@@ -50,9 +50,10 @@ const ChooseDateAndTimePage = ({navigation}) => {
     
 
     useEffect(() => {
-        // for (let index = 0; index <= 60; index+10) {
-        //     console.log(index);
-        // }
+        navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible: false
+        })
+        
         setCurrentDisplayedDate(getCurrentDate());
 
         getTrainerFromMongoDB();    
@@ -395,7 +396,10 @@ const ChooseDateAndTimePage = ({navigation}) => {
                 type: 'SET_ORDER_DATE',
                 orderDate : orderDateToPass
             });
-    
+            navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: true
+            })
+
             navigation.navigate('TrainerOrderPage' );
     
             setDatePickerVisible(false);
@@ -412,6 +416,9 @@ const ChooseDateAndTimePage = ({navigation}) => {
         setCurrentDisplayedDate(date);
     }
     const handleArrowButton = () => {
+        navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible: true
+        })
         navigation.navigate('TrainerOrderPage' );
     }
     

@@ -68,7 +68,8 @@ const TrainerReviews = ({navigation}) => {
         navigation.dangerouslyGetParent().setOptions({
             tabBarVisible: false
         })
-
+        console.log('Trainer reviews page')
+        console.log(trainerObject)
         calculateTrainerAge();
 
         loadStarRating();
@@ -112,7 +113,7 @@ const TrainerReviews = ({navigation}) => {
            
 
         })
-        .catch((err) => {});
+        .catch((err) => {console.log(err)});
     }
 
 

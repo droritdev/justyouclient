@@ -1,34 +1,19 @@
 import React, {useState, useReducer, useContext} from 'react';
-import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image , FlatList} from 'react-native';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import {  Text, View, StyleSheet,  Dimensions, Image , FlatList} from 'react-native';
+import {  TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
-import auth from '@react-native-firebase/auth';
 
 import FastImage from 'react-native-fast-image';
 import * as Progress from 'react-native-progress';
 
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 
-import {CategoryContext} from '../../../context/CategoryContext';
+import images from './CategoryImageManager';
+
 import {TrainerContext} from '../../../context/TrainerContext';
 
 
-
-const categoriesData = [
-    { id: 1, label: 'HIT' },
-    { id: 2, label: 'KICK BOX' },
-    { id: 3, label: 'MARTIAL ARTS' },
-    { id: 4, label: 'PILATIS' },
-    { id: 5, label: 'CLIMBING' },
-    { id: 6, label: 'TRX' },
-    { id: 7, label: 'DANCING' },
-    { id: 8, label: 'SWIMMING' },
-    { id: 9, label: 'RUNNING' },
-    { id: 10,label: 'POWERLIFTING' },
-    { id: 11,label: 'STREET' }
-
-];
 
 //The client's search page
 const TrainersByCategories = ({navigation, route}) => {
@@ -38,17 +23,12 @@ const TrainersByCategories = ({navigation, route}) => {
     } = useContext(TrainerContext);
     const { categoryFromStarPage } = route.params;
 
-    const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
-
-    const {category, dispatchCategory} = useContext(CategoryContext)
     const [doc, setDoc] = useState([]);
 
-    var recentTrainerArray = [];
     var reviewsArray = [];
     var trainersByCategory = [];
 
     const [nameForImage, setNameForImage] = useState("");
-    const {imageSource} = ''
 
     const [isLoadingCircle, setIsLoadingCircle] = useState(true);
     const [isTrainersAvailable, setIsTrainersAvailable] = useState(true);
@@ -61,52 +41,16 @@ const TrainersByCategories = ({navigation, route}) => {
         },
     };
 
-    // React.useEffect(() => {
-    //     console.log(categoryFromStarPage);
-    //         getAllTrainers(categoryFromStarPage);
-        
-    // },[]);
-
      React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             console.log(categoryFromStarPage);
-            var imageName = categoryFromStarPage.toString();
-            setNameForImage(switchImages(imageName.replace(" ",'')));
-
+            var imageName = categoryFromStarPage.toString().replace(" ",'');
+            setNameForImage(images[imageName])
             getAllTrainers(categoryFromStarPage);
             
         });
         return unsubscribe;
       }, [navigation]);
-
-      const switchImages = (category) => {
-        switch(category) {
-            case 'CLIMBING':
-                return (require('../../../images/categoriesImages/CLIMBING.jpg'));
-            case 'DANCING':
-                return (require('../../../images/categoriesImages/DANCING.jpg'));
-            case 'HIT':
-                return (require('../../../images/categoriesImages/HIT.jpg'));     
-            case 'KICKBOX':
-                return (require('../../../images/categoriesImages/KICKBOX.jpg'));         
-            case 'MARTIALARTS':
-                return (require('../../../images/categoriesImages/MARTIALARTS.jpg'));  
-            case 'PILATES':
-                return (require('../../../images/categoriesImages/PILATES.jpg'));  
-            case 'POWERLIFTING':
-                return (require('../../../images/categoriesImages/POWERLIFTING.jpg'));
-            case 'RUNNING':
-                return (require('../../../images/categoriesImages/RUNNING.jpg'));   
-            case 'STREETWORKOUT':
-                return require('../../../images/categoriesImages/STREETWORKOUT.jpg');     
-            case 'SWIMMING':
-                return (require('../../../images/categoriesImages/SWIMMING.jpg'));                                
-            case 'TRX':
-                return (require('../../../images/categoriesImages/TRX.jpg'));
-            
-        }
-      }
-
 
       const getAllTrainers = async (category) => {
         
@@ -213,13 +157,12 @@ const TrainersByCategories = ({navigation, route}) => {
                                 </Text>} 
 
                             {reviewsArray.length === 0 ? 
-                                <Image 
-                                    style={styles.starIcon}/> 
+                                <View></View>
                             : 
-                                <Image 
-                                    source={require('../../../images/ratingStar.png')}
+                                <Image
+                                    source={require('../../../images/starIconBlue.png')}
                                     style={styles.starIcon}
-                            />}
+                                />}
                             
                         </View>
                     </View>
@@ -270,7 +213,6 @@ const TrainersByCategories = ({navigation, route}) => {
 
                     <Image
                             style = {styles.categoryImage}
-                            // source = {require('../../../images/categoriesImages/'+'HIT'+'.jpg')}
                             source = {nameForImage}
                             
                         />
@@ -298,7 +240,7 @@ const TrainersByCategories = ({navigation, route}) => {
                         <FlatList
                                 data={doc}
                                 renderItem={renderItem}
-                                keyExtractor={item => item.id}   
+                                keyExtractor={item => item._id}   
                         />
                     </View>
                 :
@@ -396,7 +338,11 @@ const styles = StyleSheet.create({
     trainerDetail3: {
         fontSize: Dimensions.get('window').height * .02
     },
-    
+    starIcon: {
+        marginTop: Dimensions.get('window').height * .001,
+        height: Dimensions.get('window').height * .022,
+        width: Dimensions.get('window').height * .022
+    },
     progressView: {
         marginTop : Dimensions.get('window').height * .1,
         alignSelf: 'center'

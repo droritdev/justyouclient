@@ -260,8 +260,8 @@ const ProfilePage = ({navigation}) => {
                                 <Text style={styles.trainerText2}>Personal Trainer</Text>
                                 <View style={styles.ratingRow}>
                                     <Text style={styles.trainerText3}>{getStarRating(ordersHistoryTrainerArray[i].reviews)} </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
+                                    <Image
+                                        source={require('../../../images/starIconBlue.png')}
                                         style={styles.starIcon}
                                     />
                                 </View>
@@ -536,8 +536,8 @@ const ProfilePage = ({navigation}) => {
                                 <Text style={styles.trainerText2}>Personal Trainer</Text>
                                 <View style={styles.ratingRow}>
                                     <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
+                                    <Image
+                                        source={require('../../../images/starIconBlue.png')}
                                         style={styles.starIcon}
                                     />
                                 </View>
@@ -819,19 +819,21 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     trainerText2: {
-        fontSize: Dimensions.get('window').height * .010,
+        fontSize: Dimensions.get('window').height * .0112,
         textAlign: 'center'
     },
     ratingRow: {
         flexDirection: 'row'
     },
     trainerText3: {
-        fontSize: Dimensions.get('window').height * .010,
-        textAlign: 'center'
+        fontSize: Dimensions.get('window').height * .0112,
+        textAlign: 'center',
+        fontWeight: 'bold',
+
     },
     starIcon: {
-        height: Dimensions.get('window').height * .01,
-        width: Dimensions.get('window').width * .017,
+        height: Dimensions.get('window').height * .0112,
+        width: Dimensions.get('window').width * .0245,
         alignSelf: 'center'
     },
     pageMainTitlesContainer: {

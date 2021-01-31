@@ -220,8 +220,8 @@ const AroundYouPage = ({navigation}) => {
                                 <View style={styles.ratingRow}>
                                     <Text style={styles.trainerDetail3}> {getStarRating(trainersAroundMe[i].reviews)} </Text>
                                     <Image
-                                        source={require('../../../images/ratingStar.png')}
-                                        
+                                        source={require('../../../images/starIconBlue.png')}
+                                        style={styles.starIcon}
                                     />
                                 </View>
                             </View>
@@ -486,8 +486,10 @@ const styles = StyleSheet.create({
     trainerDetail3: {
         fontSize: Dimensions.get('window').height * 0.021
     },
-    ratingIcon: {
-
+    starIcon: {
+        marginTop: Dimensions.get('window').height * .001,
+        height: Dimensions.get('window').height * .022,
+        width: Dimensions.get('window').height * .022
     },
     placeView: {
         width: Dimensions.get('window').width,

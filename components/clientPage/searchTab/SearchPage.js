@@ -7,6 +7,7 @@ import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import DropdownAlert from 'react-native-dropdownalert';
 
+
 import FastImage from 'react-native-fast-image';
 import * as Progress from 'react-native-progress';
 
@@ -137,7 +138,8 @@ const SearchPage = ({navigation, route}) => {
                 var allOrders = doc.data;    
                 allOrders = sortOrders(allOrders);
     
-                getTrainerFromRecentOrders(allOrders)
+                // getTrainerFromRecentOrders(allOrders)
+                getAllTrainersInfo(allOrders);
                 
             })
             .catch((err) => {
@@ -172,49 +174,31 @@ const SearchPage = ({navigation, route}) => {
             array[j] = temp;
         };
 
-    const getTrainerFromRecentOrders = (allOrders) => {
-        
-        //limit recent orders to 5
-        var limit = 5
-        if (allOrders.length < limit){
-            limit = allOrders.length
-        }
-        for (let index = 0; index < limit; index++) {
-            const trainerID = allOrders[index].trainer.id;
-            getTrainerFromMongoDB(trainerID);
-        }
-        console.log('DOCDOCDOC');
 
-        console.log(recentTrainerArray);
-        setDoc(recentTrainerArray);
-        if(doc){
+    const getAllTrainersInfo = async (allOrders) => {
+        //Array to to be filled with the ids of the trainers that left reviews
+        var idArray = [];
+
+        //Push into the idArray all of the trainerID
+        for (let index = 0; index < allOrders.length; index++) {
+            const singleTrainerID = allOrders[index].trainer.id;
+            idArray.push(singleTrainerID);
+        }
+        //fetch the trainer of all trainers from mongodb using axios
+        await axios
+        .get('/trainers/findMultipleTrainers/'+idArray, 
+        config
+        )
+        .then((doc) => {
+            
+            setDoc(doc.data);
             setIsLoadingCircle(false);
-            forceUpdate();
 
-        }
-        
+
+        })
+        .catch((err) => {console.log(err)});
     }
 
-    const getTrainerFromMongoDB = async (trainerID) => {
-            await axios
-                        .get('/trainers/id/'
-                        +trainerID,
-                        config
-                    )
-                    .then((doc) => {
-                        if(doc) {
-                            
-                            //for no duplicates
-                            if(!recentTrainerArray.includes(doc.data)){
-                                
-                                recentTrainerArray.push(doc.data);
-                                forceUpdate();
-                            }else{
-                            }                
-                        }
-                      })
-                    .catch((err) => console.log(err));
-    }
 
     const getTrainerStarRating = () => {
         var starsCounter = 0
@@ -271,8 +255,8 @@ const SearchPage = ({navigation, route}) => {
                         <View style={styles.ratingRow}>
                             <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
                             <Image
-                                source={require('../../../images/ratingStar.png')}
-                                
+                                source={require('../../../images/starIconBlue.png')}
+                                style={styles.starIcon}
                             />
                         </View>
                     </View>
@@ -500,20 +484,27 @@ const SearchPage = ({navigation, route}) => {
             : 
             <View>
                 {/* recent orders */}
-                <View display = {displayRecentOrders}>
+                <View 
+                    display = {displayRecentOrders}
+                    style={styles.listContainer}
+                    >
                     <FlatList
                             
                             data={doc}
                             renderItem={renderItem}
-                            keyExtractor={item => item.id}   
+                            keyExtractor={item => item._id}   
                     />
                 </View>
                 
-                <View display = {displayCategories}>
+                <View 
+                    display = {displayCategories}
+                    style={styles.listContainer}
+
+                >
                     <FlatList
                             data={doc}
                             renderItem={renderItem}
-                            keyExtractor={item => item.id}   
+                            keyExtractor={item => item._id}   
                     />
                 </View>
                 
@@ -526,95 +517,6 @@ const SearchPage = ({navigation, route}) => {
                  
                 
 
-                
-                {/* <View style={styles.trainerView}>
-                    <View style={styles.trainerViewRow}>
-                        <TouchableOpacity
-                            style={styles.trainerImage}
-                        >
-                            <Image
-
-                            />
-                        </TouchableOpacity>
-                        <View style={styles.trainerDetails}>
-                            <Text style={styles.trainerDetail1}>Ivgeni no Shatz</Text>
-                            <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                            <View style={styles.ratingRow}>
-                                <Text style={styles.trainerDetail3}>8.7 </Text>
-                                <Image
-                                    source={require('../../../images/ratingStar.png')}
-                                    
-                                />
-                            </View>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.trainerView}>
-                    <View style={styles.trainerViewRow}>
-                        <TouchableOpacity
-                            style={styles.trainerImage}
-                        >
-                            <Image
-
-                            />
-                        </TouchableOpacity>
-                        <View style={styles.trainerDetails}>
-                            <Text style={styles.trainerDetail1}>Koby Lamar</Text>
-                            <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                            <View style={styles.ratingRow}>
-                                <Text style={styles.trainerDetail3}>9.1 </Text>
-                                <Image
-                                    source={require('../../../images/ratingStar.png')}
-                                    
-                                />
-                            </View>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.trainerView}>
-                    <View style={styles.trainerViewRow}>
-                        <TouchableOpacity
-                            style={styles.trainerImage}
-                        >
-                            <Image
-
-                            />
-                        </TouchableOpacity>
-                        <View style={styles.trainerDetails}>
-                            <Text style={styles.trainerDetail1}>Judi Woods</Text>
-                            <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                            <View style={styles.ratingRow}>
-                                <Text style={styles.trainerDetail3}>7.9 </Text>
-                                <Image
-                                    source={require('../../../images/ratingStar.png')}
-                                    
-                                />
-                            </View>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.trainerView}>
-                    <View style={styles.trainerViewRow}>
-                        <TouchableOpacity
-                            style={styles.trainerImage}
-                        >
-                            <Image
-
-                            />
-                        </TouchableOpacity>
-                        <View style={styles.trainerDetails}>
-                            <Text style={styles.trainerDetail1}>Omer Ohana</Text>
-                            <Text style={styles.trainerDetail2}>Personal Trainer</Text>
-                            <View style={styles.ratingRow}>
-                                <Text style={styles.trainerDetail3}>8.0 </Text>
-                                <Image
-                                    source={require('../../../images/ratingStar.png')}
-                                    
-                                />
-                            </View>
-                        </View>
-                    </View> 
-                 </View> */}
             </View>
             }
         </SafeAreaView>
@@ -717,11 +619,17 @@ const styles = StyleSheet.create({
     trainerDetail3: {
         fontSize: 18
     },
-    ratingIcon: {
-
+    starIcon: {
+        marginTop: Dimensions.get('window').height * .001,
+        height: Dimensions.get('window').height * .022,
+        width: Dimensions.get('window').height * .022
+    },
+    listContainer:{
+        height: Dimensions.get('window').height * .4,
     },
     progressView: {
-        alignSelf: 'center'
+        alignSelf: 'center',
+        marginTop: Dimensions.get('window').height * .07,
     },
     covidAlertView: {
         zIndex: 2,
