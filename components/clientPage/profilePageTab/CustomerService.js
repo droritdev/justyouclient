@@ -23,7 +23,7 @@ const CustomerService = ({navigation}) => {
     // just@gmail.com
     // just@gmail.com, just@gmail.com
     const mailformat = /^(|([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([,.] (([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$/;
-    
+
     //Sender email
     const supportEmail = "jusyou.pro@gmail.com";
 
@@ -102,12 +102,12 @@ const CustomerService = ({navigation}) => {
     //Send email using axios and sendgrid
     const sendEmail = async () => {
         //Information of the sender for customer service
-        var senderInfo = 'Email: ' + clientObject.email + 
+        let senderInfo = 'Email: ' + clientObject.email +
                         '\n' + 'Name: '+ clientObject.name.first + ' ' + clientObject.name.last +  '\n \n \n';
 
         //Check if there is need to send a copy to anyone
         if (ccInput !== "") {
-            var emailsArray = ccInput.split(", ");
+            let emailsArray = ccInput.split(", ");
             if (emailsArray.length > 0) {
                 await sendEmailCopy(emailsArray);
             }
@@ -141,7 +141,7 @@ const CustomerService = ({navigation}) => {
         });
     }
 
-     
+
 
     //Send copy of the email to every email in the array
     const sendEmailCopy = async (emailArray) => {
@@ -168,7 +168,7 @@ const CustomerService = ({navigation}) => {
                 ],
                 { cancelable: false }
                 )
-        }); 
+        });
     }
 
 
@@ -256,18 +256,18 @@ const CustomerService = ({navigation}) => {
             <Text style={styles.errorText}>{errorMessage}</Text>
             :null}
 
-            <AppButton 
+            <AppButton
               title="Send"
               onPress={handleOnSendEmailPressed}
             />
         </SafeAreaView>
     )
-}   
+}
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
-        height: Dimensions.get('window').height 
+        height: Dimensions.get('window').height
     },
     cancelButton: {
         marginLeft: Dimensions.get('window').width * .0483,
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
         marginLeft: Dimensions.get('window').width * .0483,
         marginTop: Dimensions.get('window').height * .022,
         width: Dimensions.get('window').width * .9
-    },  
+    },
     emailContentInput: {
         fontSize: Dimensions.get('window').height * .022
     },

@@ -22,8 +22,8 @@ const PendingApprovalOrders = ({route, navigation}) => {
     const [isPending, setIsPending] = useState(true);
     const [pendingOrders, setPendingOrders] = useState([]);
     const [approvedOrders, setApprovedOrders] = useState([]);
-    
-    
+
+
     const config = {
         withCredentials: true,
         baseURL: 'http://localhost:3000/',
@@ -31,14 +31,14 @@ const PendingApprovalOrders = ({route, navigation}) => {
           "Content-Type": "application/json",
         },
     };
-    
+
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getClientOrders();
         });
-    
-        
+
+
         return unsubscribe;
       }, [navigation]);
 
@@ -55,13 +55,13 @@ const PendingApprovalOrders = ({route, navigation}) => {
     //Get all orders by Client ID, sort by time created, assaign to designated const
     const getClientOrders = () => {
         axios
-            .get('/orders/by-client-id/'+clientId, 
+            .get('/orders/by-client-id/'+clientId,
             config
             )
             .then((doc) => {
-                var allOrders = doc.data;
-                var pendingOrders = [];
-                var approvedOrders = [];
+                let allOrders = doc.data;
+                let pendingOrders = [];
+                let approvedOrders = [];
                 console.log('****************doc.data*****************');
                 console.log(doc.data);
 
@@ -93,8 +93,8 @@ const PendingApprovalOrders = ({route, navigation}) => {
             // Iterate Over Array From Succeeding Element
             for (let j = 1; j < ordersArray.length; j++) {
                 //checks the time order was created at
-                var first = new Date(ordersArray[j - 1].createdAt).getTime();
-                var second = new Date(ordersArray[j].createdAt).getTime();
+                let first = new Date(ordersArray[j - 1].createdAt).getTime();
+                let second = new Date(ordersArray[j].createdAt).getTime();
                 if (first > second) {
                     // Swap Numbers
                     swapNumbers(ordersArray, j - 1, j);
@@ -140,7 +140,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
                             <View style={styles.dateBox}>
                                 <Text style={styles.dateText}>{pendingOrders[i].trainingDate.startTime.slice(0, 10)}</Text>
                             </View>
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 style={styles.arrowButton}
                                 onPress={() => handleOnArrowPendingPressed(i)}
                             >
@@ -161,7 +161,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
         if (approvedOrders !== []) {
             for(let i = 0; i < approvedOrders.length; i++) {
                 repeats.push(
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         key = {'ordersRow' + i}
                         onPress={() => handleArrowApprovedPressed(i)}
                         >
@@ -180,7 +180,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
                         <View style={styles.dateBox}>
                             <Text style={styles.dateText}>{approvedOrders[i].trainingDate.startTime.slice(0, 10)}</Text>
                         </View>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.arrowButton}
                             onPress={() => handleArrowApprovedPressed(i)}
                         >
@@ -204,7 +204,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
     const handleOnArrowPendingPressed = (index) => {
         console.log('pendingOrders[index]')
         console.log(pendingOrders[index])
-        
+
         dispatchOrderObject({
             type: 'SET_ORDER_OBJECT',
             orderObject: pendingOrders[index]
@@ -236,25 +236,25 @@ const PendingApprovalOrders = ({route, navigation}) => {
 
     return(
         <SafeAreaView style={styles.safeArea}>
-            <ScrollView style={styles.container}> 
+            <ScrollView style={styles.container}>
                 <View style={styles.headerContainer}>
                     <Text style={styles.justYouHeader}>Just You</Text>
-                    
+
                     <View style={styles.backButton}>
                         <ArrowBackButton
                             onPress={handleArrowButton}
                         />
                     </View>
-                    
+
                 </View>
                 <View style={ styles.pendingOrApprovedContainer}>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={isPending ? styles.pendingLabeld : styles.pendingNotLabeld}
                         onPress={() => handleFlipToggle()}
                     >
                         <Text style={isPending ? styles.pendingTextLabeld : styles.pendingTextNotLabeld}>PENDING</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={isPending ? styles.approvedLabeld : styles.approvedNotLabeld}
                         onPress={() => handleFlipToggle()}
                     >
@@ -264,8 +264,8 @@ const PendingApprovalOrders = ({route, navigation}) => {
                 {isPending ?
                     <View style={styles.pendingContainer}>
                         <View style={styles.pendingOrderView}>
-                            {pendingOrders.length === 0 ? 
-                            <View> 
+                            {pendingOrders.length === 0 ?
+                            <View>
                                     <Image
                                         source={require('../../../images/noOrders.png')}
                                         style={styles.noOrdersImage}
@@ -277,11 +277,11 @@ const PendingApprovalOrders = ({route, navigation}) => {
                             getPendingOrdersPattern()}
                         </View>
                     </View>
-                    : 
+                    :
                     <View style={styles.pendingContainer}>
                         <View style={styles.pendingOrderView}>
-                            {approvedOrders.length === 0 ? 
-                            <View> 
+                            {approvedOrders.length === 0 ?
+                            <View>
                                 <Image
                                     source={require('../../../images/noOrders.png')}
                                     style={styles.noOrdersImage}

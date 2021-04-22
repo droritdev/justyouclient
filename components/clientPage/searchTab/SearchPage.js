@@ -52,7 +52,7 @@ const SearchPage = ({navigation, route}) => {
 
     const tagSelectRef = useRef(null);
 
-    const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
+    const forceUpdate = useReducer(bool => !bool)[1];//Page refresh
 
     const {category, dispatchCategory} = useContext(CategoryContext);
     const { dispatchTrainerObject,
@@ -66,11 +66,11 @@ const SearchPage = ({navigation, route}) => {
     const [items, setItems] = useState(categoriesData);
     const [doc, setDoc] = useState([]);
     // const [recentOrders, setRecentOrders] = useState([]);
-    var recentTrainerArray = [];
+    let recentTrainerArray = [];
     // const [reviewsArray,setReviewsArray] = useState([]);
-    var reviewsArray = [];
+    let reviewsArray = [];
 
-    var trainersByCategory = [];
+    let trainersByCategory = [];
     const [categoryTitle, setCategoryTitle] = useState('');
     const [isCategoryMode, setIsCategoryMode] = useState(false);
     const [displayCategories, setDisplayCategories] = useState('none');
@@ -105,7 +105,7 @@ const SearchPage = ({navigation, route}) => {
               "Content-Type": "application/json",
         },
     };
-    
+
     const getClientFromMongoDB =  () => {
         const user = auth().currentUser;
         console.log(user.email);
@@ -118,9 +118,9 @@ const SearchPage = ({navigation, route}) => {
                         if(doc) {
                             const clientID = doc.data[0]._id;
                         getClientOrders(clientID)
-                        
+
                           if(doc.data[0].email!=null){
-                            
+
                           }
                         }
                       })
@@ -129,18 +129,18 @@ const SearchPage = ({navigation, route}) => {
 
     //Get all orders by Client ID, sort by time created, assaign to designated const
     const getClientOrders = (clientID) => {
-    
+
         axios
-        .get('/orders/by-client-id/'+clientID, 
+        .get('/orders/by-client-id/'+clientID,
         config
         )
         .then((doc) => {
-                var allOrders = doc.data;    
+                let allOrders = doc.data;
                 allOrders = sortOrders(allOrders);
-    
+
                 // getTrainerFromRecentOrders(allOrders)
                 getAllTrainersInfo(allOrders);
-                
+
             })
             .catch((err) => {
                 console.log(err);
@@ -154,8 +154,8 @@ const SearchPage = ({navigation, route}) => {
                 // Iterate Over Array From Succeeding Element
                 for (let j = 1; j < ordersArray.length; j++) {
                     //checks the time order was created at
-                    var first = new Date(ordersArray[j - 1].createdAt).getTime();
-                    var second = new Date(ordersArray[j].createdAt).getTime();
+                    let first = new Date(ordersArray[j - 1].createdAt).getTime();
+                    let second = new Date(ordersArray[j].createdAt).getTime();
                     if (first > second) {
                         // Swap Numbers
                         swapNumbers(ordersArray, j - 1, j);
@@ -164,7 +164,7 @@ const SearchPage = ({navigation, route}) => {
             }
             return ordersArray;
         }
-    
+
         const swapNumbers = (array, i, j) => {
             // Save Element Value (Because It Will Change When We Swap/Reassign)
             let temp = array[i];
@@ -177,7 +177,7 @@ const SearchPage = ({navigation, route}) => {
 
     const getAllTrainersInfo = async (allOrders) => {
         //Array to to be filled with the ids of the trainers that left reviews
-        var idArray = [];
+        let idArray = [];
 
         //Push into the idArray all of the trainerID
         for (let index = 0; index < allOrders.length; index++) {
@@ -186,11 +186,11 @@ const SearchPage = ({navigation, route}) => {
         }
         //fetch the trainer of all trainers from mongodb using axios
         await axios
-        .get('/trainers/findMultipleTrainers/'+idArray, 
+        .get('/trainers/findMultipleTrainers/'+idArray,
         config
         )
         .then((doc) => {
-            
+
             setDoc(doc.data);
             setIsLoadingCircle(false);
 
@@ -201,8 +201,8 @@ const SearchPage = ({navigation, route}) => {
 
 
     const getTrainerStarRating = () => {
-        var starsCounter = 0
-        var finalStarRating = 0
+        let starsCounter = 0
+        let finalStarRating = 0
         if(reviewsArray.length === 0){
             return 0
         }else{
@@ -210,20 +210,20 @@ const SearchPage = ({navigation, route}) => {
                 const element = reviewsArray[index];
                 starsCounter += Number(element.stars)
             }
-    
+
             finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
             return finalStarRating;
         }
-        
+
     }
 
-   
+
 
     const renderItem = ({ item }) => (
-        <Item 
+        <Item
         name = {`${item.name.first} ${item.name.last}`}
         media = {item.media.images[0]}
-        trainerObject = {item}        
+        trainerObject = {item}
         // {...setReviewsArray(item.reviews)}
         {...reviewsArray = (item.reviews)}
         {...console.log(`${item.name.first} ${item.name.last}`)}
@@ -231,26 +231,27 @@ const SearchPage = ({navigation, route}) => {
       );
 
       const Item = ({ trainerObject, name,media }) => (
-       
-        <View style={styles.trainerView}>
+
+        <View style={styles.trainerView} >
              <TouchableOpacity
                             onPress={() => handleOnTrainerPressed(trainerObject)}
                             >
                 <View style={styles.trainerViewRow}>
-                    <TouchableOpacity
+                    <View
                         style={styles.trainerImage}
                     >
                         <FastImage
+
                                 style={styles.trainerImage}
                                 source={{
                                     uri: media,
-                                    priority: FastImage.priority.normal,
+                                    priority: FastImage.priority.high,
                                         }}
                                 resizeMode={FastImage.resizeMode.stretch}
                             />
-                    </TouchableOpacity>
+                    </View>
                     <View style={styles.trainerDetails}>
-                        <Text style={styles.trainerDetail1}> {name}</Text>
+                        <Text style={styles.trainerDetail1}>{name}</Text>
                         <Text style={styles.trainerDetail2}>Personal Trainer</Text>
                         <View style={styles.ratingRow}>
                             <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
@@ -263,17 +264,17 @@ const SearchPage = ({navigation, route}) => {
                 </View>
         </TouchableOpacity>
     </View>
-        
+
       )
 
     const getAllTrainers = async (category) => {
-        
-         await axios  
+
+         await axios
             .get('/trainers/getAllTrainers',
             config)
             .then((doc) => {
                 if(doc) {
-                    
+
                     getTrainersByCategory(doc.data, category);
                     setDisplayCategories('flex');
                     setDisplayRecentOrders('none');
@@ -292,7 +293,7 @@ const SearchPage = ({navigation, route}) => {
             const trainer = trainersArray[index];
             if(trainer.categories.includes(category)){
                 trainersByCategory.push(trainer);
-                
+
             }
             console.log('trainersByCategory');
             console.log(trainersByCategory);
@@ -374,7 +375,7 @@ const SearchPage = ({navigation, route}) => {
     //Update the covid alert var to false (will not display coivd alert anymore)
     const covidAlertCancel = () => {
         global.covidAlert = false;
-        
+
     }
 
 
@@ -389,7 +390,7 @@ const SearchPage = ({navigation, route}) => {
             {/* Start of covid alert part */}
 
             <Modal
-                
+
                 animationType="slide"
                 transparent={true}
                 cancelable={true}
@@ -397,12 +398,12 @@ const SearchPage = ({navigation, route}) => {
                 onRequestClose={()=>{}}
             >
                 <View style={styles.covidContainer}>
-                    
+
                     <View style={styles.covidModalContainer}>
                         <Icon
-                            name="x-circle" 
-                            size={Dimensions.get('window').width * .05} 
-                            style={styles.covidCloseIcon} 
+                            name="x-circle"
+                            size={Dimensions.get('window').width * .05}
+                            style={styles.covidCloseIcon}
                             onPress={()=> {setCovidModalVisible(false)}}
                         />
                         <Text style={styles.covidTitle}>COVID-19 Information</Text>
@@ -440,7 +441,7 @@ const SearchPage = ({navigation, route}) => {
                     style={styles.searchIcon}>
                     <Icon name="search" size={Dimensions.get('window').height * .04} color="deepskyblue" />
                 </View>
-                
+
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Search by category"
@@ -471,8 +472,8 @@ const SearchPage = ({navigation, route}) => {
             <View display = {displayRecentOrders}>
                 <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
             </View>
-                       
-            {isLoadingCircle?            
+
+            {isLoadingCircle?
              <View>
                 <View style={styles.progressView}>
                     <Progress.Circle size={Dimensions.get('window').height * .25} indeterminate={true} />
@@ -481,22 +482,22 @@ const SearchPage = ({navigation, route}) => {
                     <Text style={styles.registeringText}>Creating account...</Text>
                 </View> */}
              </View>
-            : 
+            :
             <View>
                 {/* recent orders */}
-                <View 
+                <View
                     display = {displayRecentOrders}
                     style={styles.listContainer}
                     >
                     <FlatList
-                            
+
                             data={doc}
                             renderItem={renderItem}
-                            keyExtractor={item => item._id}   
+                            keyExtractor={item => item._id}
                     />
                 </View>
-                
-                <View 
+
+                <View
                     display = {displayCategories}
                     style={styles.listContainer}
 
@@ -504,18 +505,18 @@ const SearchPage = ({navigation, route}) => {
                     <FlatList
                             data={doc}
                             renderItem={renderItem}
-                            keyExtractor={item => item._id}   
+                            keyExtractor={item => item._id}
                     />
                 </View>
-                
-                <View 
+
+                <View
                     display={isThereAreTrainersInCategory}
-                    style={styles.listIsEmptyContainer}> 
+                    style={styles.listIsEmptyContainer}>
                     <Text style={styles.recentOrdersTitle}> No any Trainers in that category yet.. </Text>
                 </View>
-                 
-                 
-                
+
+
+
 
             </View>
             }
@@ -571,7 +572,7 @@ const styles = StyleSheet.create({
     },
     item: {
         borderWidth: 1,
-        borderColor: 'deepskyblue',    
+        borderColor: 'deepskyblue',
         backgroundColor: '#FFF'
     },
     label: {

@@ -82,7 +82,7 @@ const Settings = ({navigation}) => {
                         >
                             <Text style={styles.paymentsTitle}>Methods of payment</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.arrowButton}
                             //onPress={() => handleOnEditProfilePressed()}
                         >
@@ -98,7 +98,7 @@ const Settings = ({navigation}) => {
                         >
                             <Text style={styles.changeEmailTitle}>Change email address</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.arrowButton}
                             onPress={() => handleOnChangeEmailPress()}
                         >
@@ -115,7 +115,7 @@ const Settings = ({navigation}) => {
                         >
                             <Text style={styles.changePhoneTitle}>Change phone number</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.arrowButton}
                             onPress={() => handleOnChangePhonePressed()}
                         >
@@ -134,7 +134,7 @@ const Settings = ({navigation}) => {
                         >
                             <Text style={styles.policytitle}>Privacy policy</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.arrowButton}
                             //onPress={() => handleOnEditProfilePressed()}
                         >
@@ -161,7 +161,7 @@ const Settings = ({navigation}) => {
                         >
                             <Text style={styles.signOutTitle}>Sign out</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.arrowButton}
                             onPress={() => handleOnSignOutPress()}
                         >
@@ -175,7 +175,7 @@ const Settings = ({navigation}) => {
             </View>
         </SafeAreaView>
     )
-}   
+}
 
 const styles = StyleSheet.create({
     safeArea: {
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 20,
         marginTop: 25,
-        
+
     },
     settingsContainer1: {
         marginTop: 30,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
         marginTop: 8
     },
     arrowButton: {
-        
+
     },
     paymentsRow: {
         flexDirection: 'row',
@@ -275,9 +275,6 @@ const styles = StyleSheet.create({
     changePhoneTitle: {
         fontSize: 20,
         marginLeft: 20,
-    },
-    customerServicesButton: {
-
     },
     disableRow: {
         flexDirection: 'row',

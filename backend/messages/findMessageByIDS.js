@@ -3,10 +3,10 @@ const messageModel = require('../models/messageModel');
 
 //Find chat by clientID and trainerID
 exports.getMesssageByIDS = (req, res) => {
-    var idsString = req.params.ids;
-    var idsArray = idsString.split('@');
-    messageModel.find(
-        { 
+  let idsString = req.params.ids;
+  let idsArray = idsString.split('@');
+  messageModel.find(
+        {
             sender: idsArray[0].trim(),
             receiver: idsArray[1].trim()
         }

@@ -62,7 +62,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
         "Content-Type": "application/json",
       },
     };
-    
+
     //Sets the minimum age of registration to 18 automatticly
     useEffect (() => {
       setIsNamesError(false);
@@ -118,12 +118,12 @@ const ProfileDetailsPage2 = ({navigation}) => {
 
     const uploadImage = async (image) => {
       await reference.putFile(image);
-    }  
+    }
 
     const uploadImageToStorage = async (path, imageName) => {
       let reference = storage().ref('shaharUpload/projectX/');         // 2
       let task = reference.putFile(imageName);               // 3
-  
+
       task.then(() => {                                 // 4
           console.log('Image uploaded to the bucket!');
       }).catch((e) => console.log('uploading image error => ', e));
@@ -132,7 +132,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
     //User picks an image from the gallery/camera and sets it to his profile picture
     const handleProfileImage = () => {
       //   const granted = checkForPermissions();
-    
+
       //   if(granted) {
 
         ImagePicker.openPicker({
@@ -148,15 +148,15 @@ const ProfileDetailsPage2 = ({navigation}) => {
             profileImage: source
           });
         }).catch((err) => {
-            
+
         })
-    
+
           const options = {
             title: 'Select photo',
             base64: true
           };
 
-    
+
           // ImagePicker.showImagePicker(options, (res) => {
           //   if(res.didCancel){
           //   }
@@ -199,7 +199,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
       //       { cancelable: false },
       //     );
       //   }
-    
+
     //Sets the firstName object to the value
     const handleFirstNameInputChange = (text) => {
       setIsNamesError(false);
@@ -219,23 +219,24 @@ const ProfileDetailsPage2 = ({navigation}) => {
     }
 
     const handleConfirm = (date) => {
-    
-      if(date.getUTCFullYear() == new Date().getUTCFullYear()){
-        date === minimumDate;
-      }else{
+
+      if(date.getUTCFullYear() === new Date().getUTCFullYear()){
+        date = minimumDate;
+      }
+      else{
           setBirthdaySelected((date.getMonth()+1)+"/"+date.getUTCDate()+"/"+date.getUTCFullYear());
           setIsBirthdaySelected(true);
 
       }
 
       setDatePickerVisible(false);
-      
+
     };
 
     const hideDatePicker = () => {
       setDatePickerVisible(false);
     };
-  
+
     const handleDateInputPressed = () => {
       setIsNamesError(false);
       setIsFirstNameError(false);
@@ -331,7 +332,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
             <Text style={styles.namesErrorMessage}>{lastNameErrorMessage}</Text>
             :null}
           </View>
-          
+
           <View style={styles.errorMessageContainer}>
             <Text style={styles.nameAndImageExplenation}>Your name and photo help the trainer to identify you</Text>
           </View>
@@ -347,13 +348,13 @@ const ProfileDetailsPage2 = ({navigation}) => {
               minimumDate={(minimumDate)}
               birthdaySelected={birthdaySelected}
             />
-            {isBirthdayError ? 
+            {isBirthdayError ?
               <Text style={styles.birthdayErrorMessage}>{birthdayErrorMessage}</Text>
             : null}
           </View>
           <Text style={styles.emailAddressText}>Email Address</Text>
           <View style={styles.emailContainer}>
-            <TextInput 
+            <TextInput
               editable={false}
               placeholder={emailAddress}
               placeholderTextColor='black'
@@ -367,10 +368,10 @@ const ProfileDetailsPage2 = ({navigation}) => {
               onPress={handleNext}
             />
         </View>
-       </SafeAreaView> 
+       </SafeAreaView>
     );
   }
-  
+
   const styles = StyleSheet.create({
     container: {
         height: Dimensions.get('window').height,
@@ -391,7 +392,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
       nameAndImageContanier: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: Dimensions.get('window').width * .95,
+        //width: Dimensions.get('window').width * .95,
         height: Dimensions.get('window').width * - .15,
         width: Dimensions.get('screen').width,
         marginLeft: Dimensions.get('window').width * -0.0241
@@ -445,7 +446,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
         marginLeft: Dimensions.get('window').width * 0.0483,
         color: 'red',
         marginTop: Dimensions.get('window').height * 0.0055
-      },  
+      },
       emailContainer: {
         marginLeft: Dimensions.get('window').width * 0.0483,
         width: Dimensions.get('window').width * .9,

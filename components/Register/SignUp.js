@@ -34,7 +34,7 @@ const SignUp = ({navigation}) => {
     const sendVerifyEmail = (emailAddressToVerify) => {
       console.log('emailAddressInSignUp');
       console.log(emailAddressToVerify);
-        axios
+       /* axios
           .post('/send-verification-code', {
             to: emailAddressToVerify,
             channel: "email"
@@ -60,8 +60,9 @@ const SignUp = ({navigation}) => {
         .catch((error) => {
           alert(error);
           console.log(error);
-        })
-        navigation.navigate('EmailVerification');
+        })*/
+        //navigation.navigate('EmailVerification');
+        navigation.navigate('CreatePassword');
 
     }
 
@@ -119,7 +120,7 @@ const SignUp = ({navigation}) => {
         setEmailIsValidate(false);
       }
     }
-  
+
     return(
       <SafeAreaView style={styles.container}>
         <View style={styles.upperContainer}>
@@ -139,11 +140,11 @@ const SignUp = ({navigation}) => {
           <View>
               {!emailIsValidate ?
               <Text style={styles.emailErrorText}>{emailErrorMessage}</Text>
-              :null}   
+              :null}
           </View>
         </View>
         <View style={styles.fotterContainer}>
-          <AppButton 
+          <AppButton
             title="Next"
             onPress={() => handleNext()}
           />
@@ -152,7 +153,7 @@ const SignUp = ({navigation}) => {
             <TouchableOpacity
               onPress={handleSignIn}
             >
-            <Text style={styles.signInText}>Sign In</Text> 
+            <Text style={styles.signInText}>Sign In</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontSize: Dimensions.get('window').height * .033,
       marginTop: Dimensions.get('window').height * .013,
-      
+
     },
     signUpText: {
       fontSize: Dimensions.get('window').height * .044,

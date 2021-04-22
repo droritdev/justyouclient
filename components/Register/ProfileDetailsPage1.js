@@ -115,7 +115,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
           android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
           ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
         })).then((result) => {
-          if(result == 'granted') {
+          if(result === 'granted') {
             //user has granted permission
             setIsLocationPermission(true);
           } else {
@@ -129,8 +129,8 @@ const ProfileDetailsPage1 = ({navigation}) => {
 
     // show alert to send user to his settings (user has decliend permission)
     const showOpenSettingsAlert = (type) => {
-      title = "";
-      msg = "";
+      let title = "";
+      let msg = "";
       switch (type) {
         case "location":
           title = "Location is disabled";
@@ -184,7 +184,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
         setIsPushPermission(newState);
       }
     }
-    
+
     //Handle the next button press - if ok, navigates to ProfileDetailsPage2
     const handleNext = () => {
       if(!isCountrySelected){
@@ -203,7 +203,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
         navigation.navigate('ProfileDetailsPage2');
       }
     }
-  
+
     return(
       <SafeAreaView style={styles.container}>
         <ArrowBackButton
@@ -224,7 +224,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
               onPress={() => handleOnWorldIconPress()}
 
             />
-            {isCountryErrorMessage ? 
+            {isCountryErrorMessage ?
               <Text style={styles.countryErrorText}>Pick a country</Text>
             : null}
           </View>
@@ -232,7 +232,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
         <View style={styles.permissionsContainer}>
           <Text style={styles.permissionsText}>Permissions</Text>
           <View style={styles.permissionsSection}>
-            <Text 
+            <Text
               style={{fontWeight: 'bold', fontSize: 20}}
             >Location</Text>
             <FlipToggleButton
@@ -243,7 +243,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
           <Text style={{color: 'grey'}}>By sharing your location you'll see which instructors and sport clubs are next to you
           </Text>
           <View style={styles.permissionsSection}>
-            <Text 
+            <Text
               style={{fontWeight: 'bold', fontSize: 20}}
             >Allow push notifications</Text>
             <FlipToggleButton
@@ -267,7 +267,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
       </SafeAreaView>
     )
   }
-  
+
   const styles = StyleSheet.create({
     container: {
       height: Dimensions.get('window').height,
@@ -301,7 +301,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
       fontWeight: 'bold',
       fontSize: Dimensions.get('window').height * 0.027,
       marginLeft: Dimensions.get('window').width * 0.0483
-    }, 
+    },
     countryErrorText: {
       color: 'red',
       fontSize: Dimensions.get('window').height * 0.014,
@@ -329,7 +329,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
       color: 'red',
       fontSize: Dimensions.get('window').height * 0.016,
       marginTop: Dimensions.get('window').height * 0.03
-    }, 
+    },
     nextButtonContainer: {
       flex: 1,
       justifyContent: 'flex-end',

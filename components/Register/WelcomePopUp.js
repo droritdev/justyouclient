@@ -8,7 +8,7 @@ import {EmailContext} from '../../context/EmailContext';
 //Page 1 of the app, welcoming the user
 const WelcomePopUp = ({navigation}) => {
 
-    const {dispatchEmail} = useContext(EmailContext);
+    const {dispatchClientObject} = useContext(EmailContext);
 
 
     const config = {
@@ -23,15 +23,26 @@ const WelcomePopUp = ({navigation}) => {
     //If not -> navigate to get started
 
     useEffect(() => {
-
+      console.log('WelcomePopUp');
         const subscriber = auth().onAuthStateChanged((user) => {
-           
+            global.covidAlert = true;
+
             if (user) {
-            //      dispatchEmail({
-            //     type: 'SET_EMAIL_ADDRESS',
-            //     emailAddress: user.email.toLowerCase()
-            //   });
-                console.log('welcomePopUp: ', user.email.toLocaleLowerCase());
+              /*axios
+                .get('/clients/'
+                  + user.email.toLocaleLowerCase(),
+                  config,
+                )
+                .then((doc) => {
+                  if (doc) {
+                    console.log(doc.data[0]);
+                    dispatchClientObject({
+                      type: 'SET_CLIENT_OBJECT',
+                      clientObject: doc.data[0],
+                    });
+                  }
+                })
+                .catch((err) => console.log(err));*/
                 navigation.navigate('ClientContainer');
             } else {
                 navigation.navigate('GetStarted');
@@ -39,7 +50,7 @@ const WelcomePopUp = ({navigation}) => {
          });
          return subscriber;
         } ,[]);
-    
+
 
 
     //Automaticlly navigates to the next page in 4 seconds (4 * 1000 milli secons = 4000)
@@ -56,7 +67,7 @@ const styles = StyleSheet.create({
     welcomePage1: {
       backgroundColor: 'dodgerblue',
       height: Dimensions.get('window').height,
-      backgroundColor: 'white',
+      //backgroundColor: 'white',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center'

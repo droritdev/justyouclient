@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useReducer} from 'react';
+import React, { useState, useEffect, useContext, useReducer } from "react";
 import { Text,TextInput , View, StyleSheet, ScrollView, Dimensions, Image, Modal , FlatList} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,6 +13,7 @@ import axios from 'axios';
 
 import {ClientContext} from '../../../context/ClientContext';
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
+import Alert from "react-native/Libraries/Alert/Alert";
 
 
 
@@ -39,12 +40,12 @@ const History = ({navigation, route}) => {
 
     const [isLoadingCircle, setIsLoadingCircle] = useState(true);
 
-    const forceUpdate = useReducer(bool => !bool)[1];//Page refresh 
-    
+    const forceUpdate = useReducer(bool => !bool)[1];//Page refresh
+
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            checkForOrders();            
+            checkForOrders().done();
         });
         return unsubscribe;
       }, [navigation]);
@@ -52,18 +53,20 @@ const History = ({navigation, route}) => {
     //check if there are any completed orders
     //if not => showing no orders View
     const checkForOrders = async () => {
-        if (ordersHistoryTrainerArray.length === 0){
+      console.log('components/clientPage/profilePageTab/History.js/checkForOrders:');
+
+      if (ordersHistoryTrainerArray.length === 0){
             setIsTrainers(false);
         }else{
-            getAllTrainersInfo();
+            await getAllTrainersInfo();
         }
     }
 
     //check if client already given a review for trainer in the recent order list
     const checkIfTrainerAlreadyGotReviewByClient =  (allTrainers) => {
         //array of booleans to push into reviewBooleanArray
-        var isReviewExistArray = []
-        
+        let isReviewExistArray = []
+        console.log("checkIfTrainerAlreadyGotReviewByClient");
         //for loop on all our orders
         for (let index = 0; index < ordersHistoryTrainerArray.length; index++) {
             const order = ordersHistoryTrainerArray[index];
@@ -71,17 +74,17 @@ const History = ({navigation, route}) => {
             allTrainers.forEach(trainer => {
                 //check for same trainer id in order and for trainer
                 if (trainer._id === order.trainer.id){
-                    
+
                     //check if client ID is found in the trainer's reviews
                     if(trainer.reviews.some(i => i.userID.includes(clientObject._id ))){
                         console.log('thereIsRviewThere')
-                        //our client ID is in the trainers reviews 
+                        //our client ID is in the trainers reviews
                         isReviewExistArray.push(true);
                     }else{
-                        //our client ID isn't in the trainers reviews 
+                        //our client ID isn't in the trainers reviews
                         isReviewExistArray.push(false);
                     }
-                }  
+                }
             });
         }
         //the list is ready to show because now we know which trainer already got/not review by our client
@@ -90,34 +93,35 @@ const History = ({navigation, route}) => {
 
         setReviewBooleanArray(isReviewExistArray);
 
-        
+
 
     }
 
 
     const getAllTrainersInfo = async () => {
         //Array to to be filled with the ids of the trainers that left reviews
-        var idArray = [];
+        let idArray = [];
 
         //Push into the idArray all of the trainerID
         for (let index = 0; index < ordersHistoryTrainerArray.length; index++) {
             const singleTrainerID = ordersHistoryTrainerArray[index].trainer.id;
             idArray.push(singleTrainerID);
         }
+        console.log('components/clientPage/profilePageTab/History.js/getAllTrainersInfo: ' +idArray.toString());
         //fetch the trainer of all trainers from mongodb using axios
         await axios
-        .get('/trainers/findMultipleTrainers/'+idArray, 
+        .get('/trainers/findMultipleTrainers/'+idArray,
         config
         )
         .then((doc) => {
-            
+          console.log('components/clientPage/profilePageTab/History.js/getAllTrainersInfo: then');
             checkIfTrainerAlreadyGotReviewByClient(doc.data);
 
         })
         .catch((err) => {console.log(err)});
     }
 
-    
+
 
      //scrollView of trainers (working like flatList)
      //Todo: check if needed in sunday
@@ -126,8 +130,9 @@ const History = ({navigation, route}) => {
         if (ordersHistoryTrainerArray !== [] && reviewBooleanArray !== []) {
             for(let i = 0; i < ordersHistoryTrainerArray.length; i++) {
                  //pushing each trainer UI into the array
+              console.log(ordersHistoryTrainerArray[i]._id);
                 repeats.push(
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         key = {'ordersRow' + i}
                         >
                         <View style={styles.trainerView}>
@@ -138,36 +143,37 @@ const History = ({navigation, route}) => {
                                             uri: ordersHistoryTrainerArray[i].trainer.profilePic,
                                             priority: FastImage.priority.normal,
                                                 }}
-                                        resizeMode={FastImage.resizeMode.stretch}
+                                         resizeMode={FastImage.resizeMode.stretch}
                                 />
                                 <View style={styles.trainerDetails}>
                                     <Text style={styles.trainerDetail1}>{ordersHistoryTrainerArray[i].trainer.firstName +' '+ordersHistoryTrainerArray[i].trainer.lastName}</Text>
                                     <Text style={styles.trainerDetail2}>{ordersHistoryTrainerArray[i].trainingDate.startTime.slice(0, 10)}</Text>
                                     <View style={styles.ratingRow}>
-                                        
+
                                     </View>
                                 </View>
 
 
 
                                 <View style={styles.iconsContainer}>
-                                                    {console.log('isReviewExistArray[i]: '+ reviewBooleanArray[i])}
-                                    {reviewBooleanArray[i] ? 
+                                    {reviewBooleanArray[i] ?
                                         <TouchableOpacity
-                                            onPress= {() => handleOnAlreadyGotReview()}>                   
+
+                                            onPress= {() => handleOnAlreadyGotReview()}>
+
                                             <Icon name="check-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
                                         </TouchableOpacity>
                                     :
                                         <TouchableOpacity
-                                            onPress= {() => handleOnAddReviewButton(ordersHistoryTrainerArray[i].trainer.id)}>                  
+                                            onPress= {() => handleOnAddReviewButton(ordersHistoryTrainerArray[i].trainer.id)}>
                                             <Icon name="plus-circle" size={Dimensions.get('window').height * .035} color="#00bfff" />
                                         </TouchableOpacity>
                                     }
-                                    
+
                                 </View>
                             </View>
                         </View>
-                                   
+
                     </TouchableOpacity>
                     )
                 }
@@ -175,7 +181,7 @@ const History = ({navigation, route}) => {
             return repeats;
     };
 
-  
+
     const config = {
         withCredentials: true,
         baseURL: 'http://localhost:3000/',
@@ -209,13 +215,16 @@ const History = ({navigation, route}) => {
 
     //handle on add review button click
     const handleOnAddReviewButton = (trainerID) => {
-        setModalVisible(true);
-        setTrainerIdForReview(trainerID);
-        
+      console.log('You have already set review for this trainer');
+
+      setModalVisible(true);
+      setTrainerIdForReview(trainerID);
+
     }
 
     const handleOnAlreadyGotReview = () => {
-        alert('You have already set review for this trainer');
+        Alert.alert('You have already set review for this trainer');
+        console.log('You have already set review for this trainer');
     }
     //handle when text is changing in text input (for review)
     const handleOnInputChange = (text) => {
@@ -235,7 +244,7 @@ const History = ({navigation, route}) => {
         //MARK
         setListIsReadyToShow('none');
         setIsLoadingCircle(true);
-        checkForOrders();
+        checkForOrders().done();
         // navigation.push('History');
     }
 
@@ -252,33 +261,33 @@ const History = ({navigation, route}) => {
 
                 <Text style={styles.allOrdersText}>All Orders</Text>
             </View>
-            <View style={styles.greyBorder}></View>
+            <View style={styles.greyBorder}/>
             <View style={styles.verifyExplenationContainer}>
                 <Text style={styles.verifyExplenationText}>
-                    {"Your past orders are displayed below, \nIf you would like, you may leave a review on the trainer aswell."}
+                    {"Your past orders are displayed below, \nIf you would like, you may leave a review on the trainer as well."}
                 </Text>
             </View>
 
-                {isTrainers ? 
+                {isTrainers ?
                     <ScrollView>
-                        
+
                             <View display={listIsReadyToShow}>
-                            {isLoadingCircle?            
+                            {isLoadingCircle?
                                 <View>
                                     <View style={styles.progressView}>
                                         <Progress.Circle size={Dimensions.get('window').height * .25} indeterminate={true} />
                                     </View>
-                                    
+
                                 </View>
-                            : 
+                            :
                                 getCompletedOrdersPattern()
                             }
                             </View>
-                            
+
                     </ScrollView>
-                : 
+                :
                     <View>
-                        <Image 
+                        <Image
                             source={require('../../../images/noOrders.png')}
                             style={styles.noOrdersImage}
                         />
@@ -321,8 +330,8 @@ const History = ({navigation, route}) => {
                             </View>
                         </View>
 
-                        
-                        <View style={styles.buttonsRow}> 
+
+                        <View style={styles.buttonsRow}>
                             <TouchableOpacity
                                 style={styles.cancelButton}
                                 onPress={() => {
@@ -336,7 +345,7 @@ const History = ({navigation, route}) => {
                                 style={styles.submitButton}
                                 onPress={() => {
                                     handleSubmitButton();
-                                    
+
                                 }}
                             >
                                 <Text style={styles.submitTextStyle}>Submit</Text>
@@ -345,9 +354,9 @@ const History = ({navigation, route}) => {
                     </View>
                 </View>
             </Modal>
-            
-               
-            
+
+
+
         </SafeAreaView>
     )
 }
@@ -368,7 +377,7 @@ const styles = StyleSheet.create({
         fontSize: Dimensions.get('window').height * .03,
         fontWeight: 'bold'
     },
-  
+
     allOrdersTitle: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -477,7 +486,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: Dimensions.get('window').height * .023,
         textAlign: "center"
-      }, 
+      },
       starsContainer:{
         width: Dimensions.get('window').width * .6,
         alignSelf: 'center',
@@ -497,7 +506,7 @@ const styles = StyleSheet.create({
         borderRadius: 17,
         borderWidth: 2,
         alignSelf: 'center'
-    }, 
+    },
       textInputContainer: {
         marginLeft: Dimensions.get('window').width * .045,
         marginRight: Dimensions.get('window').width * .045,
@@ -541,8 +550,8 @@ const styles = StyleSheet.create({
       progressView: {
         alignSelf: 'center'
     },
-   
-  
+
+
 });
 
 export default History;

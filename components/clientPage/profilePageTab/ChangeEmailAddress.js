@@ -95,7 +95,7 @@ const ChangeEmailAddress = ({navigation}) => {
             setIsEmailError(true);
             setEmailErrorMessage("Enter a valid email address");
         }
-        
+
         else{
             checkEmailIsUsed();
         }
@@ -122,7 +122,7 @@ const ChangeEmailAddress = ({navigation}) => {
                 setIsCodeError(true);
                 setCodeErrorMessage("Enter digits only");
             }
-            else if(codeInput.length != 5){
+            else if(codeInput.length !== 5){
                 setIsCodeError(true);
                 setCodeErrorMessage("Code is 5 digits");
             }
@@ -165,7 +165,7 @@ const ChangeEmailAddress = ({navigation}) => {
 
     //Send GET request to mongodb using axios, to check if email is already used
     const checkEmailIsUsed = () => {
-        axios  
+        axios
         .get('/clients/'+emailAddressInput.toLowerCase(), config)
         .then((doc) => {
             if(doc) {
@@ -185,7 +185,7 @@ const ChangeEmailAddress = ({navigation}) => {
 
     //Update database with the new email adddress
     const updateDB = () => {
-        axios  
+        axios
         .post('/clients/updateClientInfo', {
             _id: clientObject._id,
             email: emailAddressInput.toLowerCase()
@@ -194,19 +194,19 @@ const ChangeEmailAddress = ({navigation}) => {
         )
         .then((res) => {
             if (res.data.type === "success") {
-                updateFirebaseEmail();           
+                updateFirebaseEmail();
             }
         })
         .catch((err) => console.log(err));
-        
+
     }
 
 
     //Update the firebase email of the trainer
     const updateFirebaseEmail = () => {
-        var user = auth().currentUser;
+        let user = auth().currentUser;
 
-        var authCred = auth.EmailAuthProvider.credential(
+        let authCred = auth.EmailAuthProvider.credential(
             user.email, clientObject.password);
 
 
@@ -244,8 +244,8 @@ const ChangeEmailAddress = ({navigation}) => {
                   { cancelable: false }
                 )
         });
-        
-        
+
+
     }
 
 
@@ -284,7 +284,7 @@ const ChangeEmailAddress = ({navigation}) => {
                 </TouchableOpacity>
             </View>
 
-            <View  display={isCodeSent} style={styles.greyBorder}></View>
+            <View  display={isCodeSent} style={styles.greyBorder}/>
 
             <View display={isCodeSent}>
                 <Text style={styles.verificationText}>
@@ -297,7 +297,7 @@ const ChangeEmailAddress = ({navigation}) => {
 
 
                 <Text style={styles.verificationTitle}>
-                    Enter your verification code  
+                    Enter your verification code
                 </Text>
             </View>
 
@@ -314,18 +314,18 @@ const ChangeEmailAddress = ({navigation}) => {
 
                 <View display={isCodeSent} style={{flexDirection:'row'}}>
                     <View>
-                    <Text style={styles.resendCodeText}>{"Didn't recive an email?"}</Text> 
+                    <Text style={styles.resendCodeText}>{"Didn't recive an email?"}</Text>
                     </View>
                     <View>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                         onPress={() => sendVerifyEmail()}
                         >
-                        <Text style={styles.resendButton}>{"resend"}</Text> 
+                        <Text style={styles.resendButton}>{"resend"}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-            
-                {isCodeError ? 
+
+                {isCodeError ?
                     <Text style={styles.codeErrorMessage}>{codeErrorMessage}</Text>
                 : null}
 
@@ -335,10 +335,10 @@ const ChangeEmailAddress = ({navigation}) => {
                     onPress={handleSubmit}
                 />
             </View>
-        
+
         </SafeAreaView>
     )
-} 
+}
 
 const styles = StyleSheet.create({
     safeArea: {
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
       },
       resendButton: {
-        color: 'deepskyblue', 
+        color: 'deepskyblue',
         marginTop: Dimensions.get('window').height * .01,
         marginLeft: Dimensions.get('window').width * .01,
         fontSize: Dimensions.get('window').height * .022,

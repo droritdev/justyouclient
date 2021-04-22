@@ -1,6 +1,6 @@
 
-//for get server run 
-//node server.js   
+//for get server run
+//node server.js
 
 //**External imports**//
 require('dotenv').config();
@@ -104,7 +104,7 @@ mongoose.connect(process.env.MONGO_URI, {
 })
     .then(result => {
         app.listen(port, () => {
-            console.log(`App running on port ${port}`);  
+            console.log(`App running on port ${port}`);
         });
     })
     .catch(err => console.log(err));
@@ -173,7 +173,7 @@ app.get('/trainers/findMultipleTrainers/:idArray', findMultipleTrainers.getMulti
 
 
             ////**Client end points**////
-//End point for confirming the registration and add a new trainer to the dataBase         
+//End point for confirming the registration and add a new trainer to the dataBase
 app.post('/clients/register', clientRegister.register);
 
 //End point for searching trainers by category
@@ -238,7 +238,7 @@ app.get('/clients/:email', findClientByEmail.getClientByEmail);
 app.get('/clients/phone/:phone', findClientByPhone.getClientByPhone);
 
             ////**Place end points**////
-//End point for confirming the registration and add a new place to the dataBase 
+//End point for confirming the registration and add a new place to the dataBase
 app.post('/places/register', placeRegister.register);
 
 //End point for finding trainers of place
@@ -264,7 +264,7 @@ app.post('/messages/newMessage', newMessage.createMessage);
 app.get('/messages/watchForUpdates/:receiver', watchForUpdates.watchForUpdates);
 
 
-const paypal = require('paypal-rest-sdk'); 
+const paypal = require('paypal-rest-sdk');
 const engines = require("consolidate");
 
 //for paypal views set:
@@ -275,7 +275,7 @@ app.set("view engine", "ejs");
 
 
 
-    
+
 /*
 SAND BOX CONFIG
 */
@@ -291,24 +291,24 @@ paypal.configure({
 LIVE CONFIG
 */
 // paypal.configure({
-//         'mode': 'live', 
+//         'mode': 'live',
 //         'client_id': 'AQxRq2oM-GEJ9N9VANffTk70Jl5ceGNlUXjbqaKOB0atMdgKLCeQQgi0fDSv1OmfnLLa1c5FNS2tgnPF',
 //         'client_secret': 'EOUgugmZl8_O6bYTrnUQpN1G_FQXgYRMUs3FJTp0C7ZvDg7NmV5D0KQmSrMlxYlTCvrdCiFFimXfOAMp'
 //       });
 
 
 
-var paymentAmount = []; 
+let paymentAmount = [];
 
 app.get('/paypal', (req, res) => {
 
     //Receive the choosen informatiom in the order page from the query
-    var price = req.query.price;
-    var category = req.query.category;
-    var trainingType = req.query.trainingType;
+    let price = req.query.price;
+    let category = req.query.category;
+    let trainingType = req.query.trainingType;
 
     //Create payment json to pass to the paypal payment function
-    var create_payment_json = {
+    let create_payment_json = {
         "intent": "sale",
         "payer": {
             "payment_method": "paypal"
@@ -334,7 +334,7 @@ app.get('/paypal', (req, res) => {
             "payee":{
                     "email" : "sb-du47x34662085@business.example.com"
             },
-            
+
             "description": trainingType + ' - ' + category
         }]
     };
@@ -362,13 +362,13 @@ app.get('/paypal', (req, res) => {
 app.get('/paypal/paymentSuccess' ,(req, res) => {
 
     //Get the payerID from query
-    var PayerID = req.query.PayerID;
+    let PayerID = req.query.PayerID;
 
     //Get the paymentID from query
-    var paymentId = req.query.paymentId;
+    let paymentId = req.query.paymentId;
 
-    //Create a json in order to pass it to paypal's execute payment function 
-    var execute_payment_json = {
+    //Create a json in order to pass it to paypal's execute payment function
+    let execute_payment_json = {
             "payer_id": PayerID,
             "transactions": [{
                 "amount": {
@@ -377,7 +377,7 @@ app.get('/paypal/paymentSuccess' ,(req, res) => {
                 }
             }]
         };
-        
+
         //Execute the payment
         paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
             if (error) {
@@ -391,7 +391,7 @@ app.get('/paypal/paymentSuccess' ,(req, res) => {
             //Show 'succes' page from our paypalviews
             //The page currently has a button to redirect the client to the app
             //(TODO: design the page and pass information back)
-                res.render('success');                    
+                res.render('success');
             }
         });
 })

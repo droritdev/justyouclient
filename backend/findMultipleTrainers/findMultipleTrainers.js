@@ -3,10 +3,10 @@ const trainerProfileModel = require('../models/trainerModels');
 
 //Find trainers by category
 exports.getMultipleTrainers = (req, res) => {
-    var stringOfIDS = req.params.idArray;
-    var idArray = stringOfIDS.split(',');
+  let stringOfIDS = req.params.idArray;
+  let idArray = stringOfIDS.split(',');
 
-    trainerProfileModel.find(
+  trainerProfileModel.find(
         {
             '_id':
             {

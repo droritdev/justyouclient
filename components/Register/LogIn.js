@@ -19,12 +19,12 @@ const LogInClient = ({navigation}) => {
     const {password, dispatchPassword} = useContext(PasswordContext);
 
     const [isErrorMessage, setIsErrorMessage] = useState(false);
-    
+
     const [errorMessage, setErrorMessage] = useState("");
 
     const [emailAddressInput, setEmailAddressInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
-    var encodedPass = "";
+    let encodedPass = "";
     const [isEmailValid, setIsEmailValid] = useState(false);
 
     // Set an initializing state whilst Firebase connects
@@ -57,7 +57,7 @@ const LogInClient = ({navigation}) => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
         return subscriber; // unsubscribe on unmount
       }, []);
-    
+
       if (initializing) return null;
 
       const checkEmailIsUsed = () => {
@@ -77,7 +77,7 @@ const LogInClient = ({navigation}) => {
         .catch((err) => {
             setErrorMessage("The account dosen't exist");
             setIsErrorMessage(true);
-          
+
         })
       }
 
@@ -134,20 +134,20 @@ const LogInClient = ({navigation}) => {
             type: 'SET_PASSWORD',
             password: encodedPass
           });
-        if(emailAddressInput == "" && encodedPass == "") {
+        if(emailAddressInput === "" && encodedPass === "") {
             setErrorMessage("Both fields are required");
             setIsErrorMessage(true);
         }
-        else if(emailAddressInput == "") { 
+        else if(emailAddressInput === "") {
             setErrorMessage("Email address is required");
             setIsErrorMessage(true);
         }
 
-        else if(encodedPass == "") {
+        else if(encodedPass === "") {
                 setErrorMessage("Password is required");
                 setIsErrorMessage(true);
-        } 
-        else if (isEmailValid && encodedPass != "") {
+        }
+        else if (isEmailValid && encodedPass !== "") {
             authUser();
         }
         else if (!isEmailValid) {
@@ -175,10 +175,10 @@ const LogInClient = ({navigation}) => {
     //   async function onGoogleButtonPress() {
     //     // Get the users ID token
     //     const { idToken } = await GoogleSignin.signIn();
-      
+
     //     // Create a Google credential with the token
     //     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      
+
     //     // Sign-in the user with the credential
     //     return auth().signInWithCredential(googleCredential);
     //   }
@@ -223,7 +223,7 @@ const LogInClient = ({navigation}) => {
                 />
             </View>
             {!isErrorMessage ? null:
-              <Text style={styles.errorText}>{errorMessage}</Text>}   
+              <Text style={styles.errorText}>{errorMessage}</Text>}
             <TouchableOpacity
                 onPress={handleForgotPasswordButton}
             >
@@ -243,7 +243,7 @@ const LogInClient = ({navigation}) => {
                         <TouchableOpacity
                         onPress={handleSignUpButton}
                         >
-                        <Text style={styles.signInText}>Sign Up</Text> 
+                        <Text style={styles.signInText}>Sign Up</Text>
                         </TouchableOpacity>
                 </View>
             </View>
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignSelf: 'center'
-    },  
+    },
     alreadyHaveAccountContainer: {
         flexDirection: 'row',
         marginTop: Dimensions.get('window').height * .022

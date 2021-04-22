@@ -28,7 +28,7 @@ const GlobalStore = ({children}) => {
                                         <ClientContextProvider>
                                             <OrderContextProvider>
                                                 <CategoryContextProvider>
-                                    {children}  
+                                    {children}
                                                 </CategoryContextProvider>
                                             </OrderContextProvider>
                                         </ClientContextProvider>

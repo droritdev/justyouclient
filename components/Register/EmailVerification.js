@@ -156,15 +156,15 @@ const EmailVerification = ({navigation}) => {
         </View>
         <View style={styles.fotterContainer}>
             <Text style={styles.didntGetEmailText}>Didn't get an email? Please make sure we have your email address right, or maybe it went to spam</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.sendAgainButton}
               onPress={handleResendEmail}
             >
-              <Text style={styles.sendAgainButtonText}>Resend email</Text> 
+              <Text style={styles.sendAgainButtonText}>Resend email</Text>
             </TouchableOpacity>
         </View>
         <View style={styles.nextButtonContainer}>
-          <AppButton 
+          <AppButton
             title="Next"
             onPress={handleNext}
           />
@@ -172,7 +172,7 @@ const EmailVerification = ({navigation}) => {
      </SafeAreaView>
     )
   }
-  
+
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'column',
@@ -207,7 +207,7 @@ const EmailVerification = ({navigation}) => {
         marginRight: Dimensions.get('window').width * .0483,
         marginTop: Dimensions.get('window').height * .066,
         justifyContent: 'center',
-        fontSize: Dimensions.get('window').height * .0278,
+        //fontSize: Dimensions.get('window').height * .0278,
         marginLeft: Dimensions.get('window').width * .04830,
         fontSize: Dimensions.get('window').height * .033
     },
@@ -238,7 +238,7 @@ const EmailVerification = ({navigation}) => {
       justifyContent: 'center'
     },
     sendAgainButtonText: {
-      color: 'deepskyblue', 
+      color: 'deepskyblue',
       fontSize: Dimensions.get('window').height * .022,
       fontWeight: '600',
       alignSelf: 'center'

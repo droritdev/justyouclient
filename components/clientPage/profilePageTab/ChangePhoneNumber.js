@@ -10,7 +10,7 @@ import AppButton from '../../GlobalComponents/AppButton';
 import {ClientContext} from '../../../context/ClientContext';
 
 
- 
+
 //Here the user enters his full phone number (area code and phone number) and verify it with a code sent to his phone
 const ChangePhoneNumber = ({navigation}) => {
     const [areaCodeInput, setAreaCodeInput] = useState("");
@@ -34,7 +34,7 @@ const ChangePhoneNumber = ({navigation}) => {
       },
     };
 
-  
+
     //Navigates back to the profile details page
     const handleArrowButton = () => {
         navigation.navigate('Settings');
@@ -42,7 +42,7 @@ const ChangePhoneNumber = ({navigation}) => {
 
   //Send GET request to mongodb using axios, to check if phone is already used
   const checkPhoneIsUsed = () => {
-    axios  
+    axios
     .get('/clients/phone/'+areaCodeInput+phoneNumberInput, config)
     .then((doc) => {
       if (doc.data[0].phone.areaCode === areaCodeInput && doc.data[0].phone.phoneNumber === phoneNumberInput) {
@@ -53,7 +53,7 @@ const ChangePhoneNumber = ({navigation}) => {
     .catch((err) =>  {
       setIsPhoneError(false);
       setIsNextError(false);
-      var fullPhone = '+'+areaCodeInput+phoneNumberInput;
+      let fullPhone = '+'+areaCodeInput+phoneNumberInput;
       sendVerificationCode(fullPhone);
     });
   }
@@ -110,7 +110,7 @@ const ChangePhoneNumber = ({navigation}) => {
         setIsPhoneError(true);
         setIsNextError(true);
       }
-      else if(areaCodeInput.length != 3 || phoneNumberInput.length <= 6){
+      else if(areaCodeInput.length !== 3 || phoneNumberInput.length <= 6){
         setPhoneErrorMessage("Enter a valid phone number")
         setIsPhoneError(true);
         setIsNextError(true);
@@ -211,12 +211,12 @@ const ChangePhoneNumber = ({navigation}) => {
 
   //Update database with the new phone number
     const updateDB = () => {
-        axios  
+        axios
         .post('/clients/updateClientInfo', {
             _id: clientObject._id,
-            phone: 
+            phone:
             {
-                areaCode: fullPhoneNumber.slice(1, 4), 
+                areaCode: fullPhoneNumber.slice(1, 4),
                 phoneNumber: fullPhoneNumber.slice(4)
             }
         },
@@ -232,13 +232,13 @@ const ChangePhoneNumber = ({navigation}) => {
                       ],
                       { cancelable: false }
                 )
-                
+
             }
         })
         .catch((err) => console.log(err));
     }
-    
-  
+
+
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
@@ -284,7 +284,7 @@ const ChangePhoneNumber = ({navigation}) => {
                 </TouchableOpacity>
             </View>
 
-            <View  display={isCodeSent} style={styles.greyBorder}></View>
+            <View  display={isCodeSent} style={styles.greyBorder}/>
 
             <View display={isCodeSent}>
                 <Text style={styles.verificationText}>
@@ -297,7 +297,7 @@ const ChangePhoneNumber = ({navigation}) => {
 
 
                 <Text style={styles.verificationTitle}>
-                    Enter your verification code  
+                    Enter your verification code
                 </Text>
             </View>
 
@@ -313,13 +313,13 @@ const ChangePhoneNumber = ({navigation}) => {
 
             <View display={isCodeSent} style={{flexDirection:'row'}}>
                 <View>
-                <Text style={styles.resendCodeText}>{"Didn't recive an SMS?"}</Text> 
+                <Text style={styles.resendCodeText}>{"Didn't recive an SMS?"}</Text>
                 </View>
                 <View>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                     onPress={() => sendVerificationCode('+'+areaCodeInput+phoneNumberInput)}
                     >
-                    <Text style={styles.resendButton}>{"resend"}</Text> 
+                    <Text style={styles.resendButton}>{"resend"}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -328,7 +328,7 @@ const ChangePhoneNumber = ({navigation}) => {
               {isNextError ?
               <Text style={styles.nextErrorMessage}>{nextErrorMessage}</Text>
               :null}
-              <AppButton 
+              <AppButton
                 title="Submit"
                 onPress={handleSubmit}
               />
@@ -488,7 +488,7 @@ verificationText: {
     fontWeight: '500',
   },
   resendButton: {
-    color: 'deepskyblue', 
+    color: 'deepskyblue',
     marginTop: Dimensions.get('window').height * .01,
     marginLeft: Dimensions.get('window').width * .01,
     fontSize: Dimensions.get('window').height * .022,

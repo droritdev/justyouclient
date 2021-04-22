@@ -3,7 +3,7 @@ const OrderReducer = (state, action) => {
 
         case 'SET_ORDER_OBJECT':
             return action.orderObject
-        
+
         case 'SET_ORDER_TRAINING_SITE_ADDRESS':
             return action.orderTrainingSiteAddress
 
@@ -14,13 +14,10 @@ const OrderReducer = (state, action) => {
             return action.orderStartTime
 
         case 'SET_ORDER_END_TIME':
-            return action.orderEndTime  
+            return action.orderEndTime
 
         case 'SET_ORDER_DATE':
-            return action.orderDate        
-
-
-
+            return action.orderDate
         default:
             return state;
     }

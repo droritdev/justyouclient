@@ -16,7 +16,7 @@ import * as Progress from 'react-native-progress';
 import ImagePicker from 'react-native-image-crop-picker';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
-import uuid from 'uuid';
+import uuid from 'react-native-uuid';
 import Video from 'react-native-video';
 
 const Chat = ({navigation, route}) => {
@@ -25,11 +25,11 @@ const Chat = ({navigation, route}) => {
     const [trainerUser, setTrainerUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
-    
+
     //trainer ID from previous page
     const {trainerID} = route.params;
 
-    
+
 
     //Client Info:
     const {clientObject} = useContext(ClientContext);
@@ -66,8 +66,8 @@ const Chat = ({navigation, route}) => {
     const renderBubble = (props) => {
         const {currentMessage} = props;
         if(currentMessage.location) {
-            return <LocationView location={currentMessage.location} /> 
-        } 
+            return <LocationView location={currentMessage.location} />
+        }
 
         return (
             <Bubble
@@ -81,16 +81,16 @@ const Chat = ({navigation, route}) => {
                 }
             }}
             />
-        );  
+        );
     }
 
     //Render custom view to display video in the chat
     const renderMessageVideo = (props) => {
         const {currentMessage} = props;
         return (
-            <Video 
+            <Video
                 muted={true}
-                resizeMode="cover"  
+                resizeMode="cover"
                 controls={true}
                 source={{uri: currentMessage.video}}
                 style={styles.video}
@@ -133,10 +133,10 @@ const Chat = ({navigation, route}) => {
                     borderTopWidth: 0,
                     borderRadius: 45
                 }}
-                /> 
+                />
             );
     }
-          
+
 
 
     //Custom view to display location
@@ -145,8 +145,8 @@ const Chat = ({navigation, route}) => {
         region={{
             latitude: location.latitude,
             longitude: location.longitude,
-            latitudeDelta: 0.01,       
-            longitudeDelta: 0.01     
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
         }}
         scrollEnabled={false}
         zoomEnabled={true}
@@ -155,7 +155,7 @@ const Chat = ({navigation, route}) => {
             coordinate={{latitude: location.latitude, longitude: location.longitude}}
             title={'location'}
             pinColor = {'red'}
-        />  
+        />
      </MapView>
     }
 
@@ -165,7 +165,7 @@ const Chat = ({navigation, route}) => {
     const sendCurrentPosition = () => {
         if (!isLoading) {
             Geolocation.getCurrentPosition(info => {
-                var newLocationMessage = 
+                let newLocationMessage =
                 [
                     {
                         _id: 'Date: ' + new Date() +'  location: ' + info.coords.latitude + ', ' + info.coords.longitude,
@@ -179,7 +179,7 @@ const Chat = ({navigation, route}) => {
                     }
                 ];
 
-                onSend(newLocationMessage);
+                onSend(newLocationMessage).done();
             });
         }
     }
@@ -203,9 +203,9 @@ const Chat = ({navigation, route}) => {
     const handleMediaPicker =  () => {
         ImagePicker.openPicker({
           }).then((file) => {
-            var fileMime = file.mime.split('/')[0];
-            var fileName = file.filename;
-            var source = {};
+            let fileMime = file.mime.split('/')[0];
+            let fileName = file.filename;
+            let source = {};
             console.log(fileName);
             console.log(fileMime);
 
@@ -220,7 +220,7 @@ const Chat = ({navigation, route}) => {
             }
 
 
-            uploadMedia(fileMime, fileName, source);
+            uploadMedia(fileMime, fileName, source).done();
 
         }).catch(err => {
             //user cancel the picker
@@ -228,7 +228,7 @@ const Chat = ({navigation, route}) => {
     }
 
 
-    
+
     //Upload selected image/video to database
     const uploadMedia = async (fileMime, fileName, source) => {
         console.log("uploading");
@@ -251,8 +251,8 @@ const Chat = ({navigation, route}) => {
 
     //Send a message that contains a video/image
     const sendMediaMessage = async (fileMime, url) => {
-        var newMessage = [];
-            
+        let newMessage = [];
+
         switch (fileMime) {
             case "image" :
                 newMessage =
@@ -277,18 +277,18 @@ const Chat = ({navigation, route}) => {
             break;
         }
 
-        onSend(newMessage);
+        await onSend(newMessage);
     }
 
 
 
     useEffect(() => {
-        getTrainerInfo();
+        getTrainerInfo().done();
         console.log(trainerID)
         console.log(clientUser)
         console.log(clientID)
 
-        watchForUpdates();
+        watchForUpdates().done();
     }, [])
 
 
@@ -296,7 +296,7 @@ const Chat = ({navigation, route}) => {
     //Listener to mongodb to check if a new message was sent
     //Update UI and display the new message that was sent
     const watchForUpdates = async () => {
-        var message = [];
+        let message = [];
         await axios
 
             .get('/messages/watchForUpdates/'+clientID, config)
@@ -306,36 +306,36 @@ const Chat = ({navigation, route}) => {
                     setTimeout(() => watchForUpdates(), 1000);
                 }
             })
-            .catch((err) => {}); 
+            .catch((err) => {});
         setMessages(previousMessages => GiftedChat.append(previousMessages, message));
 
     }
 
 
 
-    
+
 
     //Retrive all the trainer information by ID
     //And generate a trainerUser object with id, name, avatar
     const getTrainerInfo = async () => {
         await axios
-         .get('/trainers/id/'+trainerID, 
+         .get('/trainers/id/'+trainerID,
          config
          )
          .then((doc) => {
-             var trainerObject = doc.data;
- 
-             var trainerInfo = {
+             let trainerObject = doc.data;
+
+             let trainerInfo = {
                  _id: trainerObject._id,
                  name: trainerObject.name.first + ' ' + trainerObject.name.last,
                  avatar: trainerObject.media.images[0],
              };
- 
+
          setTrainerUser(trainerInfo);
          getChatMessages(clientObject);
          })
          .catch((err) => {
-             
+
          });
      }
 
@@ -346,15 +346,15 @@ const Chat = ({navigation, route}) => {
     //Load all messages on the UI
     const getChatMessages = async () => {
         //Sender: client, Receiver: trainer
-        var firstResult = [];
+        let firstResult = [];
         //Sender: trainer, Receiver: client
-        var secondResult = [];
+        let secondResult = [];
         //Both results combined
-        var finalResult = [];
+        let finalResult = [];
 
         //Get all messages by - Sender: trainer, Receiver: client  - and assign result to a var
         await axios
-        .get('/messages/findMessageByIDS/'+trainerID+'@'+clientID, 
+        .get('/messages/findMessageByIDS/'+trainerID+'@'+clientID,
             config
             )
             .then((doc) => {
@@ -365,7 +365,7 @@ const Chat = ({navigation, route}) => {
 
         //Get all messages by - Sender: client, Receiver: trainer  - and assign result to a var
         await axios
-        .get('/messages/findMessageByIDS/'+clientID+'@'+trainerID, 
+        .get('/messages/findMessageByIDS/'+clientID+'@'+trainerID,
             config
             )
             .then((doc) => {
@@ -384,22 +384,22 @@ const Chat = ({navigation, route}) => {
         if(secondResult !== undefined) {
             finalResult = [...finalResult, ...secondResult];
         }
-        
+
         //All messages model relaeted to both
         finalResult = sortMessages(finalResult);
 
         //Extract the message object from the model and insert into a messages array
-        var allMessages = [];
+        let allMessages = [];
         for (let index = 0; index < finalResult.length; index++) {
             const singleMessageObject = finalResult[index].message;
             allMessages[index] = singleMessageObject;
-            
+
         }
 
         //Check if there are no messages
         if (allMessages.length===0) {
             //Show friendly system message
-            var systemMessage = {
+            let systemMessage = {
                 _id: 'system',
                 text: "Start chating, it's free!",
                 createdAt: new Date(),
@@ -415,7 +415,7 @@ const Chat = ({navigation, route}) => {
         }
     }
 
-    
+
 
 
     //Sort messages by time created
@@ -425,8 +425,8 @@ const Chat = ({navigation, route}) => {
             // Iterate Over Array From Succeeding Element
             for (let j = 1; j < messagesArray.length; j++) {
                 //checks the time order was created at
-                var first = new Date(messagesArray[j - 1].message.createdAt).getTime();
-                var second = new Date(messagesArray[j].message.createdAt).getTime();
+                let first = new Date(messagesArray[j - 1].message.createdAt).getTime();
+                let second = new Date(messagesArray[j].message.createdAt).getTime();
                 if (first < second) {
                     // Swap Numbers
                     swapNumbers(messagesArray, j - 1, j);
@@ -450,11 +450,11 @@ const Chat = ({navigation, route}) => {
     //Upload new message to mongodb
     //Update UI to show new message
     const onSend = useCallback(async (sentMessages = []) => {
-        var newMessage = sentMessages[0];
-        var messageText = newMessage.text;
+        let newMessage = sentMessages[0];
+        let messageText = newMessage.text;
         console.log(sentMessages);
         //Check if the message is a phone number
-        let phoneFormat = /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/g
+        let phoneFormat = /^[+]*[(]?[0-9]{1,3}[)]?[-\s\./0-9]*$/g
         if(phoneFormat.test(messageText)){
             Alert.alert(
                 'Attention',
@@ -506,20 +506,20 @@ const Chat = ({navigation, route}) => {
                         onPress={handleArrowButton}
                     />
                     <Text style={styles.headerText}> {trainerUser.name} </Text>
-                        
+
                     <View style={{flexDirection: 'row'}}>
                         <TouchableOpacity
                          onPress={()=> handleMediaPicker()}
                         >
-                            <Icon name="camera" size={24} style={styles.cameraIcon}/> 
+                            <Icon name="camera" size={24} style={styles.cameraIcon}/>
                         </TouchableOpacity>
 
                         <TouchableOpacity
                             onPress={()=> showSendLocationAlert()}
                         >
-                            <Icon name="map-pin" size={23} style={styles.locationIcon} />   
+                            <Icon name="map-pin" size={23} style={styles.locationIcon} />
                         </TouchableOpacity>
-                    </View>    
+                    </View>
                 </View>
 
 
@@ -547,7 +547,7 @@ const Chat = ({navigation, route}) => {
                         renderInputToolbar={renderInputToolbar}
                         renderMessageVideo={renderMessageVideo}
 
-                    />    
+                    />
                 </View>
             }
             </View>
@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: '#fafafa'
-    }, 
+    },
     headerText: {
         marginTop: Dimensions.get('window').height * .012,
         fontSize: Dimensions.get('window').height * .02,
@@ -602,7 +602,7 @@ const styles = StyleSheet.create({
         marginBottom: Dimensions.get('window').height * .012,
         marginRight: Dimensions.get('window').width * .05,
     },
-    bottomIconsContainer: {     
+    bottomIconsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
 

@@ -57,7 +57,7 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
 
     const handleChatPressed = () => {
         // navigation.navigate('Chat', orderObject.trainer.id);
-        navigation.navigate('ProfilePageStack', { 
+        navigation.navigate('ProfilePageStack', {
             screen: 'Chat' ,
             params: { trainerID: orderObject.trainer.id}});
 
@@ -90,7 +90,7 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
                 </Dialog.Container>
             </View>
 
-            <ScrollView style={styles.container}> 
+            <ScrollView style={styles.container}>
                 <View style={styles.headerContainer}>
                     <Text style={styles.justYouHeader}>Just You</Text>
                 </View>
@@ -118,17 +118,17 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
                                     {/* <View style={styles.buttonAndTitle}>
                                         <TouchableOpacity style={styles.iconBackStyle}>
                                             <Icon name="phone-call" size={30} style={styles.phoneCallIcon}/>
-                                           
+
                                         </TouchableOpacity>
                                         <Text style={styles.buttonTitle}>Call</Text>
                                     </View>
                                     <View style={styles.buttonAndTitle}>
-                                        <TouchableOpacity 
+                                        <TouchableOpacity
                                         style={styles.iconBackStyle}
                                         onPress={()=> handleChatPressed()}>
                                             <Icon name="message-circle" size={30} style={styles.messageIcon}/>
                                         </TouchableOpacity>
-                                        
+
                                         <Text style={styles.buttonTitle}>Chat</Text>
                                     </View> */}
                                     <View style={styles.buttonsRowContaier}>
@@ -141,7 +141,7 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
                                                 <Text style={styles.approveButtonText}>{'Contact ' + orderObject.trainer.name.first}</Text>
                                             :
                                             <Text style={styles.approveButtonText}>{'Contact'}</Text>
-                                            } 
+                                            }
                                         </TouchableOpacity>
                                     </View>
 
@@ -195,12 +195,12 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
                     </View>
                 </View>
 
-               
-
-                
 
 
-               
+
+
+
+
             </ScrollView>
         </SafeAreaView>
     );
@@ -233,8 +233,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: Dimensions.get('window').width * .9,
         alignSelf: 'center',
-       
-    },  
+
+    },
     profileImage: {
         shadowColor: '#000',
         shadowOffset: {
@@ -249,15 +249,11 @@ const styles = StyleSheet.create({
         borderRadius: 40
     },
     nameAndButtonsContainer: {
-        
+
     },
     nameTitle: {
         fontSize: Dimensions.get('window').height * .0278,
         fontWeight: 'bold',
-    },
-    buttonsRowContaier: {
-        width: Dimensions.get('window').width * .35,
-        alignSelf: 'center'
     },
     buttonsRow: {
         flexDirection: 'row',
@@ -271,7 +267,7 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height * .005,
         textAlign: 'center',
         fontSize: Dimensions.get('window').height * .011
-    },  
+    },
     buttonsRowContaier: {
         width: Dimensions.get('window').width * .35,
         alignSelf: 'center'
@@ -336,7 +332,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         borderBottomWidth: 2,
         borderBottomColor: 'lightgrey',
-        
+
     },
     orderRowSecond: {
         backgroundColor: 'white',
@@ -393,23 +389,23 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     },
     phoneCallIcon: {
-        marginLeft: Dimensions.get('window').width * .01, 
-        marginTop: Dimensions.get('window').width * .02, 
-        width: Dimensions.get('window').width * .09, 
+        marginLeft: Dimensions.get('window').width * .01,
+        marginTop: Dimensions.get('window').width * .02,
+        width: Dimensions.get('window').width * .09,
         height: Dimensions.get('window').height * .04,
         color: 'white'
     },
     messageIcon: {
-        marginLeft: Dimensions.get('window').width * .015, 
-        marginTop: Dimensions.get('window').width * .015, 
-        width: Dimensions.get('window').width * .09, 
+        marginLeft: Dimensions.get('window').width * .015,
+        marginTop: Dimensions.get('window').width * .015,
+        width: Dimensions.get('window').width * .09,
         height: Dimensions.get('window').height * .04,
         color: 'white'
     },
     iconBackStyle: {
         backgroundColor: 'deepskyblue',
         borderRadius: 40,
-        width: Dimensions.get('window').width * .1, 
+        width: Dimensions.get('window').width * .1,
         height: Dimensions.get('window').height * .05,
     }
 

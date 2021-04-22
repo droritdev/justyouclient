@@ -3,10 +3,10 @@ const clientProfileModel = require('../models/clientModels');
 
 //Find trainers by category
 exports.getMultipleClients = (req, res) => {
-    var stringOfIDS = req.params.idArray;
-    var idArray = stringOfIDS.split(',');
+  let stringOfIDS = req.params.idArray;
+  let idArray = stringOfIDS.split(',');
 
-    clientProfileModel.find(
+  clientProfileModel.find(
         {
             '_id':
             {

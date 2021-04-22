@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import populateEvents from './Packer';
 import React from 'react';
 import moment from 'moment';
+// import _ from 'lodash';
 import _ from 'lodash';
 
 const LEFT_MARGIN = 60 - 1;
@@ -33,11 +34,14 @@ export default class DayView extends React.PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const width = nextProps.width - LEFT_MARGIN;
-    this.setState({
-      packedEvents: populateEvents(nextProps.events, width, nextProps.start),
-    });
+  componentDidUpdate(prevProps,prevState, snapshot)
+   {
+    const width = this.props.width - LEFT_MARGIN;
+    if(this.props.events !== prevProps.events) {
+      this.setState({
+        packedEvents: populateEvents(this.props.events, width, this.props.start),
+      });
+    }
   }
 
   componentDidMount() {

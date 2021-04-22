@@ -11,7 +11,7 @@ import {PhoneContext} from '../../context/PhoneContext';
 import {ProfileImageContext} from '../../context/ProfileImageContext';
 
 import * as Progress from 'react-native-progress';
-import {Surface, Shape} from '@react-native-community/art';
+// import {Surface, Shape} from '@react-native-community/art';
 
 
 
@@ -54,7 +54,7 @@ const DonePopUp = ({navigation}) => {
 
 
     const getFormat = (uri) => {
-        indexOfDot = uri.indexOf('.', uri.length-6);
+        let indexOfDot = uri.indexOf('.', uri.length-6);
         console.log("format : " +uri.slice(indexOfDot));
         return uri.slice(indexOfDot);
     }
@@ -64,7 +64,7 @@ const DonePopUp = ({navigation}) => {
             .createUserWithEmailAndPassword(emailAddress, password)
             .then((data) => {
                 console.log('User account created & signed in!');
-                const userUid = "/clients/" + data.user.uid + '/profileImage'+getFormat(profileImage.uri); 
+                const userUid = "/clients/" + data.user.uid + '/profileImage'+getFormat(profileImage.uri);
                 uploadImage(userUid, profileImage.uri)
 
             })
@@ -86,13 +86,13 @@ const DonePopUp = ({navigation}) => {
         let reference = await storage().ref(filePath);
         const task = reference.putFile(imageUri);
         // .then((snapshot) => {
-                
+
         //     reference.getDownloadURL().then((url) => {
         //         alert(url);
         //         setProfileImageUrl('url');
         //         registerClient(url);
         //     })
-        //     // setProfileImageUrl(snapshot.ref.getDownloadURL()); 
+        //     // setProfileImageUrl(snapshot.ref.getDownloadURL());
         //     // const ImageUrl = await reference.getDownloadURL().catch((error) => { throw error });
         //     // return setProfileImageUrl(ImageUrl),registerClient();
         //   })
@@ -111,7 +111,7 @@ const DonePopUp = ({navigation}) => {
             // setProfileImageUrl("text isn't changing");
             // console.log(profileImageUrl);
           });
-          
+
           task.then(() => {
             console.log('Image uploaded to the bucket!');
             reference.getDownloadURL().then((url) => {
@@ -126,14 +126,14 @@ const DonePopUp = ({navigation}) => {
 
     //   const uploadImageToStorage = async (path, imageName) => {
     //     let reference = storage().ref('shaharUpload/ProjectB/');         // 2
-    //     let task = reference.putFile(profileImage);  
+    //     let task = reference.putFile(profileImage);
     //     console.log(profileImage);             // 3
-    
+
     //     task.then(() => {                                 // 4
     //         console.log('Image uploaded to the bucket!');
     //     }).catch((e) => console.log('uploading image error => ', e));
     // }
-    
+
     const registerClient = (imageUrl) => {
         // navigation.navigate('WelcomeUser');
         axios
@@ -148,7 +148,7 @@ const DonePopUp = ({navigation}) => {
                 country: country,
                 image: imageUrl,
                 phone: {
-                    areaCode: areaCode, 
+                    areaCode: areaCode,
                     phoneNumber: phoneNumber
                 },
                 location: {
@@ -163,13 +163,13 @@ const DonePopUp = ({navigation}) => {
                setTimeout(() => {
                 navigation.navigate('WelcomeUser');
            }, 1570);
-               
+
 
             })
-            
+
             .catch((err) => alert(err.data));
     }
-    
+
     //Uploading the client to the data base automaticly after 2 second
     setTimeout(() => {
          createUserFirebase();
@@ -178,7 +178,7 @@ const DonePopUp = ({navigation}) => {
 
     // return(
     //     <View style={styles.container}>
-    //         <Image 
+    //         <Image
     //             source={require('../../images/successfullyIcon.png')}
     //             style={styles.Image}
     //         />
@@ -193,7 +193,7 @@ const DonePopUp = ({navigation}) => {
 
     return(
         <View style={styles.container}>
-            {isLoadingCircle?            
+            {isLoadingCircle?
              <View>
                 <View style={styles.progressView}>
                     <Progress.Circle size={Dimensions.get('window').height * .25} indeterminate={true} />
@@ -202,14 +202,14 @@ const DonePopUp = ({navigation}) => {
                     <Text style={styles.registeringText}>Creating account...</Text>
                 </View>
              </View>
-            : 
+            :
             <View>
-                <Image 
+                <Image
                     source={require('../../images/successfullyIcon.png')}
                     style={styles.Image}
                 />
                 <Text style={styles.registeringText}>Done</Text>
-            </View> 
+            </View>
             }
         </View>
     );

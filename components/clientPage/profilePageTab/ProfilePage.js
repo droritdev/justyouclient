@@ -13,140 +13,135 @@ import * as Progress from 'react-native-progress';
 
 import {ClientContext} from '../../../context/ClientContext';
 import {TrainerContext} from '../../../context/TrainerContext';
+import History from './History';
 
 
 //The client's profile page area page
-const ProfilePage = ({navigation}) => {
+const ProfilePage = ({ navigation }) => {
 
     const [initializing, setInitializing] = useState(false);
 
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [profileImageUrl, setProfileImageUrl] = useState("");
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [profileImageUrl, setProfileImageUrl] = useState('');
 
-    const {dispatchClientObject} = useContext(ClientContext);
-    const {dispatchClientId} = useContext(ClientContext);
+    const { dispatchClientObject } = useContext(ClientContext);
+    const { dispatchClientId } = useContext(ClientContext);
     const [clientObjectToPass, setClientObjectToPass] = useState([]);
     const [clientIdToPass, setClientIdToPass] = useState('[]');
     // dispatch trainer values for use in TrainerOrderPage
-    const {dispatchTrainerObject } = useContext(TrainerContext);
+    const { dispatchTrainerObject } = useContext(TrainerContext);
 
 
     const [pendingOrdersArrived, setPendingOrdersArrived] = useState([]);
     const [approvedOrdersArrived, setApprovedOrdersArrived] = useState([]);
 
-    var ordersHistoryTrainerArrayToPush = [];
+    let ordersHistoryTrainerArrayToPush = [];
     const [ordersHistoryTrainerArray, setOrdersHistoryTrainerArray] = useState([]);
     const [completedOrdersToPass, setCompletedOrdersToPass] = useState([]);
-    const [noRecentOrders, setNoRecentOrders] = useState('none')
-    const [isLoadingFinish, setIsLoadingFinish] = useState(false)
+    const [noRecentOrders, setNoRecentOrders] = useState('none');
+    const [isLoadingFinish, setIsLoadingFinish] = useState(false);
 
     //ref to show covid alert
     let dropDownAlertRef = useRef(null);
     //Modal to display for covid-19 alert tap
     const [covidModalVisible, setCovidModalVisible] = useState(false);
 
-    
-    
-    
 
     const config = {
         withCredentials: true,
         baseURL: 'http://localhost:3000/',
         headers: {
-          "Content-Type": "application/json",
+            'Content-Type': 'application/json',
         },
     };
 
     const getClientOrders = async (clientId) => {
-        console.log(clientId)
+        console.log(clientId);
         await axios
-            .get('/orders/by-client-id/'+clientId, 
-            config
-            )
-            .then((doc) => {
-                var allOrders = doc.data;
-                var pendingOrders = [];
-                var approvedOrders = [];
-                var completedOrders = [];
-                
+          .get('/orders/by-client-id/' + clientId,
+            config,
+          )
+          .then((doc) => {
+              let allOrders = doc.data;
+              let pendingOrders = [];
+              let approvedOrders = [];
+              let completedOrders = [];
 
-                for (let index = 0; index < allOrders.length; index++) {
-                    const singleOrder = allOrders[index];
-                    if (singleOrder.status === "pending") {
-                        pendingOrders.push(singleOrder);
-                        
 
-                    }if (singleOrder.status === "approved") {
-                        approvedOrders.push(singleOrder);
-                        
-                    }else if(singleOrder.status === "completed") {
-                        completedOrders.push(singleOrder);
-                    }
+              for (let index = 0; index < allOrders.length; index++) {
+                  console.log("getClientOrders: allOrders - " + allOrders[index].status);
+                  const singleOrder = allOrders[index];
+                  if (singleOrder.status === 'pending') {
+                      pendingOrders.push(singleOrder);
+                  }
+                  if (singleOrder.status === 'approved') {
+                      approvedOrders.push(singleOrder);
 
-                }
-                
-                getAllTrainersInfo(completedOrders);
-                setPendingOrdersArrived(pendingOrders);
-                setApprovedOrdersArrived(approvedOrders);
-                setCompletedOrdersToPass(completedOrders);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
+                  } else if (singleOrder.status === 'completed') {
+                      completedOrders.push(singleOrder);
+                  }
+
+              }
+              console.log("getClientOrders: " + completedOrders.toString());
+              getAllTrainersInfo(completedOrders);
+              setPendingOrdersArrived(pendingOrders);
+              setApprovedOrdersArrived(approvedOrders);
+              setCompletedOrdersToPass(completedOrders);
+          })
+          .catch((err) => {
+              console.log(err);
+          });
+    };
+
+
 
     const getUserByFirebaseAuth = () => {
         const subscriber = auth().onAuthStateChanged((user) => {
-            // console.log('🚨userStatus:' , user)
-
-            if(user){
+            console.log('🚨userStatus:', user);
+            if (user) {
                 setInitializing(true);
-                
-                
                 axios
-                .get('/clients/'
-                +user.email.toLocaleLowerCase(),
-                config
-            )
-            .then((doc) => {
-                if(doc) {
-                  const currectUserData = doc.data[0];
-                  console.log(doc.data[0]);
-                  setFirstName(currectUserData.name.first);
-                  setLastName(currectUserData.name.last);
-                  setProfileImageUrl(currectUserData.image);
-                  setClientIdToPass(doc.data[0]._id);
-                  setClientObjectToPass(doc.data[0]);
+                  .get('/clients/'
+                    + user.email.toLocaleLowerCase(),
+                    config,
+                  )
+                  .then((doc) => {
+                      if (doc) {
+                          const currectUserData = doc.data[0];
+                          console.log(doc.data[0]);
+                          setFirstName(currectUserData.name.first);
+                          setLastName(currectUserData.name.last);
+                          setProfileImageUrl(currectUserData.image);
+                          setClientIdToPass(doc.data[0]._id);
+                          setClientObjectToPass(doc.data[0]);
 
-                  dispatchClientObject({
-                    type: 'SET_CLIENT_OBJECT',
-                    clientObject : doc.data[0]
-                    });
-                    //for filling the recent orders scrollView
-                   getClientOrders(doc.data[0]._id);  
-                  
-                }
-              })
-            .catch((err) => console.log(err));
-            }else{
+                          dispatchClientObject({
+                              type: 'SET_CLIENT_OBJECT',
+                              clientObject: doc.data[0],
+                          });
+                          //for filling the recent orders scrollView
+                          getClientOrders(doc.data[0]._id).done();
+
+                      }
+                  })
+                  .catch((err) => console.log(err));
+            } else {
                 setInitializing(true);
             }
-
-
         });
         return subscriber; // unsubscribe on unmount
-    }
-    
+    };
+
 
     //First off all, the component loads the user details from the data base and sets the variables to the data
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            
+
             //Check if covid alert was dismissed
-            if(global.covidAlert) {
-                if(dropDownAlertRef.state.isOpen === false) {
+            if (global.covidAlert) {
+                if (dropDownAlertRef.state.isOpen === false) {
                     //Show covid alert
                     dropDownAlertRef.alertWithType('info', 'Latest information on CVOID-19', 'Click here to learn more.');
                 }
@@ -158,30 +153,30 @@ const ProfilePage = ({navigation}) => {
 
         });
         return unsubscribe;
-      }, [navigation]);
+    }, [navigation]);
 
-      //Update the covid alert var to false (will not display coivd alert anymore)
+    //Update the covid alert var to false (will not display coivd alert anymore)
     const covidAlertCancel = () => {
         global.covidAlert = false;
-    }
+    };
 
 
     //Show the covid information modal
     const covidAlertTap = () => {
         setCovidModalVisible(true);
-    }
+    };
 
     //using func as async for waiting trainers array to fill from MongoDB
     //getting the trainer from mongoDb => recent orders use
     const getAllTrainersInfo = async (ordersHistoryArray) => {
-        console.log('inThatFunction');
+        //console.log('inThatFunction');
         //Array to to be filled with the ids of the clients that left reviews
-        var idArray = [];
-        if(ordersHistoryArray.length === 0){
+        let idArray = [];
+        if (ordersHistoryArray.length === 0) {
             setOrdersHistoryTrainerArray([]);
-            setNoRecentOrders('flex')
-        }else{
-            setNoRecentOrders('none')
+            setNoRecentOrders('flex');
+        } else {
+            setNoRecentOrders('none');
             //Push into the idArray all of the clientID
             for (let index = 0; index < ordersHistoryArray.length; index++) {
                 const singleTrainerID = ordersHistoryArray[index].trainer.id;
@@ -192,142 +187,144 @@ const ProfilePage = ({navigation}) => {
 
             //fetch the trainer of all trainers from mongodb using axios
             await axios
-            .get('/trainers/findMultipleTrainers/'+idArray, 
-            config
-            )
-            .then((doc) => {
-                for (let index = 0; index < doc.data.length; index++) {
-                    const element = doc.data[index];
-                    console.log('findMultipleTrainers');
-                    console.log(element);
-                }
-                
-            var allTrainersInfo = doc.data;
-            allTrainersInfo.reverse();
-            setIsLoadingFinish(true);
-            setOrdersHistoryTrainerArray(allTrainersInfo);
-            
+              .get('/trainers/findMultipleTrainers/' + idArray,
+                config,
+              )
+              .then((doc) => {
+                  for (let index = 0; index < doc.data.length; index++) {
+                      const element = doc.data[index];
+                      console.log('findMultipleTrainers');
+                      console.log(element);
+                  }
 
-            })
-            .catch((err) => {
-                console.log('errorInTrainerReading')
-                console.log(err)
-            });
+                  let allTrainersInfo = doc.data;
+                  allTrainersInfo.reverse();
+                  setIsLoadingFinish(true);
+                  setOrdersHistoryTrainerArray(allTrainersInfo);
+
+
+              })
+              .catch((err) => {
+                  console.log('errorInTrainerReading');
+                  console.log(err);
+              });
         }
-    }
+    };
 
     //Load trainer star rating
     const getStarRating = (reviews) => {
         if (reviews.length === 0) {
             return 0;
         } else {
-            var sumStars = 0;
+            let sumStars = 0;
             for (let index = 0; index < reviews.length; index++) {
                 const singleReviewStar = reviews[index].stars;
                 sumStars += Number(singleReviewStar);
             }
-            return ((sumStars/reviews.length).toFixed(1));
+            return ((sumStars / reviews.length).toFixed(1));
         }
-    }
+    };
 
     //scrollView of trainers (working like flatList)
     const getApprovedOrdersPattern = () => {
         let repeats = [];
         if (ordersHistoryTrainerArray !== []) {
-            for(let i = 0; i < ordersHistoryTrainerArray.length; i++) {
+            for (let i = 0; i < ordersHistoryTrainerArray.length; i++) {
                 //pushing each trainer UI into the array
                 repeats.push(
-                    <TouchableOpacity 
-                        key = {'ordersRow' + i}
-                        onPress={() => handleOnTrainerInRecentOrderScrollViewPressed(ordersHistoryTrainerArray[i])}
-                        >
+                  <TouchableOpacity
+                    key={'ordersRow' + i}
+                    onPress={() => handleOnTrainerInRecentOrderScrollViewPressed(ordersHistoryTrainerArray[i])}
+                  >
 
-                        <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <FastImage
-                                        style={styles.trainerImage}
-                                        source={{
-                                            uri: ordersHistoryTrainerArray[i].media.images[0],
-                                            priority: FastImage.priority.normal,
-                                                }}
-                                        resizeMode={FastImage.resizeMode.stretch}
-                                />
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>{ordersHistoryTrainerArray[i].name.first +' '+ordersHistoryTrainerArray[i].name.last}</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>{getStarRating(ordersHistoryTrainerArray[i].reviews)} </Text>
-                                    <Image
-                                        source={require('../../../images/starIconBlue.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        
-                    </TouchableOpacity>
-                )
+                      <View style={styles.trainerView}>
+                          <View style={styles.trainerImageView}>
+                              <FastImage
+                                style={styles.trainerImage}
+                                source={{
+                                    uri: ordersHistoryTrainerArray[i].media.images[0],
+                                    priority: FastImage.priority.normal,
+                                }}
+                                resizeMode={FastImage.resizeMode.stretch}
+                              />
+                          </View>
+                          <View
+                            style={styles.trainerPreviewText}
+                          >
+                              <Text
+                                style={styles.trainerText1}>{ordersHistoryTrainerArray[i].name.first + ' ' + ordersHistoryTrainerArray[i].name.last}</Text>
+                              <Text style={styles.trainerText2}>Personal Trainer</Text>
+                              <View style={styles.ratingRow}>
+                                  <Text
+                                    style={styles.trainerText3}>{getStarRating(ordersHistoryTrainerArray[i].reviews)} </Text>
+                                  <Image
+                                    source={require('../../../images/starIconBlue.png')}
+                                    style={styles.starIcon}
+                                  />
+                              </View>
+                          </View>
+                      </View>
+
+                  </TouchableOpacity>,
+                );
             }
         }
         return repeats;
     };
-
-    
 
 
     //Handle when the user presses the ConfirmedOrders button
     const handleOnConfirmedOrdersPRessed = () => {
         dispatchClientId({
             type: 'SET_CLIENT_ID',
-            clientId : clientIdToPass
+            clientId: clientIdToPass,
         });
 
         dispatchClientObject({
             type: 'SET_CLIENT_OBJECT',
-            clientObject : clientObjectToPass
+            clientObject: clientObjectToPass,
         });
 
-       
-        navigation.navigate('PendingApprovalOrders');}
+
+        navigation.navigate('PendingApprovalOrders');
+    };
 
     //Handle when the user presses the PendingOrders button
     const handleOnPendingOrdersPRessed = () => {
-        
+
         dispatchClientId({
             type: 'SET_CLIENT_ID',
-            clientId : clientIdToPass
+            clientId: clientIdToPass,
         });
 
         dispatchClientObject({
             type: 'SET_CLIENT_OBJECT',
-            clientObject : clientObjectToPass
+            clientObject: clientObjectToPass,
         });
 
-        
+
         navigation.navigate('PendingApprovalOrders');
-    }
+    };
 
     //Handle when the user presses the Invite friends button
     const handleOnInvitePressed = () => {
         navigation.navigate('ComingSoon');
-    }
+    };
 
     //Handle when the user presses the Receipts history button
     const handleOnReceiptsHistoryPressed = () => {
         navigation.navigate('ReceiptsHistory');
-    }
+    };
 
     //Handle when the user presses the History button
     const handleOnHistoryPressed = () => {
 
         navigation.navigate('ProfilePageStack',
-             { screen: 'History' ,
-             params: { ordersHistoryTrainerArray: completedOrdersToPass}
-            });
-    }
+          {
+              screen: 'History',
+              params: { ordersHistoryTrainerArray: completedOrdersToPass },
+          });
+    };
 
     //Handle when the user presses on Trainer in recent orders scrollview
     const handleOnTrainerInRecentOrderScrollViewPressed = (trainerObject) => {
@@ -336,355 +333,358 @@ const ProfilePage = ({navigation}) => {
         console.log(trainerObject);
         dispatchTrainerObject({
             type: 'SET_TRAINER_OBJECT',
-            trainerObject: trainerObject
-        })
+            trainerObject: trainerObject,
+        });
 
         navigation.navigate('StarPageStack',
-        { screen: 'TrainerOrderPage' });
-    }
+          { screen: 'TrainerOrderPage' });
+    };
 
-    
 
     //Handle when the user presses the Edit profile button
     const handleOnEditProfilePressed = () => {
         navigation.navigate('EditProfile');
-    }
+    };
 
     //Handle when the user presses the CustomerService button
     const handleOnCustomerServicePressed = () => {
         navigation.navigate('CustomerService');
-    }
+    };
 
     //Handle when the user presses the Settings button
     const handleOnSettingsPressed = () => {
         navigation.navigate('Settings');
-    }
-    
-    return(
-        <SafeAreaView style={styles.safeArea}>
+    };
 
-            <Modal
-                
-                animationType="slide"
-                transparent={true}
-                cancelable={true}
-                visible={covidModalVisible}
-                onRequestClose={()=>{}}
-            >
-                <View style={styles.covidContainer}>
-                    
-                    <View style={styles.covidModalContainer}>
-                        <Icon
-                            name="x-circle" 
-                            size={Dimensions.get('window').width * .05} 
-                            style={styles.covidCloseIcon} 
-                            onPress={()=> {setCovidModalVisible(false)}}
-                        />
-                        <Text style={styles.covidTitle}>COVID-19 Information</Text>
-                        <Text style={styles.covidMessage}>{"We at JustYou take care to follow the changing guidelines of the Ministry of Health regarding the coronavirus. Before ordering, the personal trainer and the client will fill out a statement that they do indeed meet the requirements of the law regarding the coronavirus. \nAs Everyone knows, the guidelines may change at any time and we will make the adujstments according to the changes to be determined by the Ministry of Health. Adherence to these requirments is for all of us for your health and safety and we will know better days"}.</Text>
-                    </View>
-                </View>
+    return (
+      <SafeAreaView style={styles.safeArea}>
 
-            </Modal>
+          <Modal
 
-            <View style={styles.covidAlertView}>
-                <DropdownAlert
-                        ref={(ref) => {
-                        if (ref) {
-                            dropDownAlertRef = ref;
-                        }
+            animationType="slide"
+            transparent={true}
+            cancelable={true}
+            visible={covidModalVisible}
+            onRequestClose={() => {
+            }}
+          >
+              <View style={styles.covidContainer}>
+
+                  <View style={styles.covidModalContainer}>
+                      <Icon
+                        name="x-circle"
+                        size={Dimensions.get('window').width * .05}
+                        style={styles.covidCloseIcon}
+                        onPress={() => {
+                            setCovidModalVisible(false);
                         }}
-                        containerStyle={styles.covidAlertContainer}
-                        showCancel={true}
-                        infoColor ={'deepskyblue'}
-                        onCancel={covidAlertCancel}
-                        closeInterval = {0}
-                        onTap={covidAlertTap}
-                        titleNumOfLines={1}
-                        messageNumOfLines={1}
-                />
-            </View>
+                      />
+                      <Text style={styles.covidTitle}>COVID-19 Information</Text>
+                      <Text
+                        style={styles.covidMessage}>{'We at JustYou take care to follow the changing guidelines of the Ministry of Health regarding the coronavirus. Before ordering, the personal trainer and the client will fill out a statement that they do indeed meet the requirements of the law regarding the coronavirus. \nAs Everyone knows, the guidelines may change at any time and we will make the adujstments according to the changes to be determined by the Ministry of Health. Adherence to these requirments is for all of us for your health and safety and we will know better days'}.</Text>
+                  </View>
+              </View>
+
+          </Modal>
+
+          <View style={styles.covidAlertView}>
+              <DropdownAlert
+                ref={(ref) => {
+                    if (ref) {
+                        dropDownAlertRef = ref;
+                    }
+                }}
+                containerStyle={styles.covidAlertContainer}
+                showCancel={true}
+                infoColor={'deepskyblue'}
+                onCancel={covidAlertCancel}
+                closeInterval={0}
+                onTap={covidAlertTap}
+                titleNumOfLines={1}
+                messageNumOfLines={1}
+              />
+          </View>
 
 
-            <ScrollView style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>Just You</Text>
-                </View>
-                <Text style={styles.helloUserTitle}> {firstName} {lastName}</Text>
-                <View style={styles.imageAndDetailsRow}>
-                <TouchableOpacity >
-                    <FastImage
+          <ScrollView style={styles.container}>
+              <View style={styles.header}>
+                  <Text style={styles.headerText}>Just You</Text>
+              </View>
+              <Text style={styles.helloUserTitle}> {firstName} {lastName}</Text>
+              <View style={styles.imageAndDetailsRow}>
+                  <TouchableOpacity>
+                      <FastImage
                         style={styles.profileImage}
                         source={{
                             uri: profileImageUrl,
                             priority: FastImage.priority.normal,
-                                }}
+                        }}
                         resizeMode={FastImage.resizeMode.stretch}
-                    />
-              </TouchableOpacity>
-                    
-                    <View style={styles.nameAndDetailsView}>        
-                        <View style={styles.detailsRow}>
-                            <View style={styles.credits}>
-                                <Text style={styles.creditValue}>0.00</Text>
-                                <Text style={styles.creditText}>Credit (USD)</Text>
-                            </View>
-                            <View style={styles.confirmedOrders}>
-                                <Text style={styles.confirmedOrdersValue}>{approvedOrdersArrived.length}</Text>
-                                <TouchableOpacity
-                                    onPress={() => handleOnConfirmedOrdersPRessed()}
-                                >
-                                    <Text style={styles.confirmedOrdersText}>Approved Orders</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.pandingOrders}>
-                                <Text style={styles.pandingOrdersValue}>{pendingOrdersArrived.length}</Text>
-                                <TouchableOpacity
-                                    onPress={() => handleOnPendingOrdersPRessed()}
-                                >
-                                    <Text style={styles.pandingOrdersText}>Pending Orders</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.sectionContainer}>
-                    <Text style={styles.inPageMainTitles}>Choices I Liked</Text>
-                    <ScrollView 
-                        style={styles.likesScrollView} 
-                        horizontal={true} 
-                        showsHorizontalScrollIndicator={false}
-                    >
-                        <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image 
-                                        source={require('../../../images/ratingStar.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.trainerView}>
-                            <View style={styles.trainerImageView}>
-                                <TouchableOpacity>
-                                    <Image
-                                        style={styles.trainerImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={styles.trainerPreviewText}
-                            >
-                                <Text style={styles.trainerText1}>Judi Woods</Text>
-                                <Text style={styles.trainerText2}>Personal Trainer</Text>
-                                <View style={styles.ratingRow}>
-                                    <Text style={styles.trainerText3}>8.7 </Text>
-                                    <Image
-                                        source={require('../../../images/starIconBlue.png')}
-                                        style={styles.starIcon}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                    </ScrollView>
-                </View>
-                <View style={styles.pageMainTitlesContainer}>
-                    <Text style={styles.inPageSubMainTitles}>Links</Text>
-                       <View style={styles.linksRowsContainer}></View> 
-                        <View style={styles.eachRowContainer}>
-                            <View style={styles.navigationsRows}>
-                                <TouchableOpacity
-                                    onPress={() => handleOnInvitePressed()}
-                                >
-                                    <Text style={styles.navigationsRowsTitle}>Receive credit by inviting friends</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity 
-                                    style={styles.inviteButton}
-                                    onPress={() => handleOnInvitePressed()}
-                                >
-                                    <Image
-                                        source={require('../../../images/arrowButton.png')}
-                                        style={styles.arrowImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style={styles.eachRowContainer}>
-                            <View style={styles.navigationsRows}>
-                                <TouchableOpacity
-                                    onPress={() => handleOnReceiptsHistoryPressed()}
-                                >
-                                    <Text style={styles.navigationsRowsTitle}>Receipts History</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity 
-                                    style={styles.arrowButton}
-                                    onPress={() => handleOnReceiptsHistoryPressed()}
-                                >
-                                    <Image
-                                        source={require('../../../images/arrowButton.png')}
-                                        style={styles.arrowImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                </View>
-                <View style={styles.sectionContainer}>
-                    <View style={styles.recentAndHistoryRow}>
-                        <Text style={styles.inPageMainTitles}>Recent Orders</Text>
-                        <TouchableOpacity
-                            onPress={() => handleOnHistoryPressed()}
-                        >
-                            <Text style={styles.historyText}>History</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <ScrollView 
-                        style={styles.recentOrdersScrollView} 
-                        horizontal={true} 
-                        showsHorizontalScrollIndicator={false}
-                    >
-                                <View 
-                                    display={noRecentOrders}
-                                    style={styles.noRecentOrdersTextContainer}>
+                      />
+                  </TouchableOpacity>
 
-                                    <Text
-                                        style={styles.noRecentOrdersText} 
-                                        >There are no recent orders yet...
-                                    </Text>
-                                </View>
-                                {isLoadingFinish ?
-                                    getApprovedOrdersPattern()
-                                :
-                                    <View style={styles.progressView}>
-                                        <Progress.Circle size={Dimensions.get('window').height * .1} indeterminate={true} />
-                                    </View>
-                                }
-                        
-                        
-                    </ScrollView>
-                </View>
-                <View style={styles.pageMainTitlesContainer}>
-                   <Text style={styles.inPageSubMainTitles}>More</Text>
-                    <View style={styles.moreRowsContainer}>
-                            <View style={styles.eachRowContainer}>
-                                <View style={styles.navigationsRows}>
-                                    <TouchableOpacity
-                                        onPress={() => handleOnEditProfilePressed()}
-                                    >
-                                        <Text style={styles.navigationsRowsTitle}>Edit Profile</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity 
-                                        style={styles.arrowButton}
-                                        onPress={() => handleOnEditProfilePressed()}
-                                    >
-                                        <Image
-                                            source={require('../../../images/arrowButton.png')}
-                                            style={styles.arrowImage}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View style={styles.eachRowContainer}>
-                                <View style={styles.navigationsRows}>
-                                    <TouchableOpacity
-                                        onPress={() => handleOnCustomerServicePressed()}    
-                                    >
-                                        <Text style={styles.navigationsRowsTitle}>Customer Service</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity 
-                                        style={styles.arrowButton}
-                                        onPress={() => handleOnCustomerServicePressed()}  
-                                    >
-                                        <Image
-                                            source={require('../../../images/arrowButton.png')}
-                                            style={styles.arrowImage}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View style={styles.eachRowContainer}>
-                                <View style={styles.navigationsRows}>
-                                    <TouchableOpacity
-                                        onPress={() => handleOnSettingsPressed()}
-                                    >
-                                        <Text style={styles.navigationsRowsTitle}>Settings</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity 
-                                        style={styles.arrowButton}
-                                        onPress={() => handleOnSettingsPressed()}
-                                    >
-                                        <Image
-                                            source={require('../../../images/arrowButton.png')}
-                                            style={styles.arrowImage}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View
-                                style={styles.deadAreaBottom}
-                            />
+                  <View style={styles.nameAndDetailsView}>
+                      <View style={styles.detailsRow}>
+                          <View style={styles.credits}>
+                              <Text style={styles.creditValue}>0.00</Text>
+                              <Text style={styles.creditText}>Credit (USD)</Text>
+                          </View>
+                          <View style={styles.confirmedOrders}>
+                              <Text style={styles.confirmedOrdersValue}>{approvedOrdersArrived.length}</Text>
+                              <TouchableOpacity
+                                onPress={() => handleOnConfirmedOrdersPRessed()}
+                              >
+                                  <Text style={styles.confirmedOrdersText}>Approved Orders</Text>
+                              </TouchableOpacity>
+                          </View>
+                          <View style={styles.pandingOrders}>
+                              <Text style={styles.pandingOrdersValue}>{pendingOrdersArrived.length}</Text>
+                              <TouchableOpacity
+                                onPress={() => handleOnPendingOrdersPRessed()}
+                              >
+                                  <Text style={styles.pandingOrdersText}>Pending Orders</Text>
+                              </TouchableOpacity>
+                          </View>
+                      </View>
+                  </View>
+              </View>
+              <View style={styles.sectionContainer}>
+                  <Text style={styles.inPageMainTitles}>Choices I Liked</Text>
+                  <ScrollView
+                    style={styles.likesScrollView}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                  >
+                      <View style={styles.trainerView}>
+                          <View style={styles.trainerImageView}>
+                              <TouchableOpacity>
+                                  <Image
+                                    style={styles.trainerImage}
+                                  />
+                              </TouchableOpacity>
+                          </View>
+                          <View
+                            style={styles.trainerPreviewText}
+                          >
+                              <Text style={styles.trainerText1}>Judi Woods</Text>
+                              <Text style={styles.trainerText2}>Personal Trainer</Text>
+                              <View style={styles.ratingRow}>
+                                  <Text style={styles.trainerText3}>8.7 </Text>
+                                  <Image
+                                    source={require('../../../images/ratingStar.png')}
+                                    style={styles.starIcon}
+                                  />
+                              </View>
+                          </View>
+                      </View>
+                      <View style={styles.trainerView}>
+                          <View style={styles.trainerImageView}>
+                              <TouchableOpacity>
+                                  <Image
+                                    style={styles.trainerImage}
+                                  />
+                              </TouchableOpacity>
+                          </View>
+                          <View
+                            style={styles.trainerPreviewText}
+                          >
+                              <Text style={styles.trainerText1}>Judi Woods</Text>
+                              <Text style={styles.trainerText2}>Personal Trainer</Text>
+                              <View style={styles.ratingRow}>
+                                  <Text style={styles.trainerText3}>8.7 </Text>
+                                  <Image
+                                    source={require('../../../images/ratingStar.png')}
+                                    style={styles.starIcon}
+                                  />
+                              </View>
+                          </View>
+                      </View>
+                      <View style={styles.trainerView}>
+                          <View style={styles.trainerImageView}>
+                              <TouchableOpacity>
+                                  <Image
+                                    style={styles.trainerImage}
+                                  />
+                              </TouchableOpacity>
+                          </View>
+                          <View
+                            style={styles.trainerPreviewText}
+                          >
+                              <Text style={styles.trainerText1}>Judi Woods</Text>
+                              <Text style={styles.trainerText2}>Personal Trainer</Text>
+                              <View style={styles.ratingRow}>
+                                  <Text style={styles.trainerText3}>8.7 </Text>
+                                  <Image
+                                    source={require('../../../images/ratingStar.png')}
+                                    style={styles.starIcon}
+                                  />
+                              </View>
+                          </View>
+                      </View>
+                      <View style={styles.trainerView}>
+                          <View style={styles.trainerImageView}>
+                              <TouchableOpacity>
+                                  <Image
+                                    style={styles.trainerImage}
+                                  />
+                              </TouchableOpacity>
+                          </View>
+                          <View
+                            style={styles.trainerPreviewText}
+                          >
+                              <Text style={styles.trainerText1}>Judi Woods</Text>
+                              <Text style={styles.trainerText2}>Personal Trainer</Text>
+                              <View style={styles.ratingRow}>
+                                  <Text style={styles.trainerText3}>8.7 </Text>
+                                  <Image
+                                    source={require('../../../images/starIconBlue.png')}
+                                    style={styles.starIcon}
+                                  />
+                              </View>
+                          </View>
+                      </View>
+                  </ScrollView>
+              </View>
+              <View style={styles.pageMainTitlesContainer}>
+                  <Text style={styles.inPageSubMainTitles}>Links</Text>
+                  <View style={styles.linksRowsContainer}></View>
+                  <View style={styles.eachRowContainer}>
+                      <View style={styles.navigationsRows}>
+                          <TouchableOpacity
+                            onPress={() => handleOnInvitePressed()}
+                          >
+                              <Text style={styles.navigationsRowsTitle}>Receive credit by inviting friends</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.inviteButton}
+                            onPress={() => handleOnInvitePressed()}
+                          >
+                              <Image
+                                source={require('../../../images/arrowButton.png')}
+                                style={styles.arrowImage}
+                              />
+                          </TouchableOpacity>
+                      </View>
+                  </View>
+                  <View style={styles.eachRowContainer}>
+                      <View style={styles.navigationsRows}>
+                          <TouchableOpacity
+                            onPress={() => handleOnReceiptsHistoryPressed()}
+                          >
+                              <Text style={styles.navigationsRowsTitle}>Receipts History</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.arrowButton}
+                            onPress={() => handleOnReceiptsHistoryPressed()}
+                          >
+                              <Image
+                                source={require('../../../images/arrowButton.png')}
+                                style={styles.arrowImage}
+                              />
+                          </TouchableOpacity>
+                      </View>
+                  </View>
+              </View>
+              <View style={styles.sectionContainer}>
+                  <View style={styles.recentAndHistoryRow}>
+                      <Text style={styles.inPageMainTitles}>Recent Orders</Text>
+                      <TouchableOpacity
+                        onPress={() => handleOnHistoryPressed()}
+                      >
+                          <Text style={styles.historyText}>History</Text>
+                      </TouchableOpacity>
+                  </View>
+                  <ScrollView
+                    style={styles.recentOrdersScrollView}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                  >
+                      <View
+                        display={noRecentOrders}
+                        style={styles.noRecentOrdersTextContainer}>
+
+                          <Text
+                            style={styles.noRecentOrdersText}
+                          >There are no recent orders yet...
+                          </Text>
+                      </View>
+                      {isLoadingFinish ?
+                        getApprovedOrdersPattern()
+                        :
+                        <View style={styles.progressView}>
+                            <Progress.Circle size={Dimensions.get('window').height * .1} indeterminate={true} />
                         </View>
-                    </View>    
-            </ScrollView>
-        </SafeAreaView>
-    )
-}
+                      }
+
+
+                  </ScrollView>
+              </View>
+              <View style={styles.pageMainTitlesContainer}>
+                  <Text style={styles.inPageSubMainTitles}>More</Text>
+                  <View style={styles.moreRowsContainer}>
+                      <View style={styles.eachRowContainer}>
+                          <View style={styles.navigationsRows}>
+                              <TouchableOpacity
+                                onPress={() => handleOnEditProfilePressed()}
+                              >
+                                  <Text style={styles.navigationsRowsTitle}>Edit Profile</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.arrowButton}
+                                onPress={() => handleOnEditProfilePressed()}
+                              >
+                                  <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                  />
+                              </TouchableOpacity>
+                          </View>
+                      </View>
+                      <View style={styles.eachRowContainer}>
+                          <View style={styles.navigationsRows}>
+                              <TouchableOpacity
+                                onPress={() => handleOnCustomerServicePressed()}
+                              >
+                                  <Text style={styles.navigationsRowsTitle}>Customer Service</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.arrowButton}
+                                onPress={() => handleOnCustomerServicePressed()}
+                              >
+                                  <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                  />
+                              </TouchableOpacity>
+                          </View>
+                      </View>
+                      <View style={styles.eachRowContainer}>
+                          <View style={styles.navigationsRows}>
+                              <TouchableOpacity
+                                onPress={() => handleOnSettingsPressed()}
+                              >
+                                  <Text style={styles.navigationsRowsTitle}>Settings</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.arrowButton}
+                                onPress={() => handleOnSettingsPressed()}
+                              >
+                                  <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                  />
+                              </TouchableOpacity>
+                          </View>
+                      </View>
+                      <View
+                        style={styles.deadAreaBottom}
+                      />
+                  </View>
+              </View>
+          </ScrollView>
+      </SafeAreaView>
+    );
+};
 
 const styles = StyleSheet.create({
     safeArea: {
@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
     progressView: {
         marginTop: Dimensions.get('window').height * .03,
         marginLeft: Dimensions.get('window').width * .33,
-        
+
         alignSelf: 'center'
     },
     noRecentOrdersTextContainer:{
@@ -857,7 +857,7 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height * .1,
 
 
-        
+
     },
     noRecentOrdersText:{
         marginTop:Dimensions.get('window').height * .03,
@@ -866,7 +866,7 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: Dimensions.get('window').height * .02,
     },
-    
+
     linksTitle: {
         fontWeight: 'bold',
         fontSize: Dimensions.get('window').height * .0225,
@@ -889,7 +889,7 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height * .005,
     },
     arrowButton: {
-        
+
     },
     navigationsRows: {
         flexDirection: 'row',
@@ -903,7 +903,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    
+
     recentOrdersSectionContainer: {
         marginTop: Dimensions.get('window').height * .02,
         marginLeft: Dimensions.get('window').width * .05,
@@ -919,7 +919,7 @@ const styles = StyleSheet.create({
         marginTop:  Dimensions.get('window').height * .015,
         fontSize: 18,
         fontWeight: 'bold',
-        color: 'deepskyblue' 
+        color: 'deepskyblue'
     },
     recentOrdersScrollView: {
         marginTop: Dimensions.get('window').height * .005,

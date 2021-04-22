@@ -15,8 +15,8 @@ const CreatePassword = ({navigation}) => {
     const [passwordErrorText, setPasswordErrorText] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
 
-   
-    
+
+
     //Sets the password object to the value in the text field
     const handleOnChangePassword = (text) => {
       setIsPasswordsNotMatch(false);
@@ -43,7 +43,7 @@ const CreatePassword = ({navigation}) => {
           setIsPasswordsNotMatch(true);
         }
         else{
-          var encodedPass = Base64.encode(passwordInput);
+          let encodedPass = Base64.encode(passwordInput);
           dispatchPassword({
             type: 'SET_PASSWORD',
             password: encodedPass
@@ -60,7 +60,7 @@ const CreatePassword = ({navigation}) => {
         setIsPasswordsNotMatch(true);
       }
     }
-  
+
     return(
       <SafeAreaView style={styles.container}>
         <Text style={styles.justYouHeader}>Just You</Text>
@@ -100,7 +100,7 @@ const CreatePassword = ({navigation}) => {
       </SafeAreaView>
     );
   }
-  
+
   const styles = StyleSheet.create({
     container: {
       height: Dimensions.get('window').height,

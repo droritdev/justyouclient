@@ -7,7 +7,7 @@ import AppButton from '../GlobalComponents/AppButton';
 import {PhoneContext} from '../../context/PhoneContext';
 import {CountryContext} from '../../context/CountryContext';
 
- 
+
 //Here the verifies his phone number with a code
 const PhoneNumberVerification = ({navigation}) => {
     const {country ,dispatchCountry} = useContext(CountryContext);
@@ -39,7 +39,7 @@ const PhoneNumberVerification = ({navigation}) => {
           setAreaCodeInput("001");
       }
     }
-  
+
     const config = {
       withCredentials: true,
       baseURL: 'http://localhost:3000/',
@@ -51,7 +51,7 @@ const PhoneNumberVerification = ({navigation}) => {
         //Send GET request to mongodb using axios, to check if phone is already exist
         //Send GET request to mongodb using axios, to check if phone is already used
           const checkPhoneIsUsed = () => {
-            axios  
+            axios
             .get('/clients/phone/'+areaCodeInput+phoneNumberInput, config)
             .then((doc) => {
               if (doc.data[0].phone.areaCode === areaCodeInput && doc.data[0].phone.phoneNumber === phoneNumberInput) {
@@ -123,15 +123,15 @@ const PhoneNumberVerification = ({navigation}) => {
         setIsPhoneError(true);
         setIsNextError(true);
       }
-      else if(areaCodeInput.length != 3 || phoneNumberInput.length != 7){
+      else if(areaCodeInput.length !== 3 || phoneNumberInput.length !== 7){
         setPhoneErrorMessage("Enter a valid phone number")
         setIsPhoneError(true);
         setIsNextError(true);
       }
-      
+
       else{
          checkPhoneIsUsed();
-        
+
       }
     }
 
@@ -209,7 +209,7 @@ const PhoneNumberVerification = ({navigation}) => {
         //           type: 'SET_AREA_CODE',
         //           areaCode: areaCodeInput
         //         });
-        
+
         //         dispatchNumber({
         //           type: 'SET_PHONE_NUMBER',
         //           phoneNumber: phoneNumberInput
@@ -230,7 +230,7 @@ const PhoneNumberVerification = ({navigation}) => {
         //   })
         }
     }
-  
+
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
@@ -248,7 +248,7 @@ const PhoneNumberVerification = ({navigation}) => {
                       keyboardType='numeric'
                       onChangeText={value => handleOnChangeAreaCode(value)}>
                         {}</TextInput>
-                  
+
                   <TextInput
                       style={styles.phoneNumberInput}
                       textAlign='center'
@@ -283,24 +283,24 @@ const PhoneNumberVerification = ({navigation}) => {
                     onChangeText={text => handleOnChangeCode(text)}
                 />
               </View>
-              {isCodeError ? 
+              {isCodeError ?
                 <Text style={styles.codeErrorMessage}>{codeErrorMessage}</Text>
               : null}
             </View>
             <View
                  display= {isCodeSent}
                 >
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.sendAgainButton}
                   onPress={() => handleVerify()}
                 >
-                  <Text style={styles.resendCodeText}>No SMS? Tap to resend</Text> 
+                  <Text style={styles.resendCodeText}>No SMS? Tap to resend</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.nextButtonContainer}
                   display= {isCodeSent}
                   >
-                             
+
               {isNextError ?
               <Text style={styles.nextErrorMessage}>{nextErrorMessage}</Text>
               :null}
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     codeAndErrorMessage: {
       // display : 'none',
       height: Dimensions.get('window').height * .1544,
-      width: Dimensions.get('window').width * .9, 
+      width: Dimensions.get('window').width * .9,
       alignItems: 'center',
       alignSelf: 'center'
     },
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
       marginTop: Dimensions.get('window').height * .0055
     },
     resendCodeText: {
-      color: 'deepskyblue', 
+      color: 'deepskyblue',
       fontSize: Dimensions.get('window').height * .022,
       fontWeight: '600',
       alignSelf: 'center'

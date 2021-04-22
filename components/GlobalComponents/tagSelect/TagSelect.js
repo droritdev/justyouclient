@@ -60,7 +60,7 @@ class TagSelect extends React.Component {
     this.setState({ value })
   }
 
-  
+
 
   /**
    * @description Return the number of items selected
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
 
 class TagSelectExtension extends TagSelect {
 
-	handleSelectItem = (item) => {
+	handleSelectItem2 = (item) => {
 		const key = item[this.props.keyAttr] || item
 
 		const value = []

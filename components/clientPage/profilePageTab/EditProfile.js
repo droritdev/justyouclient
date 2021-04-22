@@ -30,7 +30,7 @@ const EditProfile = ({navigation}) => {
 
     const {birthday, dispatchBirthday} = useContext(BirthdayContext);
     const {clientObject, dispatchClientObject} = useContext(ClientContext);
-    
+
 
     const [firstNameInput, setFirstNameInput] = useState("");
     const [lastNameInput, setLastNameInput] = useState("");
@@ -41,11 +41,11 @@ const EditProfile = ({navigation}) => {
     const [isBirthdaySelected, setIsBirthdaySelected] = useState(false);
 
 
-    var profileImage = '';
-    
+    let profileImage = '';
+
     //const [profileImageSource, setProfileImageSource] = useState(require('../../images/profilePic.png'));
-    const [minimumDate, setMinimumDate] = useState( new Date());
-    const [maximumDate, setMaximumDate] = useState( new Date());
+    const [minimumDate, setMinimumDate] = useState(Date());
+    const [maximumDate, setMaximumDate] = useState(Date());
     const [birthdaySelected, setBirthdaySelected] = useState(clientObject.birthday);
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     const [dialogVisible, setDialogVisible] = useState(false);
@@ -53,7 +53,7 @@ const EditProfile = ({navigation}) => {
     const [isPushPermission, setIsPushPermission] = useState(true);
     const [isPermissionsNotConfirmed, setIsPermissionsNotConfirmed] = useState(false);
 
-    const [isNamesError, setIsNamesError] = useState(false); 
+    const [isNamesError, setIsNamesError] = useState(false);
     const [nameErrorMessage ,setNameErrorMessage] = useState("Fill all the name fields");
 
     const config = {
@@ -89,9 +89,9 @@ const EditProfile = ({navigation}) => {
     //User picks an image from the gallery/camera and sets it to his profile picture
     const handleProfileImage = () => {
         //   const granted = checkForPermissions();
-      
+
         //   if(granted) {
-  
+
           ImagePicker.openPicker({
             width: 400,
             height: 400,
@@ -103,7 +103,7 @@ const EditProfile = ({navigation}) => {
             setProfileImageUrl(source);
             profileImage = source;
         }).catch((err) => {
-              
+
           })
           setIsNewImageSelected(true);
             const options = {
@@ -113,7 +113,7 @@ const EditProfile = ({navigation}) => {
       }
 
     const getFormat = (uri) => {
-        indexOfDot = uri.indexOf('.', uri.length-6);
+        let indexOfDot = uri.indexOf('.', uri.length-6);
         console.log("format : " +uri.slice(indexOfDot));
         return uri.slice(indexOfDot);
     }
@@ -121,15 +121,15 @@ const EditProfile = ({navigation}) => {
     const uploadImage = async (filePath, imageUri) => {
         let reference = await storage().ref(filePath);
         const task = reference.putFile(imageUri);
-        
+
           task.on('state_changed', taskSnapshot => {
             console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
             const bytesTransferred = taskSnapshot.bytesTransferred;
             const totalByteCount = taskSnapshot.totalByteCount;
             const progress = (bytesTransferred / totalByteCount);
-            
+
           });
-          
+
           task.then(() => {
             console.log('Image uploaded to the bucket!');
             reference.getDownloadURL().then((url) => {
@@ -145,8 +145,8 @@ const EditProfile = ({navigation}) => {
     const fullUploadImageProccess = () => {
         const user = auth().currentUser;
         console.log(user.uid);
-        const userUid = "/clients/" + user.uid + '/profileImage'+getFormat(profileImageUrl.uri); 
-        uploadImage(userUid, profileImageUrl.uri)
+        const userUid = "/clients/" + user.uid + '/profileImage'+getFormat(profileImageUrl.uri);
+        uploadImage(userUid, profileImageUrl.uri);
     }
 
     const updateUserInMongoDB = (uri) => {
@@ -172,10 +172,10 @@ const EditProfile = ({navigation}) => {
                     }
                 })
                 .catch((err) => alert(err.data));
-        
+
     }
-    
-    
+
+
 
 
     //Handle when the user presses the yes button in the dialog
@@ -194,7 +194,7 @@ const EditProfile = ({navigation}) => {
     const handleOnArrowPress = () => {
         setDialogVisible(true);
     }
-    
+
     //Sets the firstNameInput object to the input the user enters
     const handleOnChangeFirstName = (value) => {
         setIsNamesError(false);
@@ -231,7 +231,7 @@ const EditProfile = ({navigation}) => {
             setIsPermissionsNotConfirmed(false);
         }
     }
-    
+
     //Sets the push permission to the value
     const handlePermissionToggleChange = (newState) => {
         setIsPushPermission(newState);
@@ -244,7 +244,7 @@ const EditProfile = ({navigation}) => {
     const handleOnApprovePressed = (uri) => {
         if(isNewImageSelected){
 
-        
+
         fullUploadImageProccess();
 
             if(firstNameInput === "" || lastNameInput === ""){
@@ -339,7 +339,7 @@ const EditProfile = ({navigation}) => {
                             {isNewImageSelected ? <Image
                             source={profileImageUrl}
                             style={styles.profileImage}
-                          />: 
+                          />:
                           <FastImage
                                 style={styles.profileImage}
                                 source={{
@@ -348,7 +348,7 @@ const EditProfile = ({navigation}) => {
                                         }}
                                 resizeMode={FastImage.resizeMode.stretch}
                             />}
-                           
+
                         </TouchableOpacity>
                         <TextInput
                             style={styles.namesInput}
@@ -362,9 +362,9 @@ const EditProfile = ({navigation}) => {
                             placeholder={lastNameInput}
                             onChangeText={value => handleOnChangeLastName(value)}
                         />
-                        
+
                     </View>
-                    {isNamesError ? 
+                    {isNamesError ?
                         <Text style={styles.nameErrorMessage}>{nameErrorMessage}</Text>
                     : null}
                 </View>
@@ -377,7 +377,7 @@ const EditProfile = ({navigation}) => {
                     <TouchableOpacity
                     onPress={() => handleDateInputPressed()}
                     >
-                    {isBirthdaySelected ? <Text style={styles.birthdayPicked}>{birthdaySelected}</Text> :<Text style={styles.birthdayUnPicked}>{birthdaySelected}</Text>}    
+                    {isBirthdaySelected ? <Text style={styles.birthdayPicked}>{birthdaySelected}</Text> :<Text style={styles.birthdayUnPicked}>{birthdaySelected}</Text>}
                     {/* <Text style={styles.birthdayPicked}>{birthdaySelected}</Text> */}
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -400,7 +400,7 @@ const EditProfile = ({navigation}) => {
                     headerTextIOS="Pick a date - minimum 18"
                 />
             </View>
-            
+
             <View style={styles.nextButtonContainer}>
                 <AppButton
                     title="APPROVE"
@@ -428,25 +428,25 @@ const styles = StyleSheet.create({
     arrowImage: {
         marginLeft: Dimensions.get('window').width * .038,
         width: Dimensions.get('window').width * .080,
-        height: Dimensions.get('window').height * .050,    
+        height: Dimensions.get('window').height * .050,
     },
     editProfileTitle: {
         fontWeight: 'bold',
-        fontSize: Dimensions.get('window').height * .035, 
+        fontSize: Dimensions.get('window').height * .035,
         marginLeft: Dimensions.get('window').width * .05,
         marginTop: Dimensions.get('window').height * .025,
     },
     namesAndErrorContainer: {
         marginTop: Dimensions.get('window').height * .01,
         height: Dimensions.get('window').height * .11,
-    }, 
+    },
     namesRowContainer: {
         flexDirection: 'row',
         width: Dimensions.get('window').width * .95,
         height: Dimensions.get('window').width * .15,
         alignSelf: 'center',
         justifyContent: 'space-between'
-    },  
+    },
     namesInput: {
         marginTop: Dimensions.get('window').height * 0.035,
         borderColor: 'deepskyblue',
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
     nameErrorMessage: {
         color: 'red',
         marginLeft: Dimensions.get('window').width * 0.025,
-    },  
+    },
     nameExplination: {
         color: 'grey',
         textAlign: 'center',
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
         marginLeft: Dimensions.get('window').width * .25,
         color: 'red',
         marginTop: Dimensions.get('window').height * .001,
-    },  
+    },
     datePicker: {
         marginTop: Dimensions.get('window').height * .001,
         width: Dimensions.get('window').width * .9,
@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 15,
         marginTop: 25
-    }, 
+    },
 });
 
 export default EditProfile;

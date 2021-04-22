@@ -2,7 +2,7 @@ const paypal = require('paypal-rest-sdk');
 
 exports.sendPaymentWithPaypal = (req, res) => {
 
-    var create_payment_json = {
+    let create_payment_json = {
         "intent": "sale",
         "payer": {
             "payment_method": "paypal"
@@ -32,7 +32,7 @@ exports.sendPaymentWithPaypal = (req, res) => {
         }]
     };
 
-    
+
     paypal.payment.create(create_payment_json, function (error, payment) {
         if (error) {
             throw error;
