@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useReducer, useRef, useState } from 'react';
-import { Dimensions, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, FlatList, Image, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Feather';
@@ -11,11 +11,9 @@ import axios from 'axios';
 import { TrainerContext } from '../../../context/TrainerContext';
 import { CategoryContext } from '../../../context/CategoryContext';
 import { OrderContext } from '../../../context/OrderContext';
-import Dialog from 'react-native-dialog';
 import auth from '@react-native-firebase/auth';
 import { ClientContext } from '../../../context/ClientContext';
 import Alert from 'react-native/Libraries/Alert/Alert';
-import StarRating from 'react-native-star-rating';
 
 //The client's start area page
 const StarPage = ({ navigation }) => {
@@ -36,7 +34,7 @@ const StarPage = ({ navigation }) => {
 
   const { category, dispatchCategory } = useContext(CategoryContext);
   const [completedOrdersToPass, setCompletedOrdersToPass] = useState([]);
-  const {trainerObject, dispatchTrainerObject } = useContext(TrainerContext);
+  const { trainerObject, dispatchTrainerObject } = useContext(TrainerContext);
   const { orderEndTime, dispatchOrderEndTime } = useContext(OrderContext);
   const [trainersInCategoryCount, setTrainersInCategoryCount] = useState(0);
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -57,7 +55,7 @@ const StarPage = ({ navigation }) => {
   const [lastName, setLastName] = useState('');
   const [profileImageUrl, setProfileImageUrl] = useState('');
 
-  const {clientObject ,dispatchClientObject } = useContext(ClientContext);
+  const { clientObject, dispatchClientObject } = useContext(ClientContext);
   const [clientObjectToPass, setClientObjectToPass] = useState([]);
   const [clientIdToPass, setClientIdToPass] = useState('[]');
 
@@ -115,7 +113,7 @@ const StarPage = ({ navigation }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // Check if covid alert was dismissed
-
+      setDialogVisible(false);
       if (global.covidAlert) {
         if (dropDownAlertRef.state.isOpen === false) {
           //Show covid alert
@@ -129,7 +127,7 @@ const StarPage = ({ navigation }) => {
         dropDownAlertRef.closeAction();
       }
       getUserByFirebaseAuth();
-      getAllTrainers().then(() =>{
+      getAllTrainers().then(() => {
 
       });
 
@@ -214,7 +212,6 @@ const StarPage = ({ navigation }) => {
           setDoc(doc.data);
           setIsRefreshing(false);
           sortByCategory(doc.data);
-          console.log("getAllTrainers :"+ doc)
           // getTrainersByCategory(doc.data);
         }
       })
@@ -313,7 +310,7 @@ const StarPage = ({ navigation }) => {
   );
 
   //showing categories over ui
-  const getTrainersByCategory = (category) => {
+/*  const getTrainersByCategory = (category) => {
     if (doc !== []) {
       // categoriesArray.forEach(category => {
       let trainerCountForEachCategory = 0;
@@ -327,7 +324,7 @@ const StarPage = ({ navigation }) => {
       }
       // });
     }
-  };
+  };*/
 
   const switchImages = (category) => {
     switch (category) {
@@ -356,7 +353,7 @@ const StarPage = ({ navigation }) => {
     }
   };
 
-  const showCategoriesOnUi = () => {
+ /* const showCategoriesOnUi = () => {
     let repeats = [];
     for (let index = 0; index < categoriesArray.length; index++) {
       const category = categoriesArray[index];
@@ -379,7 +376,7 @@ const StarPage = ({ navigation }) => {
         </View>,
       );
     }
-  };
+  };*/
 
   //Handle when the client presses on a trainer button
   const handleOnTrainerPressed = (trainerObject) => {
@@ -443,9 +440,11 @@ const StarPage = ({ navigation }) => {
   const covidAlertTap = () => {
     setCovidModalVisible(true);
   };
-  function handleMaybeLaterDialog(){
+
+  function handleMaybeLaterDialog() {
     setDialogVisible(false);
   }
+
   function handleTakeMeDialog() {
     getUserByFirebaseAuth();
     setDialogVisible(false);
@@ -456,13 +455,12 @@ const StarPage = ({ navigation }) => {
   }
 
   const getClientCompletedOrders = async (clientId) => {
-    console.log("getClientCompletedOrders clientId : " + clientId);
     await axios
       .get('/orders/by-client-id/' + clientId,
         config,
       )
       .then((doc) => {
-        console.log("getClientCompletedOrders: then");
+
         let allOrders = doc.data;
         let completedOrders = [];
 
@@ -473,7 +471,8 @@ const StarPage = ({ navigation }) => {
           }
         }
         setCompletedOrdersToPass(completedOrders);
-        getAllTrainersInfo(completedOrders);
+        const id = clientId;
+        getAllTrainersInfo(completedOrders, id);
       })
       .catch((err) => {
         console.log(err);
@@ -484,7 +483,6 @@ const StarPage = ({ navigation }) => {
     const subscriber = auth().onAuthStateChanged((user) => {
       if (user) {
         setInitializing(true);
-        console.log("getUserByFirebaseAuth : " + user.email);
         axios
           .get('/clients/'
             + user.email.toLocaleLowerCase(),
@@ -498,14 +496,13 @@ const StarPage = ({ navigation }) => {
               setProfileImageUrl(currectUserData.image);
               setClientIdToPass(doc.data[0]._id);
               setClientObjectToPass(doc.data[0]);
-              console.log("getUserByFirebaseAuth then : " + currectUserData.name.first);
 
               dispatchClientObject({
                 type: 'SET_CLIENT_OBJECT',
                 clientObject: doc.data[0],
               });
               //for filling the recent orders scrollView
-              getClientCompletedOrders(doc.data[0]._id);
+              getClientCompletedOrders(doc.data[0]._id).then();
 
             }
           })
@@ -518,8 +515,7 @@ const StarPage = ({ navigation }) => {
     return subscriber; // unsubscribe on unmount
   };
 
-  const getAllTrainersInfo = async (completedOrders) => {
-    console.log("getAllTrainersInfo");
+  const getAllTrainersInfo = async (completedOrders, id) => {
 
 
     let idArray = [];
@@ -529,7 +525,6 @@ const StarPage = ({ navigation }) => {
         const singleTrainerID = completedOrders[index].trainer.id;
         idArray.push(singleTrainerID);
       }
-      console.log(idArray);
 
 
       //fetch the trainer of all trainers from mongodb using axios
@@ -544,11 +539,11 @@ const StarPage = ({ navigation }) => {
             //for each loop on trainers that are in orders(by id)
             allTrainers.forEach(trainer => {
               //check for same trainer id in order and for trainer
-              if (trainer._id === order.trainer.id){
+              if (trainer._id === order.trainer.id) {
                 //check if client ID is found in the trainer's reviews
-                if(!(trainer.reviews.some(i => i.userID.includes(clientObject._id )))){
+                if (!(trainer.reviews.some(i => i.userID.includes(id)))) {
+
                   setDialogVisible(true);
-                  return;
                 }
               }
             });
@@ -557,11 +552,10 @@ const StarPage = ({ navigation }) => {
 
         })
         .catch((err) => {
-          console.log('errorInTrainerReading');
           console.log(err);
         });
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -582,7 +576,7 @@ const StarPage = ({ navigation }) => {
               style={styles.covidCloseIcon}
               onPress={() => {
                 setCovidModalVisible(false);
-                global.covidAlert =false;
+                global.covidAlert = false;
               }}
             />
             <Text style={styles.covidTitle}>COVID-19 Information</Text>
@@ -913,7 +907,7 @@ const StarPage = ({ navigation }) => {
         transparent={true}
         visible={dialogVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          Alert.alert('Modal has been closed.');
         }}
       >
         <View style={styles.centeredView}>
@@ -922,7 +916,6 @@ const StarPage = ({ navigation }) => {
 
             <Text style={styles.subtitleText}> you have completed some training successfully !!!</Text>
             <Text style={styles.subtitleText}>please rate your training experience</Text>
-
 
 
             <View style={styles.buttonsRow}>
@@ -1292,35 +1285,35 @@ const styles = StyleSheet.create({
   sureDialog: {
     color: 'red',
     fontWeight: 'bold',
-  },centeredView: {
+  }, centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20,
     height: Dimensions.get('window').height * .25,
     width: Dimensions.get('window').width * .86,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5
+    elevation: 5,
   },
   modalText: {
-    marginTop:  Dimensions.get('window').height * .01,
-    fontWeight: "bold",
+    marginTop: Dimensions.get('window').height * .01,
+    fontWeight: 'bold',
     fontSize: Dimensions.get('window').height * .027,
-    textAlign: "center"
+    textAlign: 'center',
   },
   subtitleText: {
-    marginTop:  Dimensions.get('window').height * .02,
+    marginTop: Dimensions.get('window').height * .02,
     fontSize: Dimensions.get('window').height * .023,
-    textAlign: "center"
+    textAlign: 'center',
   },
   buttonsRow: {
     flexDirection: 'row',
@@ -1330,32 +1323,32 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     marginLeft: Dimensions.get('window').width * .04,
-    backgroundColor: "lightgrey",
+    backgroundColor: 'lightgrey',
     width: Dimensions.get('window').width * .25,
     height: Dimensions.get('window').height * .05,
     borderRadius: 20,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   cancelTextStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   submitButton: {
     marginRight: Dimensions.get('window').width * .04,
-    backgroundColor: "deepskyblue",
+    backgroundColor: 'deepskyblue',
     width: Dimensions.get('window').width * .25,
     height: Dimensions.get('window').height * .05,
     borderRadius: 20,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   submitTextStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   progressView: {
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
 });
 
