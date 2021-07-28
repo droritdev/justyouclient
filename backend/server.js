@@ -9,6 +9,14 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const nunjucks = require('nunjucks')
+const Nexmo = require('nexmo')
+
+
+
+
+
+
 
 module.exports.mongoose = mongoose;
 
@@ -16,6 +24,11 @@ module.exports.mongoose = mongoose;
 //paypal payment
 
 // const paypalPayment = require('./paypalPayment/paypalPayment');
+
+
+//get users
+const getAllTrainers = require('./getAllTrainers/getAllTrainers')
+const getAllClients = require('./getAllClients/getAllClients')
 
 
 
@@ -29,7 +42,7 @@ const watchForUpdates = require('./messages/watchForUpdates');
 const trainerRegister = require('./register/trainerRegister');
 const changeVisibility = require('./changeVisibility/changeVisibility');
 const trainerEditProfile = require('./trainerEditProfile/trainerEditProfile');
-const getAllTrainers = require('./getAllTrainers/getAllTrainers');
+//const getAllTrainers = require('./getAllTrainers/getAllTrainers');
 const findTrainerByPopularity = require('./findTrainerByPopularity/findTrainerByPopularity');
 const findTrainerByEmail = require('./findTrainerByEmail/findTrainerByEmail');
 const findTrainerByID = require('./findTrainerByID/findTrainerByID');
@@ -40,7 +53,6 @@ const findMultipleTrainers = require('./findMultipleTrainers/findMultipleTrainer
         //**Client imports**//
 const clientRegister = require('./register/clientRegister');
 const findMultipleClients = require('./findMultipleClients/findMultipleClients');
-
 
 const findTrainerByCategory = require('./findTrainersByCategory/findTrainersByCategory');
 //**Orders
@@ -72,7 +84,7 @@ const removeTrainerFromPlace = require('./removeTrainerFromPlace/removeTrainerFr
 const placeEditProfile = require('./placeEditProfile/placeEditProfile');
 
         //**Common imports**//
-const verificationSms = require('./twilio/verificationSms');
+//const verificationSms = require('./twilio/verificationSms');
 const updatePaymentMethods = require('./updatePaynemtMethods/updatePaymentMethods');
 const updateEmailAddress = require('./updateEmailAddress/updateEmailAddress');
 const updatePhoneNumber = require('./updatePhoneNumber/updatePhoneNumber');
@@ -91,8 +103,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 
 //Connect to the data base
@@ -114,8 +126,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 //db.records.find( { a: { $exists: true } } )
 
-
-
+app.get('/getAllTrainers', getAllTrainers.allTrainers)
+app.get('/getAllClients', getAllClients.allClients)
 
 //End point for sending email to support
 app.post('/send-email', sendEmail.sendEmail);
@@ -124,10 +136,10 @@ app.post('/send-email', sendEmail.sendEmail);
 app.post('/send-automatic-response', sendAutomaticResponse.sendAutomaticResponse);
 
 //End point for sending verification code
-app.post('/send-verification-code', verificationSms.sendVerificationCode);
+//app.post('/send-verification-code', verificationSms.sendVerificationCode);
 
 //End point for verifying the verification code
-app.post('/verify-code', verificationSms.verifyCode);
+//app.post('/verify-code', verificationSms.verifyCode);
 
 //End point for updating the payment methods
 app.put('/settings/update-payment-methods', updatePaymentMethods.updatePaymentMethods);
@@ -164,7 +176,7 @@ app.post('/trainers/register', trainerRegister.register);
 //End point for editing the trainer profile
 app.put('/trainers/settings/edit-profile', trainerEditProfile.editProfile);
 
-app.get('/trainers/getAllTrainers', getAllTrainers.allTrainers);
+//app.get('/trainers/getAllTrainers', getAllTrainers.allTrainers);
 app.get('/trainers/email/:email', findTrainerByEmail.getTrainerByEmail);
 app.get('/trainers/id/:id', findTrainerByID.findTrainerByID);
 app.get('/trainers/findMultipleTrainers/:idArray', findMultipleTrainers.getMultipleTrainers);
@@ -266,6 +278,7 @@ app.get('/messages/watchForUpdates/:receiver', watchForUpdates.watchForUpdates);
 
 const paypal = require('paypal-rest-sdk');
 const engines = require("consolidate");
+const { response } = require('express');
 
 //for paypal views set:
 app.engine("ejs", engines.ejs);
@@ -403,4 +416,61 @@ app.get('/paypal/paymentSuccess' ,(req, res) => {
 app.get('/paypal/paymentCancel' ,(req, res) =>{
     res.render('cancel')
     })
+
+
+
+
+ // generate secrete key    
+const nexmo = new Nexmo({ 
+    apiKey: process.env.API_KEY,
+    apiSecret: process.env.API_SECRET
+  })
+
+ 
+  app.post('/sendCode', (req, res) => {
+    // A user registers with a mobile phone number
+    let phoneNumber = req.body.number;
+    console.log(phoneNumber);
+    nexmo.verify.request({
+        number: phoneNumber, //+ מספר טלפון עם קידומת המדינה בלי 
+        brand: 'Just You',
+        workflow_id: 6, // שולח (רק) הודעה עם קוד של 4 ספרות
+        pin_expiry: 120, // תוקף הקוד בשניות
+        next_event_wait: 120 // פרק זמן בין שליחת קוד לשליחת קוד חדש
+    }, (err, result) => {
+      if(err) {
+        res.sendStatus(500);
+      } 
+      else 
+      {
+          //res.json(result)
+          res.json(result.request_id)
+          console.log("code sent successfuly"); // Success! Now, have your user enter the PIN
+      } 
+    });
+  });
+
+
+  app.post('/verifyCode', (req, res) => {
+    let pin = req.body.pin;
+    let requestId = req.body.requestId;
+  
+    nexmo.verify.check({request_id: requestId, code: pin}, (err, result) => {
+        if(err) {
+            // handle the error
+            console.log(err);
+          } else {
+            console.log(result)
+            // if(result && result.status == '0') { // Success!
+            //   res.status(200)
+            //   res.render({message: 'Account verified!'});
+            //   console.log('account verified')
+            // } else {
+            //   // handle the error - e.g. wrong PIN
+            //   console.log('wrong code')
+            // }
+     
+        }
+    });
+  });
 
