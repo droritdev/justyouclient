@@ -452,15 +452,20 @@ const nexmo = new Nexmo({
 
 
   app.post('/verifyCode', (req, res) => {
-    let pin = req.body.pin;
-    let requestId = req.body.requestId;
+    let code = req.body.code;
+    let request_id = req.body.request_id;
   
-    nexmo.verify.check({request_id: requestId, code: pin}, (err, result) => {
-        if(err) {
+    nexmo.verify.check({request_id: request_id, code: code}, (err, result) => {
+        if(result){
+            res.send('authenticated')
+           
+         }
+        else {
             // handle the error
-            console.log(err);
-          } else {
-            console.log(result)
+            res.send('failed')
+
+        } 
+        
             // if(result && result.status == '0') { // Success!
             //   res.status(200)
             //   res.render({message: 'Account verified!'});
@@ -469,8 +474,7 @@ const nexmo = new Nexmo({
             //   // handle the error - e.g. wrong PIN
             //   console.log('wrong code')
             // }
-     
-        }
+
     });
   });
 
