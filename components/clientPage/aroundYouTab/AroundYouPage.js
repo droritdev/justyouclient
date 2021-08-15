@@ -82,6 +82,7 @@ const AroundYouPage = ({navigation}) => {
         sortByDistance(trainers);
       })
       .catch((err) => {
+        console.log('error in getAllTrainers')
         console.log(err);
       });
   };
@@ -96,6 +97,9 @@ const AroundYouPage = ({navigation}) => {
       let clientLatitude = info.coords.latitude;
       let clientLongitude = info.coords.longitude;
 
+      console.log('client lat ', clientLatitude)
+      console.log('client lng ', clientLongitude)
+      
       //Run thrhough all trainers and check if they meet the requirments
       for (let index = 0; index < trainers.length; index++) {
         //Trainer object
@@ -106,7 +110,7 @@ const AroundYouPage = ({navigation}) => {
           singleTrainer.location.trainingSite1.coordinates;
 
         //Check if the first location cords array isn't empty
-        if (trainingSite1Cord !== []) {
+        if (trainingSite1Cord.length !== 0) {
           //Calculate the distance between trainingsite1 and client cords
           //Return if the cords are in the selected range
           let isInRange = calculateDistance(
@@ -130,7 +134,7 @@ const AroundYouPage = ({navigation}) => {
           let trainingSite2Cord = singleTrainer.location.trainingSite2.coordinates;
 
           //Check if the second location cords array isn't empty
-          if (trainingSite2Cord !== []) {
+          if (trainingSite2Cord.length !== 0) {
             //Calculate the distance between trainingsite2 and client cords
             //Return if the cords are in the selected range
             let isInRange = calculateDistance(
@@ -147,7 +151,9 @@ const AroundYouPage = ({navigation}) => {
               }
             }
           }
-        } catch (error) {}
+        } catch (error) {
+          console.log('error in sortByDistance')
+        }
       }
       setTrainersAroundMe(trainersAround);
       setSliderValue(maxDistance + ' MILE');

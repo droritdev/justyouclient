@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image, Dimensions, SafeAreaView, Alert } from '
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import FlipToggle from 'react-native-flip-toggle-button';
-import {Dropdown} from 'react-native-material-dropdown'
+import {Dropdown} from 'react-native-material-dropdown-v2'
 import {Platform} from 'react-native';
 import {check ,request, PERMISSIONS, RESULTS, requestNotifications, checkNotifications, openSettings} from 'react-native-permissions';
 
@@ -67,7 +67,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
     const handleLocationToggleChange = (newState) => {
       if(newState) {
         //toogle is on
-        checkLocationPermission();
+        askForPermission();
       } else {
         //toogle is off
         setIsLocationPermission(newState);

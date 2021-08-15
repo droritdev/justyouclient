@@ -26,11 +26,13 @@ const PhoneNumberVerification = ({navigation}) => {
     const [inputIsValid,setInputIsValid] = useState(false);
     const [isCodeSent,setIsCodeSent] = useState("none");
 
+    const [requestId, setRequestId] = useState()
+
 
     //run when page create
-    useEffect (() => {
-      getAreaCode();
-    }, []);
+    // useEffect (() => {
+    //   getAreaCode();
+    // }, []);
 
     //Get area code by country picked
     const getAreaCode = () => {
@@ -62,7 +64,7 @@ const PhoneNumberVerification = ({navigation}) => {
             .catch((err) =>  {
               setIsPhoneError(false);
               setIsNextError(false);
-              setFullPhoneNumber("+"+(areaCodeInput.concat(phoneNumberInput)));
+              setFullPhoneNumber(areaCodeInput.concat(phoneNumberInput));
               sendVerificationCode();
             });
           }
@@ -80,8 +82,8 @@ const PhoneNumberVerification = ({navigation}) => {
 
     //Sets the phoneNumber object to the value
     const handleOnChangePhoneNumber = (value) => {
-      if(value.length > 7){
-        value = value.slice(0,7);
+      if(value.length > 9){
+        value = value.slice(1,10);
       }
       setIsNextError(false);
       setIsPhoneError(false);
@@ -123,7 +125,7 @@ const PhoneNumberVerification = ({navigation}) => {
         setIsPhoneError(true);
         setIsNextError(true);
       }
-      else if(areaCodeInput.length !== 3 || phoneNumberInput.length !== 7){
+      else if(areaCodeInput.length !== 3 || phoneNumberInput.length !== 9){
         setPhoneErrorMessage("Enter a valid phone number")
         setIsPhoneError(true);
         setIsNextError(true);
@@ -138,30 +140,28 @@ const PhoneNumberVerification = ({navigation}) => {
     //The function that sends the code to the user's phone
     const sendVerificationCode = () => {
            setIsCodeSent('flex');
-        // axios
-        //   .post('/send-verification-code', {
-        //     to: fullPhoneNumber,
-        //     channel: "sms"
-        //   },
-        //   config
-        //   )
-        //   .then((res) => {
-        //     if(res !== null) {
-        //       if(res.data.status === 'pending'){
-        //         alert("pending");
-        //       }
-        //       else{
-        //         alert("Error 1");
-        //       }
-        //     }
-        //     else{
-        //       alert("Error 2");
-        //     }
-        //   }
-        //   )
-        //   .catch((error) => {
-        //     alert(error)
-        //   })
+           console.log('before sendCode phone ', fullPhoneNumber)
+        axios
+          .post('/sendCode', {
+            number: fullPhoneNumber
+          },
+          config
+          )
+          .then((res) => {
+            if(res !== null) {
+              console.log('res not null resdata ', res.data)
+              setRequestId(res.data)
+              console.log('requestId after filled ', requestId)
+            }
+            else{
+              console.log('success but res null ', error)
+              alert("success but res null");
+            }
+          })
+          .catch((error) => {
+            console.log('catch error sendCode ', error.request)
+            alert(error)
+          })
     }
 
     //Handle the next button press - if ok, navigates to the DonePopUp page
@@ -178,56 +178,61 @@ const PhoneNumberVerification = ({navigation}) => {
         setIsCodeError(true);
         setCodeErrorMessage('Enter digits only');
       }
-      else if(code.length !== 5){
+      else if(code.length !== 4){
         setIsCodeError(true);
-        setCodeErrorMessage('Code is 5 digits');
+        setCodeErrorMessage('Code is 4 digits');
       }
       else{
-        dispatchArea({
-          type: 'SET_AREA_CODE',
-          areaCode: areaCodeInput
-        });
+        // dispatchArea({
+        //   type: 'SET_AREA_CODE',
+        //   areaCode: areaCodeInput
+        // });
 
-        dispatchNumber({
-          type: 'SET_PHONE_NUMBER',
-          phoneNumber: phoneNumberInput
-        });
+        // dispatchNumber({
+        //   type: 'SET_PHONE_NUMBER',
+        //   phoneNumber: phoneNumberInput
+        // });
 
-        navigation.navigate('DonePopUp');
-        // axios
-        //   .post('/verify-code', {
-        //     to: fullPhoneNumber,
-        //     code: code
-        //   },
-        //   config
-        //   )
-        //   .then((res) => {
-        //     if(res !== null) {
-        //       if(res.data.status === 'approved'){
-        //         alert("approved");
-        //         dispatchArea({
-        //           type: 'SET_AREA_CODE',
-        //           areaCode: areaCodeInput
-        //         });
+        // navigation.navigate('DonePopUp');
+        console.log('requestId before verifyCode ', requestId)
+        axios
+          .post('/verifyCode', {
+            request_id: requestId,
+            code: code
+          },
+          config
+          )
+          .then((res) => {
+            if(res !== null) {
+              console.log('res not null resdata ', res.data)
+              if(res.data === 'authenticated'){
+                console.log('authenticated')
+                alert("authenticated");
+                dispatchArea({
+                  type: 'SET_AREA_CODE',
+                  areaCode: areaCodeInput
+                });
 
-        //         dispatchNumber({
-        //           type: 'SET_PHONE_NUMBER',
-        //           phoneNumber: phoneNumberInput
-        //         })
-        //         navigation.navigate('DonePopUp');
-        //       }
-        //       else{
-        //         alert("Error 1");
-        //       }
-        //     }
-        //     else{
-        //       alert("Error 2");
-        //     }
-        //   }
-        //   )
-        //   .catch((error) => {
-        //     alert(error)
-        //   })
+                dispatchNumber({
+                  type: 'SET_PHONE_NUMBER',
+                  phoneNumber: phoneNumberInput
+                })
+                navigation.navigate('DonePopUp');
+              }
+              else{
+                console.log('failed')
+                alert("failed");
+              }
+            }
+            else{
+              console.log('success but res null')
+              alert("success but res null");
+            }
+          })
+          .catch((error) => {
+            console.log('catch error ', error)
+            alert(error)
+          })
         }
     }
 

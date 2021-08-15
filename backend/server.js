@@ -176,7 +176,7 @@ app.post('/trainers/register', trainerRegister.register);
 //End point for editing the trainer profile
 app.put('/trainers/settings/edit-profile', trainerEditProfile.editProfile);
 
-//app.get('/trainers/getAllTrainers', getAllTrainers.allTrainers);
+app.get('/trainers/getAllTrainers', getAllTrainers.allTrainers);
 app.get('/trainers/email/:email', findTrainerByEmail.getTrainerByEmail);
 app.get('/trainers/id/:id', findTrainerByID.findTrainerByID);
 app.get('/trainers/findMultipleTrainers/:idArray', findMultipleTrainers.getMultipleTrainers);
