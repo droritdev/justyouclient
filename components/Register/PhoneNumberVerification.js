@@ -268,7 +268,7 @@ const PhoneNumberVerification = ({navigation}) => {
                 :null}
               </View>
               <View style={styles.verifyExplenationContainer}>
-              <Text style={styles.verifyExplenationText}>Adding your phone number will strengthen your account security. We'll send you a text with a 5-digit code to verify your account.</Text>
+              <Text style={styles.verifyExplenationText}>Adding your phone number will strengthen your account security. We'll send you a text with a 4-digit code to verify your account.</Text>
               </View>
             </View>
             <View style={styles.verifyButton}>

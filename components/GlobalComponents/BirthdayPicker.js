@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
       },
       birthdayPicked: {
         textAlign: 'center',
+        color: 'black',
         marginLeft: Dimensions.get('window').width * 0.3,
         fontSize: Dimensions.get('window').height * 0.025,
       },
