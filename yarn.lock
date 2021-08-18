@@ -8316,15 +8316,15 @@
     "prop-types" "^15.7.2"
     "shaka-player" "^2.5.9"
 
-"react-native-webview@^11.4.2":
-  "integrity" "sha512-reGWtlFCQCgZEROy0IJaI5iMhrhFzedNIFlj0d6eo0K6T91eeKaoDr24ebBvqmeemOCj0ZYtzX19qiInRznhLA=="
-  "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-11.4.2.tgz"
-  "version" "11.4.2"
+"react-native-webview@^11.13.0":
+  "integrity" "sha512-jjQAKWv8JzRmcn76fMe4lXD84AAeR7kn43kAmUe1GX312BMLaP+RbKlgpYAlNuOBXL0YirItGKDrpaD0bNROOA=="
+  "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-11.13.0.tgz"
+  "version" "11.13.0"
   dependencies:
     "escape-string-regexp" "2.0.0"
     "invariant" "2.2.4"
 
-"react-native@*", "react-native@^0.63.3", "react-native@>= 0.51", "react-native@>= 0.59", "react-native@>=0.40.0", "react-native@>=0.42.0", "react-native@>=0.47.1", "react-native@>=0.57", "react-native@>=0.59", "react-native@>=0.60 <0.64", "react-native@>=0.60.0", "react-native@>=0.62.0-rc.0 <0.64.0", "react-native@>0.57.0":
+"react-native@*", "react-native@^0.63.3", "react-native@>= 0.51", "react-native@>= 0.59", "react-native@>=0.40.0", "react-native@>=0.42.0", "react-native@>=0.47.1", "react-native@>=0.57", "react-native@>=0.59", "react-native@>=0.60", "react-native@>=0.60.0", "react-native@>=0.62.0-rc.0 <0.64.0", "react-native@>0.57.0":
   "integrity" "sha512-71wq13uNo5W8QVQnFlnzZ3AD+XgUBYGhpsxysQFW/hJ8GAt/J5o+Bvhy81FXichp6IBDJDh/JgfHH2gNji8dFA=="
   "resolved" "https://registry.yarnpkg.com/react-native/-/react-native-0.63.3.tgz"
   "version" "0.63.3"

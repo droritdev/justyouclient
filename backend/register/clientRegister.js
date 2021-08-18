@@ -24,7 +24,8 @@ exports.register = (req, res) => {
             location: {
                 type: req.body.location.type,
                 coordinates: req.body.location.coordinates
-            }
+            },
+            paymeToken: req.body.paymeToken
         }
     );
     //Add the new trainer to the data base

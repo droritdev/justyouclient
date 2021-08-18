@@ -72,6 +72,9 @@ const clientProfileSchema = new Schema(
                type: [Number],
                index: "2dsphere"
            }
+       },
+       paymeToken: {
+           type: String
        }
     }, 
     {

@@ -9,6 +9,7 @@ import {BirthdayContext} from '../../context/BirthdayContext';
 import {PasswordContext} from '../../context/PasswordContext';
 import {PhoneContext} from '../../context/PhoneContext';
 import {ProfileImageContext} from '../../context/ProfileImageContext';
+import {PaymeTokenContext} from '../../context/PaymeTokenContext';
 
 import * as Progress from 'react-native-progress';
 // import {Surface, Shape} from '@react-native-community/art';
@@ -32,6 +33,7 @@ const DonePopUp = ({navigation}) => {
     const {areaCode} = useContext(PhoneContext);
     const {phoneNumber} = useContext(PhoneContext);
     const {profileImage} = useContext(ProfileImageContext);
+    const {paymeToken} = useContext(PaymeTokenContext);
 
 
     const [profileImageUrl, setProfileImageUrl] = useState("");
@@ -154,7 +156,8 @@ const DonePopUp = ({navigation}) => {
                 location: {
                     type: 'Point',
                     coordinates: [32.123602, 34.875223]
-                }
+                },
+                paymeToken: paymeToken
             },
             config
             )
