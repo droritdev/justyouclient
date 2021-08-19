@@ -23,8 +23,8 @@ import {PasswordContext} from '../../context/PasswordContext';
 const ProfileDetailsPage1 = ({navigation}) => {
     const {dispatchPassword} = useContext(PasswordContext);
     const { country ,dispatchCountry} = useContext(CountryContext);
-    const [isLocationPermission, setIsLocationPermission] = useState(false);
-    const [isPushPermission, setIsPushPermission] = useState(false);
+    const [isLocationPermission, setIsLocationPermission] = useState(true);
+    const [isPushPermission, setIsPushPermission] = useState(true);
     const [isPermissionsNotConfirmed, setIsPermissionsNotConfirmed] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState("Pick a country");
     const [selectedCountryName, setSelectedCountryName] = useState("");
@@ -54,7 +54,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
 
     //Handle when user presses the world icon
     const handleOnWorldIconPress = () => {
-      setVisible(true);
+      // setVisible(true);
     }
 
     //Handle when the country modal closes
@@ -216,8 +216,17 @@ const ProfileDetailsPage1 = ({navigation}) => {
         <View style={styles.countryContainer}>
           <Text style={styles.countryTitle}>Country</Text>
           <View styles={styles.countryPicker}>
-            <PickCountry
-              initValue={selectedCountry}
+            <View style={styles.containerUSA}>
+              <View style={styles.viewUSA}>
+                <Text style={styles.textUSA}>United States</Text>
+              </View>
+              <Image 
+                source={require('../../images/worldIcon.png')}
+                style={styles.image}
+              />
+            </View>
+            {/* <PickCountry
+              initValue={'United States'}
               onChange={(option) => handleOnChangeCountry(option.label)}
               visible={visible}
               onModalClose={() => handleOnModalClose()}
@@ -226,7 +235,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
             />
             {isCountryErrorMessage ?
               <Text style={styles.countryErrorText}>Pick a country</Text>
-            : null}
+            : null} */}
           </View>
         </View>
         <View style={styles.permissionsContainer}>
@@ -334,6 +343,31 @@ const ProfileDetailsPage1 = ({navigation}) => {
       flex: 1,
       justifyContent: 'flex-end',
       alignItems: 'center'
+    },
+    containerUSA: {
+      flexDirection: 'row', 
+      alignSelf: 'center', 
+      width: Dimensions.get('window').width * .95, 
+      alignItems: 'center',
+      marginTop: 20
+    },
+    viewUSA: {
+      width: Dimensions.get('window').width * .825,
+      height: 60,
+      justifyContent: 'center',
+      borderColor: 'deepskyblue',
+      borderRadius: 17,
+      borderWidth: 2,
+      alignItems: 'center'
+    },
+    textUSA: {
+      color: 'black',
+      fontSize: 20,
+      fontWeight: '300'
+    },
+    image: {
+      width: 60,
+      height: 60
     }
   });
 

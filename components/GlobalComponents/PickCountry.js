@@ -22,7 +22,7 @@ const PickCountry = (props) => {
             <ModalSelector
                 data={categories}
                 initValue={props.initValue}
-                onChange={props.onChange} 
+                onChange={props.onChange}
                 selectStyle={{
                   width: Dimensions.get('window').width * .825,
                   height: 60,
