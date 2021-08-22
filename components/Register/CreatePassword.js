@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {StyleSheet, View, Text, TextInput, Button, Dimensions, KeyboardAvoidingView, Platform, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Button, Dimensions, KeyboardAvoidingView, Platform, SafeAreaView, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import { Base64 } from 'js-base64';
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -62,6 +62,7 @@ const CreatePassword = ({navigation}) => {
     }
 
     return(
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         <Text style={styles.justYouHeader}>Just You</Text>
         <View style={styles.passwordContainer}>
@@ -98,6 +99,7 @@ const CreatePassword = ({navigation}) => {
           />
         </View>
       </SafeAreaView>
+      </TouchableWithoutFeedback>
     );
   }
 

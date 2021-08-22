@@ -1,7 +1,8 @@
 import React, {useEffect, useState, useContext} from 'react';
-import {StyleSheet, View, Text, TextInput, Dimensions, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Dimensions, SafeAreaView, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useStateWithCallbackLazy } from 'use-state-with-callback';
 
 import AppButton from '../GlobalComponents/AppButton';
 import {PhoneContext} from '../../context/PhoneContext';
@@ -15,7 +16,7 @@ const PhoneNumberVerification = ({navigation}) => {
     const {dispatchNumber} = useContext(PhoneContext);
     const [areaCodeInput, setAreaCodeInput] = useState("");
     const [phoneNumberInput, setPhoneNumberInput] = useState("");
-    const [fullPhoneNumber, setFullPhoneNumber] = useState("");
+    const [fullPhoneNumber, setFullPhoneNumber] = useStateWithCallbackLazy("");
     const [code, setCode] = useState("");
     const [phoneErrorMessage, setPhoneErrorMessage] = useState("");
     const [isPhoneError, setIsPhoneError] = useState(false);
@@ -43,8 +44,9 @@ const PhoneNumberVerification = ({navigation}) => {
     }
 
     const config = {
-      withCredentials: true,
-      baseURL: 'http://localhost:3000/',
+      withCredentials: false,
+      baseURL: 'http://10.0.2.2:3000/',
+    //  baseURL: 'http://localhost:3000/',
       headers: {
         "Content-Type": "application/json",
       },
@@ -56,6 +58,7 @@ const PhoneNumberVerification = ({navigation}) => {
             axios
             .get('/clients/phone/'+areaCodeInput+phoneNumberInput, config)
             .then((doc) => {
+              console.log('in then of find client phone');
               if (doc.data[0].phone.areaCode === areaCodeInput && doc.data[0].phone.phoneNumber === phoneNumberInput) {
                 setPhoneErrorMessage("Phone is already used");
                 setIsPhoneError(true);
@@ -64,8 +67,10 @@ const PhoneNumberVerification = ({navigation}) => {
             .catch((err) =>  {
               setIsPhoneError(false);
               setIsNextError(false);
-              setFullPhoneNumber(areaCodeInput.concat(phoneNumberInput));
-              sendVerificationCode();
+              setFullPhoneNumber("97" + areaCodeInput + phoneNumberInput, (currentPhoneNumber) => {
+                console.log('currentPhoneNumber ',currentPhoneNumber);
+                sendVerificationCode(currentPhoneNumber);
+              });
             });
           }
 
@@ -82,8 +87,8 @@ const PhoneNumberVerification = ({navigation}) => {
 
     //Sets the phoneNumber object to the value
     const handleOnChangePhoneNumber = (value) => {
-      if(value.length > 9){
-        value = value.slice(1,10);
+      if(value.length > 7){
+        value = value.slice(0,7);
       }
       setIsNextError(false);
       setIsPhoneError(false);
@@ -125,7 +130,7 @@ const PhoneNumberVerification = ({navigation}) => {
         setIsPhoneError(true);
         setIsNextError(true);
       }
-      else if(areaCodeInput.length !== 3 || phoneNumberInput.length !== 9){
+      else if(areaCodeInput.length !== 3 || phoneNumberInput.length !== 7){
         setPhoneErrorMessage("Enter a valid phone number")
         setIsPhoneError(true);
         setIsNextError(true);
@@ -138,12 +143,12 @@ const PhoneNumberVerification = ({navigation}) => {
     }
 
     //The function that sends the code to the user's phone
-    const sendVerificationCode = () => {
+    const sendVerificationCode = (currentPhoneNumber) => {
            setIsCodeSent('flex');
-           console.log('before sendCode phone ', fullPhoneNumber)
+           console.log('before sendCode cuurentPhone ', currentPhoneNumber)
         axios
           .post('/sendCode', {
-            number: fullPhoneNumber
+            number: currentPhoneNumber
           },
           config
           )
@@ -207,7 +212,7 @@ const PhoneNumberVerification = ({navigation}) => {
               console.log('res not null resdata ', res.data)
               if(res.data === 'authenticated'){
                 console.log('authenticated')
-                alert("authenticated");
+                // alert("authenticated");
                 dispatchArea({
                   type: 'SET_AREA_CODE',
                   areaCode: areaCodeInput
@@ -237,6 +242,7 @@ const PhoneNumberVerification = ({navigation}) => {
     }
 
     return(
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
               <Text style={styles.justYouHeader}>Just You</Text>
@@ -248,7 +254,7 @@ const PhoneNumberVerification = ({navigation}) => {
                   <TextInput
                       style={styles.areaCodeInput}
                       textAlign='center'
-                      placeholder='+001'
+                      placeholder='Area Code'
                       value = {areaCodeInput}
                       keyboardType='numeric'
                       onChangeText={value => handleOnChangeAreaCode(value)}>
@@ -257,7 +263,7 @@ const PhoneNumberVerification = ({navigation}) => {
                   <TextInput
                       style={styles.phoneNumberInput}
                       textAlign='center'
-                      placeholder='00000000000'
+                      placeholder='Phone Number'
                       value = {phoneNumberInput}
                       keyboardType='numeric'
                       onChangeText={value => handleOnChangePhoneNumber(value)}
@@ -315,6 +321,7 @@ const PhoneNumberVerification = ({navigation}) => {
               />
             </View>
         </SafeAreaView>
+      </TouchableWithoutFeedback>  
     );
 }
 
@@ -358,7 +365,7 @@ const styles = StyleSheet.create({
         marginRight: Dimensions.get('window').width * .0241,
         borderColor: 'deepskyblue',
         borderWidth: 2,
-        height: Dimensions.get('window').height * .06,
+        height: Dimensions.get('window').height * .07,
         width: Dimensions.get('window').width * .3,
         fontSize: Dimensions.get('window').height * .0278
     },
@@ -366,7 +373,7 @@ const styles = StyleSheet.create({
         borderRadius: 17,
         borderColor: 'deepskyblue',
         borderWidth: 2,
-        height: Dimensions.get('window').height * .06,
+        height: Dimensions.get('window').height * .07,
         width: Dimensions.get('window').width * .6,
         fontSize: Dimensions.get('window').height * .0278
     },
@@ -378,7 +385,7 @@ const styles = StyleSheet.create({
     verifyExplenationContainer: {
         width: Dimensions.get('window').width * .8,
         alignSelf: 'center',
-        marginTop: Dimensions.get('window').height * .033
+        marginTop: Dimensions.get('window').height * .05
     },
     verifyExplenationText: {
         textAlign:'center',

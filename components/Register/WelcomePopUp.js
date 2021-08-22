@@ -43,9 +43,11 @@ const WelcomePopUp = ({navigation}) => {
                   }
                 })
                 .catch((err) => console.log(err));*/
-                navigation.navigate('ClientContainer');
+                setTimeout(() => navigation.navigate('WelcomeUser'), 4000);
+              //  navigation.navigate('ClientContainer');
             } else {
-                navigation.navigate('GetStarted');
+                setTimeout(() => navigation.navigate('GetStarted'), 4000);
+              //  navigation.navigate('GetStarted');
             }
          });
          return subscriber;

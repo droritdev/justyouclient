@@ -1,6 +1,7 @@
 import React, {useState ,useContext} from 'react'
 import {ART, StyleSheet, View, Text, Image, Dimensions} from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {NameContext} from '../../context/NameContext';
 import {CountryContext} from '../../context/CountryContext';
@@ -33,7 +34,7 @@ const DonePopUp = ({navigation}) => {
     const {areaCode} = useContext(PhoneContext);
     const {phoneNumber} = useContext(PhoneContext);
     const {profileImage} = useContext(ProfileImageContext);
-    const {paymeToken} = useContext(PaymeTokenContext);
+//    const {paymeToken} = useContext(PaymeTokenContext);
 
 
     const [profileImageUrl, setProfileImageUrl] = useState("");
@@ -156,16 +157,23 @@ const DonePopUp = ({navigation}) => {
                 location: {
                     type: 'Point',
                     coordinates: [32.123602, 34.875223]
-                },
-                paymeToken: paymeToken
+                }
+            //    paymeToken: paymeToken
             },
             config
             )
             .then((res) => {
                setIsLoadingCircle(false);
+               const storeData = async (firstName) => {
+                try {
+                  await AsyncStorage.setItem('nameOfUser', firstName)
+                } catch (e) {
+                    console.log('error in asyncstorage setitem ', err)
+                }
+               }
                setTimeout(() => {
                 navigation.navigate('WelcomeUser');
-           }, 1570);
+               }, 1570);
 
 
             })

@@ -187,18 +187,19 @@ const ProfileDetailsPage1 = ({navigation}) => {
 
     //Handle the next button press - if ok, navigates to ProfileDetailsPage2
     const handleNext = () => {
-      if(!isCountrySelected){
-        setCountryErrorMessage("Pick a country");
-        setIsCountryErrorMessage(true);
-      }
-      else if(!isLocationPermission || !isPushPermission){
+      // if(!isCountrySelected){
+      //   setCountryErrorMessage("Pick a country");
+      //   setIsCountryErrorMessage(true);
+      // }
+      // else
+      if(!isLocationPermission || !isPushPermission){
         setIsPermissionsNotConfirmed(true);
       }
       else{
         setIsPermissionsNotConfirmed(false);
         dispatchCountry({
           type: 'SET_COUNTRY',
-          country: selectedCountryName
+          country: 'United States'
         });
         navigation.navigate('ProfileDetailsPage2');
       }
@@ -211,7 +212,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
         />
         <View style={styles.upperContainer}>
           <Text style={styles.profileDetailesText}>Profile Details</Text>
-          <Text style={styles.fillTheFieldsText}>Please fill out all fields:</Text>
+          <Text style={styles.fillTheFieldsText}></Text>
         </View>
         <View style={styles.countryContainer}>
           <Text style={styles.countryTitle}>Country</Text>
@@ -329,7 +330,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
     permissionsSection: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      height: Dimensions.get('window').height * .03,
+      height: Dimensions.get('window').height * .05,
       marginRight: Dimensions.get('window').height * 0.028,
       marginTop: Dimensions.get('window').height * 0.022
     },

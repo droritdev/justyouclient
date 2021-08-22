@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext, useReducer} from 'react';
-import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import DatePicker from 'react-native-datepicker';
@@ -290,6 +290,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
       }
     }
     return(
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
           <ArrowBackButton
             onPress={handleArrowButton}
@@ -360,7 +361,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
               placeholderTextColor='black'
               style={styles.emailAddressButton}
             />
-            <Text style={styles.emailExplinationText}>We use your email to send you receips. your mobile number is required to enhance account security.</Text>
+            <Text style={styles.emailExplinationText}>We use your email to send you receipts. Your mobile number is required to enhance account security.</Text>
           </View>
           <View style={styles.nextButtonContainer}>
             <AppButton
@@ -369,6 +370,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
             />
         </View>
        </SafeAreaView>
+       </TouchableWithoutFeedback>
     );
   }
 
