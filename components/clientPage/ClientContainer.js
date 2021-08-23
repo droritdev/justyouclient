@@ -1,5 +1,5 @@
-import React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import React, {Component, useEffect} from 'react';
+import {Image, StyleSheet, BackHandler} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import StarPageStack from './starTab/StarPageStack';
@@ -11,6 +11,12 @@ const Tab = createBottomTabNavigator();
 
 //The tab navigation container to handle the navigation in the client's area
 const ClientContainer = () => {
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', () => true)
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', () => true)
+  }, [])
+  
   return (
     <Tab.Navigator
       tabBarOptions={{

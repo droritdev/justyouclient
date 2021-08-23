@@ -49,7 +49,8 @@ const DonePopUp = ({navigation}) => {
 
     const config = {
         withCredentials: true,
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
           "Content-Type": "application/json",
         },
@@ -68,6 +69,7 @@ const DonePopUp = ({navigation}) => {
             .then((data) => {
                 console.log('User account created & signed in!');
                 const userUid = "/clients/" + data.user.uid + '/profileImage'+getFormat(profileImage.uri);
+                console.log('before uploadImage userUid ', userUid)
                 uploadImage(userUid, profileImage.uri)
 
             })
@@ -86,6 +88,7 @@ const DonePopUp = ({navigation}) => {
 
 
     const uploadImage = async (filePath, imageUri) => {
+        console.log('in uploadImage filePath imageUri ', filePath, imageUri)
         let reference = await storage().ref(filePath);
         const task = reference.putFile(imageUri);
         // .then((snapshot) => {
@@ -118,7 +121,7 @@ const DonePopUp = ({navigation}) => {
           task.then(() => {
             console.log('Image uploaded to the bucket!');
             reference.getDownloadURL().then((url) => {
-
+                console.log('just before registerClient url ', url)
                 registerClient(url);
             })
           })
@@ -139,6 +142,7 @@ const DonePopUp = ({navigation}) => {
 
     const registerClient = (imageUrl) => {
         // navigation.navigate('WelcomeUser');
+        console.log('in registerClient')
         axios
             .post('/clients/register', {
                 name: {
@@ -163,22 +167,23 @@ const DonePopUp = ({navigation}) => {
             config
             )
             .then((res) => {
-               setIsLoadingCircle(false);
-               const storeData = async (firstName) => {
-                try {
-                  await AsyncStorage.setItem('nameOfUser', firstName)
-                } catch (e) {
-                    console.log('error in asyncstorage setitem ', err)
-                }
-               }
-               setTimeout(() => {
+                console.log('saving data in clients table succeeded firtsname ', firstName);
+                // setIsLoadingCircle(false);
+                // AsyncStorage.setItem('nameOfUser', firstName)
+                //     .then(
+                //         // AsyncStorage.getItem('nameOfUser')
+                //         //     .then((err, res) => console.log('res of getitem asnyc after saving ', res))
+                //         //     .catch(err => console.log(err))
+                //     )
+                //     .catch(err => console.log('error in asyncstorage setitem ', err))
+                // setTimeout(() => {
                 navigation.navigate('WelcomeUser');
-               }, 1570);
-
-
+                // }, 1570);
             })
-
-            .catch((err) => alert(err.data));
+            .catch((err) => {
+                console.log('error in saving client data ', err)
+                alert(err)
+            });
     }
 
     //Uploading the client to the data base automaticly after 2 second

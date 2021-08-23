@@ -32,5 +32,8 @@ exports.register = (req, res) => {
     clientProfile
         .save()
         .then(() => res.json(clientProfile))
-        .catch(err => res.status(400).json("Error: " + err));
+        .catch(err => {
+            console.log('error in backend clientRegister ', err)
+            res.status(400).json("Error: " + err)
+        });
 }

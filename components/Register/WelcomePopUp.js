@@ -43,7 +43,7 @@ const WelcomePopUp = ({navigation}) => {
                   }
                 })
                 .catch((err) => console.log(err));*/
-                setTimeout(() => navigation.navigate('WelcomeUser'), 4000);
+                setTimeout(() => navigation.navigate('ClientContainer'), 4000);
               //  navigation.navigate('ClientContainer');
             } else {
                 setTimeout(() => navigation.navigate('GetStarted'), 4000);

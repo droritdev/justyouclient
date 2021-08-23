@@ -1,23 +1,24 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {NameContext} from '../../context/NameContext';
 
 const WelcomeUser = ({navigation}) => {
-    // const {firstName} = useContext(NameContext);
-    var firstName = ''
-    const getData = async () => {
-        try {
-          const value = await AsyncStorage.getItem('nameOfuser')
-          if(value !== null) {
-            firstName = value
-          }
-        } catch(e) {
-            console.log('error in async storage getitem ', err)
-        }
-    }
-    console.log('firstName after const ', firstName);
+    const {firstName} = useContext(NameContext);
+
+    // const [firstName, setFirstName] = useState("")
+    // useEffect(() => {
+    //     AsyncStorage.getItem('nameOfUser')
+    //     .then((err, res) => {
+    //         if(res !== null){
+    //             console.log('firstName in res of getitem welcomeuser ', res)
+    //             setFirstName(res)
+    //         }
+    //         setTimeout(() => navigation.navigate('ClientContainer'), 2000);
+    //     })
+    //     .catch(err => console.log('error in async storage getitem ', err))
+    // }, [])
 
     //Navigates automaticlly to the profile page after 2 seconds
     setTimeout(() => navigation.navigate('ClientContainer'), 1500);
