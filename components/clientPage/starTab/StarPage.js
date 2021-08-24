@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useReducer, useRef, useState } from 'react';
-import { Dimensions, FlatList, Image, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, Image, Modal, ScrollView, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
 
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Feather';
@@ -22,6 +22,7 @@ const StarPage = ({ navigation }) => {
   let dropDownAlertRef = useRef(null);
   //Modal to display for covid-19 alert tap
   const [covidModalVisible, setCovidModalVisible] = useState(false);
+  const [showCovidOverlay, setShowCovidOverlay] = useState(true)
 
   const [doc, setDoc] = useState();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -114,18 +115,18 @@ const StarPage = ({ navigation }) => {
     const unsubscribe = navigation.addListener('focus', () => {
       // Check if covid alert was dismissed
       setDialogVisible(false);
-      if (global.covidAlert) {
-        if (dropDownAlertRef.state.isOpen === false) {
-          //Show covid alert
-          dropDownAlertRef.alertWithType(
-            'info',
-            'Latest information on CVOID-19',
-            'Click here to learn more.',
-          );
-        }
-      } else {
-        dropDownAlertRef.closeAction();
-      }
+    //   if (global.covidAlert) {
+    //  //   if (dropDownAlertRef.state.isOpen === false) {
+    //       //Show covid alert
+    //       dropDownAlertRef.alertWithType(
+    //         'info',
+    //         'Latest information on COVID-19',
+    //         'Click here to learn more.',
+    //       );
+    //   //  }
+    //   } else {
+    //     dropDownAlertRef.closeAction();
+    //   }
       getUserByFirebaseAuth();
       getAllTrainers().then(() => {
 
@@ -433,11 +434,13 @@ const StarPage = ({ navigation }) => {
 
   //Update the covid alert var to false (will not display coivd alert anymore)
   const covidAlertCancel = () => {
+    console.log('pressed x')
     global.covidAlert = false;
   };
 
   //Show the covid information modal
   const covidAlertTap = () => {
+    console.log('covidtap ', global.covidAlert)
     setCovidModalVisible(true);
   };
 
@@ -560,7 +563,19 @@ const StarPage = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Start of covid alert part */}
-
+      {showCovidOverlay && 
+        <View style={styles.covidOverlay}>
+        <TouchableWithoutFeedback onPress={covidAlertTap}>
+        <View>
+          <Text style={styles.covidOverlayText}>Latest information on COVID-19</Text>
+          <Text style={styles.covidOverlayText}>Click here to learn more</Text>
+        </View>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => setShowCovidOverlay(false)}>
+          <View style={styles.closeButton}><Text style={styles.xButton}>X</Text></View>
+        </TouchableWithoutFeedback>
+        </View>
+      }
       <Modal
         animationType="slide"
         transparent={true}
@@ -577,6 +592,7 @@ const StarPage = ({ navigation }) => {
               onPress={() => {
                 setCovidModalVisible(false);
                 global.covidAlert = false;
+                setShowCovidOverlay(false)
               }}
             />
             <Text style={styles.covidTitle}>COVID-19 Information</Text>
@@ -1271,6 +1287,38 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get('window').height * 0.015,
     marginRight: Dimensions.get('window').width * 0.015,
     alignSelf: 'flex-end',
+  },
+  covidOverlay: {
+    zIndex: 2,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    opacity: 0.9,
+    backgroundColor: 'deepskyblue',
+    width: Dimensions.get('window').width,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  covidOverlayText: {
+    color: 'white',
+    fontSize: 22
+  },
+  closeButton:{
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    borderColor: 'white',
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 10,
+    right: 10
+  },
+  xButton: {
+    color: 'white',
+    fontSize: 24
   },
   dialogTitle: {
     fontWeight: 'bold',

@@ -82,14 +82,14 @@ const SearchPage = ({navigation, route}) => {
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-        if(global.covidAlert) {
-            if(dropDownAlertRef.state.isOpen === false) {
-                //Show covid alert
-                dropDownAlertRef.alertWithType('info', 'Latest information on CVOID-19', 'Click here to learn more.');
-            }
-        } else {
-            dropDownAlertRef.closeAction();
-        }
+        // if(global.covidAlert) {
+        //     if(dropDownAlertRef.state.isOpen === false) {
+        //         //Show covid alert
+        //         dropDownAlertRef.alertWithType('info', 'Latest information on CVOID-19', 'Click here to learn more.');
+        //     }
+        // } else {
+        //     dropDownAlertRef.closeAction();
+        // }
         //clear the tag selected and title
         clearTagAndTitle()
             getClientFromMongoDB();
