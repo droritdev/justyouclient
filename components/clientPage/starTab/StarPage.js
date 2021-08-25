@@ -24,6 +24,8 @@ const StarPage = ({ navigation }) => {
   const [covidModalVisible, setCovidModalVisible] = useState(false);
   const [showCovidOverlay, setShowCovidOverlay] = useState(true)
 
+  const [welcomeModalVisible, setWelcomeModalVisible] = useState(true)
+
   const [doc, setDoc] = useState();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -291,7 +293,7 @@ const StarPage = ({ navigation }) => {
                 />} */}
             <Text style={styles.trainerText3}>{getTrainerStarRating()}</Text>
             <Image
-              source={require('../../../images/starIconBlue.png')}
+              source={require('../../../images/graystar.png')}
               style={styles.starIcon}
             />
           </View>
@@ -577,6 +579,13 @@ const StarPage = ({ navigation }) => {
         </View>
       }
       <Modal
+        cancelable={true}
+        visible={welcomeModalVisible}
+        onRequestClose={() => {
+        }}
+      >
+      </Modal>
+      <Modal
         animationType="slide"
         transparent={true}
         cancelable={true}
@@ -625,7 +634,7 @@ const StarPage = ({ navigation }) => {
       </View>
       {/* End of covid alert part */}
 
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} contentContainerStyle={{justifyContent: 'space-between'}}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Just You</Text>
         </View>
@@ -847,11 +856,6 @@ const StarPage = ({ navigation }) => {
               <Text style={styles.whyUsTitle}>WHY US</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.shareAndEarnButton}
-              onPress={() => handleOnGiftCardPurchasePressed()}>
-              <Text style={styles.shareAndEarnTitle}>SHARE & EARN</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
               style={styles.qAndaButton}
               onPress={() => handleOnQandAsPressed()}>
               <Text style={styles.qAndaTitle}>Q & A's</Text>
@@ -863,28 +867,15 @@ const StarPage = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* For Instegram and FaceBook socialButtons */}
-        <View style={styles.socialButtons}>
-          <TouchableOpacity>
-            <Image
-              source={require('../../../images/facebookButton.png')}
-              style={styles.facebookButton}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image
-              source={require('../../../images/instegramButton.png')}
-              style={styles.instegramImage}
-            />
-          </TouchableOpacity>
-        </View>
         <View style={styles.moreContainer}>
           <Text style={styles.moreTitle}>More Links</Text>
           <View style={styles.rowsContainer} />
           <View style={styles.eachRowContainer}>
             <View style={styles.navigationsRows}>
               <TouchableOpacity onPress={() => handleOnDiscountCodePressed()}>
-                <Text style={styles.navigationsRowsTitle}>Discount Code</Text>
+                <View style={styles.bottomLinks}>
+                  <Text style={styles.navigationsRowsTitle}>Discount Code</Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.discountCodeButton}
@@ -901,9 +892,11 @@ const StarPage = ({ navigation }) => {
             <View style={styles.navigationsRows}>
               <TouchableOpacity
                 onPress={() => handleOnGiftCardPurchasePressed()}>
-                <Text style={styles.navigationsRowsTitle}>
-                  Gift Card Purchase
-                </Text>
+                <View style={styles.bottomLinks}>
+                  <Text style={styles.navigationsRowsTitle}>
+                    Gift Card Purchase
+                  </Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.giftCardButton}
@@ -981,13 +974,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     width: Dimensions.get('window').width,
-    // height: Dimensions.get('window').height
+    height: Dimensions.get('window').height
   },
   header: {
     alignSelf: 'center',
+    marginTop: 10
   },
   headerText: {
-    fontSize: Dimensions.get('window').height * 0.025,
+    fontSize: Dimensions.get('window').height * 0.04,
     fontWeight: 'bold',
   },
   sectionContainer: {
@@ -1003,27 +997,28 @@ const styles = StyleSheet.create({
   },
   inSectionView: {
     marginRight: Dimensions.get('window').width * 0.013,
-    height: Dimensions.get('window').height * 0.125,
+    height: Dimensions.get('window').height * 0.17,
     width: Dimensions.get('window').width * 0.3,
     borderWidth: 2,
     borderColor: 'gainsboro',
     borderRadius: 17,
   },
   inSectionImageViewContainer: {
-    height: Dimensions.get('window').height * 0.073,
+    height: Dimensions.get('window').height * 0.1,
   },
   inSectionImageView: {
-    height: Dimensions.get('window').height * 0.0745,
+    height: Dimensions.get('window').height * 0.1,
     backgroundColor: 'gainsboro',
     borderTopRightRadius: 15,
     borderTopLeftRadius: 15,
   },
   trainerImage: {},
   trainerPreviewText: {
-    height: Dimensions.get('window').height * 0.0475,
+    height: Dimensions.get('window').height * 0.051,
     alignItems: 'center',
     justifyContent: 'center',
     width: Dimensions.get('window').width * 0.3,
+    marginTop: 5
   },
   trainerText1: {
     fontWeight: 'bold',
@@ -1034,7 +1029,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   ratingRow: {
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   trainerText3: {
     fontSize: Dimensions.get('window').height * 0.0112,
@@ -1047,7 +1042,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   categoryImage: {
-    height: Dimensions.get('window').height * 0.0745,
+    height: Dimensions.get('window').height * 0.1,
     width: Dimensions.get('window').width * 0.29,
     backgroundColor: 'gainsboro',
     borderTopRightRadius: 15,
@@ -1122,15 +1117,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   whyUsButton: {
-    width: Dimensions.get('window').width * 0.23,
+    width: Dimensions.get('window').width * 0.3,
     height: Dimensions.get('window').height * 0.065,
-    backgroundColor: 'deepskyblue',
+    backgroundColor: 'white',
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'gainsboro'
   },
   whyUsTitle: {
-    color: 'white',
+    color: 'deepskyblue',
     fontWeight: 'bold',
     fontSize: 18,
   },
@@ -1149,29 +1146,33 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   qAndaButton: {
-    width: Dimensions.get('window').width * 0.23,
+    width: Dimensions.get('window').width * 0.3,
     height: Dimensions.get('window').height * 0.065,
-    backgroundColor: 'deepskyblue',
+    backgroundColor: 'white',
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'gainsboro'
   },
   qAndaTitle: {
-    color: 'white',
+    color: 'deepskyblue',
     fontWeight: 'bold',
     fontSize: 18,
     textAlign: 'center',
   },
   updatesButton: {
-    width: Dimensions.get('window').width * 0.23,
+    width: Dimensions.get('window').width * 0.3,
     height: Dimensions.get('window').height * 0.065,
-    backgroundColor: 'deepskyblue',
+    backgroundColor: 'white',
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'gainsboro'
   },
   updatesTitle: {
-    color: 'white',
+    color: 'deepskyblue',
     fontWeight: 'bold',
     fontSize: 18,
     textAlign: 'center',
@@ -1191,7 +1192,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   moreContainer: {
-    marginTop: Dimensions.get('window').height * 0.035,
+    marginTop: Dimensions.get('window').height * 0.067,
   },
   moreTitle: {
     fontWeight: 'bold',
@@ -1199,11 +1200,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   rowsContainer: {
-    marginTop: Dimensions.get('window').height * 0.035,
+    marginTop: Dimensions.get('window').height * 0.001,
   },
 
   eachRowContainer: {
-    height: Dimensions.get('window').height * 0.04,
+    height: Dimensions.get('window').height * 0.06,
     justifyContent: 'center',
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 2,
@@ -1398,6 +1399,9 @@ const styles = StyleSheet.create({
   progressView: {
     alignSelf: 'center',
   },
+  bottomLinks: {
+    width: Dimensions.get('window').width * 0.85
+  }
 });
 
 export default StarPage;

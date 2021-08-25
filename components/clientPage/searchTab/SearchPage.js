@@ -534,10 +534,11 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
     },
     header: {
-        alignSelf: 'center'
+        alignSelf: 'center',
+        marginTop: 10
     },
     headerText: {
-        fontSize: 25,
+        fontSize: Dimensions.get('window').height * .04,
         fontWeight: 'bold'
     },
     categoryPickerContainer: {

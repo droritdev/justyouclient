@@ -11,6 +11,8 @@ import {
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
+
 //The Coming Soon page for pages "in build"
 const ComingSoon = ({navigation}) => {
   //Navigates back to the star page
@@ -24,17 +26,9 @@ const ComingSoon = ({navigation}) => {
         <View style={styles.header}>
           <Text style={styles.headerText}>Just You</Text>
         </View>
-        <TouchableOpacity onPress={() => handleOnArrowPress()}>
-          <Image
-            source={require('../../../images/blackArrow.png')}
-            style={styles.arrowImage}
-          />
-        </TouchableOpacity>
+        <ArrowBackButton onPress={handleOnArrowPress} />
         <View style={styles.mainContainerView}>
           <View style={styles.mainContainer}>
-            <View style={styles.comingSoonImage}>
-              <Image source={require('../../../images/comingSoon.png')} />
-            </View>
             <View style={styles.comingSoonTitle}>
               <Text style={styles.comingSoonText}>Coming Soon</Text>
             </View>
@@ -61,9 +55,10 @@ const styles = StyleSheet.create({
   },
   header: {
     alignSelf: 'center',
+    marginTop: 10
   },
   headerText: {
-    fontSize: 25,
+    fontSize: Dimensions.get('window').height * 0.04,
     fontWeight: 'bold',
   },
   arrowImage: {
@@ -76,7 +71,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     height: 300,
   },
   comingSoonImage: {},

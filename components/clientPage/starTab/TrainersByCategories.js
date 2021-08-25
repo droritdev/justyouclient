@@ -135,11 +135,11 @@ const TrainersByCategories = ({navigation, route}) => {
             />
           </TouchableOpacity>
           <View style={styles.trainerDetails}>
-            <Text style={styles.trainerDetail1}> {name}</Text>
+            <Text style={styles.trainerDetail1}>{name}</Text>
             <Text style={styles.trainerDetail2}>Personal Trainer</Text>
             <View style={styles.ratingRow}>
               {reviewsArray.length === 0 ? (
-                <Text style={styles.trainerDetail3}>no comments</Text>
+                <Text style={styles.trainerDetail3}>no reviews</Text>
               ) : (
                 <Text style={styles.trainerDetail3}>
                   {getTrainerStarRating()}
@@ -150,7 +150,7 @@ const TrainersByCategories = ({navigation, route}) => {
                 <View />
               ) : (
                 <Image
-                  source={require('../../../images/starIconBlue.png')}
+                  source={require('../../../images/graystar.png')}
                   style={styles.starIcon}
                 />
               )}
@@ -221,9 +221,9 @@ const TrainersByCategories = ({navigation, route}) => {
               />
             </View>
           ) : (
-            <View>
-              <Text style={styles.recentOrdersTitle}>
-                {'No Any Trainers in that category yet..'}
+            <View style={{marginTop: 20}}>
+              <Text style={styles.noOrders}>
+                {'No trainers in that category yet...'}
               </Text>
             </View>
           )}
@@ -250,6 +250,9 @@ const styles = StyleSheet.create({
     // width: Dimensions.get('screen').width,
     marginLeft: Dimensions.get('window').width * -0.155,
   },
+  header: {
+    marginTop: 10
+  },
   headerText: {
     fontSize: Dimensions.get('window').height * 0.04,
     fontWeight: 'bold',
@@ -270,7 +273,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: Dimensions.get('window').height * 0.05,
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * 0.15,
+    height: Dimensions.get('window').height * 0.2,
 
     // borderRadius: 17,
   },
@@ -280,7 +283,7 @@ const styles = StyleSheet.create({
     // marginLeft: Dimensions.get('window').width * .02,
     marginTop: Dimensions.get('window').height * 0.03,
     fontWeight: 'bold',
-    fontSize: Dimensions.get('window').height * 0.03,
+    fontSize: Dimensions.get('window').height * 0.04,
   },
   trainerView: {
     width: Dimensions.get('window').width,
@@ -323,6 +326,10 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get('window').height * 0.1,
     alignSelf: 'center',
   },
+  noOrders: {
+    alignSelf: 'center',
+    fontSize: 20
+  }
 });
 
 export default TrainersByCategories;

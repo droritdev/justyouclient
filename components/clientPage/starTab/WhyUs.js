@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
+
 //Why us page
 const WhyUs = ({navigation}) => {
   //Navigates back to the star page
@@ -22,21 +24,18 @@ const WhyUs = ({navigation}) => {
       <ImageBackground
         source={require('../../../images/Q&As.jpg')}
         style={styles.coverImage}>
-        <TouchableOpacity onPress={() => handleOnArrowPress()}>
-          <Image
-            source={require('../../../images/blackArrow.png')}
-            style={styles.arrowImage}
-          />
-        </TouchableOpacity>
+        <ArrowBackButton onPress={handleOnArrowPress} />
       </ImageBackground>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Why should you order from</Text>
+        <Text style={styles.headerTitle}>Why you should order from</Text>
         <Text style={styles.juustYouTitle}>Just You</Text>
-        <Text style={styles.reasonsPreview}>
-          Five reasons why you order from Just You:
-        </Text>
       </View>
       <View style={styles.reasonsContainer}>
+        <View style={{marginBottom: 10}}>
+        <Text style={styles.reasonsPreview}>
+          Five reasons why you should order from Just You:
+        </Text>
+        </View>
         <View style={styles.reasonRow}>
           <Image
             source={require('../../../images/whyUsBlowVi.png')}
@@ -108,6 +107,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: 'bold',
     fontSize: 25,
+    color: 'deepskyblue'
   },
   juustYouTitle: {
     fontWeight: 'bold',
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.9,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 10
   },
   viImage: {
     marginRight: 30,

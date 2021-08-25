@@ -12,11 +12,12 @@ import {
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 
 import {Accordion, Block} from 'galio-framework';
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 
 //The questions and answers content
 const SECTIONS = [
   {
-    title: 'Do I need to provide equipment?',
+    title: 'Do I need to bring equipment?',
     content:
       'No. Your trainer will bring all required equipment for the type of training session.',
   },
@@ -46,7 +47,7 @@ const SECTIONS = [
       'Yes. you have the ability to chat or call with your trainer through the JustYou app.',
   },
   {
-    title: 'Is there an easy way to rebbok past trainers?',
+    title: 'Is there an easy way to rebook past trainers?',
     content: 'Yes, just open the JustYou app and tap "Order History".',
   },
   {
@@ -72,15 +73,10 @@ const QuestionsAndAnswers = ({navigation}) => {
         <ImageBackground
           source={require('../../../images/Q&As.jpg')}
           style={styles.coverImage}>
-          <TouchableOpacity onPress={() => handleOnArrowPress()}>
-            <Image
-              source={require('../../../images/blackArrow.png')}
-              style={styles.arrowImage}
-            />
-          </TouchableOpacity>
+          <ArrowBackButton onPress={handleOnArrowPress} />
         </ImageBackground>
         <View style={styles.headerContainer}>
-          <Text style={styles.justYouTitle}>Just You Partner</Text>
+          <Text style={styles.justYouTitle}>Just You</Text>
           <Text style={styles.qA}>Q & A</Text>
         </View>
         <View>
@@ -139,6 +135,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   qA: {
+    color: 'deepskyblue',
     fontWeight: 'bold',
     fontSize: 25,
   },

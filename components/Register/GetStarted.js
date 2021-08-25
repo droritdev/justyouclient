@@ -14,9 +14,10 @@ const GetStartedClient = ({navigation}) => {
     return(
       <SafeAreaView style={styles.welcomePage2}>
         <View style={styles.welcomeContainer}>
-            <Image source = {require('../../images/welcomepic.png')} />
             <Text style={styles.welcomeToText}>Welcome to</Text>
-            <Text style={styles.justYouText}>Just You</Text>
+            <View style={styles.justyouView}>
+              <Text style={styles.justYouText}>Just You</Text>
+            </View>
             <Text style={styles.excitedText}>We are excited to meet you!</Text>
         </View>
         <View style={styles.getStartedContainer}>
@@ -43,11 +44,11 @@ const styles = StyleSheet.create({
     },
     welcomeToText: {
       marginTop: Dimensions.get('window').height * .011,
-      fontSize: Dimensions.get('window').height * .033,
-      fontWeight: 'bold',
+      fontSize: Dimensions.get('window').height * .04,
+      fontWeight: 'bold'
     },
     justYouText: {
-      fontSize: Dimensions.get('window').height * .066,
+      fontSize: Dimensions.get('window').height * .1,
       fontWeight: 'bold',
       color: 'deepskyblue',
       marginTop: Dimensions.get('window').height * .011
@@ -59,7 +60,12 @@ const styles = StyleSheet.create({
     getStartedContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      alignItems: 'center'
+      alignItems: 'center',
+      marginBottom: 20
+    },
+    justyouView: {
+      marginTop: 20,
+      marginBottom: 20
     }
   });
 

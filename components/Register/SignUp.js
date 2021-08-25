@@ -131,7 +131,7 @@ const SignUp = ({navigation}) => {
         <View style={styles.inputContainer}>
           <View style={styles.textInput}>
             <TextInput
-              style={{fontSize: 25}}
+              style={{fontSize: 20}}
               textAlign='center'
               placeholder='Enter your email address'
               onChangeText={text => handleInput(text)}

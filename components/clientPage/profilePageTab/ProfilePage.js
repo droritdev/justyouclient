@@ -696,7 +696,8 @@ const styles = StyleSheet.create({
         // height: Dimensions.get('window').height
     },
     header: {
-        alignSelf: 'center'
+        alignSelf: 'center',
+        marginTop: 10
     },
     headerText: {
         fontSize: Dimensions.get('window').height * .04,

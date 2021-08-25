@@ -369,9 +369,10 @@ const styles = StyleSheet.create({
   },
   header: {
     alignSelf: 'center',
+    marginTop: 10
   },
   headerText: {
-    fontSize: Dimensions.get('window').height * 0.03,
+    fontSize: Dimensions.get('window').height * 0.04,
     fontWeight: 'bold',
   },
   aroundYouTitle: {
