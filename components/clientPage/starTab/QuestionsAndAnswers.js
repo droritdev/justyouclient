@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Dimensions,
   ImageBackground,
+  FlatList
 } from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 
@@ -19,45 +20,41 @@ const SECTIONS = [
   {
     title: 'Do I need to bring equipment?',
     content:
-      'No. Your trainer will bring all required equipment for the type of training session.',
+      'No. Your trainer will provide all the required equipment for the training session.',
   },
   {
-    title: 'Can I Train in the park?',
+    title: 'Can I train in the park?',
     content:
-      'JustYou is a service that allows you to train in the comfort of your own home, or on-the-go. In the park, at a hotel or in your office. Wherever you are, or will be.',
+      'JustYou is a service that allows you to train in the comfort of your own home, at the park, at a hotel or in your office - wherever you are or plan to be.',
   },
   {
-    title: 'Can I book a session at a gym',
+    title: 'Can I book a session at a gym?',
     content:
-      'Of course. You can choose any gym or studio you want for a training session. Note that there may be an additional charge for entering the complex.',
+      'Of course. You can choose any gym or studio you want for a training session. Note that there may be an additional charge for using the complex.',
   },
   {
-    title: 'If my partner is late, do I steel get the full session?',
+    title: 'If my trainer is late, do I still get the full session?',
     content:
-      'Definitely. The JustYou trainer obligated to be punctual and will always provide you with a full session. Please feel free to contact us at service@justyou.com with any issues.',
+      'Definitely. The JustYou trainer is obligated to be punctual and will always provide you with a full session. Please feel free to contact us at service@justyou.com with any issues.',
   },
   {
     title: 'What if I need to cancel a session?',
     content:
-      'Up to 24 hours in advance you can cancel free of charge. In case of a last-minute cancellation (less than 24 hours) we charge for the session to protect our JustYou trainers.',
+      'Up to 24 hours in advance, you can cancel free of charge. In the case of a last minute cancellation (less than 24 hours) we charge for the session.',
   },
   {
     title: 'Can I contact my trainer before the session?',
     content:
-      'Yes. you have the ability to chat or call with your trainer through the JustYou app.',
+      'Yes. You have the ability to call or chat with your trainer through the JustYou app.',
   },
   {
     title: 'Is there an easy way to rebook past trainers?',
-    content: 'Yes, just open the JustYou app and tap "Order History".',
+    content: 'Yes. Just open the JustYou app and tap "Order History".',
   },
   {
     title: 'What do I do if I have an emergency during the session?',
     content: 'If you have a medical emergency, call 911 immediately.',
-  },
-  {
-    title: 'What do I do if I have an emergency during the session?',
-    content: 'If you have a medical emergency, call 911 immediately.',
-  },
+  }
 ];
 
 //The question and answers page
@@ -79,8 +76,18 @@ const QuestionsAndAnswers = ({navigation}) => {
           <Text style={styles.justYouTitle}>Just You</Text>
           <Text style={styles.qA}>Q & A</Text>
         </View>
-        <View>
-          <Block style={styles.block}>
+          <FlatList
+            data={SECTIONS}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={(itemData) => (
+              <View style={{marginTop: 10}}>
+                <Text>{itemData.item.title}</Text>
+                <Text style={{color: 'deepskyblue'}}>{itemData.item.content}</Text>
+              </View>
+            )}
+            contentContainerStyle={{width: '90%', paddingBottom: 120}}
+          />
+          {/* <Block style={styles.block}>
             <Accordion
               dataArray={SECTIONS}
               opened={null}
@@ -99,8 +106,7 @@ const QuestionsAndAnswers = ({navigation}) => {
                 color: 'deepskyblue',
               }}
             />
-          </Block>
-        </View>
+          </Block> */}
       </View>
     </SafeAreaView>
   );
@@ -115,6 +121,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     flexDirection: 'column',
     height: Dimensions.get('window').height,
+    alignItems: 'center'
   },
   coverImage: {
     height: Dimensions.get('window').height * 0.3,
@@ -128,6 +135,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
+    marginBottom: 10
   },
   justYouTitle: {
     color: 'deepskyblue',

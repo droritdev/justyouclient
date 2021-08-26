@@ -1,7 +1,6 @@
 import React, {useState ,useContext} from 'react'
 import {ART, StyleSheet, View, Text, Image, Dimensions} from 'react-native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {NameContext} from '../../context/NameContext';
 import {CountryContext} from '../../context/CountryContext';
@@ -36,21 +35,16 @@ const DonePopUp = ({navigation}) => {
     const {profileImage} = useContext(ProfileImageContext);
 //    const {paymeToken} = useContext(PaymeTokenContext);
 
-
     const [profileImageUrl, setProfileImageUrl] = useState("");
     const [taskProgress, setTaskProgress] = useState(undefined);
     const [isLoading,setIsLoading] = useState("flex");
     const [isDone,setIsDone] = useState("none");
     const [isLoadingCircle, setIsLoadingCircle] = useState(true);
 
-
-
-
-
     const config = {
         withCredentials: true,
-    //    baseURL: 'http://10.0.2.2:3000/',
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
           "Content-Type": "application/json",
         },
@@ -121,7 +115,6 @@ const DonePopUp = ({navigation}) => {
           task.then(() => {
             console.log('Image uploaded to the bucket!');
             reference.getDownloadURL().then((url) => {
-                console.log('just before registerClient url ', url)
                 registerClient(url);
             })
           })
@@ -168,17 +161,7 @@ const DonePopUp = ({navigation}) => {
             )
             .then((res) => {
                 console.log('saving data in clients table succeeded firtsname ', firstName);
-                // setIsLoadingCircle(false);
-                // AsyncStorage.setItem('nameOfUser', firstName)
-                //     .then(
-                //         // AsyncStorage.getItem('nameOfUser')
-                //         //     .then((err, res) => console.log('res of getitem asnyc after saving ', res))
-                //         //     .catch(err => console.log(err))
-                //     )
-                //     .catch(err => console.log('error in asyncstorage setitem ', err))
-                // setTimeout(() => {
-                navigation.navigate('WelcomeUser');
-                // }, 1570);
+                navigation.navigate('ClientContainer')
             })
             .catch((err) => {
                 console.log('error in saving client data ', err)
@@ -254,7 +237,30 @@ const styles = StyleSheet.create({
     Image: {
         height: Dimensions.get('window').height * .25,
         width : Dimensions.get('window').height * .25
-    }
+    },
+    containerWelcome: {
+        height: Dimensions.get('window').height,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+      textContainerWelcome: {
+          justifyContent: 'space-between',
+          height: Dimensions.get('window').height * .15,
+          alignItems: 'center'
+      },
+      justYouTextWelcome: {
+          fontWeight: 'bold',
+          color: 'deepskyblue',
+          fontSize: 80
+      },
+      welcomeUserTextWelcome: {
+          marginTop: 20,
+          fontWeight: 'bold',
+          color: 'steelblue',
+          fontSize: 40,
+          textAlign: 'center'
+      }
 });
 
 export default DonePopUp;

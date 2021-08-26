@@ -24,8 +24,6 @@ const StarPage = ({ navigation }) => {
   const [covidModalVisible, setCovidModalVisible] = useState(false);
   const [showCovidOverlay, setShowCovidOverlay] = useState(true)
 
-  const [welcomeModalVisible, setWelcomeModalVisible] = useState(true)
-
   const [doc, setDoc] = useState();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -107,7 +105,8 @@ const StarPage = ({ navigation }) => {
 
   const config = {
     withCredentials: true,
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://10.0.2.2:3000/',
+  //  baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -137,7 +136,6 @@ const StarPage = ({ navigation }) => {
     });
     return unsubscribe;
   }, [navigation]);
-
 
   const sortByCategory = (trainerArray) => {
 
@@ -579,13 +577,6 @@ const StarPage = ({ navigation }) => {
         </View>
       }
       <Modal
-        cancelable={true}
-        visible={welcomeModalVisible}
-        onRequestClose={() => {
-        }}
-      >
-      </Modal>
-      <Modal
         animationType="slide"
         transparent={true}
         cancelable={true}
@@ -634,7 +625,10 @@ const StarPage = ({ navigation }) => {
       </View>
       {/* End of covid alert part */}
 
-      <ScrollView style={styles.container} contentContainerStyle={{justifyContent: 'space-between'}}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{justifyContent: 'space-between'}}
+      >
         <View style={styles.header}>
           <Text style={styles.headerText}>Just You</Text>
         </View>
@@ -858,7 +852,7 @@ const StarPage = ({ navigation }) => {
             <TouchableOpacity
               style={styles.qAndaButton}
               onPress={() => handleOnQandAsPressed()}>
-              <Text style={styles.qAndaTitle}>Q & A's</Text>
+              <Text style={styles.qAndaTitle}>Q&A</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.updatesButton}
@@ -908,6 +902,8 @@ const StarPage = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
+        </View>
+        <View style={{height: 80}}>
         </View>
       </ScrollView>
       {/*If a user did not give a score or feedback on a coach  */}
@@ -1192,7 +1188,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   moreContainer: {
-    marginTop: Dimensions.get('window').height * 0.067,
+    marginTop: Dimensions.get('window').height * 0.02,
   },
   moreTitle: {
     fontWeight: 'bold',
@@ -1401,6 +1397,29 @@ const styles = StyleSheet.create({
   },
   bottomLinks: {
     width: Dimensions.get('window').width * 0.85
+  },
+  containerWelcome: {
+    height: Dimensions.get('window').height,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  textContainerWelcome: {
+      justifyContent: 'space-between',
+      height: Dimensions.get('window').height * .15,
+      alignItems: 'center'
+  },
+  justYouTextWelcome: {
+      fontWeight: 'bold',
+      color: 'deepskyblue',
+      fontSize: 80
+  },
+  welcomeUserTextWelcome: {
+      marginTop: 20,
+      fontWeight: 'bold',
+      color: 'steelblue',
+      fontSize: 40,
+      textAlign: 'center'
   }
 });
 

@@ -95,7 +95,7 @@ const LogInClient = ({navigation}) => {
             //     type: 'SET_PASSWORD',
             //     password: passwordInput
             //   });
-            navigation.navigate('WelcomeUser');
+            navigation.navigate('ClientContainer');
         })
         .catch(error => {
             checkEmailIsUsed();

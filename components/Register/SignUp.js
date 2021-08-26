@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TextInput, Button, Dimensions, SafeAreaView, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
+import auth from '@react-native-firebase/auth';
 
 import AppButton from '../GlobalComponents/AppButton';
 import {EmailContext} from '../../context/EmailContext';
@@ -16,7 +17,8 @@ const SignUp = ({navigation}) => {
 
     const config = {
       withCredentials: true,
-      baseURL: 'http://localhost:3000/',
+      baseURL: 'http://10.0.2.2:3000/',
+    //  baseURL: 'http://localhost:3000/',
       headers: {
         "Content-Type": "application/json",
       },
@@ -82,24 +84,41 @@ const SignUp = ({navigation}) => {
 
     //Send GET request to mongodb using axios, to check if email is already exist
     const checkEmailIsUsed = () => {
-      axios
-      .get('/clients/'+emailAddressInput.toLowerCase(),config)
-      .then((doc) => {
-        if(doc) {
-          if(doc.data[0].email!=null){
-            setEmailErrorMessage("Email address is already used");
-            setEmailIsValidate(false);
-          }
+      auth().fetchSignInMethodsForEmail(emailAddressInput.toLowerCase())
+      .then((signInMethods) => {
+        if (signInMethods.length) {
+          setEmailErrorMessage("Email address is already used");
+          setEmailIsValidate(false);
+        } else {
+          dispatchEmail({
+            type: 'SET_EMAIL_ADDRESS',
+            emailAddress: emailAddressInput.toLowerCase()
+          });
+          sendVerifyEmail(emailAddressInput.toLowerCase());
         }
       })
-      .catch((err) => {
-        //email is not used
-        dispatchEmail({
-          type: 'SET_EMAIL_ADDRESS',
-          emailAddress: emailAddressInput.toLowerCase()
-        });
-        sendVerifyEmail(emailAddressInput.toLowerCase());
-      })
+      .catch((error) => { 
+        console.log('error in wuth check email ', error)
+      });
+
+      // axios
+      // .get('/clients/'+emailAddressInput.toLowerCase(),config)
+      // .then((doc) => {
+      //   if(doc) {
+      //     if(doc.data[0].email!=null){
+      //       setEmailErrorMessage("Email address is already used");
+      //       setEmailIsValidate(false);
+      //     }
+      //   }
+      // })
+      // .catch((err) => {
+      //   //email is not used
+      //   dispatchEmail({
+      //     type: 'SET_EMAIL_ADDRESS',
+      //     emailAddress: emailAddressInput.toLowerCase()
+      //   });
+      //   sendVerifyEmail(emailAddressInput.toLowerCase());
+      // })
     }
 
     //Handle the next button press to send the verify code

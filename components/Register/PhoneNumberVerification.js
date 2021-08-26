@@ -45,8 +45,8 @@ const PhoneNumberVerification = ({navigation}) => {
 
     const config = {
       withCredentials: false,
-    //  baseURL: 'http://10.0.2.2:3000/',
-      baseURL: 'http://localhost:3000/',
+      baseURL: 'http://10.0.2.2:3000/',
+    //  baseURL: 'http://localhost:3000/',
       headers: {
         "Content-Type": "application/json",
       },
@@ -102,10 +102,15 @@ const PhoneNumberVerification = ({navigation}) => {
       setIsPhoneError(false);
       setIsCodeError(false);
       setCode(value);
+      if(value.length === 4){
+        Keyboard.dismiss()
+      }
     }
 
     //Send the verify code to the user's phone if the field are valid
     const handleVerify = () => {
+
+      Keyboard.dismiss()
 
       let areaCodeTemp = Number(areaCodeInput);
       let phoneNumberTemp = Number(phoneNumberInput);
@@ -279,7 +284,7 @@ const PhoneNumberVerification = ({navigation}) => {
             </View>
             <View style={styles.verifyButton}>
                 <AppButton
-                    title="Verify"
+                    title="Send code to verify phone"
                     onPress={() => handleVerify()}
                 />
             </View>
@@ -316,7 +321,7 @@ const PhoneNumberVerification = ({navigation}) => {
               <Text style={styles.nextErrorMessage}>{nextErrorMessage}</Text>
               :null}
               <AppButton
-                title="Next"
+                title="Verify phone number"
                 onPress={() => handleNext()}
               />
             </View>

@@ -77,7 +77,7 @@ const WhyUs = ({navigation}) => {
             style={styles.viImage}
           />
           <Text style={styles.reasonText}>
-            Quick synchronization of setting the training date to your personal
+            Quick synchronization of the training date with your personal
             calendar
           </Text>
         </View>
