@@ -80,6 +80,9 @@ const SearchPage = ({navigation, route}) => {
     const [isLoadingCircle, setIsLoadingCircle] = useState(true);
     const [isThereAreTrainersInCategory, setIsThereAreTrainersInCategory] = useState('none');
 
+    const [searchInput, setSearchInput] = useState('')
+    const [searchClear, setSearchClear] = useState(false)
+
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
         // if(global.covidAlert) {
@@ -91,8 +94,8 @@ const SearchPage = ({navigation, route}) => {
         //     dropDownAlertRef.closeAction();
         // }
         //clear the tag selected and title
-        clearTagAndTitle()
-            getClientFromMongoDB();
+            clearTagAndTitle()
+            // getClientFromMongoDB();
         });
         return unsubscribe;
       }, [navigation]);
@@ -295,8 +298,8 @@ const SearchPage = ({navigation, route}) => {
                 trainersByCategory.push(trainer);
 
             }
-            console.log('trainersByCategory');
-            console.log(trainersByCategory);
+        //    console.log('trainersByCategory');
+        //    console.log(trainersByCategory);
             setDoc(trainersByCategory);
             setIsLoadingCircle(false);
             forceUpdate();
@@ -307,7 +310,7 @@ const SearchPage = ({navigation, route}) => {
     }
     //MARK
     //When the user chooses category it whill be displayed on the input bellow
-    const handleOnItemPress = (item) => {
+    const handleOnItemPress = (item, isDeselected) => {
         //TODO: show to user the recent orders if no any choice selected
         // if(categoryTitle === item.label){
         //     clearTagAndTitle()
@@ -330,24 +333,35 @@ const SearchPage = ({navigation, route}) => {
 
         //     }
         // }
-        getAllTrainers(item.label);
-
+        if (isDeselected) {
+            setSearchInput('')
+            setSearchClear(false)
+            setDisplayCategories('none')
+            setItems(categoriesData)
+        } else {
+            setSearchInput(item.label)
+            setSearchClear(true)
+            getAllTrainers(item.label)
+        }
     }
 
     const clearTagAndTitle = () => {
         tagSelectRef.current.setState({ value: {} });
-        setCategoryTitle('Recent orders');
+    //    setCategoryTitle(categoryTitle);
 
 
     }
 
     const handleOnInputChange = (text) => {
+        setSearchInput(text)
         if(text.length > 0){
             console.log('text '+ text)
-            setItems(items.filter(item => item.label.toLowerCase().includes(text.toLowerCase())));
+            setItems(categoriesData.filter(item => item.label.toLowerCase().includes(text.toLowerCase())))
+            setSearchClear(true)
         }
         else{
-            setItems(categoriesData);
+            setItems(categoriesData)
+            setSearchClear(false)
         }
     }
 
@@ -384,13 +398,19 @@ const SearchPage = ({navigation, route}) => {
         setCovidModalVisible(true);
     }
 
+    const onPressSearchClear = () => {
+        setSearchClear(false)
+        setSearchInput('')
+        setDisplayCategories('none')
+        setItems(categoriesData)
+        clearTagAndTitle()
+    }
+
     return(
         <SafeAreaView style={styles.safeArea}>
 
             {/* Start of covid alert part */}
-
             <Modal
-
                 animationType="slide"
                 transparent={true}
                 cancelable={true}
@@ -410,9 +430,7 @@ const SearchPage = ({navigation, route}) => {
                         <Text style={styles.covidMessage}>{"We at JustYou take care to follow the changing guidelines of the Ministry of Health regarding the coronavirus. Before ordering, the personal trainer and the client will fill out a statement that they do indeed meet the requirements of the law regarding the coronavirus. \nAs Everyone knows, the guidelines may change at any time and we will make the adujstments according to the changes to be determined by the Ministry of Health. Adherence to these requirments is for all of us for your health and safety and we will know better days"}.</Text>
                     </View>
                 </View>
-
             </Modal>
-
             <View style={styles.covidAlertView}>
                 <DropdownAlert
                         ref={(ref) => {
@@ -432,23 +450,32 @@ const SearchPage = ({navigation, route}) => {
             </View>
             {/* End of covid alert part */}
 
-
             <View style={styles.header}>
                 <Text style={styles.headerText}>Just You</Text>
             </View>
-            <View style={styles.searchContainer}>
-                <View
-                    style={styles.searchIcon}>
-                    <Icon name="search" size={Dimensions.get('window').height * .04} color="deepskyblue" />
-                </View>
 
+            <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
-                    placeholder="Search by category"
+                    placeholder="search by category"
                     onChangeText={(text) => handleOnInputChange(text)}
+                    onKeyPress={(e) => {
+                        if(e.nativeEvent.key === 'Backspace'){
+                            handleOnInputChange(searchInput)
+                        }
+                    }}
+                    value={searchInput}
                 />
-
+                {searchClear &&
+                    <TouchableOpacity onPress={onPressSearchClear}>
+                        <View style={styles.searchIcon}>
+                            {/* <Icon name="search" size={Dimensions.get('window').height * .04} color="deepskyblue" />  */}
+                            <Image source={require('../../../images/grayx.jpg')} />
+                        </View>
+                    </TouchableOpacity>
+                }
             </View>
+
             <View style={styles.categoryPickerContainer}>
                 <View style={styles.categorySelect}>
                     {/* <PickCategories
@@ -458,7 +485,7 @@ const SearchPage = ({navigation, route}) => {
                     <TagSelect
                         data={items}
                         ref={tagSelectRef}
-                        onItemPress={(item) => handleOnItemPress(item)}
+                        onItemPress={(item, isDeselected) => handleOnItemPress(item, isDeselected)}
                         itemStyle={styles.item}
                         itemLabelStyle={styles.label}
                         itemStyleSelected={styles.itemSelected}
@@ -469,57 +496,49 @@ const SearchPage = ({navigation, route}) => {
                 <Text style={styles.recentOrdersTitle}>{categoryTitle}</Text>
             </View>
 
-            <View display = {displayRecentOrders}>
+            {/* <View display = {displayRecentOrders}>
                 <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
-            </View>
+            </View> */}
 
-            {isLoadingCircle?
+            {/* {isLoadingCircle?
              <View>
                 <View style={styles.progressView}>
                     <Progress.Circle size={Dimensions.get('window').height * .25} indeterminate={true} />
                 </View>
-                {/* <View style={styles.loadingTextView}>
-                    <Text style={styles.registeringText}>Creating account...</Text>
-                </View> */}
              </View>
-            :
+            :  */}
             <View>
                 {/* recent orders */}
-                <View
+                {/* <View
                     display = {displayRecentOrders}
                     style={styles.listContainer}
-                    >
+                >
                     <FlatList
-
-                            data={doc}
-                            renderItem={renderItem}
-                            keyExtractor={item => item._id}
+                        data={doc}
+                        renderItem={renderItem}
+                        keyExtractor={item => item._id}
                     />
-                </View>
-
+                </View> */}
+                
                 <View
                     display = {displayCategories}
                     style={styles.listContainer}
-
                 >
                     <FlatList
-                            data={doc}
-                            renderItem={renderItem}
-                            keyExtractor={item => item._id}
+                        data={doc}
+                        renderItem={renderItem}
+                        keyExtractor={item => item._id}
                     />
                 </View>
-
                 <View
                     display={isThereAreTrainersInCategory}
-                    style={styles.listIsEmptyContainer}>
-                    <Text style={styles.recentOrdersTitle}> No any Trainers in that category yet.. </Text>
+                    style={styles.listIsEmptyContainer}
+                >
+                    <Text style={styles.recentOrdersTitle}> No trainers in that category yet </Text>
                 </View>
-
-
-
-
             </View>
-            }
+            {/* } */}
+
         </SafeAreaView>
     )
 }
@@ -558,16 +577,17 @@ const styles = StyleSheet.create({
         borderColor: 'lightgrey',
         borderRadius: 30,
         alignItems: 'center',
+        justifyContent: 'space-between',
         marginTop: 30
     },
     searchIcon: {
         height: Dimensions.get('window').height * .035,
         width: Dimensions.get('window').height * .035,
-        alignSelf: 'center',
-        marginLeft: 10
+        marginLeft: 10,
+        justifyContent: 'center'
     },
     searchInput: {
-        marginLeft: 30,
+        marginLeft: 10,
         fontSize: 20,
         alignSelf: 'center'
     },

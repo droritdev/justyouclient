@@ -8,6 +8,11 @@ import {
 
 import TagSelectItem from './TagSelectItem'
 
+Object.filter = (obj, predicate) => 
+    Object.keys(obj)
+          .filter( key => predicate(obj[key]) )
+          .reduce( (res, key) => (res[key] = obj[key], res), {} );
+
 class TagSelect extends React.Component {
   static propTypes = {
     // Pre-selected values
@@ -90,14 +95,22 @@ class TagSelect extends React.Component {
    * @return {Void}
    */
   handleSelectItem = (item) => {
+    console.log('handleselectitem item ', item)
     const key = item[this.props.keyAttr] || item
-
+    console.log('handleselectitem key of item ', key)
     const value = { ...this.state.value }
+    console.log('handleselectitem value ', value)
     const found = this.state.value[key]
-
+    console.log('handleselectitem found ', found)
     // Item is on array, so user is removing the selection
+    var newValue = {}
+    var isDeselected = false
     if (found) {
+      console.log('hendleselctitem in if found value[key] ', key, value[key])
       delete value[key]
+      console.log('hendleselctitem in if found after delete value ', key, value)
+      newValue: {}
+      isDeselected = true
     } else {
       // User is adding but has reached the max number permitted
       if (this.props.max && this.totalSelected >= this.props.max) {
@@ -105,13 +118,21 @@ class TagSelect extends React.Component {
           return this.props.onMaxError()
         }
       }
-
+      console.log('handleselectitem in else - selecting')
       value[key] = item
-    }
+      console.log('handleselectitem in else value-key ', value[key])
+      console.log('handleselectitem in else value ', value)
 
-    return this.setState({ value }, () => {
+      newValue = Object.filter(value, valueItem => {
+        console.log('valueItem ', valueItem, valueItem.id, key)
+        return valueItem.id.toString() === key.toString()
+      })
+      console.log('handleselectitem in else newValue ', newValue)
+    }
+    console.log('handleselectitem before return ', value)
+    return this.setState({ value: newValue }, () => {
       if (this.props.onItemPress) {
-        this.props.onItemPress(item)
+        this.props.onItemPress(item, isDeselected)
       }
     })
   }
