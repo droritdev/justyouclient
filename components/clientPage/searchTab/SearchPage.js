@@ -1,4 +1,4 @@
-import React, {useState, useReducer, useContext, useRef} from 'react';
+import React, {useState, useReducer, useContext, useRef, useEffect} from 'react';
 import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image , FlatList, Modal} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Feather';
@@ -7,21 +7,13 @@ import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import DropdownAlert from 'react-native-dropdownalert';
 
-
 import FastImage from 'react-native-fast-image';
 import * as Progress from 'react-native-progress';
 
 import TagSelect from '../../GlobalComponents/tagSelect/TagSelect';
 
-
-
 import {CategoryContext} from '../../../context/CategoryContext';
 import {TrainerContext} from '../../../context/TrainerContext';
-
-
-
-
-
 
 import PickCategories from '../../GlobalComponents/PickCategories';
 
@@ -37,7 +29,6 @@ const categoriesData = [
     { id: 9, label: 'RUNNING' },
     { id: 10,label: 'POWERLIFTING' },
     { id: 11,label: 'STREET' }
-
 ];
 
 //The claint's search page
@@ -60,7 +51,6 @@ const SearchPage = ({navigation, route}) => {
                     dispatchFinalStarRating,
             } = useContext(TrainerContext);
 
-
     const [selectedItems, setSelectedItems] = useState([]);
     // const [clientID, setClientID] = useState("");
     const [items, setItems] = useState(categoriesData);
@@ -74,11 +64,11 @@ const SearchPage = ({navigation, route}) => {
     const [categoryTitle, setCategoryTitle] = useState('');
     const [isCategoryMode, setIsCategoryMode] = useState(false);
     const [displayCategories, setDisplayCategories] = useState('none');
+    const [displayMessage, setDisplayMessage] = useState(false);
     const [displayRecentOrders, setDisplayRecentOrders] = useState('flex');
 
-
     const [isLoadingCircle, setIsLoadingCircle] = useState(true);
-    const [isThereAreTrainersInCategory, setIsThereAreTrainersInCategory] = useState('none');
+    const [isThereAreTrainersInCategory, setIsThereAreTrainersInCategory] = useState(true);
 
     const [searchInput, setSearchInput] = useState('')
     const [searchClear, setSearchClear] = useState(false)
@@ -100,10 +90,19 @@ const SearchPage = ({navigation, route}) => {
         return unsubscribe;
       }, [navigation]);
 
+    useEffect(() => {
+        if(items.length === 1){
+            getAllTrainers(items[0].label)
+            tagSelectRef.current.setState({
+                value: { [items[0].id]: {id: items[0].id, label: items[0].label} }
+            })
+        }
+    }, [items])
 
     const config = {
         withCredentials: true,
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
               "Content-Type": "application/json",
         },
@@ -177,7 +176,6 @@ const SearchPage = ({navigation, route}) => {
             array[j] = temp;
         };
 
-
     const getAllTrainersInfo = async (allOrders) => {
         //Array to to be filled with the ids of the trainers that left reviews
         let idArray = [];
@@ -196,12 +194,9 @@ const SearchPage = ({navigation, route}) => {
 
             setDoc(doc.data);
             setIsLoadingCircle(false);
-
-
         })
         .catch((err) => {console.log(err)});
     }
-
 
     const getTrainerStarRating = () => {
         let starsCounter = 0
@@ -217,10 +212,7 @@ const SearchPage = ({navigation, route}) => {
             finalStarRating = (starsCounter/(reviewsArray.length)).toFixed(1);
             return finalStarRating;
         }
-
     }
-
-
 
     const renderItem = ({ item }) => (
         <Item
@@ -267,8 +259,7 @@ const SearchPage = ({navigation, route}) => {
                 </View>
         </TouchableOpacity>
     </View>
-
-      )
+    )
 
     const getAllTrainers = async (category) => {
 
@@ -277,9 +268,9 @@ const SearchPage = ({navigation, route}) => {
             config)
             .then((doc) => {
                 if(doc) {
-
                     getTrainersByCategory(doc.data, category);
                     setDisplayCategories('flex');
+                    setDisplayMessage(true);
                     setDisplayRecentOrders('none');
                 }
             })
@@ -305,8 +296,12 @@ const SearchPage = ({navigation, route}) => {
             forceUpdate();
         }
         if(trainersByCategory.length === 0){
-            setIsThereAreTrainersInCategory('flex');
-        }else{setIsThereAreTrainersInCategory('none');}
+            console.log('trainersbycategory lenth 0')
+            setIsThereAreTrainersInCategory(false)
+        } else {
+            console.log('trainersbycategory lenth not 0')
+            setIsThereAreTrainersInCategory(true)
+        }
     }
     //MARK
     //When the user chooses category it whill be displayed on the input bellow
@@ -337,6 +332,7 @@ const SearchPage = ({navigation, route}) => {
             setSearchInput('')
             setSearchClear(false)
             setDisplayCategories('none')
+            setDisplayMessage(false)
             setItems(categoriesData)
         } else {
             setSearchInput(item.label)
@@ -348,8 +344,6 @@ const SearchPage = ({navigation, route}) => {
     const clearTagAndTitle = () => {
         tagSelectRef.current.setState({ value: {} });
     //    setCategoryTitle(categoryTitle);
-
-
     }
 
     const handleOnInputChange = (text) => {
@@ -362,6 +356,9 @@ const SearchPage = ({navigation, route}) => {
         else{
             setItems(categoriesData)
             setSearchClear(false)
+            setDisplayCategories('none')
+            setDisplayMessage(false)
+            clearTagAndTitle()
         }
     }
 
@@ -402,6 +399,7 @@ const SearchPage = ({navigation, route}) => {
         setSearchClear(false)
         setSearchInput('')
         setDisplayCategories('none')
+        setDisplayMessage(false)
         setItems(categoriesData)
         clearTagAndTitle()
     }
@@ -519,23 +517,27 @@ const SearchPage = ({navigation, route}) => {
                         keyExtractor={item => item._id}
                     />
                 </View> */}
-                
-                <View
-                    display = {displayCategories}
-                    style={styles.listContainer}
-                >
-                    <FlatList
-                        data={doc}
-                        renderItem={renderItem}
-                        keyExtractor={item => item._id}
-                    />
-                </View>
-                <View
-                    display={isThereAreTrainersInCategory}
-                    style={styles.listIsEmptyContainer}
-                >
-                    <Text style={styles.recentOrdersTitle}> No trainers in that category yet </Text>
-                </View>
+                {isThereAreTrainersInCategory ? (
+                    <View
+                        display={displayCategories}
+                        style={styles.listContainer}
+                    >
+                        <FlatList
+                            data={doc}
+                            renderItem={renderItem}
+                            keyExtractor={item => item._id}
+                        />
+                    </View>
+                ) : (displayMessage &&
+                    <View
+                        style={styles.listIsEmptyContainer}
+                    >
+                        <Text style={styles.noTrainersMessage}>
+                            No trainers in that category yet
+                        </Text>
+                    </View>
+                )
+                }
             </View>
             {/* } */}
 
@@ -587,6 +589,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     searchInput: {
+        flex: 1,
         marginLeft: 10,
         fontSize: 20,
         alignSelf: 'center'
@@ -608,6 +611,13 @@ const styles = StyleSheet.create({
         marginTop: 30,
         fontWeight: 'bold',
         fontSize: 20
+    },
+    noTrainersMessage: {
+        marginLeft: 15,
+        marginTop: 30,
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: 'deepskyblue'
     },
     trainerView: {
         width: Dimensions.get('window').width,
@@ -696,6 +706,8 @@ const styles = StyleSheet.create({
         marginRight: Dimensions.get('window').width * .015,
         alignSelf: 'flex-end',
     },
+    listIsEmptyContainer: {
+    }
 });
 
 export default SearchPage;

@@ -297,6 +297,7 @@ const TrainerOrderPage = ({navigation}) => {
   const handleYesDialog = () => {
     setDialogVisible(false);
     navigation.goBack();
+    navigation.navigate('SearchPage')
   };
 
   //Handle when the user presses the no button in the dialog

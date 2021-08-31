@@ -21,7 +21,7 @@
     "@react-native-firebase/functions": "^10.3.1",
     "@react-native-firebase/storage": "^10.3.1",
     "@react-navigation/bottom-tabs": "^5.11.2",
-    "@react-navigation/native": "^5.8.2",
+    "@react-navigation/native": "^5.9.8",
     "@react-navigation/stack": "^5.11.1",
     "axios": "^0.21.0",
     "body-parser": "^1.19.0",
