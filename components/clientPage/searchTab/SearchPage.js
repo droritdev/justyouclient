@@ -101,8 +101,8 @@ const SearchPage = ({navigation, route}) => {
 
     const config = {
         withCredentials: true,
-        baseURL: 'http://10.0.2.2:3000/',
-    //    baseURL: 'http://localhost:3000/',
+    //    baseURL: 'http://10.0.2.2:3000/',
+        baseURL: 'http://localhost:3000/',
         headers: {
               "Content-Type": "application/json",
         },
@@ -251,7 +251,7 @@ const SearchPage = ({navigation, route}) => {
                         <View style={styles.ratingRow}>
                             <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
                             <Image
-                                source={require('../../../images/starIconBlue.png')}
+                                source={require('../../../images/graystar.png')}
                                 style={styles.starIcon}
                             />
                         </View>

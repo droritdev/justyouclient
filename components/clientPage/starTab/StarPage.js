@@ -105,8 +105,8 @@ const StarPage = ({ navigation }) => {
 
   const config = {
     withCredentials: true,
-    baseURL: 'http://10.0.2.2:3000/',
-  //  baseURL: 'http://localhost:3000/',
+  //  baseURL: 'http://10.0.2.2:3000/',
+    baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -865,45 +865,37 @@ const StarPage = ({ navigation }) => {
           <Text style={styles.moreTitle}>More Links</Text>
           <View style={styles.rowsContainer} />
           <View style={styles.eachRowContainer}>
-            <View style={styles.navigationsRows}>
               <TouchableOpacity onPress={() => handleOnDiscountCodePressed()}>
+              <View style={styles.navigationsRows}>
                 <View style={styles.bottomLinks}>
                   <Text style={styles.navigationsRowsTitle}>Discount Code</Text>
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.discountCodeButton}
-                onPress={() => handleOnDiscountCodePressed()}>
                 <Image
                   source={require('../../../images/arrowButton.png')}
                   style={styles.arrowImage}
                 />
+                </View>
               </TouchableOpacity>
-            </View>
           </View>
 
           <View style={styles.eachRowContainer}>
-            <View style={styles.navigationsRows}>
               <TouchableOpacity
                 onPress={() => handleOnGiftCardPurchasePressed()}>
-                <View style={styles.bottomLinks}>
-                  <Text style={styles.navigationsRowsTitle}>
-                    Gift Card Purchase
-                  </Text>
+                <View style={styles.navigationsRows}>
+                  <View style={styles.bottomLinks}>
+                    <Text style={styles.navigationsRowsTitle}>
+                      Gift Card Purchase
+                    </Text>
+                  </View>
+                  <Image
+                    source={require('../../../images/arrowButton.png')}
+                    style={styles.arrowImage}
+                  />
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.giftCardButton}
-                onPress={() => handleOnGiftCardPurchasePressed()}>
-                <Image
-                  source={require('../../../images/arrowButton.png')}
-                  style={styles.arrowImage}
-                />
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
-        <View style={{height: 80}}>
+        <View style={{height: 10}}>
         </View>
       </ScrollView>
       {/*If a user did not give a score or feedback on a coach  */}
@@ -1188,7 +1180,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   moreContainer: {
-    marginTop: Dimensions.get('window').height * 0.02,
+    marginTop: Dimensions.get('window').height * 0.1,
   },
   moreTitle: {
     fontWeight: 'bold',
@@ -1203,7 +1195,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height * 0.06,
     justifyContent: 'center',
     borderBottomColor: 'lightgrey',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
   },
   arrowImage: {
     height: Dimensions.get('window').height * 0.015,

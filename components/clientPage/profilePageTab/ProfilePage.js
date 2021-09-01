@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect, useReducer, useRef} from 'react';
-import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image, Modal } from 'react-native';
+import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image, Modal, FlatList } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
@@ -9,15 +9,16 @@ import DropdownAlert from 'react-native-dropdownalert';
 import Icon from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
 
-
-
+import TrainerItem from '../../GlobalComponents/TrainerItem';
 import {ClientContext} from '../../../context/ClientContext';
 import {TrainerContext} from '../../../context/TrainerContext';
+import { OrderContext } from '../../../context/OrderContext';
 import History from './History';
-
 
 //The client's profile page area page
 const ProfilePage = ({ navigation }) => {
+    const [doc, setDoc] = useState()
+    let reviewsArray = []
 
     const [initializing, setInitializing] = useState(false);
 
@@ -31,7 +32,7 @@ const ProfilePage = ({ navigation }) => {
     const [clientIdToPass, setClientIdToPass] = useState('[]');
     // dispatch trainer values for use in TrainerOrderPage
     const { dispatchTrainerObject } = useContext(TrainerContext);
-
+    const { orderEndTime, dispatchOrderEndTime } = useContext(OrderContext);
 
     const [pendingOrdersArrived, setPendingOrdersArrived] = useState([]);
     const [approvedOrdersArrived, setApprovedOrdersArrived] = useState([]);
@@ -55,6 +56,31 @@ const ProfilePage = ({ navigation }) => {
             'Content-Type': 'application/json',
         },
     };
+
+    const renderItem = ({ item }) => (
+        <TrainerItem
+          name={`${item.name.first} ${item.name.last}`}
+          media={item.media}
+          trainerObject={item}
+          reviewsArray = {item.reviews}
+          handleOnTrainerPressed = {handleOnTrainerPressed}
+        />
+    )
+
+    useEffect(() => {
+        axios
+          .get('/trainers/getAllTrainers', config)
+          .then((doc) => {
+            console.log('in getalltrainers then')
+            if (doc) {
+              console.log('in getalltrainers then if doc ', doc.data)
+              setDoc(doc.data)
+            }
+          })
+          .catch((err) => {
+              console.log('in getalltrainers catch err', err)
+          })
+    }, [])
 
     const getClientOrders = async (clientId) => {
         console.log(clientId);
@@ -138,19 +164,7 @@ const ProfilePage = ({ navigation }) => {
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-
-            //Check if covid alert was dismissed
-            // if (global.covidAlert) {
-            //     if (dropDownAlertRef.state.isOpen === false) {
-            //         //Show covid alert
-            //         dropDownAlertRef.alertWithType('info', 'Latest information on CVOID-19', 'Click here to learn more.');
-            //     }
-            // } else {
-            //     dropDownAlertRef.closeAction();
-            // }
-
             getUserByFirebaseAuth();
-
         });
         return unsubscribe;
     }, [navigation]);
@@ -159,7 +173,6 @@ const ProfilePage = ({ navigation }) => {
     const covidAlertCancel = () => {
         global.covidAlert = false;
     };
-
 
     //Show the covid information modal
     const covidAlertTap = () => {
@@ -356,61 +369,28 @@ const ProfilePage = ({ navigation }) => {
         navigation.navigate('Settings');
     };
 
+    const handleOnTrainerPressed = (trainerObject) => {
+        dispatchTrainerObject({
+          type: 'SET_TRAINER_OBJECT',
+          trainerObject: trainerObject,
+        })
+        dispatchOrderEndTime({
+          type: 'SET_ORDER_END_TIME',
+          orderEndTime: '',
+        })
+
+        navigation.navigate('TrainerOrderPage', { params: '' })
+    }
+
     return (
       <SafeAreaView style={styles.safeArea}>
-
-          <Modal
-
-            animationType="slide"
-            transparent={true}
-            cancelable={true}
-            visible={covidModalVisible}
-            onRequestClose={() => {
-            }}
-          >
-              <View style={styles.covidContainer}>
-
-                  <View style={styles.covidModalContainer}>
-                      <Icon
-                        name="x-circle"
-                        size={Dimensions.get('window').width * .05}
-                        style={styles.covidCloseIcon}
-                        onPress={() => {
-                            setCovidModalVisible(false);
-                        }}
-                      />
-                      <Text style={styles.covidTitle}>COVID-19 Information</Text>
-                      <Text
-                        style={styles.covidMessage}>{'We at JustYou take care to follow the changing guidelines of the Ministry of Health regarding the coronavirus. Before ordering, the personal trainer and the client will fill out a statement that they do indeed meet the requirements of the law regarding the coronavirus. \nAs Everyone knows, the guidelines may change at any time and we will make the adujstments according to the changes to be determined by the Ministry of Health. Adherence to these requirments is for all of us for your health and safety and we will know better days'}.</Text>
-                  </View>
-              </View>
-
-          </Modal>
-
-          <View style={styles.covidAlertView}>
-              <DropdownAlert
-                ref={(ref) => {
-                    if (ref) {
-                        dropDownAlertRef = ref;
-                    }
-                }}
-                containerStyle={styles.covidAlertContainer}
-                showCancel={true}
-                infoColor={'deepskyblue'}
-                onCancel={covidAlertCancel}
-                closeInterval={0}
-                onTap={covidAlertTap}
-                titleNumOfLines={1}
-                messageNumOfLines={1}
-              />
-          </View>
-
-
           <ScrollView style={styles.container}>
               <View style={styles.header}>
                   <Text style={styles.headerText}>Just You</Text>
               </View>
-              <Text style={styles.helloUserTitle}> {firstName} {lastName}</Text>
+
+              <Text style={styles.helloUserTitle}>Hello {firstName}</Text>
+
               <View style={styles.imageAndDetailsRow}>
                   <TouchableOpacity>
                       <FastImage
@@ -425,10 +405,6 @@ const ProfilePage = ({ navigation }) => {
 
                   <View style={styles.nameAndDetailsView}>
                       <View style={styles.detailsRow}>
-                          <View style={styles.credits}>
-                              <Text style={styles.creditValue}>0.00</Text>
-                              <Text style={styles.creditText}>Credit (USD)</Text>
-                          </View>
                           <View style={styles.confirmedOrders}>
                               <Text style={styles.confirmedOrdersValue}>{approvedOrdersArrived.length}</Text>
                               <TouchableOpacity
@@ -445,144 +421,54 @@ const ProfilePage = ({ navigation }) => {
                                   <Text style={styles.pandingOrdersText}>Pending Orders</Text>
                               </TouchableOpacity>
                           </View>
+                          <View style={styles.credits}>
+                              <Text style={styles.creditValue}>0.00</Text>
+                              <Text style={styles.creditText}>Credit (USD)</Text>
+                          </View>
                       </View>
                   </View>
               </View>
+
               <View style={styles.sectionContainer}>
-                  <Text style={styles.inPageMainTitles}>Choices I Liked</Text>
-                  <ScrollView
-                    style={styles.likesScrollView}
-                    horizontal={true}
+                  <Text style={styles.inPageMainTitles}>Trainers I Liked</Text>
+
+                  <FlatList
+                    horizontal
+                    data={doc}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item._id}
                     showsHorizontalScrollIndicator={false}
-                  >
-                      <View style={styles.trainerView}>
-                          <View style={styles.trainerImageView}>
-                              <TouchableOpacity>
-                                  <Image
-                                    style={styles.trainerImage}
-                                  />
-                              </TouchableOpacity>
-                          </View>
-                          <View
-                            style={styles.trainerPreviewText}
-                          >
-                              <Text style={styles.trainerText1}>Judi Woods</Text>
-                              <Text style={styles.trainerText2}>Personal Trainer</Text>
-                              <View style={styles.ratingRow}>
-                                  <Text style={styles.trainerText3}>8.7 </Text>
-                                  <Image
-                                    source={require('../../../images/ratingStar.png')}
-                                    style={styles.starIcon}
-                                  />
-                              </View>
-                          </View>
-                      </View>
-                      <View style={styles.trainerView}>
-                          <View style={styles.trainerImageView}>
-                              <TouchableOpacity>
-                                  <Image
-                                    style={styles.trainerImage}
-                                  />
-                              </TouchableOpacity>
-                          </View>
-                          <View
-                            style={styles.trainerPreviewText}
-                          >
-                              <Text style={styles.trainerText1}>Judi Woods</Text>
-                              <Text style={styles.trainerText2}>Personal Trainer</Text>
-                              <View style={styles.ratingRow}>
-                                  <Text style={styles.trainerText3}>8.7 </Text>
-                                  <Image
-                                    source={require('../../../images/ratingStar.png')}
-                                    style={styles.starIcon}
-                                  />
-                              </View>
-                          </View>
-                      </View>
-                      <View style={styles.trainerView}>
-                          <View style={styles.trainerImageView}>
-                              <TouchableOpacity>
-                                  <Image
-                                    style={styles.trainerImage}
-                                  />
-                              </TouchableOpacity>
-                          </View>
-                          <View
-                            style={styles.trainerPreviewText}
-                          >
-                              <Text style={styles.trainerText1}>Judi Woods</Text>
-                              <Text style={styles.trainerText2}>Personal Trainer</Text>
-                              <View style={styles.ratingRow}>
-                                  <Text style={styles.trainerText3}>8.7 </Text>
-                                  <Image
-                                    source={require('../../../images/ratingStar.png')}
-                                    style={styles.starIcon}
-                                  />
-                              </View>
-                          </View>
-                      </View>
-                      <View style={styles.trainerView}>
-                          <View style={styles.trainerImageView}>
-                              <TouchableOpacity>
-                                  <Image
-                                    style={styles.trainerImage}
-                                  />
-                              </TouchableOpacity>
-                          </View>
-                          <View
-                            style={styles.trainerPreviewText}
-                          >
-                              <Text style={styles.trainerText1}>Judi Woods</Text>
-                              <Text style={styles.trainerText2}>Personal Trainer</Text>
-                              <View style={styles.ratingRow}>
-                                  <Text style={styles.trainerText3}>8.7 </Text>
-                                  <Image
-                                    source={require('../../../images/starIconBlue.png')}
-                                    style={styles.starIcon}
-                                  />
-                              </View>
-                          </View>
-                      </View>
-                  </ScrollView>
+                  />
               </View>
+
               <View style={styles.pageMainTitlesContainer}>
                   <Text style={styles.inPageSubMainTitles}>Links</Text>
                   <View style={styles.linksRowsContainer}></View>
                   <View style={styles.eachRowContainer}>
-                      <View style={styles.navigationsRows}>
                           <TouchableOpacity
                             onPress={() => handleOnInvitePressed()}
                           >
-                              <Text style={styles.navigationsRowsTitle}>Receive credit by inviting friends</Text>
+                              <View style={styles.navigationsRows}>
+                                <Text style={styles.navigationsRowsTitle}>Receive credit by inviting friends</Text>
+                                <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                />
+                              </View>
                           </TouchableOpacity>
-                          <TouchableOpacity
-                            style={styles.inviteButton}
-                            onPress={() => handleOnInvitePressed()}
-                          >
-                              <Image
-                                source={require('../../../images/arrowButton.png')}
-                                style={styles.arrowImage}
-                              />
-                          </TouchableOpacity>
-                      </View>
                   </View>
                   <View style={styles.eachRowContainer}>
-                      <View style={styles.navigationsRows}>
                           <TouchableOpacity
                             onPress={() => handleOnReceiptsHistoryPressed()}
                           >
-                              <Text style={styles.navigationsRowsTitle}>Receipts History</Text>
+                              <View style={styles.navigationsRows}>
+                                <Text style={styles.navigationsRowsTitle}>Receipts History</Text>
+                                <Image
+                                    source={require('../../../images/arrowButton.png')}
+                                    style={styles.arrowImage}
+                                />
+                              </View>
                           </TouchableOpacity>
-                          <TouchableOpacity
-                            style={styles.arrowButton}
-                            onPress={() => handleOnReceiptsHistoryPressed()}
-                          >
-                              <Image
-                                source={require('../../../images/arrowButton.png')}
-                                style={styles.arrowImage}
-                              />
-                          </TouchableOpacity>
-                      </View>
                   </View>
               </View>
               <View style={styles.sectionContainer}>
@@ -615,66 +501,49 @@ const ProfilePage = ({ navigation }) => {
                             <Progress.Circle size={Dimensions.get('window').height * .1} indeterminate={true} />
                         </View>
                       }
-
-
                   </ScrollView>
               </View>
               <View style={styles.pageMainTitlesContainer}>
                   <Text style={styles.inPageSubMainTitles}>More</Text>
                   <View style={styles.moreRowsContainer}>
                       <View style={styles.eachRowContainer}>
-                          <View style={styles.navigationsRows}>
                               <TouchableOpacity
                                 onPress={() => handleOnEditProfilePressed()}
                               >
+                                  <View style={styles.navigationsRows}>
                                   <Text style={styles.navigationsRowsTitle}>Edit Profile</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                style={styles.arrowButton}
-                                onPress={() => handleOnEditProfilePressed()}
-                              >
                                   <Image
                                     source={require('../../../images/arrowButton.png')}
                                     style={styles.arrowImage}
                                   />
+                                  </View>
                               </TouchableOpacity>
-                          </View>
                       </View>
                       <View style={styles.eachRowContainer}>
-                          <View style={styles.navigationsRows}>
                               <TouchableOpacity
                                 onPress={() => handleOnCustomerServicePressed()}
                               >
+                                  <View style={styles.navigationsRows}>
                                   <Text style={styles.navigationsRowsTitle}>Customer Service</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                style={styles.arrowButton}
-                                onPress={() => handleOnCustomerServicePressed()}
-                              >
                                   <Image
                                     source={require('../../../images/arrowButton.png')}
                                     style={styles.arrowImage}
                                   />
+                                  </View>
                               </TouchableOpacity>
-                          </View>
                       </View>
                       <View style={styles.eachRowContainer}>
-                          <View style={styles.navigationsRows}>
                               <TouchableOpacity
                                 onPress={() => handleOnSettingsPressed()}
                               >
+                                  <View style={styles.navigationsRows}>
                                   <Text style={styles.navigationsRowsTitle}>Settings</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                style={styles.arrowButton}
-                                onPress={() => handleOnSettingsPressed()}
-                              >
                                   <Image
                                     source={require('../../../images/arrowButton.png')}
                                     style={styles.arrowImage}
                                   />
+                                  </View>
                               </TouchableOpacity>
-                          </View>
                       </View>
                       <View
                         style={styles.deadAreaBottom}
@@ -706,7 +575,7 @@ const styles = StyleSheet.create({
     helloUserTitle: {
         fontWeight: 'bold',
         marginTop: Dimensions.get('window').height * .040,
-        fontSize: Dimensions.get('window').height * .03,
+        fontSize: Dimensions.get('window').height * .025,
         marginLeft: Dimensions.get('window').width * .03,
     },
     imageAndDetailsRow: {
@@ -848,7 +717,7 @@ const styles = StyleSheet.create({
     },
     noRecentOrdersTextContainer:{
         backgroundColor: '#fafafa',
-        alignItems:'center',
+        alignItems:'flex-start',
         borderTopColor:'gainsboro',
         borderBottomColor:'gainsboro',
         borderLeftColor: '#fafafa' ,
@@ -862,7 +731,6 @@ const styles = StyleSheet.create({
     },
     noRecentOrdersText:{
         marginTop:Dimensions.get('window').height * .03,
-        alignSelf: 'center',
         fontWeight: 'bold',
         color: 'grey',
         fontSize: Dimensions.get('window').height * .02,
@@ -880,17 +748,14 @@ const styles = StyleSheet.create({
         marginTop:Dimensions.get('window').height * .035,
     },
     eachRowContainer: {
-        height: Dimensions.get('window').height * .04,
+        height: Dimensions.get('window').height * .06,
         justifyContent: 'center',
         borderBottomColor: 'lightgrey',
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
     },
     arrowImage: {
         height: Dimensions.get('window').height * .015,
         marginTop: Dimensions.get('window').height * .005,
-    },
-    arrowButton: {
-
     },
     navigationsRows: {
         flexDirection: 'row',

@@ -92,11 +92,7 @@ const History = ({navigation, route}) => {
         setListIsReadyToShow('flex');
 
         setReviewBooleanArray(isReviewExistArray);
-
-
-
     }
-
 
     const getAllTrainersInfo = async () => {
         //Array to to be filled with the ids of the trainers that left reviews
@@ -120,8 +116,6 @@ const History = ({navigation, route}) => {
         })
         .catch((err) => {console.log(err)});
     }
-
-
 
      //scrollView of trainers (working like flatList)
      //Todo: check if needed in sunday
@@ -257,7 +251,7 @@ const History = ({navigation, route}) => {
                     onPress={handleOnArrowPress}
                 />
             <View style={styles.allOrdersTitle}>
-                <Icon name="shopping-bag" size={Dimensions.get('window').height * .05} color="#00bfff" />
+                {/* <Icon name="shopping-bag" size={Dimensions.get('window').height * .05} color="#00bfff" /> */}
 
                 <Text style={styles.allOrdersText}>All Orders</Text>
             </View>

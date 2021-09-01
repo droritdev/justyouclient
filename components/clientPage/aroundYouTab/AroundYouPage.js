@@ -237,7 +237,7 @@ const AroundYouPage = ({navigation}) => {
                       {getStarRating(trainersAroundMe[i].reviews)}{' '}
                     </Text>
                     <Image
-                      source={require('../../../images/starIconBlue.png')}
+                      source={require('../../../images/graystar.png')}
                       style={styles.starIcon}
                     />
                   </View>
@@ -322,13 +322,13 @@ const AroundYouPage = ({navigation}) => {
         <Text style={styles.headerText}>Just You</Text>
       </View>
       <View style={styles.aroundYouTitle}>
-        <Text style={styles.aroundYouText}>Around You</Text>
+        <Text style={styles.aroundYouText}>Trainers Around You</Text>
       </View>
       <View style={styles.sliderContainer}>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           <Text style={styles.maxDistanceText}>Distance range - </Text>
           <Text style={styles.sliderValueTitle}>{sliderValue}</Text>
-          <Icon name="map-pin" size={23} style={styles.locationIcon} />
+          {/* <Icon name="map-pin" size={23} style={styles.locationIcon} /> */}
         </View>
         <Slider
           style={styles.slider}
@@ -344,14 +344,14 @@ const AroundYouPage = ({navigation}) => {
 
       <View style={styles.verifyExplenationContainer}>
         <Text style={styles.verifyExplenationText}>
-          We'll present all the trainers that provide workouts inside the radius
+          We'll present all the trainers that provide workouts in the radius
           of the selected distance range.
         </Text>
       </View>
 
-      <View style={styles.aroundYouTitle}>
-        <Text style={styles.aroundYouText}>Trainers </Text>
-      </View>
+      {/* <View style={styles.aroundYouTitle}>
+        <Text style={styles.aroundYouText}>Trainers</Text>
+      </View> */}
 
       <ScrollView>{getTrainersAroundMePattern()}</ScrollView>
     </SafeAreaView>
@@ -536,6 +536,7 @@ const styles = StyleSheet.create({
   verifyExplenationContainer: {
     width: Dimensions.get('window').width * 0.8,
     alignSelf: 'center',
+    marginBottom: 20
   },
   verifyExplenationText: {
     fontWeight: '500',

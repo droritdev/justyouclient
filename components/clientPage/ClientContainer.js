@@ -21,7 +21,7 @@ const ClientContainer = () => {
     <Tab.Navigator
       tabBarOptions={{
         style: {
-          height: 80,
+          height: 60,
           borderTopWidth: 1.5,
         },
         showLabel: false,
@@ -104,44 +104,36 @@ const ClientContainer = () => {
 
 const styles = StyleSheet.create({
   startIcon: {
-    width: 40,
-    height: 40,
-    marginTop: 10,
+    width: 25,
+    height: 25
   },
   startIconFocused: {
-    width: 45,
-    height: 45,
-    marginTop: 10,
+    width: 30,
+    height: 30
   },
   aroundYouIcon: {
-    width: 40,
-    height: 40,
-    marginTop: 10,
+    width: 25,
+    height: 25
   },
   aroundYouIconFocused: {
-    width: 40,
-    height: 40,
-    marginTop: 10,
+    width: 30,
+    height: 30
   },
   searchIcon: {
-    width: 40,
-    height: 40,
-    marginTop: 10,
+    width: 25,
+    height: 25
   },
   searchIconFocused: {
-    width: 40,
-    height: 40,
-    marginTop: 10,
+    width: 30,
+    height: 30
   },
   profileIcon: {
-    width: 40,
-    height: 40,
-    marginTop: 10,
+    width: 25,
+    height: 25
   },
   profileFocusedIcon: {
-    width: 45,
-    height: 45,
-    marginTop: 10,
+    width: 30,
+    height: 30
   },
 });
 

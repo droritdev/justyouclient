@@ -473,9 +473,9 @@ const TrainerOrderPage = ({navigation}) => {
               resizeMode={FastImage.resizeMode.stretch}
             />
           </View>
+
           <View style={styles.trainerDetailsContainer}>
-            <Text style={styles.trainerNameTitle}>
-              {' '}
+            <Text style={styles.trainerNameTitle}>             
               {trainerObject.name.first + ' ' + trainerObject.name.last}
             </Text>
 
@@ -497,17 +497,29 @@ const TrainerOrderPage = ({navigation}) => {
                 {getTrainerStarRating()}
               </Text>
               <Image
-                source={require('../../../images/starIconBlue.png')}
+                source={require('../../../images/graystar.png')}
                 style={styles.starIcon}
               />
-
               {/* <Icon name="star" size={Dimensions.get('window').height * .02} color="black" /> */}
             </View>
+
             <Text style={styles.categoryAndCertificationText}>
-              {' '}
+              
               Certifications: NSCA-CSCS{' '}
             </Text>
           </View>
+          <View style={styles.heartContainer}>
+            <Image
+              source={require('../../../images/heart.png')}
+              style={styles.heart}
+            />
+          </View>
+        </View>
+
+        <View style={styles.aboutMeContainer}>
+          <TouchableOpacity onPress={() => {navigation.navigate('TrainerReviews')}}>
+            <Text style={styles.aboutMe}>About Me</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.categorySelectContainer}>
@@ -789,11 +801,11 @@ const TrainerOrderPage = ({navigation}) => {
         </View>
 
         <View style={styles.payContainer}>
-          <TouchableOpacity onPress={handleOnPayPalButtonPressed}>
-            <Image
-              style={styles.paypalImage}
-              source={require('../../../images/paypalbutton.png')}
-            />
+          <TouchableOpacity
+            style={styles.chooseDateButton}
+            onPress={() => {}}
+          >
+            <Text style={styles.chooseDateText}>payment</Text>
           </TouchableOpacity>
         </View>
 
@@ -825,21 +837,6 @@ const TrainerOrderPage = ({navigation}) => {
               <TouchableOpacity
                 style={styles.arrowButton}
                 onPress={() => handleOnChatPressed()}>
-                <Image
-                  source={require('../../../images/arrowButton.png')}
-                  style={styles.arrowImage}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.eachRowContainer}>
-            <View style={styles.navigationsRows}>
-              <TouchableOpacity onPress={() => handleOnCallPressed()}>
-                <Text style={styles.navigationsRowsTitle}>Call</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.arrowButton}
-                onPress={() => handleOnCallPressed()}>
                 <Image
                   source={require('../../../images/arrowButton.png')}
                   style={styles.arrowImage}
@@ -905,41 +902,46 @@ const styles = StyleSheet.create({
     marginLeft: Dimensions.get('window').width * -0.155,
   },
   imageAndDetailsContainer: {
+    width: Dimensions.get('window').width,
     flexDirection: 'row',
     marginTop: Dimensions.get('window').height * 0.03,
   },
   trainerImageViewContainer: {
-    borderRadius: 16,
-    backgroundColor: 'transparent',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 2.5,
-    elevation: 3,
+    // borderRadius: 16,
+    // backgroundColor: 'transparent',
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 2.5,
+    // elevation: 3,
   },
   trainerImageView: {
-    width: Dimensions.get('window').width * 0.2,
-    height: Dimensions.get('window').height * 0.095,
+    height: Dimensions.get('window').height * 0.1,
+    width: Dimensions.get('window').height * 0.1,
+    borderRadius: 15,
+    backgroundColor: 'gainsboro',
+//    width: Dimensions.get('window').width * 0.2,
+//    height: Dimensions.get('window').height * 0.095,
     marginLeft: Dimensions.get('window').width * 0.04,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    zIndex: 1,
-    shadowColor: 'black',
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowOpacity: 0.58,
-    shadowRadius: 16.0,
-
-    elevation: 5,
+//    backgroundColor: 'white',
+//    borderRadius: 20,
+    // zIndex: 1,
+    // shadowColor: 'black',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 12,
+    // },
+    // shadowOpacity: 0.58,
+    // shadowRadius: 16.0,
+    // elevation: 5,
   },
   trainerDetailsContainer: {
-    marginLeft: Dimensions.get('window').height * 0.03,
+    marginLeft: Dimensions.get('window').height * 0.02,
     flexDirection: 'column',
+    justifyContent: 'space-between'
   },
   trainerNameTitle: {
     fontSize: Dimensions.get('window').height * 0.025,
@@ -948,7 +950,7 @@ const styles = StyleSheet.create({
   trainerStarRatingContainer: {
     flexDirection: 'row',
     // justifyContent: 'space-between',
-    marginTop: Dimensions.get('window').height * 0.02,
+    // marginTop: Dimensions.get('window').height * 0.02,
   },
   trainerStarRating: {
     fontWeight: 'bold',
@@ -1235,7 +1237,7 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get('window').height * 0.035,
   },
   eachRowContainer: {
-    height: Dimensions.get('window').height * 0.04,
+    height: Dimensions.get('window').height * 0.06,
     justifyContent: 'center',
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 2,
@@ -1284,6 +1286,24 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginLeft: 15,
   },
+  heart: {
+    height: 20,
+    width: 20
+  },
+  heartContainer: {
+    width: Dimensions.get('window').width * 0.25,
+    alignItems: 'flex-end',
+    paddingRight: 1,
+    paddingTop: 1
+  },
+  aboutMe: {
+    color: 'deepskyblue',
+    fontWeight: 'bold'
+  },
+  aboutMeContainer: {
+    paddingLeft: Dimensions.get('window').width * 0.06,
+    paddingTop: Dimensions.get('window').height * 0.01
+  }
 });
 
 export default TrainerOrderPage;
