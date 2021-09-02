@@ -105,8 +105,8 @@ const StarPage = ({ navigation }) => {
 
   const config = {
     withCredentials: true,
-  //  baseURL: 'http://10.0.2.2:3000/',
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://10.0.2.2:3000/',
+  //  baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -391,7 +391,9 @@ const StarPage = ({ navigation }) => {
       orderEndTime: '',
     });
 
-    navigation.navigate('TrainerOrderPage', { params: '' });
+    navigation.navigate('TrainerOrderPage', {
+      pageCameFrom: 'StarPage'
+    });
   };
 
   // eslint-disable-next-line no-shadow
@@ -633,7 +635,7 @@ const StarPage = ({ navigation }) => {
           <Text style={styles.headerText}>Just You</Text>
         </View>
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Popular</Text>
+          <Text style={styles.sectionTitle}>Popular Trainers</Text>
           <View
             style={styles.sectionScrollView}
             // horizontal={true}

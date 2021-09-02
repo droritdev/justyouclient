@@ -101,8 +101,8 @@ const SearchPage = ({navigation, route}) => {
 
     const config = {
         withCredentials: true,
-    //    baseURL: 'http://10.0.2.2:3000/',
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
               "Content-Type": "application/json",
         },
@@ -377,18 +377,17 @@ const SearchPage = ({navigation, route}) => {
             trainerFinalStarRating: getTrainerStarRating()
         })
 
-
         navigation.navigate('StarPageStack',
-             { screen: 'TrainerOrderPage'  });
+            { screen: 'TrainerOrderPage',
+              params: { pageCameFrom: 'SearchPage' }
+            });
     // navigation.navigate('StarPageStack',{params: ''})
     }
 
     //Update the covid alert var to false (will not display coivd alert anymore)
     const covidAlertCancel = () => {
         global.covidAlert = false;
-
     }
-
 
     //Show the covid information modal
     const covidAlertTap = () => {

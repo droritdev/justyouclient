@@ -67,7 +67,8 @@ const AroundYouPage = ({navigation}) => {
 
   const config = {
     withCredentials: true,
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://10.0.2.2:3000/',
+  //  baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -257,7 +258,10 @@ const AroundYouPage = ({navigation}) => {
       trainerObject: trainerObject,
     });
 
-    navigation.navigate('StarPageStack', {screen: 'TrainerOrderPage'});
+    navigation.navigate('StarPageStack', {
+      screen: 'TrainerOrderPage',
+      params: { pageCameFrom: 'AroundYouPage'}
+    });
   };
   //Update the covid alert var to false (will not display coivd alert anymore)
   const covidAlertCancel = () => {

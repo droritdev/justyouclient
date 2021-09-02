@@ -75,6 +75,8 @@ const uploadimage = require('./uploadimage/uploadimage');
 const findClientByEmail = require('./findClientByEmail/findClientByEmail');
 const findClientByPhone = require('./findClientByPhone/findClientByPhone');
 
+const addPaymeToken = require('./addPaymeToken/addPaymeToken');
+
         //**Place imports**//
 const placeRegister = require('./register/placeRegister');
 const findTrainersOfPlace = require('./findTrainersOfPlace/findTrainers');
@@ -161,6 +163,9 @@ app.put('/log-in', logIn.logIn);
 
 //End point for sign out existing accounts
 app.put('/sign-out', signOut.signOut);
+
+//End point for adding payme token
+app.post('/addPaymeToken', addPaymeToken.addPaymeToken);
 
 
             ////**Both trainer & places end points**////

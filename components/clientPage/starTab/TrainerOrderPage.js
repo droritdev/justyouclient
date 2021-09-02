@@ -11,6 +11,7 @@ import {
   FlatList,
   Modal,
   Linking,
+  LogBox
 } from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import Dialog from 'react-native-dialog';
@@ -19,6 +20,7 @@ import FastImage from 'react-native-fast-image';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/Feather';
 import {WebView} from 'react-native-webview';
+import { Dropdown } from 'react-native-material-dropdown-v2';
 
 import auth from '@react-native-firebase/auth';
 
@@ -33,7 +35,9 @@ let API_KEY = 'AIzaSyAKKYEMdjG_Xc6ZuvyzxHBi1raltggDA2c'; // TODO: move api key t
 Geocoder.init(API_KEY); // use a valid API key
 
 //The question and answers page
-const TrainerOrderPage = ({navigation}) => {
+const TrainerOrderPage = ({navigation, route}) => {
+  LogBox.ignoreAllLogs(true)
+
   const [dialogVisible, setDialogVisible] = useState(false);
   const [isSelected, setSelection] = useState(false);
   const [isOutdoorTraining, setIsOutdoorTraining] = useState('none');
@@ -117,7 +121,8 @@ const TrainerOrderPage = ({navigation}) => {
 
   const config = {
     withCredentials: true,
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://10.0.2.2:3000/',
+  //  baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -145,6 +150,8 @@ const TrainerOrderPage = ({navigation}) => {
   };
 
   const cleanedPrice = typeOfTrainingSelected.replace(/[^0-9]/g, '');
+  console.log('type of trainign ', typeOfTrainingSelected)
+  console.log('cleanedprice ', cleanedPrice)
   //get price from trainer object
   const prices = trainerObject.prices;
   //get location from trainer object
@@ -297,7 +304,20 @@ const TrainerOrderPage = ({navigation}) => {
   const handleYesDialog = () => {
     setDialogVisible(false);
     navigation.goBack();
-    navigation.navigate('SearchPage')
+    console.log('route.params ', route.params.pageCameFrom)
+    if (route.params.pageCameFrom === "SearchPage") {
+      navigation.navigate('SearchPageStack', {
+        screen: 'SearchPage'
+      })
+    } else if (route.params.pageCameFrom === "ProfilePage") {
+      navigation.navigate('ProfilePageStack', {
+        screen: 'ProfilePage'
+      })
+    } else if (route.params.pageCameFrom === "AroundYouPage") {
+      navigation.navigate('AroundYouPageStack', {
+        screen: 'AroundYouPage'
+      })
+    } else if (route.params.pageCameFrom === "StarPage") {}
   };
 
   //Handle when the user presses the no button in the dialog
@@ -310,14 +330,14 @@ const TrainerOrderPage = ({navigation}) => {
   };
 
   const handleOnCategoryPressed = (item) => {
-    setCategorySelected(item.label);
+    setCategorySelected(item);
   };
 
   const handleOnTrainingTypePressed = (item) => {
-    setTypeOfTrainingSelected(item.label);
+    setTypeOfTrainingSelected(item);
     // const atTrainer = 'at Trainer';
     const outdoor = 'outdoor';
-    const itemLabel = String(item.label);
+    const itemLabel = String(item);
     if (itemLabel.includes(outdoor)) {
       setIsOutdoorTraining('flex');
       setIsAtTrainerTraining('none');
@@ -523,9 +543,20 @@ const TrainerOrderPage = ({navigation}) => {
         </View>
 
         <View style={styles.categorySelectContainer}>
-          <Text style={styles.pageMainTitles}> Category</Text>
+          <Text style={styles.pageMainTitles}>Category</Text>
 
-          <DropDownPicker
+          <Dropdown
+            {...trainerObject.categories.map((i) => {
+              pickerItems.push({
+                value: i
+              });
+            })}
+            label='Select a category'
+            data={pickerItems}
+            onChangeText={(value, index, data) => handleOnCategoryPressed(value)}
+          />
+
+          {/* <DropDownPicker
             {...trainerObject.categories.map((i) => {
               pickerItems.push({
                 value: i,
@@ -554,13 +585,32 @@ const TrainerOrderPage = ({navigation}) => {
               //     country: item.value
               // })
             }
-          />
+          /> */}
         </View>
 
         <View style={styles.typeOfTrainingSelectContainer}>
-          <Text style={styles.pageMainTitles}> Type of Training</Text>
+          <Text style={styles.pageMainTitles}>Type of Training</Text>
 
-          <DropDownPicker
+          <Dropdown
+            label='Select the type of training'
+            data={[
+              {
+                value: 'Single at Trainer: $' + prices.single.singleAtTrainer + '/h'
+              },
+              {
+                value: 'Single outdoor: $' + prices.single.singleOutdoor + '/h'
+              },
+              {
+                value: 'Couple at Trainer: $' + prices.couple.coupleAtTrainer + '/h'
+              },
+              {
+                value: 'Couple outdoor: $' + prices.couple.coupleOutdoor + '/h'
+              },
+            ]}
+            onChangeText={(value, index, data) => handleOnTrainingTypePressed(value)}
+          />
+
+          {/* <DropDownPicker
             items={[
               {
                 label:
@@ -624,7 +674,7 @@ const TrainerOrderPage = ({navigation}) => {
               //     country: item.value
               // })
             }
-          />
+          /> */}
         </View>
 
         <View style={styles.trainingSiteSelectContainer}>
@@ -633,12 +683,12 @@ const TrainerOrderPage = ({navigation}) => {
           <View display={isOutdoorTraining}>
             <View style={styles.textInputContainer}>
               <View display={isAddressSelected}>
-                <Icon
+                {/* <Icon
                   name="map-pin"
                   size={Dimensions.get('window').height * 0.02}
                   color="#00bfff"
                   style={styles.iconTextInput}
-                />
+                /> */}
               </View>
               <TextInput
                 style={styles.textStyle}
@@ -677,11 +727,11 @@ const TrainerOrderPage = ({navigation}) => {
             {isTrainerHasOneLocation ? (
               <View style={styles.onlyOneLocationContainer}>
                 <View style={styles.onlyOneLocationIcon}>
-                  <Icon
+                  {/* <Icon
                     name="map-pin"
                     size={Dimensions.get('window').height * 0.02}
                     color="#00bfff"
-                  />
+                  /> */}
                 </View>
                 <Text style={styles.onlyOneLocationText}>
                   {locations.trainingSite1.address}
@@ -787,13 +837,22 @@ const TrainerOrderPage = ({navigation}) => {
         <View style={styles.optionsSelectContainer}>
           <Text style={styles.pageSubTitles}>Cost</Text>
           <View style={styles.rowCostContainer}>
-            <Icon
+            {/* <Icon
               name="dollar-sign"
               size={Dimensions.get('window').height * 0.02}
               color="black"
               style={styles.dollarSign}
+            /> */}
+            <Image
+              source={require('../../../images/dollar.png')}
+              style={{
+                height: Dimensions.get('window').height * 0.03,
+                width: Dimensions.get('window').width * 0.03,
+                marginTop: Dimensions.get('window').height * 0.01,
+                marginRight: Dimensions.get('window').width * -0.06,
+                zIndex: 2
+              }}
             />
-
             <TextInput editable={false} style={styles.costTextBox}>
               {cleanedPrice}
             </TextInput>
@@ -1001,7 +1060,7 @@ const styles = StyleSheet.create({
     marginLeft: Dimensions.get('window').width * 0.02,
   },
   onlyOneLocationText: {
-    marginLeft: Dimensions.get('window').width * 0.015,
+    marginLeft: Dimensions.get('window').width * 0.015
   },
   searchResultsContainer: {
     width: Dimensions.get('window').width * 0.915,
@@ -1036,7 +1095,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height * 0.045,
   },
   textStyle: {
-    height: Dimensions.get('window').height * 0.045,
+    height: Dimensions.get('window').height * 0.055,
     flex: 1,
     paddingLeft: Dimensions.get('window').width * 0.03,
     // marginTop: Dimensions.get('window').height * .01,
@@ -1182,13 +1241,13 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height * 0.04,
     backgroundColor: 'white',
     textAlign: 'center',
-    fontSize: Dimensions.get('window').height * 0.02,
+    fontSize: 10,
     opacity: 0.8,
     borderWidth: 1.5,
     borderRadius: 17,
     zIndex: 1,
+    color: 'black'
   },
-
   dollarSign: {
     marginTop: Dimensions.get('window').height * 0.014,
     marginRight: Dimensions.get('window').width * -0.08,

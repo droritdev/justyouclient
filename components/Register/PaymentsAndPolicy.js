@@ -36,12 +36,12 @@ const PaymentsAndPolicy = ({navigation}) => {
                 'https://preprod.paymeservice.com/api/generate-sale',
                 {
                     "seller_payme_id": "MPL16286-62772S4F-0CPOKDFP-GIWMKI6U",
-                    "sale_price": 0,
+                    "sale_price": 500,
                     "currency": "USD",
                     "product_name": "Product",
                     "transaction_id": emailAddress,
                     "installments": 1,
-                    "sale_callback_url": "https://www.google.com/",
+                    "sale_callback_url": "https://10.0.2.2:3000/addPaymeToken",
                 //    "sale_return_url": "https://www.amazon.com/",
                     "sale_type": "token",
                     "language": "en"
@@ -49,7 +49,7 @@ const PaymentsAndPolicy = ({navigation}) => {
                 config
             )
             .then(response => {
-                console.log('sale_url ', response)
+            //    console.log('sale_url ', response)
                 const url = response.data.sale_url + `?first_name=${firstName}&last_name=${lastName}&email=${emailAddress}`
                 console.log('payme_sale_id ', response.data.payme_sale_id)
                 // dispatchPaymeToken({
