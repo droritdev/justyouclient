@@ -29,7 +29,7 @@ const AroundYouPage = ({navigation}) => {
   //Modal to display for covid-19 alert tap
   const [covidModalVisible, setCovidModalVisible] = useState(false);
 
-  const [maxDistanceSelected, setMaxDistanceSelected] = useState('1');
+  const [maxDistanceSelected, setMaxDistanceSelected] = useState(1);
   const [sliderValue, setSliderValue] = useState('1 MILES');
   const [trainersAroundMe, setTrainersAroundMe] = useState([]);
 
@@ -275,52 +275,6 @@ const AroundYouPage = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Start of covid alert part */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        cancelable={true}
-        visible={covidModalVisible}
-        onRequestClose={() => {}}>
-        <View style={styles.covidContainer}>
-          <View style={styles.covidModalContainer}>
-            <Icon
-              name="x-circle"
-              size={Dimensions.get('window').width * 0.05}
-              style={styles.covidCloseIcon}
-              onPress={() => {
-                setCovidModalVisible(false);
-              }}
-            />
-            <Text style={styles.covidTitle}>COVID-19 Information</Text>
-            <Text style={styles.covidMessage}>
-              {
-                'We at JustYou take care to follow the changing guidelines of the Ministry of Health regarding the coronavirus. Before ordering, the personal trainer and the client will fill out a statement that they do indeed meet the requirements of the law regarding the coronavirus. \nAs Everyone knows, the guidelines may change at any time and we will make the adujstments according to the changes to be determined by the Ministry of Health. Adherence to these requirments is for all of us for your health and safety and we will know better days'
-              }
-              .
-            </Text>
-          </View>
-        </View>
-      </Modal>
-
-      <View style={styles.covidAlertView}>
-        <DropdownAlert
-          ref={(ref) => {
-            if (ref) {
-              dropDownAlertRef = ref;
-            }
-          }}
-          containerStyle={styles.covidAlertContainer}
-          showCancel={true}
-          infoColor={'deepskyblue'}
-          onCancel={covidAlertCancel}
-          closeInterval={0}
-          onTap={covidAlertTap}
-          titleNumOfLines={1}
-          messageNumOfLines={1}
-        />
-      </View>
-      {/* End of covid alert part */}
 
       <View style={styles.header}>
         <Text style={styles.headerText}>Just You</Text>
@@ -343,6 +297,7 @@ const AroundYouPage = ({navigation}) => {
           onValueChange={(value) => handleSliderValueChange(value)}
           step={1}
           thumbTintColor="deepskyblue"
+          value={maxDistanceSelected}
         />
       </View>
 

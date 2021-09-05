@@ -30,6 +30,7 @@ import axios from 'axios';
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 import {TrainerContext} from '../../../context/TrainerContext';
 import {OrderContext} from '../../../context/OrderContext';
+import { reduce } from 'lodash';
 
 let API_KEY = 'AIzaSyAKKYEMdjG_Xc6ZuvyzxHBi1raltggDA2c'; // TODO: move api key to .env
 Geocoder.init(API_KEY); // use a valid API key
@@ -366,8 +367,8 @@ const TrainerOrderPage = ({navigation, route}) => {
   };
 
   const handleOnTrainingSiteSelected = (item) => {
-    setTrainingSiteSelected(item.label);
-    if (item.label === locations.trainingSite1.address) {
+    setTrainingSiteSelected(item);
+    if (item === locations.trainingSite1.address) {
       setLocationLongitudeCoordinate(locations.trainingSite1.coordinates[0]);
       setLocationLatitudeCoordinate(locations.trainingSite1.coordinates[1]);
 
@@ -543,7 +544,7 @@ const TrainerOrderPage = ({navigation, route}) => {
         </View>
 
         <View style={styles.categorySelectContainer}>
-          <Text style={styles.pageMainTitles}>Category</Text>
+          {/* <Text style={styles.pageMainTitles}>Category</Text> */}
 
           <Dropdown
             {...trainerObject.categories.map((i) => {
@@ -589,7 +590,7 @@ const TrainerOrderPage = ({navigation, route}) => {
         </View>
 
         <View style={styles.typeOfTrainingSelectContainer}>
-          <Text style={styles.pageMainTitles}>Type of Training</Text>
+          {/* <Text style={styles.pageMainTitles}>Type of Training</Text> */}
 
           <Dropdown
             label='Select the type of training'
@@ -678,7 +679,7 @@ const TrainerOrderPage = ({navigation, route}) => {
         </View>
 
         <View style={styles.trainingSiteSelectContainer}>
-          <Text style={styles.pageSubTitles}>Training Site</Text>
+          {/* <Text style={styles.pageSubTitles}>Training Site</Text> */}
 
           <View display={isOutdoorTraining}>
             <View style={styles.textInputContainer}>
@@ -692,7 +693,7 @@ const TrainerOrderPage = ({navigation, route}) => {
               </View>
               <TextInput
                 style={styles.textStyle}
-                placeholder={'Search your address'}
+                placeholder={'Enter the address of the training site'}
                 placeholderTextColor={'grey'}
                 onChangeText={(text) => searchLocation(text)}
                 value={inputText}
@@ -738,42 +739,56 @@ const TrainerOrderPage = ({navigation, route}) => {
                 </Text>
               </View>
             ) : (
-              <DropDownPicker
-                items={[
+              <Dropdown
+                label="Select a training site"
+                data={[
                   {
-                    label: locations.trainingSite1.address,
-                    value: 'usa',
-                    icon: () => (
-                      <Icon
-                        name="map-pin"
-                        size={Dimensions.get('window').height * 0.02}
-                        color="#00bfff"
-                      />
-                    ),
-                    hidden: true,
+                    value: locations.trainingSite1.address
                   },
                   {
-                    label: locations.trainingSite2.address,
-                    value: 'uk',
-                    icon: () => (
-                      <Icon
-                        name="map-pin"
-                        size={Dimensions.get('window').height * 0.02}
-                        color="#00bfff"
-                      />
-                    ),
-                  },
+                    value: locations.trainingSite2.address
+                  }
                 ]}
-                // ]}
-                defaultValue={''}
-                containerStyle={styles.innerContainerViewObject}
-                style={styles.dropBoxC}
-                itemStyle={{
-                  justifyContent: 'flex-start',
-                }}
-                dropDownStyle={{backgroundColor: '#fafafa'}}
-                onChangeItem={(item) => handleOnTrainingSiteSelected(item)}
+                onChangeText={(value, index, data) =>
+                  handleOnTrainingSiteSelected(value)
+                }
               />
+              // <DropDownPicker
+              //   items={[
+              //     {
+              //       label: locations.trainingSite1.address,
+              //       value: 'usa',
+              //       icon: () => (
+              //         <Icon
+              //           name="map-pin"
+              //           size={Dimensions.get('window').height * 0.02}
+              //           color="#00bfff"
+              //         />
+              //       ),
+              //       hidden: true,
+              //     },
+              //     {
+              //       label: locations.trainingSite2.address,
+              //       value: 'uk',
+              //       icon: () => (
+              //         <Icon
+              //           name="map-pin"
+              //           size={Dimensions.get('window').height * 0.02}
+              //           color="#00bfff"
+              //         />
+              //       ),
+              //     },
+              //   ]}
+              //   // ]}
+              //   defaultValue={''}
+              //   containerStyle={styles.innerContainerViewObject}
+              //   style={styles.dropBoxC}
+              //   itemStyle={{
+              //     justifyContent: 'flex-start',
+              //   }}
+              //   dropDownStyle={{backgroundColor: '#fafafa'}}
+              //   onChangeItem={(item) => handleOnTrainingSiteSelected(item)}
+              // />
             )}
           </View>
         </View>
@@ -848,14 +863,18 @@ const TrainerOrderPage = ({navigation, route}) => {
               style={{
                 height: Dimensions.get('window').height * 0.03,
                 width: Dimensions.get('window').width * 0.03,
-                marginTop: Dimensions.get('window').height * 0.01,
+                marginTop: 12,
                 marginRight: Dimensions.get('window').width * -0.06,
                 zIndex: 2
               }}
             />
-            <TextInput editable={false} style={styles.costTextBox}>
+            {/* <TextInput editable={false} style={styles.costTextBox}>
               {cleanedPrice}
-            </TextInput>
+            </TextInput> */}
+            <TextInput
+              style={styles.costTextBox}
+              value={cleanedPrice}
+            />
           </View>
         </View>
 
@@ -1238,15 +1257,14 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get('window').height * 0.005,
     marginRight: Dimensions.get('window').width * 0.05,
     width: Dimensions.get('window').width * 0.2,
-    height: Dimensions.get('window').height * 0.04,
+    height: 40,
     backgroundColor: 'white',
     textAlign: 'center',
-    fontSize: 10,
+    fontSize: 15,
     opacity: 0.8,
     borderWidth: 1.5,
     borderRadius: 17,
-    zIndex: 1,
-    color: 'black'
+    zIndex: 1
   },
   dollarSign: {
     marginTop: Dimensions.get('window').height * 0.014,
