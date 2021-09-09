@@ -49,6 +49,10 @@ const TrainerOrderPage = ({navigation, route}) => {
   const [isSearchingForLocation, setIsSearchingForLocation] = useState('none');
   const [isTrainerHasOneLocation, setIsTrainerHasOneLocation] = useState(true);
 
+  const [categoryLabel, setCategoryLabel] = useState('Select a category')
+  const [typeLabel, setTypeLabel] = useState('Select the type of training')
+  const [siteLabel, setSiteLabel] = useState('Select a training site')
+
   const [categorySelected, setCategorySelected] = useState('');
   const [typeOfTrainingSelected, setTypeOfTrainingSelected] = useState('');
   const [trainingSiteSelected, setTrainingSiteSelected] = useState('');
@@ -288,8 +292,12 @@ const TrainerOrderPage = ({navigation, route}) => {
         },
         config,
       )
-      .then((res) => {})
-      .catch((err) => console.log(err));
+      .then((res) => {
+        console.log('success booking order')
+      })
+      .catch((err) => {
+        console.log('error in booking order ', err)
+      })
   };
 
   //for show/hide chooseDateAndTimeButton
@@ -332,6 +340,7 @@ const TrainerOrderPage = ({navigation, route}) => {
 
   const handleOnCategoryPressed = (item) => {
     setCategorySelected(item);
+    setCategoryLabel('Category')
   };
 
   const handleOnTrainingTypePressed = (item) => {
@@ -346,6 +355,7 @@ const TrainerOrderPage = ({navigation, route}) => {
       setIsOutdoorTraining('none');
       setIsAtTrainerTraining('flex');
     }
+    setTypeLabel('Type of Training')
   };
 
   const handleSearchBoxPressed = (item) => {
@@ -377,6 +387,7 @@ const TrainerOrderPage = ({navigation, route}) => {
       setLocationLongitudeCoordinate(locations.trainingSite2.coordinates[0]);
       setLocationLatitudeCoordinate(locations.trainingSite2.coordinates[1]);
     }
+    setSiteLabel('Training Site')
   };
 
   const handleChooseDateAndTime = () => {
@@ -552,7 +563,7 @@ const TrainerOrderPage = ({navigation, route}) => {
                 value: i
               });
             })}
-            label='Select a category'
+            label={categoryLabel}
             data={pickerItems}
             onChangeText={(value, index, data) => handleOnCategoryPressed(value)}
           />
@@ -593,7 +604,7 @@ const TrainerOrderPage = ({navigation, route}) => {
           {/* <Text style={styles.pageMainTitles}>Type of Training</Text> */}
 
           <Dropdown
-            label='Select the type of training'
+            label={typeLabel}
             data={[
               {
                 value: 'Single at Trainer: $' + prices.single.singleAtTrainer + '/h'
@@ -682,6 +693,7 @@ const TrainerOrderPage = ({navigation, route}) => {
           {/* <Text style={styles.pageSubTitles}>Training Site</Text> */}
 
           <View display={isOutdoorTraining}>
+            <Text style={styles.pageSubTitles}>Training Site</Text>
             <View style={styles.textInputContainer}>
               <View display={isAddressSelected}>
                 {/* <Icon
@@ -726,6 +738,8 @@ const TrainerOrderPage = ({navigation, route}) => {
           </View>
           <View display={isAtTrainerTraining}>
             {isTrainerHasOneLocation ? (
+              <View>
+              <Text style={styles.pageSubTitles}>Training Site</Text>
               <View style={styles.onlyOneLocationContainer}>
                 <View style={styles.onlyOneLocationIcon}>
                   {/* <Icon
@@ -738,9 +752,10 @@ const TrainerOrderPage = ({navigation, route}) => {
                   {locations.trainingSite1.address}
                 </Text>
               </View>
+              </View>
             ) : (
               <Dropdown
-                label="Select a training site"
+                label={siteLabel}
                 data={[
                   {
                     value: locations.trainingSite1.address
@@ -806,12 +821,12 @@ const TrainerOrderPage = ({navigation, route}) => {
           <View display={isDateSelected} style={styles.dateSelectedContainer}>
             <View style={styles.dateSelectedInnerContainer}>
               <View style={styles.dateSelectedIcon}>
-                <Icon
+                {/* <Icon
                   name="calendar"
                   size={Dimensions.get('window').height * 0.07}
                   color="#00bfff"
                   strokeWidth="12"
-                />
+                /> */}
               </View>
 
               <View>
@@ -881,7 +896,7 @@ const TrainerOrderPage = ({navigation, route}) => {
         <View style={styles.payContainer}>
           <TouchableOpacity
             style={styles.chooseDateButton}
-            onPress={() => {}}
+            onPress={registerOrder}
           >
             <Text style={styles.chooseDateText}>payment</Text>
           </TouchableOpacity>

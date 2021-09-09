@@ -39,7 +39,8 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
     //Axios post config
     const config = {
         withCredentials: true,
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
           "Content-Type": "application/json",
         },
@@ -136,7 +137,7 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
                                             onPress={()=>handleChatPressed()}
                                             style={styles.chatButton}
                                         >
-                                            <Icon name="message-circle" size={30} style={styles.messageIcon}/>
+                                            {/* <Icon name="message-circle" size={30} style={styles.messageIcon}/> */}
                                             {orderObject.trainer.name!==undefined?
                                                 <Text style={styles.approveButtonText}>{'Contact ' + orderObject.trainer.name.first}</Text>
                                             :

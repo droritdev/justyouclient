@@ -904,7 +904,7 @@ const StarPage = ({ navigation }) => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={dialogVisible}
+        visible={false}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
         }}

@@ -242,7 +242,7 @@ const ProfilePage = ({ navigation }) => {
     //scrollView of trainers (working like flatList)
     const getApprovedOrdersPattern = () => {
         let repeats = [];
-        if (ordersHistoryTrainerArray !== []) {
+        if (ordersHistoryTrainerArray.length !== 0) {
             for (let i = 0; i < ordersHistoryTrainerArray.length; i++) {
                 //pushing each trainer UI into the array
                 repeats.push(

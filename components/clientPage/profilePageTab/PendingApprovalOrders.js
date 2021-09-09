@@ -26,7 +26,8 @@ const PendingApprovalOrders = ({route, navigation}) => {
 
     const config = {
         withCredentials: true,
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
           "Content-Type": "application/json",
         },
@@ -121,7 +122,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
             for(let i = 0; i < pendingOrders.length; i++) {
                 repeats.push(
                     <TouchableOpacity
-                    onPress={() => handleArrowApprovedPressed(i)}
+                    onPress={() => handleOnArrowPendingPressed(i)}
                     key = {'ordersRow' + i}
 
                     >
@@ -144,7 +145,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
                                 style={styles.arrowButton}
                                 onPress={() => handleOnArrowPendingPressed(i)}
                             >
-                                <Icon name="chevron-right" size={18} style={styles.arrow} />
+                                {/* <Icon name="chevron-right" size={18} style={styles.arrow} /> */}
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>
@@ -226,7 +227,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
             type: 'SET_ORDER_OBJECT',
             orderObject: approvedOrders[index]
         });
-
+        console.log('in press specific order ', index, approvedOrders[index])
         navigation.navigate('ProfilePageStack',
              { screen: 'PendingApprovalOrderDetails' ,
              params: { orderObject: approvedOrders[index]}

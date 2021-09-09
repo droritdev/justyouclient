@@ -43,6 +43,12 @@ exports.makeOrder = (req, res) => {
     //save the order to the data base
     order
         .save()
-        .then(() => res.json(order))
-        .catch(err => res.status(400).json("Error: " + err));
+        .then(() => {
+            console.log('success in make order ', order)
+            res.json(order)
+        })
+        .catch(err => {
+            console.log('error in make order ', err)
+            res.status(400).json("Error: " + err)
+        })
 }

@@ -39,7 +39,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
   const [unavailableDialogVisible, setUnavailableDialogVisible] = useState(
     false,
   );
-  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [datePickerVisible, setDatePickerVisible] = useState(true);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [currentDisplayedDate, setCurrentDisplayedDate] = useState('');
@@ -58,14 +58,15 @@ const ChooseDateAndTimePage = ({navigation}) => {
       tabBarVisible: false,
     });
 
-    setCurrentDisplayedDate(getCurrentDate());
+    setCurrentDisplayedDate(new Date());
 
     getTrainerFromMongoDB();
   }, []);
 
   const config = {
     withCredentials: true,
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://10.0.2.2:3000/',
+  //  baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -74,16 +75,18 @@ const ChooseDateAndTimePage = ({navigation}) => {
   //get trainer again from mongo to check if any changes happend during the dispatch Passes
   const getTrainerFromMongoDB = async () => {
     // console.log('🚨click')
+    console.log('in getTrainerfrommongodb')
     await axios
       .get('/trainers/email/' + trainerObject.email.toLowerCase(), config)
       .then((doc) => {
         if (doc) {
           // setTrainerObjectMongoDB(doc.data[0]);
           trainerMongoDB = doc.data[0];
+      //    console.log('in then gettrainermogodb trainermongodb ', trainerMongoDB)
         }
         getAllEventAfterModify();
       })
-      .catch((err) => {});
+      .catch((err) => {console.log('error in gtetrainerform mongodb ', err)});
   };
 
   //let async = require("async");
@@ -98,8 +101,9 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
     //extract events from calendar array
     for (let index = 0; index < trainerMongoDB.calendar.length; index++) {
+      console.log('calendar length ', trainerMongoDB.calendar.length)
       let element = trainerMongoDB.calendar[index].event;
-
+      console.log('element ', element)
       if (element.color === 'deepskyblue') {
         element = Object.assign(
           {},
@@ -113,7 +117,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
       }
       events.push(element);
     }
-
+  //  console.log('events after getting them ', events)
     setAllEvents(events);
   };
 
@@ -132,6 +136,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
   //Blocks the entire calendar for the picked date, only on available times
   const setAvailabele = () => {
+    console.log('in setvailable')
     setDatePickerVisible(false);
     let events = allEvents;
     // var events = [];
@@ -157,6 +162,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
       ///***PART ONE IF NO ANY OCCUPIED HOURS AT THAT DAY***
       if (occupiedHours === undefined || occupiedHours.length === 0) {
+        console.log('in no occupied hours')
         //when occupiedHours empty or does not exist
         //inserting to the events array an event which set as AVAILABLE for all day
         addAbleEvent = {
@@ -273,12 +279,15 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
     day = day < 10 ? '0' + day : day;
     month = month < 9 ? '0' + month : month;
+    console.log('in getFullDateFormat day month year ', day, month, year)
     return year + '-' + month + '-' + day;
   };
 
   //Get current date
   const getCurrentDate = () => {
+    console.log('in getCurrentDate')
     let date = new Date();
+    console.log('date ', date)
     return getFullDateFormat(date);
   };
 
@@ -354,6 +363,19 @@ const ChooseDateAndTimePage = ({navigation}) => {
       setModalVisible(true);
     }
   };
+
+  const handleAddEvent = (time) => {
+    console.log('time selected ', time)
+    startTimeToPass = time.toString().slice(16, 21)
+    endTimeToPass = new Date(time)
+    endTimeToPass.setHours(endTimeToPass.getHours() + 1)
+    endTimeToPass = endTimeToPass.toString().slice(16, 21)
+    orderDateToPass = time.toString().slice(0, 15)
+    console.log('start ', startTimeToPass)
+    console.log('end ', endTimeToPass)
+    console.log('date ', orderDateToPass)
+    handleSubmitButton()
+  }
 
   //Save value from start time picker
   const onStartTimeChange = (event) => {
@@ -503,7 +525,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
           eventTapped={(event) => handleEventTapped(event)}
           width={Dimensions.get('window').width}
           style={styles.event}
-          initDate={getCurrentDate()}
+          initDate={new Date(new Date().toISOString())}
           dateChanged={(date) => handleOnDateChange(date)}
           upperCaseHeader
           uppercase
