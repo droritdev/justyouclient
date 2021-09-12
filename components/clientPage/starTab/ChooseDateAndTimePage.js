@@ -65,8 +65,8 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
   const config = {
     withCredentials: true,
-    baseURL: 'http://10.0.2.2:3000/',
-  //  baseURL: 'http://localhost:3000/',
+  //  baseURL: 'http://10.0.2.2:3000/',
+    baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -116,6 +116,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
         );
       }
       events.push(element);
+      console.log('events after added ', events)
     }
   //  console.log('events after getting them ', events)
     setAllEvents(events);
@@ -130,7 +131,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
       const endTime = singleEvent.end.slice(11);
       occupiedHours.push(startTime + '-' + endTime);
     }
-
+    console.log('occupied hours ', occupiedHours)
     return occupiedHours;
   };
 
@@ -304,7 +305,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
         eventsOnDate.push(singleEvent);
       }
     }
-
+    console.log('eventsOnDate', eventsOnDate)
     return eventsOnDate;
   };
 

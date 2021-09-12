@@ -21,6 +21,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/Feather';
 import {WebView} from 'react-native-webview';
 import { Dropdown } from 'react-native-material-dropdown-v2';
+import { useIsFocused } from "@react-navigation/native";
 
 import auth from '@react-native-firebase/auth';
 
@@ -38,6 +39,7 @@ Geocoder.init(API_KEY); // use a valid API key
 //The question and answers page
 const TrainerOrderPage = ({navigation, route}) => {
   LogBox.ignoreAllLogs(true)
+  const isFocused = useIsFocused()
 
   const [dialogVisible, setDialogVisible] = useState(false);
   const [isSelected, setSelection] = useState(false);
@@ -52,6 +54,8 @@ const TrainerOrderPage = ({navigation, route}) => {
   const [categoryLabel, setCategoryLabel] = useState('Select a category')
   const [typeLabel, setTypeLabel] = useState('Select the type of training')
   const [siteLabel, setSiteLabel] = useState('Select a training site')
+
+  const [heartUri, setHeartUri] = useState(require('../../../images/heart.png'))
 
   const [categorySelected, setCategorySelected] = useState('');
   const [typeOfTrainingSelected, setTypeOfTrainingSelected] = useState('');
@@ -100,6 +104,16 @@ const TrainerOrderPage = ({navigation, route}) => {
     return unsubscribe;
   }, [checkForLocationsCount, getClientFromMongoDB, navigation]);
 
+  // useEffect(() => {
+  //   if(isFocused){
+  //     console.log('trainerid ', trainerObject._id.toString())
+  //     if(clientLikes.indexOf(trainerObject._id.toString()) !== -1){
+  //       console.log('in includes')
+  //       setHeartUri(require('../../../images/blueheart.png'))
+  //     }
+  //   }
+  // }, [isFocused])
+
   //paypal payment
   const paypalPayment = () => {
     axios
@@ -126,8 +140,8 @@ const TrainerOrderPage = ({navigation, route}) => {
 
   const config = {
     withCredentials: true,
-    baseURL: 'http://10.0.2.2:3000/',
-  //  baseURL: 'http://localhost:3000/',
+  //  baseURL: 'http://10.0.2.2:3000/',
+    baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -197,7 +211,10 @@ const TrainerOrderPage = ({navigation, route}) => {
           setClientFirstName(currectUserData.name.first);
           setClientLastName(currectUserData.name.last);
           setClientProfilePic(currectUserData.image);
-
+          if(currectUserData.likes.indexOf(trainerObject._id.toString()) !== -1){
+            console.log('in includes')
+            setHeartUri(require('../../../images/blueheart.png'))
+          }
           if (doc.data[0].email != null) {
           }
         }
@@ -484,6 +501,36 @@ const TrainerOrderPage = ({navigation, route}) => {
     return <Text>{'Loading...'}</Text>;
   };*/
 
+  const handlePressHeart = () => {
+    if(heartUri === require('../../../images/heart.png')){
+      setHeartUri(require('../../../images/blueheart.png'))
+      axios
+      .put(
+        '/clients/likes/add',
+        {
+          clientId: clientID,
+          trainerId: trainerObject._id
+        },
+        config
+      )
+      .then(doc => console.log('liked trainer added'))
+      .catch(err => console.log('error adding liked trainer ', err))
+    } else {
+      setHeartUri(require('../../../images/heart.png'))
+      axios
+      .put(
+        '/clients/likes/remove',
+        {
+          clientId: clientID,
+          trainerId: trainerObject._id
+        },
+        config
+      )
+      .then(doc => console.log('liked trainer removed'))
+      .catch(err => console.log('error removing liked trainer ', err))
+    }
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
@@ -540,12 +587,14 @@ const TrainerOrderPage = ({navigation, route}) => {
               Certifications: NSCA-CSCS{' '}
             </Text>
           </View>
-          <View style={styles.heartContainer}>
-            <Image
-              source={require('../../../images/heart.png')}
-              style={styles.heart}
-            />
-          </View>
+          <TouchableOpacity onPress={handlePressHeart}>
+            <View style={styles.heartContainer}>
+              <Image
+                source={heartUri}
+                style={styles.heart}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.aboutMeContainer}>

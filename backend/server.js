@@ -227,7 +227,7 @@ app.put('/clients/likes/add', markAsLike.markAsLike);
 app.put('/clients/likes/remove', removeFromLikes.removeFromLikes);
 
 //End point for getting my likes list
-app.get('/clients/likes', searchMyLikes.searchMyLikes);
+app.get('/clients/likes/:clientId', searchMyLikes.searchMyLikes);
 
 //End point for writing a comment on trainers page
 app.put('/clients/comments/add', writeComment.writeComment);

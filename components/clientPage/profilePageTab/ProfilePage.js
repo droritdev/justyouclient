@@ -8,6 +8,7 @@ import auth from '@react-native-firebase/auth';
 import DropdownAlert from 'react-native-dropdownalert';
 import Icon from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
+import { useIsFocused } from "@react-navigation/native";
 
 import TrainerItem from '../../GlobalComponents/TrainerItem';
 import {ClientContext} from '../../../context/ClientContext';
@@ -17,6 +18,7 @@ import History from './History';
 
 //The client's profile page area page
 const ProfilePage = ({ navigation }) => {
+    const isFocused = useIsFocused()
     const [doc, setDoc] = useState()
     let reviewsArray = []
 
@@ -51,8 +53,8 @@ const ProfilePage = ({ navigation }) => {
 
     const config = {
         withCredentials: true,
-        baseURL: 'http://10.0.2.2:3000/',
-    //    baseURL: 'http://localhost:3000/',
+    //    baseURL: 'http://10.0.2.2:3000/',
+        baseURL: 'http://localhost:3000/',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -69,19 +71,31 @@ const ProfilePage = ({ navigation }) => {
     )
 
     useEffect(() => {
-        axios
-          .get('/trainers/getAllTrainers', config)
+        if(isFocused){
+          axios
+          .get(`/clients/likes/${clientIdToPass}`, config)
           .then((doc) => {
-            console.log('in getalltrainers then')
             if (doc) {
               console.log('in getalltrainers then if doc ', doc.data)
-              setDoc(doc.data)
+              // setDoc(doc.data)
+              axios
+              .get(`/trainers/findMultipleTrainers/${doc.data}`, config)
+              .then((doc2) => {
+                  if (doc2) {
+                    setDoc(doc2.data)
+                  }
+              })
+              .catch(err => {
+                console.log('error showing liked trainers ', err)
+                setDoc(null)
+              })
             }
           })
           .catch((err) => {
               console.log('in getalltrainers catch err', err)
           })
-    }, [])
+        }
+    }, [clientIdToPass, isFocused])
 
     const getClientOrders = async (clientId) => {
         console.log(clientId);
@@ -435,15 +449,24 @@ const ProfilePage = ({ navigation }) => {
               </View>
 
               <View style={styles.sectionContainer}>
-                  <Text style={styles.inPageMainTitles}>Trainers I Liked</Text>
-
-                  <FlatList
-                    horizontal
-                    data={doc}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item._id}
-                    showsHorizontalScrollIndicator={false}
-                  />
+                  <Text style={styles.inPageMainTitles}>Trainers I Like</Text>
+                  {
+                  doc
+                  ? (
+                    <FlatList
+                        horizontal
+                        data={doc}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item._id}
+                        showsHorizontalScrollIndicator={false}
+                    />
+                  )
+                  : (
+                      <View style={{padding: 20}}>
+                        <Text>Choose a trainer you like</Text>
+                      </View>
+                  )
+                  }
               </View>
 
               <View style={styles.pageMainTitlesContainer}>
