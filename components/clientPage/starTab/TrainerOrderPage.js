@@ -11,7 +11,8 @@ import {
   FlatList,
   Modal,
   Linking,
-  LogBox
+  LogBox,
+  Alert
 } from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import Dialog from 'react-native-dialog';
@@ -140,8 +141,8 @@ const TrainerOrderPage = ({navigation, route}) => {
 
   const config = {
     withCredentials: true,
-  //  baseURL: 'http://10.0.2.2:3000/',
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://10.0.2.2:3000/',
+  //  baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -278,6 +279,22 @@ const TrainerOrderPage = ({navigation, route}) => {
   };
 
   const registerOrder = () => {
+    if(categorySelected === ''){
+      Alert.alert('Category not selected', '', [{text: 'OK'}])
+      return
+    }
+    if(typeOfTrainingSelected === ''){
+      Alert.alert('Type of training not selected', '', [{text: 'OK'}])
+      return
+    }
+    if(trainingSiteSelected === ''){
+      Alert.alert('Training site not selected', '', [{text: 'OK'}])
+      return
+    }
+    if(orderStartTime === ''){
+      Alert.alert('Date and time not selected', '', [{text: 'OK'}])
+      return
+    }
     axios
       .post(
         '/clients/orders/book-order',
@@ -311,6 +328,13 @@ const TrainerOrderPage = ({navigation, route}) => {
       )
       .then((res) => {
         console.log('success booking order')
+        Alert.alert('The order has been sent for confirmation by the trainer',
+                    'You will be notified once the trainer has confirmed your training',
+                    [{
+                      text: 'OK',
+                      onPress: () => navigation.navigate('ProfilePageStack', {screen: 'ProfilePage'})
+                    }]
+        )
       })
       .catch((err) => {
         console.log('error in booking order ', err)
@@ -531,6 +555,10 @@ const TrainerOrderPage = ({navigation, route}) => {
     }
   }
 
+  const handleOnCustomerServicePressed = () => {
+    navigation.navigate('CustomerService');
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
@@ -581,10 +609,8 @@ const TrainerOrderPage = ({navigation, route}) => {
               />
               {/* <Icon name="star" size={Dimensions.get('window').height * .02} color="black" /> */}
             </View>
-
             <Text style={styles.categoryAndCertificationText}>
-              
-              Certifications: NSCA-CSCS{' '}
+              Certification: {trainerObject.certifications}
             </Text>
           </View>
           <TouchableOpacity onPress={handlePressHeart}>
@@ -971,14 +997,14 @@ const TrainerOrderPage = ({navigation, route}) => {
           </View>
           <View style={styles.eachRowContainer}>
             <View style={styles.navigationsRows}>
-              <TouchableOpacity onPress={() => handleOnChatPressed()}>
+              <TouchableOpacity onPress={() => handleOnCustomerServicePressed()}>
                 <Text style={styles.navigationsRowsTitle}>
                   Customer Service
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.arrowButton}
-                onPress={() => handleOnChatPressed()}>
+                onPress={() => handleOnCustomerServicePressed()}>
                 <Image
                   source={require('../../../images/arrowButton.png')}
                   style={styles.arrowImage}
@@ -1083,7 +1109,8 @@ const styles = StyleSheet.create({
   trainerDetailsContainer: {
     marginLeft: Dimensions.get('window').height * 0.02,
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    width: Dimensions.get('window').width * 0.4
   },
   trainerNameTitle: {
     fontSize: Dimensions.get('window').height * 0.025,
@@ -1104,7 +1131,10 @@ const styles = StyleSheet.create({
   },
 
   trainerCategoryAndCertification: {},
-  categoryAndCertificationText: {},
+  categoryAndCertificationText: {
+    flex: 1,
+    flexWrap: 'wrap'
+  },
   optionsSelectContainer: {
     marginTop: Dimensions.get('window').height * 0.02,
     marginLeft: Dimensions.get('window').width * 0.04,

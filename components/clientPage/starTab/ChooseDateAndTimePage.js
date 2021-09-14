@@ -9,6 +9,7 @@ import {
   Image,
   StyleSheet,
   Alert,
+  TouchableOpacity
 } from 'react-native';
 import EventCalendar from '../../GlobalComponents/calendar/EventCalendar';
 import Dialog from 'react-native-dialog';
@@ -17,7 +18,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 import Icon from 'react-native-vector-icons/Feather';
 
-import {TouchableOpacity} from 'react-native-gesture-handler';
+// import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 import {TrainerContext} from '../../../context/TrainerContext';
@@ -25,6 +26,7 @@ import {ClientContext} from '../../../context/ClientContext';
 import {OrderContext} from '../../../context/OrderContext';
 
 import axios from 'axios';
+import moment from 'moment';
 
 //The settings page
 const ChooseDateAndTimePage = ({navigation}) => {
@@ -49,7 +51,8 @@ const ChooseDateAndTimePage = ({navigation}) => {
   let startTimeToPass = '';
   let endTimeToPass = '';
   let orderDateToPass = '';
-  const forceUpdate = useReducer((bool) => !bool)[1]; //Page refresh
+  // const forceUpdate = useReducer((bool) => !bool)[1]; //Page refresh
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
   let trainerMongoDB = {};
 
@@ -65,8 +68,8 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
   const config = {
     withCredentials: true,
-  //  baseURL: 'http://10.0.2.2:3000/',
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://10.0.2.2:3000/',
+  //  baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -119,6 +122,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
       console.log('events after added ', events)
     }
   //  console.log('events after getting them ', events)
+    console.log('EVENTS before setting them')
     setAllEvents(events);
   };
 
@@ -172,8 +176,11 @@ const ChooseDateAndTimePage = ({navigation}) => {
           title: 'AVAILABLE',
           color: 'deepskyblue',
         };
+      //  console.log('available event', addAbleEvent)
         events.push(addAbleEvent);
+      //  console.log('events ', events)
       } else if (occupiedHours) {
+        console.log('occupied hours')
         //if there are occupied event in that day
         let sortedArray = occupiedHours.sort();
         //if there is only one occupied event:
@@ -263,7 +270,6 @@ const ChooseDateAndTimePage = ({navigation}) => {
         }
       }
     }
-
     forceUpdate();
   };
 
@@ -361,7 +367,8 @@ const ChooseDateAndTimePage = ({navigation}) => {
     if (event.color === 'lightgrey') {
       setUnavailableDialogVisible(true);
     } else {
-      setModalVisible(true);
+      setDatePickerVisible(true);
+    //  setModalVisible(true);
     }
   };
 

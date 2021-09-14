@@ -47,7 +47,8 @@ const Chat = ({navigation, route}) => {
 
     const config = {
         withCredentials: true,
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
           "Content-Type": "application/json",
         },
@@ -507,7 +508,7 @@ const Chat = ({navigation, route}) => {
                     />
                     <Text style={styles.headerText}> {trainerUser.name} </Text>
 
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <TouchableOpacity
                          onPress={()=> handleMediaPicker()}
                         >
@@ -517,7 +518,7 @@ const Chat = ({navigation, route}) => {
                         <TouchableOpacity
                             onPress={()=> showSendLocationAlert()}
                         >
-                            <Icon name="map-pin" size={23} style={styles.locationIcon} />
+                            <Icon name="map-pin" size={17} style={styles.locationIcon} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -559,7 +560,9 @@ const styles = StyleSheet.create({
     headerContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#fafafa'
+        alignItems: 'center',
+        backgroundColor: '#fafafa',
+        height: 40
     },
     headerText: {
         marginTop: Dimensions.get('window').height * .012,

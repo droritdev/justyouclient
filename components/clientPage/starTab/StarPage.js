@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useReducer, useRef, useState } from 'react';
-import { Dimensions, FlatList, Image, Modal, ScrollView, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
+import { Dimensions, FlatList, Image, Modal, ScrollView, StyleSheet, Text, View, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Feather';
 import DropdownAlert from 'react-native-dropdownalert';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 
@@ -17,6 +17,7 @@ import Alert from 'react-native/Libraries/Alert/Alert';
 
 //The client's start area page
 const StarPage = ({ navigation }) => {
+  let reviewDialogAfterClickingYes = false;
   //in all the main pages
   //ref to show covid alert
   let dropDownAlertRef = useRef(null);
@@ -105,8 +106,8 @@ const StarPage = ({ navigation }) => {
 
   const config = {
     withCredentials: true,
-  //  baseURL: 'http://10.0.2.2:3000/',
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://10.0.2.2:3000/',
+  //  baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -116,18 +117,7 @@ const StarPage = ({ navigation }) => {
     const unsubscribe = navigation.addListener('focus', () => {
       // Check if covid alert was dismissed
       setDialogVisible(false);
-    //   if (global.covidAlert) {
-    //  //   if (dropDownAlertRef.state.isOpen === false) {
-    //       //Show covid alert
-    //       dropDownAlertRef.alertWithType(
-    //         'info',
-    //         'Latest information on COVID-19',
-    //         'Click here to learn more.',
-    //       );
-    //   //  }
-    //   } else {
-    //     dropDownAlertRef.closeAction();
-    //   }
+    
       getUserByFirebaseAuth();
       getAllTrainers().then(() => {
 
@@ -451,6 +441,7 @@ const StarPage = ({ navigation }) => {
   }
 
   function handleTakeMeDialog() {
+    reviewDialogAfterClickingYes = true;
     getUserByFirebaseAuth();
     setDialogVisible(false);
     navigation.navigate('ProfilePageStack', {
@@ -547,8 +538,9 @@ const StarPage = ({ navigation }) => {
               if (trainer._id === order.trainer.id) {
                 //check if client ID is found in the trainer's reviews
                 if (!(trainer.reviews.some(i => i.userID.includes(id)))) {
-
-                  setDialogVisible(true);
+                  if (reviewDialogAfterClickingYes === false) {
+                    setDialogVisible(true);
+                  }
                 }
               }
             });
@@ -904,25 +896,24 @@ const StarPage = ({ navigation }) => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={false}
+        visible={dialogVisible}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
         }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Well Done</Text>
-
-            <Text style={styles.subtitleText}> you have completed some training successfully !!!</Text>
-            <Text style={styles.subtitleText}>please rate your training experience</Text>
-
+            <Text style={styles.subtitleText}>You have completed your training successfully</Text>
+            <Text style={styles.subtitleText}>Please rate your training experience</Text>
 
             <View style={styles.buttonsRow}>
               <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={() => handleMaybeLaterDialog()}
               >
-                <Text style={styles.cancelTextStyle}>Maybe later</Text>
+                <View>
+                  <Text style={styles.cancelTextStyle}>Maybe later</Text>
+                </View>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -931,7 +922,9 @@ const StarPage = ({ navigation }) => {
                   handleTakeMeDialog();
                 }}
               >
-                <Text style={styles.submitTextStyle}>Yes</Text>
+                <View>
+                  <Text style={styles.submitTextStyle}>Yes</Text>
+                </View>
               </TouchableOpacity>
             </View>
           </View>

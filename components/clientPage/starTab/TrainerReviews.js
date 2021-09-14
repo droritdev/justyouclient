@@ -28,7 +28,8 @@ const TrainerReviews = ({navigation}) => {
   //server config
   const config = {
     withCredentials: true,
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'http://10.0.2.2:3000/',
+  //  baseURL: 'http://localhost:3000/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -168,6 +169,8 @@ const TrainerReviews = ({navigation}) => {
     return repeats;
   };
 
+  console.log('categories ', trainerObject.categories)
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ArrowBackButton onPress={handleArrowButton} />
@@ -197,6 +200,25 @@ const TrainerReviews = ({navigation}) => {
         </View>
       </View>
 
+      <View style={styles.infoView}>
+        <Text style={styles.infoText}>
+          <Text style={styles.titleText}>Categories: </Text>
+          {trainerObject.categories.join()}
+        </Text>
+      </View>
+      <View style={styles.infoView}>
+        <Text style={styles.infoText}>
+          <Text style={styles.titleText}>Trainer Certification: </Text>
+          {trainerObject.certifications}
+        </Text>
+      </View>
+      <View style={styles.infoView}>
+        <Text style={styles.infoText}>
+          <Text style={styles.titleText}>About Me: </Text>
+          {trainerObject.about_me}
+        </Text>
+      </View>
+
       <Text style={styles.pageTitle}>
         {' '}
         {'Customer Reviews (' + reviews.length + ')'}{' '}
@@ -217,9 +239,10 @@ const styles = StyleSheet.create({
   },
   imageAndDetailsContainer: {
     flexDirection: 'row',
-    height: Dimensions.get('window').height * 0.1227,
+    height: Dimensions.get('window').width * 0.265,
     marginLeft: Dimensions.get('window').width * 0.0483,
     marginTop: Dimensions.get('window').height * 0.02,
+    marginBottom: Dimensions.get('window').height * 0.04
   },
   profileImage: {
     height: Dimensions.get('window').width * 0.265,
@@ -327,6 +350,22 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     width: Dimensions.get('window').width * 0.65,
   },
+  infoView: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginLeft: Dimensions.get('window').width * 0.0483,
+    marginRight: Dimensions.get('window').width * 0.0483,
+    marginTop: 5
+  },
+  titleText: {
+    fontSize: Dimensions.get('window').height * 0.027,
+    fontWeight: 'bold'
+  },
+  infoText: {
+    fontSize: Dimensions.get('window').height * 0.025,
+    flex: 1,
+    flexWrap: 'wrap'
+  }
 });
 
 export default TrainerReviews;

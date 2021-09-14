@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useReducer } from "react";
-import { Text,TextInput , View, StyleSheet, ScrollView, Dimensions, Image, Modal , FlatList} from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Text,TextInput , View, StyleSheet, ScrollView, Dimensions, Image, Modal , FlatList, TouchableOpacity} from 'react-native';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image'
 import Icon from 'react-native-vector-icons/Feather';
@@ -178,8 +178,8 @@ const History = ({navigation, route}) => {
 
     const config = {
         withCredentials: true,
-    //    baseURL: 'http://10.0.2.2:3000/',
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
           "Content-Type": "application/json",
         },
@@ -309,6 +309,9 @@ const History = ({navigation, route}) => {
                                 rating={starsCount}
                                 fullStarColor = {'gold'}
                                 selectedStar={(rating) => onStarRatingPress(rating)}
+                                emptyStar={require('../../../images/emptystar.png')}
+                                fullStar={require('../../../images/goldstar.png')}
+                                halfStar={require('../../../images/halfstar.png')}
                             />
                         </View>
 
@@ -330,10 +333,13 @@ const History = ({navigation, route}) => {
                             <TouchableOpacity
                                 style={styles.cancelButton}
                                 onPress={() => {
-                                    setModalVisible(!modalVisible);
+                                    console.log('pressed cancel')
+                                    setModalVisible(false);
                                 }}
                             >
+                              <View>
                                 <Text style={styles.cancelTextStyle}>Cancel</Text>
+                              </View>
                             </TouchableOpacity>
 
                             <TouchableOpacity
@@ -343,7 +349,9 @@ const History = ({navigation, route}) => {
 
                                 }}
                             >
-                                <Text style={styles.submitTextStyle}>Submit</Text>
+                                <View>
+                                    <Text style={styles.submitTextStyle}>Submit</Text>
+                                </View>
                             </TouchableOpacity>
                         </View>
                     </View>

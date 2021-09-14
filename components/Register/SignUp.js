@@ -17,8 +17,8 @@ const SignUp = ({navigation}) => {
 
     const config = {
       withCredentials: true,
-    //  baseURL: 'http://10.0.2.2:3000/',
-      baseURL: 'http://localhost:3000/',
+      baseURL: 'http://10.0.2.2:3000/',
+    //  baseURL: 'http://localhost:3000/',
       headers: {
         "Content-Type": "application/json",
       },
@@ -164,10 +164,6 @@ const SignUp = ({navigation}) => {
           </View>
         </View>
         <View style={styles.fotterContainer}>
-          <AppButton
-            title="Next"
-            onPress={() => handleNext()}
-          />
           <View style={styles.alreadyHaveAccountContainer}>
             <Text style={styles.alreadyHaveAnAccountText}>Already have an account? </Text>
             <TouchableOpacity
@@ -176,6 +172,10 @@ const SignUp = ({navigation}) => {
             <Text style={styles.signInText}>Sign In</Text>
             </TouchableOpacity>
           </View>
+          <AppButton
+            title="Next"
+            onPress={() => handleNext()}
+          />
         </View>
       </SafeAreaView>
       </TouchableWithoutFeedback>

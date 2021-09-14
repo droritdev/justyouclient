@@ -12,7 +12,8 @@ const CustomerService = ({navigation}) => {
     //server config
     const config = {
         withCredentials: true,
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
           "Content-Type": "application/json",
         },
@@ -25,7 +26,7 @@ const CustomerService = ({navigation}) => {
     const mailformat = /^(|([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([,.] (([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$/;
 
     //Sender email
-    const supportEmail = "drorit@iqdesk.com";
+    const supportEmail = "support@justyou.com";
 
     //Client information
     const {clientObject} = useContext(ClientContext);
@@ -53,7 +54,8 @@ const CustomerService = ({navigation}) => {
         navigation.dangerouslyGetParent().setOptions({
             tabBarVisible: true
         })
-        navigation.navigate('ProfilePage');
+    //    navigation.navigate('ProfilePage');
+        navigation.goBack();
     }
 
 
@@ -299,11 +301,12 @@ const styles = StyleSheet.create({
     headerContainer: {
         borderBottomColor: 'lightgrey',
         borderBottomWidth: 2,
-        height: Dimensions.get('window').height * .05,
+        height: Dimensions.get('window').height * .06,
         justifyContent: 'center'
     },
     headerRow: {
         flexDirection: 'row',
+        alignItems: 'center',
         marginLeft: Dimensions.get('window').width * .0483
     },
     emailHeader: {

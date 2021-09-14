@@ -53,8 +53,8 @@ const ProfilePage = ({ navigation }) => {
 
     const config = {
         withCredentials: true,
-    //    baseURL: 'http://10.0.2.2:3000/',
-        baseURL: 'http://localhost:3000/',
+        baseURL: 'http://10.0.2.2:3000/',
+    //    baseURL: 'http://localhost:3000/',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -260,40 +260,49 @@ const ProfilePage = ({ navigation }) => {
             for (let i = 0; i < ordersHistoryTrainerArray.length; i++) {
                 //pushing each trainer UI into the array
                 repeats.push(
-                  <TouchableOpacity
-                    key={'ordersRow' + i}
-                    onPress={() => handleOnTrainerInRecentOrderScrollViewPressed(ordersHistoryTrainerArray[i])}
-                  >
+                    <TrainerItem
+                        key={ordersHistoryTrainerArray[i].email}
+                        name={`${ordersHistoryTrainerArray[i].name.first} ${ordersHistoryTrainerArray[i].name.last}`}
+                        media={ordersHistoryTrainerArray[i].media}
+                        trainerObject={ordersHistoryTrainerArray[i]}
+                        reviewsArray = {ordersHistoryTrainerArray[i].reviews}
+                        handleOnTrainerPressed = {() => handleOnTrainerInRecentOrderScrollViewPressed(ordersHistoryTrainerArray[i])}
+                    />
 
-                      <View style={styles.trainerView}>
-                          <View style={styles.trainerImageView}>
-                              <FastImage
-                                style={styles.trainerImage}
-                                source={{
-                                    uri: ordersHistoryTrainerArray[i].media.images[0],
-                                    priority: FastImage.priority.normal,
-                                }}
-                                resizeMode={FastImage.resizeMode.stretch}
-                              />
-                          </View>
-                          <View
-                            style={styles.trainerPreviewText}
-                          >
-                              <Text
-                                style={styles.trainerText1}>{ordersHistoryTrainerArray[i].name.first + ' ' + ordersHistoryTrainerArray[i].name.last}</Text>
-                              <Text style={styles.trainerText2}>Personal Trainer</Text>
-                              <View style={styles.ratingRow}>
-                                  <Text
-                                    style={styles.trainerText3}>{getStarRating(ordersHistoryTrainerArray[i].reviews)} </Text>
-                                  <Image
-                                    source={require('../../../images/starIconBlue.png')}
-                                    style={styles.starIcon}
-                                  />
-                              </View>
-                          </View>
-                      </View>
+                //   <TouchableOpacity
+                //     key={'ordersRow' + i}
+                //     onPress={() => handleOnTrainerInRecentOrderScrollViewPressed(ordersHistoryTrainerArray[i])}
+                //   >
 
-                  </TouchableOpacity>,
+                //       <View style={styles.trainerView}>
+                //           <View style={styles.trainerImageView}>
+                //               <FastImage
+                //                 style={styles.trainerImage}
+                //                 source={{
+                //                     uri: ordersHistoryTrainerArray[i].media.images[0],
+                //                     priority: FastImage.priority.normal,
+                //                 }}
+                //                 resizeMode={FastImage.resizeMode.stretch}
+                //               />
+                //           </View>
+                //           <View
+                //             style={styles.trainerPreviewText}
+                //           >
+                //               <Text
+                //                 style={styles.trainerText1}>{ordersHistoryTrainerArray[i].name.first + ' ' + ordersHistoryTrainerArray[i].name.last}</Text>
+                //               <Text style={styles.trainerText2}>Personal Trainer</Text>
+                //               <View style={styles.ratingRow}>
+                //                   <Text
+                //                     style={styles.trainerText3}>{getStarRating(ordersHistoryTrainerArray[i].reviews)} </Text>
+                //                   <Image
+                //                     source={require('../../../images/starIconBlue.png')}
+                //                     style={styles.starIcon}
+                //                   />
+                //               </View>
+                //           </View>
+                //       </View>
+
+                //   </TouchableOpacity>,
                 );
             }
         }
@@ -515,8 +524,8 @@ const ProfilePage = ({ navigation }) => {
                   >
                       <View
                         display={noRecentOrders}
-                        style={styles.noRecentOrdersTextContainer}>
-
+                        style={styles.noRecentOrdersTextContainer}
+                      >
                           <Text
                             style={styles.noRecentOrdersText}
                           >There are no recent orders yet...
@@ -618,9 +627,11 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height * 0.015,
         marginLeft: Dimensions.get('window').height * 0.01,
         width: Dimensions.get('window').width * .200,
-        height: Dimensions.get('window').height * .095,
+        height: Dimensions.get('window').width * .200,
+    //    height: Dimensions.get('window').height * .095,
         overflow: 'hidden',
-        borderRadius: 70,
+    //    borderRadius: 70,
+        borderRadius: Dimensions.get('window').width * .200 / 2
     },
     nameAndDetailsView: {
         justifyContent: 'space-between',
