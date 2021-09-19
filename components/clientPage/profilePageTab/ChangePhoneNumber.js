@@ -1,17 +1,14 @@
-import React, {useEffect, useState, useContext} from 'react';
-import {StyleSheet, Alert, View, Text, TextInput, Button, Dimensions, SafeAreaView} from 'react-native';
+import React, {useState, useContext} from 'react';
+import {StyleSheet, Alert, View, Text, TextInput, Dimensions, SafeAreaView, Keyboard} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
 
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 import AppButton from '../../GlobalComponents/AppButton';
 
 import {ClientContext} from '../../../context/ClientContext';
 
-
-
-//Here the user enters his full phone number (area code and phone number) and verify it with a code sent to his phone
+//Here the user enters his full phone number (area code and phone number) and verifies it with a code sent to his phone
 const ChangePhoneNumber = ({navigation}) => {
     const [areaCodeInput, setAreaCodeInput] = useState("");
     const [phoneNumberInput, setPhoneNumberInput] = useState("");
@@ -23,19 +20,21 @@ const ChangePhoneNumber = ({navigation}) => {
     const [isNextError, setIsNextError] = useState(false);
     const [nextErrorMessage, setNextErrorMessage] = useState("");
 
+    const [requestId, setRequestId] = useState()
+
     //Client information
     const {clientObject} = useContext(ClientContext);
 
     const config = {
       withCredentials: true,
-      baseURL: 'http://localhost:3000/',
+      baseURL: 'http://10.0.2.2:3000/',
+    //  baseURL: 'http://localhost:3000/',
       headers: {
         "Content-Type": "application/json",
       },
     };
 
-
-    //Navigates back to the profile details page
+    //Navigates back to the settings page
     const handleArrowButton = () => {
         navigation.navigate('Settings');
     }
@@ -53,7 +52,7 @@ const ChangePhoneNumber = ({navigation}) => {
     .catch((err) =>  {
       setIsPhoneError(false);
       setIsNextError(false);
-      let fullPhone = '+'+areaCodeInput+phoneNumberInput;
+      let fullPhone = '97' + areaCodeInput + phoneNumberInput;
       sendVerificationCode(fullPhone);
     });
   }
@@ -68,10 +67,10 @@ const ChangePhoneNumber = ({navigation}) => {
       setAreaCodeInput(value);
     }
 
-    //Sets the phoneNumebr object to the value
+    //Sets the phoneNumber object to the value
     const handleOnChangePhoneNumber = (value) => {
-      if (value.length > 10) {
-        value = value.slice(0, 10);
+      if (value.length > 7) {
+        value = value.slice(0, 7);
       }
       setIsNextError(false);
       setIsPhoneError(false);
@@ -83,10 +82,15 @@ const ChangePhoneNumber = ({navigation}) => {
       setIsNextError(false);
       setIsPhoneError(false);
       setCode(value);
+      if(value.length === 4){
+        Keyboard.dismiss()
+      }
     }
 
-    //When pressed, the verify button checks if the numebr is valid and calls the sendVerificationCode function
+    //When pressed, the button checks if the number is valid and calls the sendVerificationCode function
     const handleVerify = () => {
+      Keyboard.dismiss()
+
       let areaCodeTemp = Number(areaCodeInput);
       let phoneNumberTemp = Number(phoneNumberInput);
 
@@ -110,7 +114,7 @@ const ChangePhoneNumber = ({navigation}) => {
         setIsPhoneError(true);
         setIsNextError(true);
       }
-      else if(areaCodeInput.length !== 3 || phoneNumberInput.length <= 6){
+      else if(areaCodeInput.length !== 3 || phoneNumberInput.length !== 7){
         setPhoneErrorMessage("Enter a valid phone number")
         setIsPhoneError(true);
         setIsNextError(true);
@@ -120,7 +124,7 @@ const ChangePhoneNumber = ({navigation}) => {
       }
     }
 
-    //The function who sends the verify code to the user
+    //The function that sends the verification code to the user
     const sendVerificationCode = (number) => {
       if(isPhoneError){
         setNextErrorMessage("You must set all valid fields to continue");
@@ -128,38 +132,27 @@ const ChangePhoneNumber = ({navigation}) => {
       }
       else{
         setFullPhoneNumber(number);
-        // setIsCodeSent('flex');
+        setIsCodeSent('flex');
         axios
-          .post('/send-verification-code', {
-            to: number,
-            channel: "sms"
+          .post('/sendCode', {
+            number: number
           },
           config
           )
           .then((res) => {
             if(res !== null) {
-              if(res.data.status === 'pending'){
-                setIsCodeSent('flex');
-                Alert.alert(
-                    'Code sent',
-                    'Please check your phone for the verification code.',
-                    [
-                        {text: 'OK'},
-                      ],
-                      { cancelable: false }
-                    )
-              }
-              else{
-                alert("Couldn't send code to this number. Please try again.");
-              }
+              console.log('res not null resdata ', res.data)
+              setRequestId(res.data)
+              console.log('requestId after filled ', requestId)
             }
             else{
-                alert("Couldn't send code to this number. Please try again.");
+              console.log('success but res null ', error)
+              // alert("success but res null");
             }
-          }
-          )
+          })
           .catch((error) => {
-            alert(error)
+            console.log('catch error sendCode ', error.request)
+            // alert(error)
           })
         }
     }
@@ -174,36 +167,38 @@ const ChangePhoneNumber = ({navigation}) => {
         setNextErrorMessage("Enter your code to continue");
         setIsNextError(true);
       }
-      else if(code.length !== 5){
-        setNextErrorMessage("Code should be 5 digits");
+      else if(code.length !== 4){
+        setNextErrorMessage("Code should be 4 digits");
         setIsNextError(true);
       }
       else{
+        console.log('requestId before verifyCode ', requestId)
         axios
-          .post('/verify-code', {
-            to: fullPhoneNumber,
+          .post('/verifyCode', {
+            request_id: requestId,
             code: code
           },
           config
           )
           .then((res) => {
             if(res !== null) {
-              if(res.data.status === 'approved'){
-                updateDB();
+              console.log('res not null resdata ', res.data)
+              if(res.data === 'authenticated'){
+                console.log('authenticated')
+                updateDB()
               }
-              else {
-                setNextErrorMessage("Incorrect code, please try again.");
-                setIsNextError(true);
+              else{
+                console.log('failed')
+                setNextErrorMessage('Phone number was not verified. Please try again.')
               }
             }
             else{
-                setNextErrorMessage("Incorrect code, please try again.");
-                setIsNextError(true);
+              console.log('success but res null')
+              setNextErrorMessage('Phone number was not verified. Please try again.')
             }
-          }
-          )
+          })
           .catch((error) => {
-            alert(error)
+            console.log('catch error ', error)
           })
         }
     }
@@ -243,7 +238,6 @@ const ChangePhoneNumber = ({navigation}) => {
         <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
               <Text style={styles.justYouHeader}>Just You</Text>
-              <Text style={styles.partnerHeader}>Partner</Text>
             </View>
             <ArrowBackButton
                 onPress={handleArrowButton}
@@ -254,7 +248,7 @@ const ChangePhoneNumber = ({navigation}) => {
               <TextInput
                       style={styles.areaCodeInput}
                       textAlign='center'
-                      placeholder='+001'
+                      placeholder='Area Code'
                       keyboardType='numeric'
                       value = {areaCodeInput}
                       onChangeText={value => handleOnChangeAreaCode(value)}>
@@ -263,7 +257,7 @@ const ChangePhoneNumber = ({navigation}) => {
                     style={styles.phoneNumberInput}
                     textAlign='center'
                     keyboardType='numeric'
-                    placeholder='00000000000'
+                    placeholder='Phone Number'
                     value = {phoneNumberInput}
                     onChangeText={value => handleOnChangePhoneNumber(value)}
                 />
@@ -272,7 +266,7 @@ const ChangePhoneNumber = ({navigation}) => {
                 <Text style={styles.phoneErrorMessage}>{phoneErrorMessage}</Text>
               :null}
               <View style={styles.verifyExplenationContainer}>
-                <Text style={styles.verifyExplenationText}>We'll send you a text with a 5-digit code to verify your new phone number.</Text>
+                <Text style={styles.verifyExplenationText}>We'll send you a text with a 4-digit code to verify your new phone number.</Text>
               </View>
             </View>
             <View>
@@ -280,7 +274,7 @@ const ChangePhoneNumber = ({navigation}) => {
                     style={styles.verifyButton}
                     onPress={() => handleVerify()}
                 >
-                    <Text style={styles.verifyButtonText}>Verify</Text>
+                    <Text style={styles.verifyButtonText}>Send code to verify phone</Text>
                 </TouchableOpacity>
             </View>
 
@@ -304,7 +298,6 @@ const ChangePhoneNumber = ({navigation}) => {
             <View display={isCodeSent} style={styles.codeTextInput}>
               <TextInput
                   style={{fontSize: 33}}
-                  placeholder='00000'
                   textAlign='center'
                   onChangeText={text => handleOnChangeCode(text)}
               />
@@ -313,7 +306,7 @@ const ChangePhoneNumber = ({navigation}) => {
 
             <View display={isCodeSent} style={{flexDirection:'row'}}>
                 <View>
-                <Text style={styles.resendCodeText}>{"Didn't recive an SMS?"}</Text>
+                <Text style={styles.resendCodeText}>{"Didn't receive an SMS?"}</Text>
                 </View>
                 <View>
                     <TouchableOpacity
@@ -329,7 +322,7 @@ const ChangePhoneNumber = ({navigation}) => {
               <Text style={styles.nextErrorMessage}>{nextErrorMessage}</Text>
               :null}
               <AppButton
-                title="Submit"
+                title="Verify phone number"
                 onPress={handleSubmit}
               />
             </View>

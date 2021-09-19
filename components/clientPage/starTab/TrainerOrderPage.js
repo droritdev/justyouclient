@@ -32,7 +32,7 @@ import axios from 'axios';
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 import {TrainerContext} from '../../../context/TrainerContext';
 import {OrderContext} from '../../../context/OrderContext';
-import { reduce } from 'lodash';
+import { isDate, reduce } from 'lodash';
 
 let API_KEY = 'AIzaSyAKKYEMdjG_Xc6ZuvyzxHBi1raltggDA2c'; // TODO: move api key to .env
 Geocoder.init(API_KEY); // use a valid API key
@@ -113,6 +113,14 @@ const TrainerOrderPage = ({navigation, route}) => {
   //       setHeartUri(require('../../../images/blueheart.png'))
   //     }
   //   }
+  // }, [isFocused])
+
+  // useEffect(() => {
+  //     if (isFocused) {
+  //       setCategorySelected('')
+  //       setTypeOfTrainingSelected('')
+  //       setTrainingSiteSelected('')
+  //     }
   // }, [isFocused])
 
   //paypal payment
@@ -328,11 +336,17 @@ const TrainerOrderPage = ({navigation, route}) => {
       )
       .then((res) => {
         console.log('success booking order')
+        setCategorySelected('')
+        setTypeOfTrainingSelected('')
+        setTrainingSiteSelected('')
         Alert.alert('The order has been sent for confirmation by the trainer',
                     'You will be notified once the trainer has confirmed your training',
                     [{
                       text: 'OK',
-                      onPress: () => navigation.navigate('ProfilePageStack', {screen: 'ProfilePage'})
+                      onPress: () => {
+                        navigation.goBack()
+                        navigation.navigate('ProfilePageStack', {screen: 'ProfilePage'})
+                      }
                     }]
         )
       })
@@ -352,6 +366,10 @@ const TrainerOrderPage = ({navigation, route}) => {
 
   //Handle when the user presses the yes button in the dialog
   const handleYesDialog = () => {
+    setCategorySelected('')
+    setTypeOfTrainingSelected('')
+    setTrainingSiteSelected('')
+    isDateSelected = 'none'
     setDialogVisible(false);
     navigation.goBack();
     console.log('route.params ', route.params.pageCameFrom)

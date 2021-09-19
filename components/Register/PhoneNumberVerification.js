@@ -150,7 +150,6 @@ const PhoneNumberVerification = ({navigation}) => {
     //The function that sends the code to the user's phone
     const sendVerificationCode = (currentPhoneNumber) => {
            setIsCodeSent('flex');
-           console.log('before sendCode cuurentPhone ', currentPhoneNumber)
         axios
           .post('/sendCode', {
             number: currentPhoneNumber
