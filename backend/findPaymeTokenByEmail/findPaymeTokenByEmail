@@ -1,0 +1,14 @@
+//Import the payme model
+const paymeModel = require('../models/paymeModel');
+
+//Find payme token by email
+exports.getPaymeTokenByEmail = (req, res) => {
+    
+    paymeModel.find( 
+        { email: req.params.email },
+    )
+    //res.send(doc))
+    .then((doc) => res.send(doc))
+    .catch((err) => res.send(err.data));
+}
+

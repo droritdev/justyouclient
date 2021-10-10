@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {StyleSheet, View, Text, Image, TextInput, Dimensions} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {NameContext} from '../../context/NameContext';
 

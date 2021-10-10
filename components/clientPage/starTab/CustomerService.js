@@ -12,8 +12,7 @@ const CustomerService = ({navigation}) => {
     //server config
     const config = {
         withCredentials: true,
-        baseURL: 'http://10.0.2.2:3000/',
-    //    baseURL: 'http://localhost:3000/',
+        baseURL: 'http://justyou.iqdesk.info:8081/',
         headers: {
           "Content-Type": "application/json",
         },
@@ -26,7 +25,7 @@ const CustomerService = ({navigation}) => {
     const mailformat = /^(|([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([,.] (([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$/;
 
     //Sender email
-    const supportEmail = "support@justyou.com";
+    const supportEmail = "jusyou.pro@gmail.com";
 
     //Client information
     const {clientObject} = useContext(ClientContext);

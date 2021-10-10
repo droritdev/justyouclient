@@ -137,6 +137,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    android {
+        dexOptions {
+        javaMaxHeapSize "3g"
+        }
+    }
+
     defaultConfig {
         applicationId "com.justyouclient"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -154,6 +160,12 @@ android {
         }
     }
     signingConfigs {
+        release {
+            storeFile file('justyouclientkey.keystore')
+            storePassword 'iqdesk!'
+            keyAlias 'justyouclient'
+            keyPassword 'iqdesk!'
+            }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -168,6 +180,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
+            signingConfig signingConfigs.release
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"

@@ -76,6 +76,7 @@ const findClientByEmail = require('./findClientByEmail/findClientByEmail');
 const findClientByPhone = require('./findClientByPhone/findClientByPhone');
 
 const addPaymeToken = require('./addPaymeToken/addPaymeToken');
+const findPaymeTokenByEmail = require('./findPaymeTokenByEmail/findPaymeTokenByEmail');
 
         //**Place imports**//
 const placeRegister = require('./register/placeRegister');
@@ -100,7 +101,7 @@ const sendEmail = require('./sendGrid/sendEmail');
 const sendAutomaticResponse = require('./sendGrid/sendAutomaticResponse');
 
         //**In-app variables**//
-const port = 3000;
+const port = 8081;
 const app = express();
 
 app.use(cors());
@@ -166,6 +167,8 @@ app.put('/sign-out', signOut.signOut);
 
 //End point for adding payme token
 app.post('/addPaymeToken', addPaymeToken.addPaymeToken);
+
+app.get('/getPaymeToken/:email', findPaymeTokenByEmail.getPaymeTokenByEmail);
 
 
             ////**Both trainer & places end points**////

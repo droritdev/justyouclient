@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView, Alert} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Dialog from "react-native-dialog";
 import { WebView } from 'react-native-webview';
@@ -24,6 +24,14 @@ const PaymentsAndPolicy = ({navigation}) => {
 //    const {dispatchPaymeToken} = useContext(PaymeTokenContext);
 
     const config = {
+        withCredentials: true,
+        baseURL: 'http://justyou.iqdesk.info:8081/',
+        headers: {
+        "Content-Type": "application/json",
+        },
+    };
+
+    const configPayme = {
         headers: {
           "Content-Type": "application/json",
         },
@@ -46,7 +54,7 @@ const PaymentsAndPolicy = ({navigation}) => {
                     "sale_type": "token",
                     "language": "en"
                 },
-                config
+                configPayme
             )
             .then(response => {
             //    console.log('sale_url ', response)
@@ -77,7 +85,25 @@ const PaymentsAndPolicy = ({navigation}) => {
 
     //Handle the approve button when pressed, if ok - navigates to RegisteringAccountPopUp
     const handleNext = () => {
-            navigation.navigate('PhoneNumberVerification');
+            axios
+            .get('/getPaymeToken/' + emailAddress.toLowerCase(),
+                config
+            )
+            .then((doc) => {
+                if (doc) {
+                    navigation.navigate('PhoneNumberVerification');
+                } else {
+                    Alert.alert('Payment details process failed',
+                                'Try again',
+                                [{text: 'OK'}])
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                Alert.alert('Payment details process failed',
+                                'Try again',
+                                [{text: 'OK'}])
+            })
     }
 
     return(
