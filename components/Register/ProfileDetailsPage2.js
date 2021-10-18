@@ -481,7 +481,8 @@ const ProfileDetailsPage2 = ({navigation}) => {
       nextButtonContainer: {
         flex: 1,
         justifyContent: 'flex-end',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 50
       }
   });
 

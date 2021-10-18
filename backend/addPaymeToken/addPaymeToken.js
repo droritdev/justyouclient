@@ -8,7 +8,7 @@ exports.addPaymeToken = (req, res) => {
     //Create a new payme
     const payme = new paymeModel(
         {
-            clientEmail: req.body.buyer_email, 
+            clientEmail: req.body.buyer_email.toLowerCase(), 
             paymeToken: req.body.buyer_key
         }
     );    

@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'flex-end',
       alignItems: 'center',
-      marginBottom: 20
+      marginBottom: 50
     },
     justyouView: {
       marginTop: 20,

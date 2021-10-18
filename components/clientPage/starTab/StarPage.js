@@ -620,7 +620,7 @@ const StarPage = ({ navigation }) => {
 
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{justifyContent: 'space-between', paddingBottom: 60}}
+        contentContainerStyle={{justifyContent: 'space-between', paddingBottom: 70}}
       >
         <View style={styles.header}>
           <Text style={styles.headerText}>Just You</Text>

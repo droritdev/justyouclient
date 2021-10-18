@@ -41,7 +41,7 @@ const ChooseDateAndTimePage = ({navigation}) => {
   const [unavailableDialogVisible, setUnavailableDialogVisible] = useState(
     false,
   );
-  const [datePickerVisible, setDatePickerVisible] = useState(true);
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [currentDisplayedDate, setCurrentDisplayedDate] = useState('');
@@ -60,8 +60,8 @@ const ChooseDateAndTimePage = ({navigation}) => {
     navigation.dangerouslyGetParent().setOptions({
       tabBarVisible: false,
     });
-
-    setCurrentDisplayedDate(new Date());
+    console.log('current date useeffect ', new Date().toISOString().slice(0, 10))
+    setCurrentDisplayedDate(new Date().toISOString().slice(0, 10));
 
     getTrainerFromMongoDB();
   }, []);
@@ -377,7 +377,8 @@ const ChooseDateAndTimePage = ({navigation}) => {
     endTimeToPass = new Date(time)
     endTimeToPass.setHours(endTimeToPass.getHours() + 1)
     endTimeToPass = endTimeToPass.toString().slice(16, 21)
-    orderDateToPass = time.toString().slice(0, 15)
+    //orderDateToPass = time.toString().slice(0, 15)
+    orderDateToPass = currentDisplayedDate
     console.log('start ', startTimeToPass)
     console.log('end ', endTimeToPass)
     console.log('date ', orderDateToPass)
@@ -442,6 +443,9 @@ const ChooseDateAndTimePage = ({navigation}) => {
 
   //Update current displayed date
   const handleOnDateChange = (date) => {
+    console.log(date)
+    orderDateToPass = date
+    console.log(orderDateToPass)
     setCurrentDisplayedDate(date);
   };
   const handleArrowButton = () => {

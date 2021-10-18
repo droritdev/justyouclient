@@ -72,10 +72,13 @@ const TrainerOrderPage = ({navigation, route}) => {
   let isDateSelected = 'none';
   let isDateSelectedForButtonShow = 'flex';
 
+  let paymeToken = '';
+
   const [clientID, setClientID] = useState('');
   const [clientFirstName, setClientFirstName] = useState('');
   const [clientLastName, setClientLastName] = useState('');
   const [clientProfilePic, setClientProfilePic] = useState('');
+  const [clientEmail, setClientEmail] = useState('')
 
   const {
     orderObejct,
@@ -155,6 +158,12 @@ const TrainerOrderPage = ({navigation, route}) => {
     },
   };
 
+  const configPayme = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
   //setting trainer details at page:
 
   //trainer reviews array
@@ -219,6 +228,7 @@ const TrainerOrderPage = ({navigation, route}) => {
           setClientFirstName(currectUserData.name.first);
           setClientLastName(currectUserData.name.last);
           setClientProfilePic(currectUserData.image);
+          setClientEmail(currectUserData.email);
           if(currectUserData.likes.indexOf(trainerObject._id.toString()) !== -1){
             console.log('in includes')
             setHeartUri(require('../../../images/blueheart.png'))
@@ -285,7 +295,45 @@ const TrainerOrderPage = ({navigation, route}) => {
     return repeats;
   };
 
-  const registerOrder = () => {
+  const paymeSale = () => {
+    console.log('paymetoken ', paymeToken)
+    axios
+      .post(
+          'https://preprod.paymeservice.com/api/generate-sale',
+          {
+              "seller_payme_id": "MPL16286-62772S4F-0CPOKDFP-GIWMKI6U",
+              "sale_price": cleanedPrice * 100,
+              "currency": "USD",
+              "product_name": "Training",
+              "transaction_id": clientEmail,
+              "installments": 1,
+          //    "sale_callback_url": "http://justyou.iqdesk.info:8081/addPaymeToken",
+          //    "sale_return_url": "https://www.amazon.com/",
+              "buyer_key": paymeToken,
+              "language": "en"
+          },
+          configPayme
+      )
+      .then(response => {
+          console.log('payme_sale_id ', response.data.payme_sale_id)
+          console.log('responsedata ', response.data)
+          console.log('payme_status ', response.data.payme_status)
+          if(response.data.payme_status === 'success'){
+            console.log('payme success')
+            registerOrder()
+          } else {
+            console.log('payme error')
+            Alert.alert('Payment failed', '', [{text: 'OK'}])
+          }
+      })
+      .catch(err => {
+          console.log('in catch')
+          console.log(err)
+          console.log(err.response)
+      })
+  }
+
+  const processOrder = () => {
     if(categorySelected === ''){
       Alert.alert('Category not selected', '', [{text: 'OK'}])
       return
@@ -302,6 +350,30 @@ const TrainerOrderPage = ({navigation, route}) => {
       Alert.alert('Date and time not selected', '', [{text: 'OK'}])
       return
     }
+    axios
+      .get('/getPaymeToken/' + clientEmail.toLowerCase(),
+          config
+      )
+      .then((doc) => {
+          if (doc.data.length !== 0) {
+              console.log('docdata ', doc.data)
+              paymeToken = doc.data[0].paymeToken
+              paymeSale()
+          } else {
+              Alert.alert('Cannot complete payment',
+                          'Try again',
+                          [{text: 'OK'}])
+          }
+      })
+      .catch((err) => {
+          console.log(err)
+          Alert.alert('Cannot complete payment',
+                          'Try again',
+                          [{text: 'OK'}])
+      })
+  }
+
+  const registerOrder = () => {
     axios
       .post(
         '/clients/orders/book-order',
@@ -934,7 +1006,8 @@ const TrainerOrderPage = ({navigation, route}) => {
                   </View>
                   <View style={styles.dateSelectedDetails}>
                     <Text style={styles.dateSelectedDetailsText}>
-                      {orderDateClean + ''.slice(0, 10)}
+                      {orderDate}
+                      {/* {orderDateClean + ''.slice(0, 10)} */}
                     </Text>
                     <Text style={styles.dateSelectedDetailsText}>
                       {orderStartTime}
@@ -988,7 +1061,7 @@ const TrainerOrderPage = ({navigation, route}) => {
         <View style={styles.payContainer}>
           <TouchableOpacity
             style={styles.chooseDateButton}
-            onPress={registerOrder}
+            onPress={processOrder}
           >
             <Text style={styles.chooseDateText}>payment</Text>
           </TouchableOpacity>

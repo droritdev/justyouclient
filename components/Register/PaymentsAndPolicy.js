@@ -49,7 +49,7 @@ const PaymentsAndPolicy = ({navigation}) => {
                     "product_name": "Product",
                     "transaction_id": emailAddress,
                     "installments": 1,
-                    "sale_callback_url": "https://10.0.2.2:3000/addPaymeToken",
+                    "sale_callback_url": "http://justyou.iqdesk.info:8081/addPaymeToken",
                 //    "sale_return_url": "https://www.amazon.com/",
                     "sale_type": "token",
                     "language": "en"
@@ -85,23 +85,25 @@ const PaymentsAndPolicy = ({navigation}) => {
 
     //Handle the approve button when pressed, if ok - navigates to RegisteringAccountPopUp
     const handleNext = () => {
+        console.log('in handle next')
             axios
             .get('/getPaymeToken/' + emailAddress.toLowerCase(),
                 config
             )
             .then((doc) => {
-                if (doc) {
+                if (doc.data.length !== 0) {
+                    console.log('docdata ', doc.data)
                     navigation.navigate('PhoneNumberVerification');
                 } else {
-                    Alert.alert('Payment details process failed',
-                                'Try again',
+                    Alert.alert('Payment details process failed 1',
+                                `${doc}`,
                                 [{text: 'OK'}])
                 }
             })
             .catch((err) => {
                 console.log(err)
-                Alert.alert('Payment details process failed',
-                                'Try again',
+                Alert.alert('Payment details process failed 2',
+                                `${err}`,
                                 [{text: 'OK'}])
             })
     }
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
     nextButtonContainer: {
         justifyContent: 'flex-end',
         alignItems: 'center',
-    //    display: 'none'
+        marginBottom: 50
     },
     webViewContainer: {
         flex: 1,

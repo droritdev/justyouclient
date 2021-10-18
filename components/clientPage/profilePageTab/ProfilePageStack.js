@@ -14,6 +14,7 @@ import Settings from './Settings';
 import ChangeEmailAddress from './ChangeEmailAddress';
 import ChangePhoneNumber from './ChangePhoneNumber';
 import Chat from './Chat';
+import MethodsOfPayment from './MethodsOfPayment';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ const TrainerProfilePageStack = ({navigation}) => {
             <Stack.Screen name='EditProfile' component={EditProfile}/>
             <Stack.Screen name='CustomerService' component={CustomerService}/>
             <Stack.Screen name='Settings' component={Settings}/>
+            <Stack.Screen name='MethodsOfPayment' component={MethodsOfPayment}/>
             <Stack.Screen name='ChangeEmailAddress' component={ChangeEmailAddress}/>
             <Stack.Screen name='ChangePhoneNumber' component={ChangePhoneNumber}/>
             <Stack.Screen name='Chat' component={Chat}/>

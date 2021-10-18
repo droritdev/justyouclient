@@ -57,6 +57,10 @@ const Settings = ({navigation}) => {
         navigation.navigate('ChangePhoneNumber');
     }
 
+    const handleOnMethodsOfPaymentPressed = () => {
+        navigation.navigate('MethodsOfPayment');
+    }
+
     return(
         <SafeAreaView style={styles.safeArea}>
             <View>
@@ -78,13 +82,13 @@ const Settings = ({navigation}) => {
                 <View style={styles.settingsContainer1}>
                     <View style={styles.paymentsRow}>
                         <TouchableOpacity
-                            //onPress={() => handleOnEditProfilePressed()}
+                            onPress={() => handleOnMethodsOfPaymentPressed()}
                         >
                             <Text style={styles.paymentsTitle}>Methods of payment</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.arrowButton}
-                            //onPress={() => handleOnEditProfilePressed()}
+                            onPress={() => handleOnMethodsOfPaymentPressed()}
                         >
                             <Image
                                 source={require('../../../images/arrowButton.png')}

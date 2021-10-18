@@ -11,9 +11,11 @@ const PickCountry = (props) => {
     const categories = [
         { key: index++, section: true, label: 'Countries' },
         { key: index++, label: 'United States' },
-        // { key: index++, label: 'Israel' },
-        // { key: index++, label: 'France', accessibilityLabel: 'Tap here for cranberries' },
-        // { key: index++, label: 'Italy', customKey: 'Not a fruit' }
+        { key: index++, label: 'United Kingdom' },
+        { key: index++, label: 'Canada' },
+        { key: index++, label: 'Australia' },
+        { key: index++, label: 'France' },
+        { key: index++, label: 'Italy' }
     ];
 
     return (

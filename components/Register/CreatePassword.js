@@ -33,6 +33,8 @@ const CreatePassword = ({navigation}) => {
 
     //Handle the next button press
     const handleNext = () => {
+      var hasNumber = /\d/
+      var hasLetter = /[a-zA-Z]/
       if(passwordInput.length > 0 && confirmedPassword.length > 0){
         if(confirmedPassword !== passwordInput){
           setPasswordErrorText("Passwords does not match")
@@ -41,6 +43,14 @@ const CreatePassword = ({navigation}) => {
         else if(passwordInput.length < 6){
           setPasswordErrorText("Valid password is at least 6 characters")
           setIsPasswordsNotMatch(true);
+        }
+        else if(!hasNumber.test(passwordInput)){
+          setPasswordErrorText("Valid password must have at least one number")
+          setIsPasswordsNotMatch(true)
+        }
+        else if(!hasLetter.test(passwordInput)){
+          setPasswordErrorText("Valid password must have at least one letter")
+          setIsPasswordsNotMatch(true)
         }
         else{
           let encodedPass = Base64.encode(passwordInput);
@@ -67,6 +77,9 @@ const CreatePassword = ({navigation}) => {
         <Text style={styles.justYouHeader}>Just You</Text>
         <View style={styles.passwordContainer}>
           <Text style={styles.createPasswordText}>Create Password</Text>
+          <View style={{width: Dimensions.get('window').width * .69, paddingTop: 30}}>
+            <Text>Please enter a password with at least one number and one letter. The password must be at least 6 characters.</Text>
+          </View>
           <View style={styles.passwordInput}>
             <TextInput
               value={passwordInput}
@@ -151,7 +164,8 @@ const CreatePassword = ({navigation}) => {
     nextButtonContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      alignItems: 'center'
+      alignItems: 'center',
+      marginBottom: 50
     }
   });
 

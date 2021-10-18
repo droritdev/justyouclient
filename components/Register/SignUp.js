@@ -227,7 +227,8 @@ const styles = StyleSheet.create({
     fotterContainer: {
       flex: 1,
       justifyContent: 'flex-end',
-      alignItems: 'center'
+      alignItems: 'center',
+      marginBottom: 50
     },
   alreadyHaveAccountContainer: {
     flexDirection: 'row',
