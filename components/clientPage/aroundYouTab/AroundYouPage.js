@@ -69,7 +69,7 @@ const AroundYouPage = ({navigation}) => {
     withCredentials: true,
   //baseURL: 'http://10.0.2.2:3000/',
   //baseURL: 'http://localhost:3000/',
-    baseURL: 'http://justyou.iqdesk.info:8081/',
+    baseURL: 'https://justyou.iqdesk.info:443/',
     headers: {
       'Content-Type': 'application/json',
     },

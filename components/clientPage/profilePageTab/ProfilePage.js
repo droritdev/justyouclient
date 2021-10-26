@@ -53,7 +53,7 @@ const ProfilePage = ({ navigation }) => {
 
     const config = {
         withCredentials: true,
-        baseURL: 'http://justyou.iqdesk.info:8081/',
+        baseURL: 'https://justyou.iqdesk.info:443/',
         headers: {
             'Content-Type': 'application/json',
         },
