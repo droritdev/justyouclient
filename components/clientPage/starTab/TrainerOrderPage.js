@@ -350,27 +350,28 @@ const TrainerOrderPage = ({navigation, route}) => {
       Alert.alert('Date and time not selected', '', [{text: 'OK'}])
       return
     }
-    axios
-      .get('/getPaymeToken/' + clientEmail.toLowerCase(),
-          config
-      )
-      .then((doc) => {
-          if (doc.data.length !== 0) {
-              console.log('docdata ', doc.data)
-              paymeToken = doc.data[0].paymeToken
-              paymeSale()
-          } else {
-              Alert.alert('Cannot complete payment',
-                          'Try again',
-                          [{text: 'OK'}])
-          }
-      })
-      .catch((err) => {
-          console.log(err)
-          Alert.alert('Cannot complete payment',
-                          'Try again',
-                          [{text: 'OK'}])
-      })
+    registerOrder()
+    // axios
+    //   .get('/getPaymeToken/' + clientEmail.toLowerCase(),
+    //       config
+    //   )
+    //   .then((doc) => {
+    //       if (doc.data.length !== 0) {
+    //           console.log('docdata ', doc.data)
+    //           paymeToken = doc.data[0].paymeToken
+    //           paymeSale()
+    //       } else {
+    //           Alert.alert('Cannot complete payment',
+    //                       'Try again',
+    //                       [{text: 'OK'}])
+    //       }
+    //   })
+    //   .catch((err) => {
+    //       console.log(err)
+    //       Alert.alert('Cannot complete payment',
+    //                       'Try again',
+    //                       [{text: 'OK'}])
+    //   })
   }
 
   const registerOrder = () => {

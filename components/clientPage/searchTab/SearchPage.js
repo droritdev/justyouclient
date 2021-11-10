@@ -18,17 +18,25 @@ import {TrainerContext} from '../../../context/TrainerContext';
 import PickCategories from '../../GlobalComponents/PickCategories';
 
 const categoriesData = [
-    { id: 1, label: 'HIT' },
-    { id: 2, label: 'KICK BOX' },
-    { id: 3, label: 'MARTIAL ARTS' },
-    { id: 4, label: 'PILATIS' },
-    { id: 5, label: 'CLIMBING' },
-    { id: 6, label: 'TRX' },
-    { id: 7, label: 'DANCING' },
-    { id: 8, label: 'SWIMMING' },
-    { id: 9, label: 'RUNNING' },
-    { id: 10,label: 'POWERLIFTING' },
-    { id: 11,label: 'STREET' }
+        { id: 1, label: 'STRENGTH' },
+        { id: 2, label: 'KICKBOXING' },
+        { id: 3, label: 'MARTIAL ARTS' },
+        { id: 4, label: 'PILATES' },
+        { id: 5, label: 'CLIMBING' },
+        { id: 6, label: 'TRX' },
+        { id: 7, label: 'DANCING' },
+        { id: 8, label: 'SWIMMING' },
+        { id: 9, label: 'RUNNING' },
+        { id: 10, label: 'AEROBIC' },
+        { id: 11, label: 'CYCLING' },
+        { id: 12, label: 'FLEXIBILITY' },
+        { id: 13, label: 'YOGA' },
+        { id: 14, label: 'MUSCLE BUILDING' },
+        { id: 15, label: 'BALANCE AND STABILITY' },
+        { id: 16, label: 'ENDURANCE' },
+        { id: 17, label: 'POWERLIFTING' },
+        { id: 18, label: 'CROSSFIT' },
+        { id: 19, label: 'HORSEBACK RIDING' }
 ];
 
 //The claint's search page

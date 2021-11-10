@@ -40,7 +40,6 @@ const StarPage = ({ navigation }) => {
   const { orderEndTime, dispatchOrderEndTime } = useContext(OrderContext);
   const [trainersInCategoryCount, setTrainersInCategoryCount] = useState(0);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [hitArrayCount, setHitArrayCount] = useState(0);
   const [kickBoxArrayCount, setKickBoxArrayCount] = useState(0);
   const [martialArtsArrayCount, setMartialArtsArrayCount] = useState(0);
   const [pilatisArrayCount, setPilatisArrayCount] = useState(0);
@@ -50,7 +49,16 @@ const StarPage = ({ navigation }) => {
   const [swimmingArrayCount, setSwimmingArrayCount] = useState(0);
   const [runningArrayCount, setRunningArrayCount] = useState(0);
   const [powerLiftingArrayCount, setPowerLiftingArrayCount] = useState(0);
-  const [streetWorkoutArrayCount, setStreetWorkoutArrayCount] = useState(0);
+  const [aerobicArrayCount, setAerobicArrayCount] = useState(0);
+  const [balanceArrayCount, setBalanceArrayCount] = useState(0);
+  const [crossfitArrayCount, setCrossfitArrayCount] = useState(0);
+  const [cyclingArrayCount, setCyclingArrayCount] = useState(0);
+  const [enduranceArrayCount, setEnduranceArrayCount] = useState(0);
+  const [flexibilityArrayCount, setFlexibilityArrayCount] = useState(0);
+  const [horseArrayCount, setHorseArrayCount] = useState(0);
+  const [muscleArrayCount, setMuscleArrayCount] = useState(0);
+  const [strenthArrayCount, setStrenthArrayCount] = useState(0);
+  const [yogaArrayCount, setYogaArrayCount] = useState(0);
   const [initializing, setInitializing] = useState(false);
 
   const [firstName, setFirstName] = useState('');
@@ -66,33 +74,50 @@ const StarPage = ({ navigation }) => {
   );
 
   const categories = [
-    { id: 1, label: 'HIT' },
-    { id: 2, label: 'KICK BOX' },
-    { id: 3, label: 'MARTIAL ARTS' },
-    { id: 4, label: 'PILATIS' },
-    { id: 5, label: 'CLIMBING' },
-    { id: 6, label: 'TRX' },
-    { id: 7, label: 'DANCING' },
-    { id: 8, label: 'SWIMMING' },
-    { id: 9, label: 'RUNNING' },
-    { id: 10, label: 'POWERLIFTING' },
+        { id: 1, label: 'STRENGTH' },
+        { id: 2, label: 'KICKBOXING' },
+        { id: 3, label: 'MARTIAL ARTS' },
+        { id: 4, label: 'PILATES' },
+        { id: 5, label: 'CLIMBING' },
+        { id: 6, label: 'TRX' },
+        { id: 7, label: 'DANCING' },
+        { id: 8, label: 'SWIMMING' },
+        { id: 9, label: 'RUNNING' },
+        { id: 10, label: 'AEROBIC' },
+        { id: 11, label: 'CYCLING' },
+        { id: 12, label: 'FLEXIBILITY' },
+        { id: 13, label: 'YOGA' },
+        { id: 14, label: 'MUSCLE BUILDING' },
+        { id: 15, label: 'BALANCE AND STABILITY' },
+        { id: 16, label: 'ENDURANCE' },
+        { id: 17, label: 'POWERLIFTING' },
+        { id: 18, label: 'CROSSFIT' },
+        { id: 19, label: 'HORSEBACK RIDING' }
   ];
 
   const categoriesArray = [
-    'HIT',
-    'KICK BOX',
-    'MARTIAL ARTS',
-    'PILATIS',
-    'CLIMBING',
-    'TRX',
-    'DANCING',
-    'SWIMMING',
-    'RUNNING',
-    'POWER LIFTING',
+        'STRENGTH',
+        'KICKBOXING',
+        'MARTIAL ARTS',
+        'PILATES',
+        'CLIMBING',
+        'TRX',
+        'DANCING',
+        'SWIMMING',
+        'RUNNING',
+        'AEROBIC',
+        'CYCLING',
+        'FLEXIBILITY',
+        'YOGA',
+        'MUSCLE BUILDING',
+        'BALANCE AND STABILITY',
+        'ENDURANCE',
+        'POWERLIFTING',
+        'CROSSFIT',
+        'HORSEBACK RIDING'
   ];
   const [nameForImage, setNameForImage] = useState('');
 
-  let hitArray = [];
   let kickBoxArray = [];
   let martialArtsArray = [];
   let pilatisArray = [];
@@ -102,7 +127,16 @@ const StarPage = ({ navigation }) => {
   let swimmingArray = [];
   let runningArray = [];
   let powerLiftingArray = [];
-  let streetWorkoutArray = [];
+  let aerobicArray = [];
+  let balanceArray = [];
+  let crossfitArray = [];
+  let cyclingArray = [];
+  let enduranceArray = [];
+  let flexibilityArray = [];
+  let horseArray = [];
+  let muscleArray = [];
+  let strenthArray = [];
+  let yogaArray = [];
 
   const config = {
     withCredentials: true,
@@ -142,9 +176,6 @@ const StarPage = ({ navigation }) => {
 
         }
       }
-      if (element.categories.includes('HIT')) {
-        hitArray.push(element);
-      }
       if (element.categories.includes('KICK BOX')) {
         kickBoxArray.push(element);
       }
@@ -172,13 +203,41 @@ const StarPage = ({ navigation }) => {
       if (element.categories.includes('POWER LIFTING')) {
         powerLiftingArray.push(element);
       }
-      if (element.categories.includes('STREET WORKOUT')) {
-        streetWorkoutArray.push(element);
+
+      if (element.categories.includes('AEROBIC')) {
+        aerobicArray.push(element);
       }
+      if (element.categories.includes('BALANCE AND STABILITY')) {
+        balanceArray.push(element);
+      }
+      if (element.categories.includes('CROSSFIT')) {
+        crossfitArray.push(element);
+      }
+      if (element.categories.includes('CYCLING')) {
+        cyclingArray.push(element);
+      }
+      if (element.categories.includes('ENDURANCE')) {
+        enduranceArray.push(element);
+      }
+      if (element.categories.includes('FLEXIBILITY')) {
+        flexibilityArray.push(element);
+      }
+      if (element.categories.includes('HORSEBACK RIDING')) {
+        horseArray.push(element);
+      }
+      if (element.categories.includes('MUSCLE BUILDING')) {
+        muscleArray.push(element);
+      }
+      if (element.categories.includes('STRENTH')) {
+        strenthArray.push(element);
+      }
+      if (element.categories.includes('YOGA')) {
+        yogaArray.push(element);
+      }
+      
     }
     //    {/* MARK */}
 
-    setHitArrayCount(hitArray.length);
     setKickBoxArrayCount(kickBoxArray.length);
     setMartialArtsArrayCount(martialArtsArray.length);
     setPilatisArrayCount(pilatisArray.length);
@@ -188,7 +247,17 @@ const StarPage = ({ navigation }) => {
     setSwimmingArrayCount(swimmingArray.length);
     setRunningArrayCount(runningArray.length);
     setPowerLiftingArrayCount(powerLiftingArray.length);
-    setStreetWorkoutArrayCount(streetWorkoutArray.length);
+
+    setAerobicArrayCount(aerobicArray.length);
+    balanceArrayCount(balanceArray.length);
+    setCrossfitArrayCount(crossfitArray.length);
+    setCyclingArrayCount(cyclingArray.length);
+    setEnduranceArrayCount(enduranceArray.length);
+    setFlexibilityArrayCount(flexibilityArray.length);
+    setHorseArrayCount(horseArray.length);
+    setMuscleArrayCount(muscleArray.length);
+    setStrenthArrayCount(strenthArray.length);
+    setYogaArrayCount(yogaArray.length);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -322,10 +391,8 @@ const StarPage = ({ navigation }) => {
         return require('../../../images/categoriesImages/CLIMBING.jpg');
       case 'DANCING':
         return require('../../../images/categoriesImages/DANCING.jpg');
-      case 'HIT':
-        return require('../../../images/categoriesImages/HIT.jpg');
-      case 'KICKBOX':
-        return require('../../../images/categoriesImages/KICKBOX.jpg');
+      case 'KICKBOXING':
+        return require('../../../images/categoriesImages/KICKBOXING.jpg');
       case 'MARTIALARTS':
         return require('../../../images/categoriesImages/MARTIALARTS.jpg');
       case 'PILATES':
@@ -334,8 +401,6 @@ const StarPage = ({ navigation }) => {
         return require('../../../images/categoriesImages/POWERLIFTING.jpg');
       case 'RUNNING':
         return require('../../../images/categoriesImages/RUNNING.jpg');
-      case 'STREETWORKOUT':
-        return require('../../../images/categoriesImages/STREETWORKOUT.jpg');
       case 'SWIMMING':
         return require('../../../images/categoriesImages/SWIMMING.jpg');
       case 'TRX':

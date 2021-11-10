@@ -2,21 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleURLTypes</key>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>justyou-app</string>
-			</array>
-		</dict>
+		<string>com.iqdesk.justyouclient</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>justYouClient</string>
+	<string>JustYou</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -29,8 +26,17 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>justyou-app</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -46,38 +52,28 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs Media access</string>
 	<key>NSCalendarsUsageDescription</key>
-	<string/>
+	<string>$(PRODUCT_NAME) needs Calendars access to create trainings</string>
 	<key>NSCameraUsageDescription</key>
-	<string/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>$(PRODUCT_NAME) needs Camera access to add profile picture</string>
+	<key>NSContactsUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs Contacts access to create trainings</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string/>
+	<string>$(PRODUCT_NAME) needs Location access to create trainings</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string/>
+	<string>$(PRODUCT_NAME) needs Location access to create trainings</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs Location access to create trainings</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string/>
+	<string>$(PRODUCT_NAME) needs Microphone access to create trainings</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string/>
+	<string>$(PRODUCT_NAME) needs Photo library access to add profile picture</string>
 	<key>NSRemindersUsageDescription</key>
-	<string/>
+	<string>$(PRODUCT_NAME) needs Remainders access to create trainings</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<string>$(PRODUCT_NAME) needs Tracking access to create trainings</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -97,5 +93,26 @@
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>processing</string>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>kTCCServiceMediaLibrary</key>
+	<string>$(PRODUCT_NAME) needs Music access </string>
 </dict>
 </plist>
