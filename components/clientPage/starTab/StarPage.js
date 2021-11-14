@@ -182,7 +182,7 @@ const StarPage = ({ navigation }) => {
       if (element.categories.includes('MARTIAL ARTS')) {
         martialArtsArray.push(element);
       }
-      if (element.categories.includes('PILATIS')) {
+      if (element.categories.includes('PILATES')) {
         pilatisArray.push(element);
       }
       if (element.categories.includes('CLIMBING')) {
@@ -247,7 +247,6 @@ const StarPage = ({ navigation }) => {
     setSwimmingArrayCount(swimmingArray.length);
     setRunningArrayCount(runningArray.length);
     setPowerLiftingArrayCount(powerLiftingArray.length);
-
     setAerobicArrayCount(aerobicArray.length);
     balanceArrayCount(balanceArray.length);
     setCrossfitArrayCount(crossfitArray.length);
@@ -405,6 +404,26 @@ const StarPage = ({ navigation }) => {
         return require('../../../images/categoriesImages/SWIMMING.jpg');
       case 'TRX':
         return require('../../../images/categoriesImages/TRX.jpg');
+      case 'AEROBIC':
+        return require('../../../images/categoriesImages/AEROBIC.jpg');
+      case 'BALANCEANDSTABILITY':
+        return require('../../../images/categoriesImages/BALANCEANDSTABILITY.jpg');
+      case 'CROSSFIT':
+        return require('../../../images/categoriesImages/CROSSFIT.jpg');
+      case 'CYCLING':
+        return require('../../../images/categoriesImages/CYCLING.jpg');
+      case 'ENDURANCE':
+        return require('../../../images/categoriesImages/ENDURANCE.jpg');
+      case 'FLEXIBILITY':
+        return require('../../../images/categoriesImages/FLEXIBILITY.jpg');
+      case 'HORSEBACKRIDING':
+        return require('../../../images/categoriesImages/HORSEBACKRIDING.jpg');
+      case 'MUSCLEBUILDING':
+        return require('../../../images/categoriesImages/MUSCLEBUILDING.jpg');
+      case 'STRENTH':
+        return require('../../../images/categoriesImages/STRENTH.jpg');
+      case 'YOGA':
+        return require('../../../images/categoriesImages/YOGA.jpg');
     }
   };
 
@@ -716,26 +735,10 @@ const StarPage = ({ navigation }) => {
               <View style={styles.inSectionImageViewContainer}>
                 <TouchableOpacity
                   style={styles.inSectionImageView}
-                  onPress={() => handleOnCategoryPressed('HIT')}>
+                  onPress={() => handleOnCategoryPressed('KICK BOXING')}>
                   <Image
                     style={styles.categoryImage}
-                    source={require('../../../images/categoriesImages/HIT.jpg')}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.categoryPreviewText}>
-                <Text style={styles.categoryText1}>HIT</Text>
-                {/* <Text style={styles.categoryText2}>Amount of trainrs: {hitArrayCount}</Text> */}
-              </View>
-            </View>
-            <View style={styles.inSectionView}>
-              <View style={styles.inSectionImageViewContainer}>
-                <TouchableOpacity
-                  style={styles.inSectionImageView}
-                  onPress={() => handleOnCategoryPressed('KICK BOX')}>
-                  <Image
-                    style={styles.categoryImage}
-                    source={require('../../../images/categoriesImages/KICKBOX.jpg')}
+                    source={require('../../../images/categoriesImages/KICKBOXING.jpg')}
                   />
                 </TouchableOpacity>
               </View>
@@ -774,7 +777,7 @@ const StarPage = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.categoryPreviewText}>
-                <Text style={styles.categoryText1}>PILATIS</Text>
+                <Text style={styles.categoryText1}>PILATES</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {pilatisArrayCount}</Text> */}
               </View>
             </View>
@@ -885,18 +888,172 @@ const StarPage = ({ navigation }) => {
               <View style={styles.inSectionImageViewContainer}>
                 <TouchableOpacity
                   style={styles.inSectionImageView}
-                  onPress={() => handleOnCategoryPressed('STREET WORKOUT')}>
+                  onPress={() => handleOnCategoryPressed('AEROBIC')}>
                   <Image
                     style={styles.categoryImage}
-                    source={require('../../../images/categoriesImages/STREETWORKOUT.jpg')}
+                    source={require('../../../images/categoriesImages/AEROBIC.jpg')}
                   />
                 </TouchableOpacity>
               </View>
               <View style={styles.categoryPreviewText}>
-                <Text style={styles.categoryText1}>STREET</Text>
-                {/* <Text style={styles.categoryText2}>Amount of trainrs: {streetWorkoutArrayCount}</Text> */}
+                <Text style={styles.categoryText1}>AEROBIC</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
             </View>
+
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('BALANCE AND STABILITY')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/BALANCEANDSTABILITY.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>BALANCE AND STABILITY</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
+              </View>
+            </View>
+
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('CROSSFIT')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/CROSSFIT.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>CROSSFIT</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
+              </View>
+            </View>
+
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('CYCLING')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/CYCLING.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>CYCLING</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
+              </View>
+            </View>
+
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('ENDURANCE')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/ENDURANCE.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>ENDURANCE</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
+              </View>
+            </View>
+
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('FLEXIBILITY')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/FLEXIBILITY.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>FLEXIBILITY</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
+              </View>
+            </View>
+
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('HORSEBACK RIDING')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/HORSEBACKRIDING.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>HORSEBACK RIDING</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
+              </View>
+            </View>
+
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('MUSCLE BUILDING')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/MUSCLEBUILDING.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>MUSCLE BUILDING</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
+              </View>
+            </View>
+
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('STRENTH')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/STRENTH.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>STRENTH</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
+              </View>
+            </View>
+
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('YOGA')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/YOGA.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>YOGA</Text>
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
+              </View>
+            </View>
+
           </ScrollView>
         </View>
 

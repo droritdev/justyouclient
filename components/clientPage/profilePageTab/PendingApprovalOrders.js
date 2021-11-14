@@ -158,7 +158,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
 
     const getApprovedOrdersPattern = () => {
         let repeats = [];
-        if (approvedOrders !== []) {
+        if (approvedOrders.length !== 0) {
             for(let i = 0; i < approvedOrders.length; i++) {
                 repeats.push(
                     <TouchableOpacity

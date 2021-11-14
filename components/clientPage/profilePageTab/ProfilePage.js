@@ -349,7 +349,9 @@ const ProfilePage = ({ navigation }) => {
 
     //Handle when the user presses the Receipts history button
     const handleOnReceiptsHistoryPressed = () => {
-        navigation.navigate('ReceiptsHistory');
+        navigation.navigate('ReceiptsHistory', {
+            clientId: clientIdToPass
+        });
     };
 
     //Handle when the user presses the History button

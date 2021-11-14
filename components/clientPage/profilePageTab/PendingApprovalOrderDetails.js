@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 2,
         borderTopColor: 'lightgrey',
         marginTop: Dimensions.get('window').height * .040,
-        height: Dimensions.get('window').height * .3,
+        height: Dimensions.get('window').height * .5,
         width: Dimensions.get('window').width *.85,
         alignSelf: 'center'
     },
