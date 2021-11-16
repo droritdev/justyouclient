@@ -54,6 +54,10 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs Media access</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs BluetoothAlwaysUsage access to create trainings</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs BluetoothPeripheralUsage access to create trainings</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs Calendars access to create trainings</string>
 	<key>NSCameraUsageDescription</key>
@@ -68,6 +72,8 @@
 	<string>$(PRODUCT_NAME) needs Location access to create trainings</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs Microphone access to create trainings</string>
+	<key>NSMotionUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs MotionUsage access to create trainings</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs Photo library access to add profile picture</string>
 	<key>NSRemindersUsageDescription</key>

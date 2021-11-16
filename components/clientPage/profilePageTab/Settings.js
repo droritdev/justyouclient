@@ -26,7 +26,10 @@ const Settings = ({navigation}) => {
     const handleYesDialog = () => {
         setDialogVisible(false);
         auth().signOut()
-            .then(() => navigation.navigate('LogIn'));
+            .then(() => {
+                navigation.goBack();
+                navigation.navigate('LogIn');
+            });
          };
 
     //Handle when the user presses no in the sign out dialog
