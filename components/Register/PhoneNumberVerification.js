@@ -291,7 +291,7 @@ const PhoneNumberVerification = ({navigation}) => {
                   >
               <View style={styles.codeTextInput}>
                 <TextInput
-                    style={{fontSize: 33}}
+                    style={{fontSize: 20}}
                     placeholder='Enter your code'
                     textAlign='center'
                     onChangeText={text => handleOnChangeCode(text)}
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
         borderRadius: 17,
         marginRight: Dimensions.get('window').width * .0241,
         borderColor: 'deepskyblue',
-        borderWidth: 2,
+        borderWidth: 1,
         height: Dimensions.get('window').height * .07,
         width: Dimensions.get('window').width * .3,
         fontSize: Dimensions.get('window').height * .0278
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     phoneNumberInput: {
         borderRadius: 17,
         borderColor: 'deepskyblue',
-        borderWidth: 2,
+        borderWidth: 1,
         height: Dimensions.get('window').height * .07,
         width: Dimensions.get('window').width * .6,
         fontSize: Dimensions.get('window').height * .0278
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
         fontSize: Dimensions.get('window').height * .019,
     },
     verifyButton: {
-        marginTop: Dimensions.get('window').height * .044
+        marginTop: Dimensions.get('window').height * .06
     },
     verifyButtonText: {
         fontSize: Dimensions.get('window').height * .0278,
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     codeTextInput: {
         borderColor: 'deepskyblue',
         borderRadius: 20,
-        borderWidth: 3,
+        borderWidth: 1,
         height: Dimensions.get('window').height * .07,
         width: Dimensions.get('window').width * .9,
         marginTop: Dimensions.get('window').height * .077,

@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Dimensions,
   ImageBackground,
+  Modal,
+  Pressable
 } from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
@@ -22,6 +24,8 @@ const TrainerReviews = ({navigation}) => {
   const [age, setAge] = useState();
   const [clientsInfo, setClientsInfo] = useState([]);
   const [starRating, setStarRating] = useState();
+
+  const [modalVisible, setModalVisible] = useState(false)
 
   const reviews = trainerObject.reviews;
 
@@ -103,6 +107,7 @@ const TrainerReviews = ({navigation}) => {
       .get('/clients/findMultipleClients/' + idArray, config)
       .then((doc) => {
         let allClientsInfo = doc.data;
+        console.log('allClientsInfo ******', allClientsInfo)
         allClientsInfo.reverse();
 
         setClientsInfo(allClientsInfo);
@@ -114,10 +119,17 @@ const TrainerReviews = ({navigation}) => {
 
   //Input the information retrived from database over the UI
   const getTrainerReviews = () => {
+    console.log('in gettrainerreviews')
     let repeats = [];
-    if (reviews !== [] && clientsInfo.length > 0) {
+    console.log('client length ', clientsInfo.length)
+    console.log('review length ', reviews.length)
+    console.log('clientsinfo ', clientsInfo)
+    if (reviews.length !== 0 && clientsInfo.length > 0) {
+      console.log('in if')
       for (let i = 0; i < reviews.length; i++) {
         let singleReview = reviews[i];
+        console.log('single review ', singleReview)
+        console.log('clientsinfoi ', clientsInfo[i])
         repeats.push(
           //row
           <View key={'row' + i} style={styles.reviewRowContainer}>
@@ -172,6 +184,28 @@ const TrainerReviews = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{trainerObject.about_me}</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
       <ArrowBackButton onPress={handleArrowButton} />
 
       <View style={styles.imageAndDetailsContainer}>
@@ -214,9 +248,20 @@ const TrainerReviews = ({navigation}) => {
       <View style={styles.infoView}>
         <Text style={styles.infoText}>
           <Text style={styles.titleText}>About Me: </Text>
-          {trainerObject.about_me}
+          {trainerObject.about_me.length > 80
+            ? trainerObject.about_me.slice(0, 80) + '...'
+            : trainerObject.about_me}
         </Text>
       </View>
+      {trainerObject.about_me.length > 80
+          ? (<View style={{marginLeft: Dimensions.get('window').width * 0.0483, marginTop: 5}}>
+              <Pressable
+                style={{width: 100, height: 20, backgroundColor: 'deepskyblue', borderRadius: 15, justifyContent: 'center', alignItems: 'center'}}
+                onPress={() => setModalVisible(true)}
+             ><Text>Read More</Text>
+             </Pressable>
+             </View>)
+          : null}
 
       <Text style={styles.pageTitle}>
         {' '}
@@ -276,7 +321,7 @@ const styles = StyleSheet.create({
   },
   ratingAndAge: {
     flexDirection: 'row',
-    height: Dimensions.get('window').height * 0.022,
+    height: Dimensions.get('window').height * 0.05,
   },
   ratingText: {
     fontSize: Dimensions.get('window').height * 0.02,
@@ -361,9 +406,50 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   infoText: {
-    fontSize: Dimensions.get('window').height * 0.025,
+    fontSize: Dimensions.get('window').height * 0.02,
     flex: 1,
     flexWrap: 'wrap'
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
   }
 });
 

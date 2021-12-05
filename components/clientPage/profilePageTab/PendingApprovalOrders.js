@@ -265,11 +265,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
                     <View style={styles.pendingContainer}>
                         <View style={styles.pendingOrderView}>
                             {pendingOrders.length === 0 ?
-                            <View>
-                                    <Image
-                                        source={require('../../../images/noOrders.png')}
-                                        style={styles.noOrdersImage}
-                                    />
+                            <View style={{paddingTop: 100}}>
                                   <Text style={styles.noOrdersTitle}>{"NO PENDING ORDERS"}</Text>
                                   <Text style={styles.noOrdersMessage}>{"Looks like you haven't received orders yet."}</Text>
                             </View>
@@ -281,11 +277,7 @@ const PendingApprovalOrders = ({route, navigation}) => {
                     <View style={styles.pendingContainer}>
                         <View style={styles.pendingOrderView}>
                             {approvedOrders.length === 0 ?
-                            <View>
-                                <Image
-                                    source={require('../../../images/noOrders.png')}
-                                    style={styles.noOrdersImage}
-                                />
+                            <View style={{paddingTop: 100}}>
                                 <Text style={styles.noOrdersTitle}>{"NO APPROVED ORDERS"}</Text>
                                 <Text style={styles.noOrdersMessage}>{"Looks like you haven't approved orders yet."}</Text>
                             </View>
@@ -397,7 +389,7 @@ const styles = StyleSheet.create({
     },
     pendingOrderView: {
         borderTopWidth: 2,
-        borderTopColor: 'lightgrey',
+        borderTopColor: 'lightgrey'
     },
     pendingOrder: {
         backgroundColor: 'whitesmoke',

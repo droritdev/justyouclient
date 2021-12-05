@@ -27,11 +27,11 @@ const WhyUs = ({navigation}) => {
         <ArrowBackButton onPress={handleOnArrowPress} />
       </ImageBackground>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Why you should order from</Text>
-        <Text style={styles.juustYouTitle}>Just You</Text>
+      <Text style={styles.juustYouTitle}>Just You</Text>
+        <Text style={styles.headerTitle}>Why you should order</Text>
       </View>
       <View style={styles.reasonsContainer}>
-        <View style={{marginBottom: 10}}>
+        <View style={{marginBottom: 30}}>
         <Text style={styles.reasonsPreview}>
           Five reasons why you should order from Just You:
         </Text>
@@ -112,10 +112,11 @@ const styles = StyleSheet.create({
   juustYouTitle: {
     fontWeight: 'bold',
     fontSize: 25,
-    color: 'deepskyblue',
+    color: 'black',
   },
   reasonsPreview: {
     fontSize: 16,
+    fontWeight: 'bold',
     marginTop: 10,
   },
   reasonsContainer: {

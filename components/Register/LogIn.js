@@ -1,5 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {StyleSheet, View, Text, Dimensions, Image, SafeAreaView, Button} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, Image, SafeAreaView, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
 import axios from 'axios';
@@ -194,6 +194,7 @@ const LogInClient = ({navigation}) => {
     }
 
     return(
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
             <TouchableOpacity
                 onPress={handleArrowButton}
@@ -248,6 +249,7 @@ const LogInClient = ({navigation}) => {
                 </View>
             </View>
         </SafeAreaView>
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -279,7 +281,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     input: {
-        borderWidth: 2,
+        borderWidth: 1,
         borderRadius: 17,
         borderColor: 'deepskyblue',
         width: Dimensions.get('window').width * .9,

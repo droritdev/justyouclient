@@ -21,7 +21,8 @@ const PaymentsAndPolicy = ({navigation}) => {
     const {firstName} = useContext(NameContext);
     const {lastName} = useContext(NameContext);
     const {emailAddress} = useContext(EmailContext);
-//    const {dispatchPaymeToken} = useContext(PaymeTokenContext);
+
+    let interId = 0
 
     const config = {
         withCredentials: true,
@@ -65,6 +66,7 @@ const PaymentsAndPolicy = ({navigation}) => {
                 //     paymeToken: response.data.payme_sale_id
                 // });
                 setWebViewUri(url)
+                interId = setInterval(() => handleNext(), 5000)
             })
             .catch(err => {
                 console.log('in catch')
@@ -92,12 +94,14 @@ const PaymentsAndPolicy = ({navigation}) => {
             )
             .then((doc) => {
                 if (doc.data.length !== 0) {
-                    console.log('docdata ', doc.data)
+                    console.log('payment success docdata ', doc.data)
+                    clearInterval(interId)
                     navigation.navigate('PhoneNumberVerification');
                 } else {
-                    Alert.alert('Payment details process failed 1',
-                                `${doc}`,
-                                [{text: 'OK'}])
+                    // Alert.alert('Payment details process failed 1',
+                    //             `${doc}`,
+                    //             [{text: 'OK'}])
+                    console.log('payment process failed 1')
                 }
             })
             .catch((err) => {
@@ -122,12 +126,12 @@ const PaymentsAndPolicy = ({navigation}) => {
                     source={{ uri: webViewUri }}
                 />
             </View>
-            <View style={styles.nextButtonContainer}>
+            {/* <View style={styles.nextButtonContainer}>
                 <AppButton
                     title="Next"
                     onPress={handleNext}
                 />
-            </View>
+            </View> */}
         </SafeAreaView>
     );
 }

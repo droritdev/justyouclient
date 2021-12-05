@@ -423,7 +423,7 @@ const TrainerOrderPage = ({navigation, route}) => {
         )
       })
       .catch((err) => {
-        console.log('error in booking order ', err)
+        console.log('error in booking order ', err.response)
       })
   };
 
@@ -694,7 +694,7 @@ const TrainerOrderPage = ({navigation, route}) => {
                 {getTrainerStarRating()}
               </Text>
               <Image
-                source={require('../../../images/graystar.png')}
+                source={require('../../../images/starIconBlue.png')}
                 style={styles.starIcon}
               />
               {/* <Icon name="star" size={Dimensions.get('window').height * .02} color="black" /> */}

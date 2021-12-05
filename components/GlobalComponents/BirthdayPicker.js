@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
       },
       birthdayBox: {
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: 'deepskyblue',
         borderRadius: 17,
         //justifyContent: 'center',

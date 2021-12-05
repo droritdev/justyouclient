@@ -332,7 +332,7 @@ const EditProfile = ({navigation}) => {
                 />
             </TouchableOpacity>
             <Text style={styles.editProfileTitle}>Edit Profile</Text>
-            <View style={styles.namesContainer}>
+            <View style={{marginBottom: 40}}>
                 <View style={styles.namesAndErrorContainer}>
                     <View style={styles.namesRowContainer}>
                         <TouchableOpacity onPress={handleProfileImage}>
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height * 0.035,
         borderColor: 'deepskyblue',
         borderRadius: 17,
-        borderWidth: 3,
+        borderWidth: 1,
         height: Dimensions.get('window').height * .065,
         width: Dimensions.get('window').width * .34,
         justifyContent: 'center',
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     birthdayBoxContainer: {
         height: Dimensions.get('window').height * .065,
         width: Dimensions.get('window').width * .93,
-        borderWidth: 3,
+        borderWidth: 1,
         borderColor: 'deepskyblue',
         borderRadius: 17,
         justifyContent: 'center'

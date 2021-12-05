@@ -358,7 +358,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
       justifyContent: 'center',
       borderColor: 'deepskyblue',
       borderRadius: 17,
-      borderWidth: 2,
+      borderWidth: 1,
       alignItems: 'center'
     },
     textUSA: {

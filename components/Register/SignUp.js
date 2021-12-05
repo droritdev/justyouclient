@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     textInput: {
       borderColor: 'deepskyblue',
       borderRadius: 17,
-      borderWidth: 2,
+      borderWidth: 1,
       height: Dimensions.get('window').height * .08,
       marginRight: Dimensions.get('window').width * .0483,
       marginTop: Dimensions.get('window').height * .145,

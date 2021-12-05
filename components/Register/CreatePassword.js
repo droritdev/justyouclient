@@ -72,6 +72,10 @@ const CreatePassword = ({navigation}) => {
     }
 
     return(
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "position"}
+        style={{flex: 1}}
+      >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         <Text style={styles.justYouHeader}>Just You</Text>
@@ -113,6 +117,7 @@ const CreatePassword = ({navigation}) => {
         </View>
       </SafeAreaView>
       </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     );
   }
 
@@ -141,7 +146,7 @@ const CreatePassword = ({navigation}) => {
     passwordInput: {
       borderColor: 'deepskyblue',
       borderRadius: 17,
-      borderWidth: 2,
+      borderWidth: 1,
       height: Dimensions.get('window').height * 0.08,
       width: Dimensions.get('window').width * .7,
       marginTop: Dimensions.get('window').height * 0.088,
@@ -150,7 +155,7 @@ const CreatePassword = ({navigation}) => {
     confirmedPasswordInput: {
       borderColor: 'deepskyblue',
       borderRadius: 17,
-      borderWidth: 2,
+      borderWidth: 1,
       height: Dimensions.get('window').height * 0.08,
       width: Dimensions.get('window').width * .7,
       marginTop: Dimensions.get('window').height * 0.039,

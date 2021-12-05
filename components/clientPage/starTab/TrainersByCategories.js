@@ -150,7 +150,7 @@ const TrainersByCategories = ({navigation, route}) => {
                 <View />
               ) : (
                 <Image
-                  source={require('../../../images/graystar.png')}
+                  source={require('../../../images/starIconBlue.png')}
                   style={styles.starIcon}
                 />
               )}

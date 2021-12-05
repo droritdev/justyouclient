@@ -239,7 +239,7 @@ const AroundYouPage = ({navigation}) => {
                       {getStarRating(trainersAroundMe[i].reviews)}{' '}
                     </Text>
                     <Image
-                      source={require('../../../images/graystar.png')}
+                      source={require('../../../images/starIconBlue.png')}
                       style={styles.starIcon}
                     />
                   </View>

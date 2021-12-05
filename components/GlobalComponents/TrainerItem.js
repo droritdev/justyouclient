@@ -45,7 +45,7 @@ const TrainerItem = (props) => {
                 <View style={styles.ratingRow}>
                     <Text style={styles.trainerText3}>{getTrainerStarRating()}</Text>
                     <Image
-                        source={require('../../images/graystar.png')}
+                        source={require('../../images/starIconBlue.png')}
                         style={styles.starIcon}
                     />
                 </View>

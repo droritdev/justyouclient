@@ -23,6 +23,7 @@ const ClientContainer = () => {
         style: {
           height: 60,
           borderTopWidth: 1.5,
+          paddingTop: 10
         },
         showLabel: false,
       }}>

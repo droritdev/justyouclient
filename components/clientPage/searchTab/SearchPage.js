@@ -1,5 +1,5 @@
 import React, {useState, useReducer, useContext, useRef, useEffect} from 'react';
-import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image , FlatList, Modal} from 'react-native';
+import { Text, View, StyleSheet, ScrollView, Dimensions, Image , FlatList, Modal, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -36,7 +36,8 @@ const categoriesData = [
         { id: 16, label: 'ENDURANCE' },
         { id: 17, label: 'POWERLIFTING' },
         { id: 18, label: 'CROSSFIT' },
-        { id: 19, label: 'HORSEBACK RIDING' }
+        { id: 19, label: 'HORSEBACK RIDING' },
+        { id: 20, label: 'OTHER' }
 ];
 
 //The claint's search page
@@ -258,7 +259,7 @@ const SearchPage = ({navigation, route}) => {
                         <View style={styles.ratingRow}>
                             <Text style={styles.trainerDetail3}>{getTrainerStarRating()} </Text>
                             <Image
-                                source={require('../../../images/graystar.png')}
+                                source={require('../../../images/starIconBlue.png')}
                                 style={styles.starIcon}
                             />
                         </View>
@@ -346,6 +347,7 @@ const SearchPage = ({navigation, route}) => {
             setSearchClear(true)
             getAllTrainers(item.label)
         }
+        Keyboard.dismiss()
     }
 
     const clearTagAndTitle = () => {
@@ -411,8 +413,8 @@ const SearchPage = ({navigation, route}) => {
     }
 
     return(
+        
         <SafeAreaView style={styles.safeArea}>
-
             {/* Start of covid alert part */}
             <Modal
                 animationType="slide"
@@ -453,7 +455,9 @@ const SearchPage = ({navigation, route}) => {
                 />
             </View>
             {/* End of covid alert part */}
-
+            <ScrollView
+                contentContainerStyle={{justifyContent: 'space-between', paddingBottom: 70}}
+            >
             <View style={styles.header}>
                 <Text style={styles.headerText}>Just You</Text>
             </View>
@@ -495,7 +499,10 @@ const SearchPage = ({navigation, route}) => {
                         itemStyleSelected={styles.itemSelected}
                     ></TagSelect>
                 </View>
+                <View style={{height: 50}}>
+                </View>
             </View>
+            
             <View display = {displayCategories}>
                 <Text style={styles.recentOrdersTitle}>{categoryTitle}</Text>
             </View>
@@ -511,7 +518,7 @@ const SearchPage = ({navigation, route}) => {
                 </View>
              </View>
             :  */}
-            <View>
+            <View style={{backgroundColor: 'white'}}>
                 {/* recent orders */}
                 {/* <View
                     display = {displayRecentOrders}
@@ -546,7 +553,7 @@ const SearchPage = ({navigation, route}) => {
                 }
             </View>
             {/* } */}
-
+                </ScrollView>
         </SafeAreaView>
     )
 }
@@ -554,7 +561,7 @@ const SearchPage = ({navigation, route}) => {
 const styles = StyleSheet.create({
     safeArea: {
         backgroundColor: 'white',
-        height: Dimensions.get('window').height,
+        //height: Dimensions.get('window').height,
     },
     container: {
         backgroundColor: 'white',
@@ -581,7 +588,7 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height * .065,
         width: Dimensions.get('window').width * .9,
         alignSelf: 'center',
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: 'lightgrey',
         borderRadius: 30,
         alignItems: 'center',
@@ -664,6 +671,7 @@ const styles = StyleSheet.create({
     },
     listContainer:{
         height: Dimensions.get('window').height * .4,
+        backgroundColor: 'white'
     },
     progressView: {
         alignSelf: 'center',
@@ -713,6 +721,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
     },
     listIsEmptyContainer: {
+        backgroundColor: 'white'
     }
 });
 

@@ -3,6 +3,8 @@ import { Button, Text, View, StyleSheet, ScrollView, Dimensions, Image } from 'r
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
+
 //The Coming Soon page for pages "in build"
 const ComingSoon = ({navigation}) => {
 
@@ -17,20 +19,12 @@ const ComingSoon = ({navigation}) => {
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Just You</Text>
                 </View>
-                <TouchableOpacity
-                        onPress={() => handleOnArrowPress()}
-                    >
-                    <Image
-                        source={require('../../../images/blackArrow.png')}
-                        style={styles.arrowImage}
-                    />
-                </TouchableOpacity>
+                <ArrowBackButton
+                    onPress={handleOnArrowPress}
+                />
                 <View style={styles.mainContainerView}>
                     <View style={styles.mainContainer}>
                         <View style={styles.comingSoonImage}>
-                            <Image
-                                source={require('../../../images/comingSoon.png')}
-                            />
                         </View>
                         <View style={styles.comingSoonTitle}>
                             <Text style={styles.comingSoonText}>Coming Soon</Text>

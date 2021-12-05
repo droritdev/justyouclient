@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { WebView } from 'react-native-webview';
 
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
+
 import {OrderContext} from '../../../context/OrderContext';
 import {ClientContext} from '../../../context/ClientContext';
 
@@ -222,14 +224,9 @@ const ReceiptsHistory = ({route, navigation}) => {
             <View style={styles.header}>
                 <Text style={styles.headerText}>Just You</Text>
             </View>
-            <TouchableOpacity
-                    onPress={() => handleOnArrowPress()}
-                >
-                <Image
-                    source={require('../../../images/blackArrow.png')}
-                    style={styles.arrowImage}
-                />
-            </TouchableOpacity>
+            <ArrowBackButton
+                onPress={handleOnArrowPress}
+            />
             <View style={styles.receiptsHistoryTitle}>
                 <Text style={styles.receiptsHistoryText}>Receipts History</Text>
             </View>

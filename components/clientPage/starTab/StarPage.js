@@ -59,6 +59,7 @@ const StarPage = ({ navigation }) => {
   const [muscleArrayCount, setMuscleArrayCount] = useState(0);
   const [strenthArrayCount, setStrenthArrayCount] = useState(0);
   const [yogaArrayCount, setYogaArrayCount] = useState(0);
+  const [otherArrayCount, setOtherArrayCount] = useState(0);
   const [initializing, setInitializing] = useState(false);
 
   const [firstName, setFirstName] = useState('');
@@ -92,7 +93,8 @@ const StarPage = ({ navigation }) => {
         { id: 16, label: 'ENDURANCE' },
         { id: 17, label: 'POWERLIFTING' },
         { id: 18, label: 'CROSSFIT' },
-        { id: 19, label: 'HORSEBACK RIDING' }
+        { id: 19, label: 'HORSEBACK RIDING' },
+        { id: 20, label: 'OTHER' }
   ];
 
   const categoriesArray = [
@@ -114,7 +116,8 @@ const StarPage = ({ navigation }) => {
         'ENDURANCE',
         'POWERLIFTING',
         'CROSSFIT',
-        'HORSEBACK RIDING'
+        'HORSEBACK RIDING',
+        'OTHER'
   ];
   const [nameForImage, setNameForImage] = useState('');
 
@@ -137,6 +140,7 @@ const StarPage = ({ navigation }) => {
   let muscleArray = [];
   let strenthArray = [];
   let yogaArray = [];
+  let otherArray = [];
 
   const config = {
     withCredentials: true,
@@ -200,7 +204,7 @@ const StarPage = ({ navigation }) => {
       if (element.categories.includes('RUNNING')) {
         runningArray.push(element);
       }
-      if (element.categories.includes('POWER LIFTING')) {
+      if (element.categories.includes('POWERLIFTING')) {
         powerLiftingArray.push(element);
       }
 
@@ -234,6 +238,9 @@ const StarPage = ({ navigation }) => {
       if (element.categories.includes('YOGA')) {
         yogaArray.push(element);
       }
+      if (element.categories.includes('OTHER')) {
+        otherArray.push(element);
+      }
       
     }
     //    {/* MARK */}
@@ -257,6 +264,7 @@ const StarPage = ({ navigation }) => {
     setMuscleArrayCount(muscleArray.length);
     setStrenthArrayCount(strenthArray.length);
     setYogaArrayCount(yogaArray.length);
+    setOtherArrayCount(otherArray.length);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -348,7 +356,7 @@ const StarPage = ({ navigation }) => {
                 />} */}
             <Text style={styles.trainerText3}>{getTrainerStarRating()}</Text>
             <Image
-              source={require('../../../images/graystar.png')}
+              source={require('../../../images/starIconBlue.png')}
               style={styles.starIcon}
             />
           </View>
@@ -424,6 +432,8 @@ const StarPage = ({ navigation }) => {
         return require('../../../images/categoriesImages/STRENTH.jpg');
       case 'YOGA':
         return require('../../../images/categoriesImages/YOGA.jpg');
+      case 'OTHER':
+        return require('../../../images/categoriesImages/OTHER.jpg');
     }
   };
 
@@ -735,7 +745,7 @@ const StarPage = ({ navigation }) => {
               <View style={styles.inSectionImageViewContainer}>
                 <TouchableOpacity
                   style={styles.inSectionImageView}
-                  onPress={() => handleOnCategoryPressed('KICK BOXING')}>
+                  onPress={() => handleOnCategoryPressed('KICKBOXING')}>
                   <Image
                     style={styles.categoryImage}
                     source={require('../../../images/categoriesImages/KICKBOXING.jpg')}
@@ -743,7 +753,7 @@ const StarPage = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.categoryPreviewText}>
-                <Text style={styles.categoryText1}>KICK BOXING</Text>
+                <Text style={styles.categoryText1}>KICKBOXING</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {kickBoxArrayCount}</Text> */}
               </View>
             </View>
@@ -871,7 +881,7 @@ const StarPage = ({ navigation }) => {
               <View style={styles.inSectionImageViewContainer}>
                 <TouchableOpacity
                   style={styles.inSectionImageView}
-                  onPress={() => handleOnCategoryPressed('POWER LIFTING')}>
+                  onPress={() => handleOnCategoryPressed('POWERLIFTING')}>
                   <Image
                     style={styles.categoryImage}
                     source={require('../../../images/categoriesImages/POWERLIFTING.jpg')}
@@ -879,7 +889,7 @@ const StarPage = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.categoryPreviewText}>
-                <Text style={styles.categoryText1}>POWER LIFTING</Text>
+                <Text style={styles.categoryText1}>POWERLIFTING</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {powerLiftingArrayCount}</Text> */}
               </View>
             </View>
@@ -1054,6 +1064,24 @@ const StarPage = ({ navigation }) => {
               </View>
             </View>
 
+            <View style={styles.inSectionView}>
+              <View style={styles.inSectionImageViewContainer}>
+                <TouchableOpacity
+                  style={styles.inSectionImageView}
+                  onPress={() => handleOnCategoryPressed('OTHER')}>
+                  <Image
+                    style={styles.categoryImage}
+                    source={require('../../../images/categoriesImages/OTHER.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryPreviewText}>
+                <Text style={styles.categoryText1}>OTHER </Text>
+
+                {/* <Text style={styles.categoryText2}>Amount of trainrs: {otherArrayCount}</Text> */}
+              </View>
+            </View>
+
           </ScrollView>
         </View>
 
@@ -1110,7 +1138,7 @@ const StarPage = ({ navigation }) => {
               </TouchableOpacity>
           </View>
         </View>
-        <View style={{height: 10}}>
+        <View style={{height: 50}}>
         </View>
       </ScrollView>
       {/*If a user did not give a score or feedback on a coach  */}
@@ -1311,7 +1339,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   whyShareQandAUpdatesButtonsView: {
-    marginTop: Dimensions.get('window').height * 0.035,
+    marginTop: Dimensions.get('window').height * 0.06,
     width: Dimensions.get('window').width,
   },
   whyShareQandAUpdatesButtonsRow: {
@@ -1327,7 +1355,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'gainsboro'
   },
   whyUsTitle: {
@@ -1356,7 +1384,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'gainsboro'
   },
   qAndaTitle: {
@@ -1372,7 +1400,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'gainsboro'
   },
   updatesTitle: {
@@ -1507,7 +1535,7 @@ const styles = StyleSheet.create({
   },
   covidOverlayText: {
     color: 'white',
-    fontSize: 22
+    fontSize: 20
   },
   closeButton:{
     height: 40,

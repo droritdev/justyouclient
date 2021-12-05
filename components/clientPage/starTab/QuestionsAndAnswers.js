@@ -35,7 +35,7 @@ const SECTIONS = [
   {
     title: 'If my trainer is late, do I still get the full session?',
     content:
-      'Definitely. The JustYou trainer is obligated to be punctual and will always provide you with a full session. Please feel free to contact us at service@justyou.com with any issues.',
+      'Definitely. The JustYou trainer is obligated to be punctual and will always provide you with a full session. Please feel free to contact us at justyou.pro@justyou.app with any issues.',
   },
   {
     title: 'What if I need to cancel a session?',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   justYouTitle: {
-    color: 'deepskyblue',
+    color: 'black',
     fontWeight: 'bold',
     fontSize: 30,
   },

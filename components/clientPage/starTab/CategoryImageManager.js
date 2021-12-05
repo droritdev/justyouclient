@@ -17,5 +17,6 @@ export default {
   FLEXIBILITY: require('../../../images/categoriesImages/FLEXIBILITY.jpg'),
   HORSEBACKRIDING: require('../../../images/categoriesImages/HORSEBACKRIDING.jpg'),
   MUSCLEBUILDING: require('../../../images/categoriesImages/MUSCLEBUILDING.jpg'),
-  STRENTH: require('../../../images/categoriesImages/STRENTH.jpg')
+  STRENTH: require('../../../images/categoriesImages/STRENTH.jpg'),
+  OTHER: require('../../../images/categoriesImages/OTHER.jpg')
 };
