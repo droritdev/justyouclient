@@ -28,8 +28,6 @@ const ComingSoon = ({navigation}) => {
                         </View>
                         <View style={styles.comingSoonTitle}>
                             <Text style={styles.comingSoonText}>Coming Soon</Text>
-                        </View>
-                        <View>
                             <Text style={styles.detailsText}>This page is under construction</Text>
                         </View>
                     </View>
@@ -60,8 +58,9 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     mainContainerView: {
-        height: '75%',
-        justifyContent: 'center'
+        height: '50%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     mainContainer: {
         alignItems: 'center',
@@ -76,10 +75,12 @@ const styles = StyleSheet.create({
     },
     comingSoonText: {
         fontWeight: 'bold',
-        fontSize: 40
+        fontSize: 40,
+        alignSelf: 'center'
     },
     detailsText: {
-        fontSize: 20
+        fontSize: 20,
+        alignSelf: 'center'
     }
 });
 

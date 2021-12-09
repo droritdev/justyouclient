@@ -164,12 +164,12 @@ const ReceiptsHistory = ({route, navigation}) => {
             })
             .catch(err => {
                 console.log('payme query catch error ', err.response.data)
-                Alert.alert('Cannot show receipt', JSON.stringify(err.response.data))
+                //Alert.alert('Cannot show receipt', JSON.stringify(err.response.data))
             })
         })
         .catch(err => {
             console.log('payme receipt catch error ', err.response.data)
-            Alert.alert('Cannot create receipt', JSON.stringify(err.response.data))
+            //Alert.alert('Cannot create receipt', JSON.stringify(err.response.data))
         })
     }
 

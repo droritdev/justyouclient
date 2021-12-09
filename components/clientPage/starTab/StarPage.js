@@ -752,10 +752,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('KICKBOXING')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>KICKBOXING</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {kickBoxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -769,10 +772,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('MARTIAL ARTS')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>MARTIAL ARTS</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {martialArtsArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -786,10 +792,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('PILATES')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>PILATES</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {pilatisArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -803,10 +812,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('CLIMBING')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>CLIMBING</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {climbingArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -820,10 +832,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('TRX')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>TRX</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -837,11 +852,14 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('SWIMMING')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>SWIMMING </Text>
 
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {swimmingArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
             <View style={styles.inSectionView}>
               <View style={styles.inSectionImageViewContainer}>
@@ -854,10 +872,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('RUNNING')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>RUNNING </Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {runningArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -871,10 +892,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('DANCING')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>DANCING </Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {dancingArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -888,10 +912,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('POWERLIFTING')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>POWERLIFTING</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {powerLiftingArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -905,10 +932,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('AEROBIC')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>AEROBIC</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -922,10 +952,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('BALANCE AND STABILITY')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>BALANCE AND STABILITY</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -939,10 +972,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('CROSSFIT')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>CROSSFIT</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -956,10 +992,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('CYCLING')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>CYCLING</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -973,10 +1012,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('ENDURANCE')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>ENDURANCE</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -990,10 +1032,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('FLEXIBILITY')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>FLEXIBILITY</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -1007,10 +1052,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('HORSEBACK RIDING')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>HORSEBACK RIDING</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -1024,10 +1072,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('MUSCLE BUILDING')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>MUSCLE BUILDING</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -1041,10 +1092,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('STRENGTH')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>STRENTH</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -1058,10 +1112,13 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('YOGA')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>YOGA</Text>
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {trxArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inSectionView}>
@@ -1075,11 +1132,14 @@ const StarPage = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                  onPress={() => handleOnCategoryPressed('OTHER')}>
               <View style={styles.categoryPreviewText}>
                 <Text style={styles.categoryText1}>OTHER </Text>
 
                 {/* <Text style={styles.categoryText2}>Amount of trainrs: {otherArrayCount}</Text> */}
               </View>
+              </TouchableOpacity>
             </View>
 
           </ScrollView>
@@ -1287,6 +1347,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: Dimensions.get('window').width * 0.3,
+    paddingTop: 20
   },
   categoryText1: {
     fontWeight: 'bold',
@@ -1531,7 +1592,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: 100,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop: 20
   },
   covidOverlayText: {
     color: 'white',

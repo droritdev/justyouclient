@@ -135,6 +135,8 @@ const styles = StyleSheet.create({
   },
   viImage: {
     marginRight: 30,
+    width: 17,
+    height: 17
   },
   reasonText: {
     fontSize: 15,

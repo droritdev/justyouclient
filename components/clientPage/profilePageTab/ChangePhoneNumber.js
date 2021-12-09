@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       marginRight: Dimensions.get('window').width * .0241,
       borderColor: 'deepskyblue',
-      borderWidth: 3,
+      borderWidth: 1,
       height: Dimensions.get('window').height * .06,
       width: Dimensions.get('window').width * .3,
       fontSize: Dimensions.get('window').height * .025
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
   phoneNumberInput: {
       borderRadius: 20,
       borderColor: 'deepskyblue',
-      borderWidth: 3,
+      borderWidth: 1,
       height: Dimensions.get('window').height * .06,
       width: Dimensions.get('window').width * .6,
       fontSize: Dimensions.get('window').height * .025
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
   codeTextInput: {
       borderColor: 'deepskyblue',
       borderRadius: 20,
-      borderWidth: 3,
+      borderWidth: 1,
       height: Dimensions.get('window').height * .07,
       width: Dimensions.get('window').width * .9,
       marginTop: Dimensions.get('window').height * .015,

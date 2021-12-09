@@ -172,7 +172,7 @@ const PendingApprovalOrderDetails = ({navigation, route}) => {
                     <View style={styles.orderRow}>
                         <Text style={styles.title}>Address:</Text>
                         <View style={styles.addressView}>
-                            <Text style={styles.informationText}>{orderObject.location.address}</Text>
+                            <Text style={styles.addressText}>{orderObject.location.address}</Text>
                         </View>
                     </View>
                     <View style={styles.orderRowSecond}>
@@ -365,8 +365,8 @@ const styles = StyleSheet.create({
         fontSize: Dimensions.get('window').height * .02,
     },
     addressText: {
-        fontSize: Dimensions.get('window').height * .02,
-        marginBottom: Dimensions.get('window').height * .01,
+        fontSize: Dimensions.get('window').height * .017,
+        //marginBottom: Dimensions.get('window').height * .01,
     },
     nameBox: {
         borderRadius: 20,

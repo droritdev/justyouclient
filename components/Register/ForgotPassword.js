@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
 
 //Here the user verifies his user details before navigates to the reset password page
 const ForgotPassword = ({navigation}) => {
@@ -18,14 +19,9 @@ const ForgotPassword = ({navigation}) => {
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.upperContainer}>
-                <TouchableOpacity
-                onPress={handleArrowButton}
-                >
-                <Image
-                    source={require('../../images/arrowBack.png')}
-                    style={styles.arrowImage}
+                <ArrowBackButton
+                    onPress={handleArrowButton}
                 />
-                </TouchableOpacity>
                 <View style={styles.justYouHeader}>
                     <Text style={styles.justYouText}>Just You</Text>
                 </View>
@@ -101,7 +97,7 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height * .225
     },
     phoneEmailInput: {
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: 'deepskyblue',
         borderRadius: 10,
         width: Dimensions.get('window').width * .9,
@@ -138,7 +134,7 @@ const styles = StyleSheet.create({
         fontWeight: '300'
       },
       codeInput: {
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: 'deepskyblue',
         borderRadius: 10,
         width: Dimensions.get('window').width * .9,

@@ -670,7 +670,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').height * .022
     },
     listContainer:{
-        height: Dimensions.get('window').height * .4,
+        //height: Dimensions.get('window').height * .7,
         backgroundColor: 'white'
     },
     progressView: {
