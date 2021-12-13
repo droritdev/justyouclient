@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import WelcomePopUp from './components/Register/WelcomePopUp';
@@ -26,12 +26,20 @@ const Stack = createStackNavigator();
 
 const App = () => {
 
+  const navTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: 'white',
+    },
+  };
+
   return (
     <GlobalStore>
-      <NavigationContainer>
+      <NavigationContainer theme={navTheme}>
         <Stack.Navigator 
           initialRouteName='WelcomePopUp'
-          screenOptions={{headerShown: false}}
+          screenOptions={{headerShown: false, gestureEnabled: false}}
         >
           <Stack.Screen name='WelcomePopUp' component={WelcomePopUp} />
           <Stack.Screen name='GetStarted' component={GetStarted} />

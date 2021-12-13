@@ -159,22 +159,19 @@ const Settings = ({navigation}) => {
                             />
                         </TouchableOpacity>
                     </View>
+                    <TouchableOpacity
+                            onPress={() => handleOnSignOutPress()}
+                        >
                     <View style={styles.signOutRow}>
-                        <TouchableOpacity
-                            onPress={() => handleOnSignOutPress()}
-                        >
+                        
                             <Text style={styles.signOutTitle}>Sign out</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.arrowButton}
-                            onPress={() => handleOnSignOutPress()}
-                        >
                             <Image
                                 source={require('../../../images/arrowButton.png')}
                                 style={styles.arrowImage}
                             />
-                        </TouchableOpacity>
+                        
                     </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>

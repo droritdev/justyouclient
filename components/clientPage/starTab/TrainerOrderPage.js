@@ -457,6 +457,10 @@ const TrainerOrderPage = ({navigation, route}) => {
       navigation.navigate('AroundYouPageStack', {
         screen: 'AroundYouPage'
       })
+    } else if (route.params.pageCameFrom === "History") {
+      navigation.navigate('ProfilePageStack', {
+        screen: 'History'
+      })
     } else if (route.params.pageCameFrom === "StarPage") {}
   };
 

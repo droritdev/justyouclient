@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useReducer } from "react";
-import { Text,TextInput , View, StyleSheet, ScrollView, Dimensions, Image, Modal , FlatList, TouchableOpacity} from 'react-native';
+import { Text,TextInput , View, StyleSheet, ScrollView, Dimensions, Image, Modal , FlatList, TouchableOpacity, Alert} from 'react-native';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image'
@@ -12,8 +12,9 @@ import * as Progress from 'react-native-progress';
 import axios from 'axios';
 
 import {ClientContext} from '../../../context/ClientContext';
+import {TrainerContext} from '../../../context/TrainerContext';
 import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
-import Alert from "react-native/Libraries/Alert/Alert";
+//import Alert from "react-native/Libraries/Alert/Alert";
 
 
 
@@ -27,6 +28,7 @@ const History = ({navigation, route}) => {
     const {clientObject} = useContext(ClientContext);
     //trainer Id to use when uploading review
     const [trainerIdForReview, setTrainerIdForReview] = useState('');
+    const { dispatchTrainerObject } = useContext(TrainerContext);
     //visability for add review modal
     const [modalVisible, setModalVisible] = useState(false);
     //TODO: star count in review modal
@@ -44,6 +46,7 @@ const History = ({navigation, route}) => {
 
 
     useEffect(() => {
+        console.log('History useEffect ordersHistoryTrainerArray ', ordersHistoryTrainerArray)
         const unsubscribe = navigation.addListener('focus', () => {
             checkForOrders().done();
         });
@@ -121,7 +124,7 @@ const History = ({navigation, route}) => {
      //Todo: check if needed in sunday
     const getCompletedOrdersPattern = () => {
         let repeats = [];
-        if (ordersHistoryTrainerArray !== [] && reviewBooleanArray !== []) {
+        if (ordersHistoryTrainerArray.length !== 0 && reviewBooleanArray.length !== 0) {
             for(let i = 0; i < ordersHistoryTrainerArray.length; i++) {
                  //pushing each trainer UI into the array
               console.log(ordersHistoryTrainerArray[i]._id);
@@ -140,8 +143,10 @@ const History = ({navigation, route}) => {
                                          resizeMode={FastImage.resizeMode.stretch}
                                 />
                                 <View style={styles.trainerDetails}>
-                                    <Text style={styles.trainerDetail1}>{ordersHistoryTrainerArray[i].trainer.firstName +' '+ordersHistoryTrainerArray[i].trainer.lastName}</Text>
-                                    <Text style={styles.trainerDetail2}>{ordersHistoryTrainerArray[i].trainingDate.startTime.slice(0, 10)}</Text>
+                                    <TouchableOpacity onPress={() => {goToOrderPage(ordersHistoryTrainerArray[i].trainer.id)}}>
+                                        <Text style={styles.trainerDetail1}>{ordersHistoryTrainerArray[i].trainer.firstName +' '+ordersHistoryTrainerArray[i].trainer.lastName}</Text>
+                                        <Text style={styles.trainerDetail2}>{ordersHistoryTrainerArray[i].trainingDate.startTime.slice(0, 10)}</Text>
+                                    </TouchableOpacity>
                                     <View style={styles.ratingRow}>
 
                                     </View>
@@ -240,6 +245,28 @@ const History = ({navigation, route}) => {
         setIsLoadingCircle(true);
         checkForOrders().done();
         // navigation.push('History');
+    }
+
+    const goToOrderPage = (trainerId) => {
+        // get trainer info axios multipleTrainersById
+        axios
+        .get('/trainers/findMultipleTrainers/'+[trainerId],
+        config
+        )
+        .then((doc) => {
+            console.log('gotoorderpage docdata ', doc.data)
+            // dispatch trainer info to context
+            dispatchTrainerObject({
+                type: 'SET_TRAINER_OBJECT',
+                trainerObject: doc.data[0],
+            });
+            // navigate to order page
+            navigation.navigate('StarPageStack',
+              { screen: 'TrainerOrderPage',
+                params: { pageCameFrom: 'History' }
+            });
+        })
+        .catch((err) => console.log('gotoorderpage catch ', err))
     }
 
     return(

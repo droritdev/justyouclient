@@ -67,11 +67,9 @@ const QuestionsAndAnswers = ({navigation}) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <ImageBackground
-          source={require('../../../images/Q&As.jpg')}
-          style={styles.coverImage}>
+        <View style={{width: '100%', alignItems: 'flex-start'}}>
           <ArrowBackButton onPress={handleOnArrowPress} />
-        </ImageBackground>
+        </View>
         <View style={styles.headerContainer}>
           <Text style={styles.justYouTitle}>Just You</Text>
           <Text style={styles.qA}>Q & A</Text>

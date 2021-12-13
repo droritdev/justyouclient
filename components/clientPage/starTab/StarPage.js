@@ -1343,11 +1343,11 @@ const styles = StyleSheet.create({
     // width: Dimensions.get('window').width * .29,
   },
   categoryPreviewText: {
-    height: '40%',
+    height: Dimensions.get('window').height * 0.07,
     alignItems: 'center',
     justifyContent: 'center',
     width: Dimensions.get('window').width * 0.3,
-    paddingTop: 20
+    //paddingTop: 20
   },
   categoryText1: {
     fontWeight: 'bold',

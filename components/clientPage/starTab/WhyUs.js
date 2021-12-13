@@ -21,11 +21,9 @@ const WhyUs = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ImageBackground
-        source={require('../../../images/Q&As.jpg')}
-        style={styles.coverImage}>
+      <View style={{width: '100%', alignItems: 'flex-start'}}>
         <ArrowBackButton onPress={handleOnArrowPress} />
-      </ImageBackground>
+      </View>
       <View style={styles.headerContainer}>
       <Text style={styles.juustYouTitle}>Just You</Text>
         <Text style={styles.headerTitle}>Why you should order</Text>

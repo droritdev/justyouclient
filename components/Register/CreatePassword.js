@@ -5,6 +5,7 @@ import { Base64 } from 'js-base64';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import AppButton from '../GlobalComponents/AppButton';
+import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
 import {PasswordContext} from '../../context/PasswordContext';
 
 //Here the user creates his password
@@ -75,9 +76,13 @@ const CreatePassword = ({navigation}) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "position"}
         style={{flex: 1}}
+        keyboardVerticalOffset = {Platform.OS === "ios" ? 100 : 0}
       >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
+        <View style={{width: '100%', alignItems: 'flex-start'}}>
+          <ArrowBackButton onPress={() => navigation.goBack()} />
+        </View>
         <Text style={styles.justYouHeader}>Just You</Text>
         <View style={styles.passwordContainer}>
           <Text style={styles.createPasswordText}>Create Password</Text>
