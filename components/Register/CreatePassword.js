@@ -74,9 +74,8 @@ const CreatePassword = ({navigation}) => {
 
     return(
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "position"}
+        behavior={Platform.OS === "ios" ? "position" : "position"}
         style={{flex: 1}}
-        keyboardVerticalOffset = {Platform.OS === "ios" ? 100 : 0}
       >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>

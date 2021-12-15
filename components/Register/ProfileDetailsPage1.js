@@ -32,6 +32,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
     const [countryErrorMessage,setCountryErrorMessage] = useState("");
     const [isCountrySelected, setIsCountrySelected] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [isTermsConditions, setIsTermsConditions] = useState(true);
 
     //Navigates back to the create password page and Re-set the password in the passwordContext
     const handleArrowButton = () => {
@@ -205,6 +206,14 @@ const ProfileDetailsPage1 = ({navigation}) => {
       }
     }
 
+    const handleTermsToggleChange = (newState) => {
+      setIsTermsConditions(newState);
+    }
+
+    const handleReadMore = () => {
+      navigation.navigate('TermsConditions');
+    }
+
     return(
       <SafeAreaView style={styles.container}>
         <ArrowBackButton
@@ -212,7 +221,6 @@ const ProfileDetailsPage1 = ({navigation}) => {
         />
         <View style={styles.upperContainer}>
           <Text style={styles.profileDetailesText}>Profile Details</Text>
-          <Text style={styles.fillTheFieldsText}></Text>
         </View>
         <View style={styles.countryContainer}>
           <Text style={styles.countryTitle}>Country</Text>
@@ -264,6 +272,30 @@ const ProfileDetailsPage1 = ({navigation}) => {
             We'll let you know how your order is doing
           </Text>
         </View>
+
+        <View style={styles.termsContainer}>
+            <Text style={styles.termsText}>Terms & Conditions </Text>
+            <View style={styles.termsSection}>
+                <Text 
+                  style={styles.policyText}
+                >
+                  I have read and agree with the user terms of service and I understand that my personal data will be processed in accordance with Just You privacy statment.  
+                </Text> 
+              <FlipToggleButton
+                value={isTermsConditions}
+                onToggle={(newState) => handleTermsToggleChange(newState)}
+              />
+            </View>      
+          </View>
+          <TouchableOpacity
+                  onPress={()=>handleReadMore()}
+                  style={styles.readMoreContainer}
+              >
+                  <Text style={styles.readMoreText}>
+                      Read more
+                  </Text>
+              </TouchableOpacity> 
+
         {isPermissionsNotConfirmed ?
         <Text style={styles.permissionsErrorText}>Please allow both permissions to continue the registration</Text>
         :null}
@@ -288,9 +320,9 @@ const ProfileDetailsPage1 = ({navigation}) => {
     //   marginLeft: Dimensions.get('window').width * 0.0483
     // },
     upperContainer: {
-      marginTop: Dimensions.get('window').height * 0.022,
+      marginTop: Dimensions.get('window').height * 0.011,
       // justifyContent: 'space-between',
-      height: Dimensions.get('window').height * .125,
+      //height: Dimensions.get('window').height * .125,
     },
     profileDetailesText: {
       fontWeight: 'bold',
@@ -304,7 +336,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
     },
     countryContainer: {
       height: Dimensions.get('window').height * .11,
-      marginTop: Dimensions.get('window').height * 0.044
+      marginTop: Dimensions.get('window').height * 0.02
     },
     countryTitle: {
       fontWeight: 'bold',
@@ -319,7 +351,7 @@ const ProfileDetailsPage1 = ({navigation}) => {
     permissionsContainer: {
       justifyContent: 'space-between',
       height: Dimensions.get('window').height * .24,
-      marginTop: Dimensions.get('window').height * 0.077,
+      marginTop: Dimensions.get('window').height * 0.04,
       marginLeft: Dimensions.get('window').width * 0.0483
     },
     permissionsText: {
@@ -369,7 +401,37 @@ const ProfileDetailsPage1 = ({navigation}) => {
     image: {
       width: 60,
       height: 60
-    }
+    },
+    termsContainer: {
+      justifyContent: 'space-between',
+      height: Dimensions.get('window').height * .15,
+      marginTop: Dimensions.get('window').height * .03,
+      marginLeft: Dimensions.get('window').width * .0483
+    },
+    termsText: {
+      fontWeight: 'bold',
+      fontSize: Dimensions.get('window').height * .029
+    },
+    termsSection: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginRight: Dimensions.get('window').width * .0483,
+    },
+    policyText: {
+      marginTop: Dimensions.get('window').height * .01,
+      width: Dimensions.get('window').width * .7,
+      fontWeight: 'bold',
+      fontSize: Dimensions.get('window').height * .017
+  },
+  readMoreText: {
+    color: 'deepskyblue',
+    fontWeight: 'bold',
+    fontSize: Dimensions.get('window').height * .015,
+  },
+  readMoreContainer: {
+    marginTop: Dimensions.get('window').height * .005,
+    marginLeft: Dimensions.get('window').width * .0483
+  }
   });
 
   export default ProfileDetailsPage1;
