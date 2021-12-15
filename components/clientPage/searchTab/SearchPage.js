@@ -1,5 +1,5 @@
 import React, {useState, useReducer, useContext, useRef, useEffect} from 'react';
-import { Text, View, StyleSheet, ScrollView, Dimensions, Image , FlatList, Modal, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import { Text, View, StyleSheet, ScrollView, Dimensions, Image , FlatList, Modal, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -412,6 +412,18 @@ const SearchPage = ({navigation, route}) => {
         clearTagAndTitle()
     }
 
+    const checkIfCategoryExists = (categoryInput) => {
+        let categoryExists = false
+        categoriesData.map(category => {
+            if(category.label === categoryInput.toUpperCase()){
+                categoryExists = true
+            }
+        })
+        if(!categoryExists){
+            Alert.alert('This category does not exist')
+        }
+    }
+
     return(
         
         <SafeAreaView style={styles.safeArea}>
@@ -473,6 +485,7 @@ const SearchPage = ({navigation, route}) => {
                         }
                     }}
                     value={searchInput}
+                    onSubmitEditing={() => checkIfCategoryExists(searchInput)}
                 />
                 {searchClear &&
                     <TouchableOpacity onPress={onPressSearchClear}>

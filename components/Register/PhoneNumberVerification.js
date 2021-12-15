@@ -5,6 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useStateWithCallbackLazy } from 'use-state-with-callback';
 
 import AppButton from '../GlobalComponents/AppButton';
+import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
 import {PhoneContext} from '../../context/PhoneContext';
 import {CountryContext} from '../../context/CountryContext';
 
@@ -247,6 +248,11 @@ const PhoneNumberVerification = ({navigation}) => {
     return(
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
+            <View>
+              <ArrowBackButton
+                onPress={() => navigation.goBack()}
+              />
+            </View>
             <View style={styles.headerContainer}>
               <Text style={styles.justYouHeader}>Just You</Text>
             </View>
