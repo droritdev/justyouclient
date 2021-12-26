@@ -25,7 +25,7 @@ const CustomerService = ({navigation}) => {
     const mailformat = /^(|([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([,.] (([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$/;
 
     //Sender email
-    const supportEmail = "jusyou.pro@gmail.com";
+    const supportEmail = "info@justyou.app";
 
     //Client information
     const {clientObject} = useContext(ClientContext);
