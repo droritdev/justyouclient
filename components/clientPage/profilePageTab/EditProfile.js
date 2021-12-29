@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Button, Text, View, SafeAreaView, Image, StyleSheet, Dimensions, ImageBackground, TextInput} from 'react-native';
+import { Button, Text, View, SafeAreaView, Image, StyleSheet, Dimensions, TextInput, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
 import Slider from '@react-native-community/slider';
@@ -298,6 +298,7 @@ const EditProfile = ({navigation}) => {
     }
 
     return(
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.safeArea}>
             <View>
                 <Dialog.Container visible={dialogVisible}>
@@ -355,12 +356,14 @@ const EditProfile = ({navigation}) => {
                             textAlign='center'
                             placeholder={firstNameInput}
                             onChangeText={(value) => handleOnChangeFirstName(value)}
+                            value={firstNameInput}
                         />
                         <TextInput
                             style={styles.namesInput}
                             textAlign='center'
                             placeholder={lastNameInput}
                             onChangeText={value => handleOnChangeLastName(value)}
+                            value={lastNameInput}
                         />
 
                     </View>
@@ -408,6 +411,7 @@ const EditProfile = ({navigation}) => {
                 />
             </View>
         </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 }
 

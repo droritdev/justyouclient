@@ -125,12 +125,23 @@ const CustomerService = ({navigation}) => {
         )
         .then((res) => {
             //Check if email was sent to the support
-            if (res.data.status === 'success') {
-                //Send automatic response
-                sendAutomaticResponse();
-            }
+            // if (res.data.status === 'success') {
+            //     //Send automatic response
+            //     sendAutomaticResponse();
+            // }
+            console.log('sendEmail success')
+            Alert.alert(
+                "Customer Service",
+                "Message sent successfully",
+                [
+                    {text: 'OK'},
+                  ],
+                  { cancelable: false }
+                )
+            navigation.goBack()
         })
         .catch((err) => {
+            console.log('sendEmail catch ', err, err.response)
             Alert.alert(
                 'System failure',
                 "Couldn't send message, please try again later.",
