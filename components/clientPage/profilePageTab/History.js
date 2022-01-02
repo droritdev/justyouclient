@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useReducer } from "react";
-import { Text,TextInput , View, StyleSheet, ScrollView, Dimensions, Image, Modal , FlatList, TouchableOpacity, Alert} from 'react-native';
+import { Text,TextInput , View, StyleSheet, ScrollView, Dimensions, Image, Modal , FlatList, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard} from 'react-native';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image'
@@ -308,10 +308,6 @@ const History = ({navigation, route}) => {
                     </ScrollView>
                 :
                     <View>
-                        <Image
-                            source={require('../../../images/noOrders.png')}
-                            style={styles.noOrdersImage}
-                        />
                         <Text style={styles.noOrdersText}> No orders yet..</Text>
                     </View>
                 }
@@ -325,6 +321,7 @@ const History = ({navigation, route}) => {
                 Alert.alert("Modal has been closed.");
                 }}
                 >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style={styles.modalText}>Training statisfaction</Text>
@@ -382,6 +379,7 @@ const History = ({navigation, route}) => {
                         </View>
                     </View>
                 </View>
+                </TouchableWithoutFeedback>
             </Modal>
 
 
