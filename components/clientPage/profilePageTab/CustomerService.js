@@ -110,10 +110,23 @@ const CustomerService = ({navigation}) => {
         if (ccInput !== "") {
             let emailsArray = ccInput.split(", ");
             if (emailsArray.length > 0) {
-                await sendEmailCopy(emailsArray);
+                //await sendEmailCopy(emailsArray);
             }
         }
 
+        Alert.alert(
+            "Customer Service",
+            "Message sent successfully",
+            [
+                {
+                    text: 'OK',
+                    onPress: () => navigation.goBack()
+                },
+            ],
+            { cancelable: false }
+        )
+        
+        
         await axios
         .post('/send-email', {
             to: supportEmail,
@@ -130,26 +143,18 @@ const CustomerService = ({navigation}) => {
             //     sendAutomaticResponse();
             // }
             console.log('sendEmail success')
-            Alert.alert(
-                "Customer Service",
-                "Message sent successfully",
-                [
-                    {text: 'OK'},
-                  ],
-                  { cancelable: false }
-                )
-            navigation.goBack()
+            
         })
         .catch((err) => {
             console.log('sendEmail catch ', err, err.response)
-            Alert.alert(
-                'System failure',
-                "Couldn't send message, please try again later.",
-                [
-                    {text: 'OK'},
-                  ],
-                  { cancelable: false }
-                )
+            // Alert.alert(
+            //     'System failure',
+            //     "Couldn't send message, please try again later.",
+            //     [
+            //         {text: 'OK'},
+            //       ],
+            //       { cancelable: false }
+            //     )
         });
     }
 
@@ -229,16 +234,6 @@ const CustomerService = ({navigation}) => {
                     <View style={styles.headerRow}>
                         <Text style={styles.emailHeader}>To: </Text>
                         <Text style={styles.companyEmail}> {supportEmail}</Text>
-                    </View>
-                </View>
-                <View style={styles.headerContainer}>
-                    <View style={styles.headerRow}>
-                        <Text style={styles.emailHeader}>Cc: </Text>
-                        <TextInput
-                            style={styles.headerInput}
-                            placeholder={"just@gmail.com, you@hotmail.com"}
-                            onChangeText={(text) => handleOnCcInputChange(text)}
-                        />
                     </View>
                 </View>
                 <View style={styles.headerContainer}>
