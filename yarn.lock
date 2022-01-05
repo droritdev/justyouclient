@@ -8106,6 +8106,13 @@
   dependencies:
     "prop-types" "^15.5.10"
 
+"react-native-camera@^4.2.1":
+  "integrity" "sha512-+Vkql24PFYQfsPRznJCvPwJQfyzCnjlcww/iZ4Ej80bgivKjL9eU0IMQIXp4yi6XCrKi4voWXxIDPMupQZKeIQ=="
+  "resolved" "https://registry.npmjs.org/react-native-camera/-/react-native-camera-4.2.1.tgz"
+  "version" "4.2.1"
+  dependencies:
+    "prop-types" "^15.6.2"
+
 "react-native-communications@^2.2.1":
   "integrity" "sha1-eIO1ayCgAu63kMET+GFuqGksp5U="
   "resolved" "https://registry.npmjs.org/react-native-communications/-/react-native-communications-2.2.1.tgz"

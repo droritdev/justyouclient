@@ -128,8 +128,8 @@ const TrainerReviews = ({navigation}) => {
       console.log('in if')
       for (let i = 0; i < reviews.length; i++) {
         let singleReview = reviews[i];
-        console.log('single review ', singleReview)
-        console.log('clientsinfoi ', clientsInfo[i])
+        console.log('single review ', i, singleReview)
+        console.log('clientsinfoi ', i, clientsInfo[i])
         repeats.push(
           //row
           <View key={'row' + i} style={styles.reviewRowContainer}>

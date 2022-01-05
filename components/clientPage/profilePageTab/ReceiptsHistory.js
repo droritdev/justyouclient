@@ -101,6 +101,7 @@ const ReceiptsHistory = ({route, navigation}) => {
     };
 
     const showReceipt = (i) => {
+        console.log('showreceipt approvedorder ', approvedOrders[i])
         axios
         .post(
             'https://preprod.paymeservice.com/api/documents',

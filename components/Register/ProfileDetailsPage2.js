@@ -1,10 +1,11 @@
 import React, {useState, useEffect, useContext, useReducer} from 'react';
-import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView, Keyboard, TouchableWithoutFeedback} from 'react-native';
+import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView, Keyboard, TouchableWithoutFeedback, Modal, Pressable} from 'react-native';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import DatePicker from 'react-native-datepicker';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
+import { useIsFocused } from '@react-navigation/native';
 
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import { Platform, Alert, Linking } from 'react-native';
@@ -29,7 +30,9 @@ import auth from '@react-native-firebase/auth';
 
 
 //Here the user enters his: Full name, profile image(wich uploads to the cloudinary cloud) and his birthday
-const ProfileDetailsPage2 = ({navigation}) => {
+const ProfileDetailsPage2 = ({route, navigation}) => {
+    const isFocused = useIsFocused()
+    const [modalVisible, setModalVisible] = useState(false)
     const {emailAddress} = useContext(EmailContext);
     const {dispatchFirst} = useContext(NameContext);
     const {dispatchLast} = useContext(NameContext);
@@ -62,6 +65,21 @@ const ProfileDetailsPage2 = ({navigation}) => {
         "Content-Type": "application/json",
       },
     };
+
+    useEffect(() => {
+      if(isFocused){
+          if(route.params){
+              console.log('useeffect routeparams')
+              let tempUri = route.params.photoUri
+              //setPictures([tempUri])
+              const source = {uri : tempUri}
+              dispatchProfileImage({
+                type: 'SET_PROFILE_IMAGE',
+                profileImage: source
+              });
+          }
+      }
+    }, [navigation, isFocused])
 
     //Sets the minimum age of registration to 18 automatticly
     useEffect (() => {
@@ -134,6 +152,7 @@ const ProfileDetailsPage2 = ({navigation}) => {
       //   const granted = checkForPermissions();
 
       //   if(granted) {
+        setModalVisible(false)
 
         ImagePicker.openPicker({
           width: 400,
@@ -299,7 +318,8 @@ const ProfileDetailsPage2 = ({navigation}) => {
           <Text style={styles.fillTheFieldsText}>Please fill out all fields</Text>
           <View style={styles.namesAndErrorContainer}>
             <View style={styles.nameAndImageContanier}>
-              <TouchableOpacity onPress={handleProfileImage}>
+              {/* <TouchableOpacity onPress={handleProfileImage}> */}
+              <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
                 <Image
                   source={profileImage}
                   style={styles.profileImage}
@@ -369,6 +389,39 @@ const ProfileDetailsPage2 = ({navigation}) => {
               onPress={handleNext}
             />
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {setModalVisible(!modalVisible)}}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+                <Pressable
+                    style={{backgroundColor: 'deepskyblue', borderRadius: 10, padding: 10, alignSelf: 'center'}}
+                    onPress={() => navigation.navigate('Camera')}
+                >
+                    <Text style={{color: 'white', fontSize: 20}}>Take a photo</Text>
+                </Pressable>
+                <View style={{marginTop: 20}}>
+                <Pressable
+                    style={{backgroundColor: 'deepskyblue', borderRadius: 10, padding: 10, alignSelf: 'center'}}
+                    onPress={handleProfileImage}
+                >
+                    <Text style={{color: 'white', fontSize: 20}}>Choose a photo</Text>
+                </Pressable>
+                <View style={{marginTop: 20}}>
+                <Pressable
+                    style={{backgroundColor: 'deepskyblue', borderRadius: 10, padding: 10, alignSelf: 'center'}}
+                    onPress={() => setModalVisible(false)}
+                >
+                    <Text style={{color: 'white', fontSize: 20}}>Close</Text>
+                </Pressable>
+            </View> 
+            </View> 
+            </View>
+          </View>
+        </Modal>
        </SafeAreaView>
        </TouchableWithoutFeedback>
     );
@@ -483,6 +536,47 @@ const ProfileDetailsPage2 = ({navigation}) => {
         justifyContent: 'flex-end',
         alignItems: 'center',
         marginBottom: 50
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
+      button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+      },
+      buttonOpen: {
+        backgroundColor: "#F194FF",
+      },
+      buttonClose: {
+        backgroundColor: "#2196F3",
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center"
       }
   });
 

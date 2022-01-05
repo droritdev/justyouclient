@@ -412,7 +412,12 @@ const TrainerOrderPage = ({navigation, route}) => {
         setTypeOfTrainingSelected('')
         setTrainingSiteSelected('')
         Alert.alert('The order has been sent for confirmation by the trainer',
-                    'You will be notified once the trainer has confirmed your training',
+                    'Your order is a '
+                    + categorySelected + ' training with '
+                    + trainerObject.name.first + ' '
+                    + trainerObject.name.last + ' on '
+                    + startTime + ' at '
+                    + trainingSiteSelected,
                     [{
                       text: 'OK',
                       onPress: () => {

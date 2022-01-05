@@ -14,6 +14,7 @@ import ProfileDetailsPage1 from './components/Register/ProfileDetailsPage1';
 import ProfileDetailsPage2 from './components/Register/ProfileDetailsPage2';
 import PaymentsAndPolicy from './components/Register/PaymentsAndPolicy';
 import TermsConditions from './components/Register/TermsConditions';
+import Camera from './components/GlobalComponents/Camera';
 
 import PhoneNumberVerification from './components/Register/PhoneNumberVerification';
 import DonePopUp from './components/Register/DonePopUp';
@@ -58,6 +59,7 @@ const App = () => {
           <Stack.Screen name='ForgotPassword' component={ForgotPassword} />
           <Stack.Screen name='ResetPassword' component={ResetPassword} />
           <Stack.Screen name='ClientContainer' component={ClientContainer} />
+          <Stack.Screen name='Camera' component={Camera} />
         </Stack.Navigator>
       </NavigationContainer>
     </GlobalStore>
