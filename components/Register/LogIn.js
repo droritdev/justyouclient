@@ -67,10 +67,11 @@ const LogInClient = ({navigation}) => {
           if(doc) {
             console.log("doc.data" , doc.data);
             if(doc.data[0].email!=null){
-                setErrorMessage("The account dosen't exist");
+                authUser()
+                //setErrorMessage("The account dosen't exist");
+                //setIsErrorMessage(true);
                 //TODO: for later use
                 //setErrorMessage("Your email and password does not match");
-                setIsErrorMessage(true);
             }
           }
         })
@@ -80,6 +81,10 @@ const LogInClient = ({navigation}) => {
 
         })
       }
+
+    const checkIfClient = () => {
+
+    }
 
     //Auth user with Firebase after validation and login button click
     //After auth is complete, navigate to welcome page
@@ -98,9 +103,9 @@ const LogInClient = ({navigation}) => {
             navigation.navigate('ClientContainer');
         })
         .catch(error => {
-            checkEmailIsUsed();
-            // setErrorMessage("The account dosen't exist");
-            // setIsErrorMessage(true);
+            //checkEmailIsUsed();
+            setErrorMessage("The account dosen't exist");
+            setIsErrorMessage(true);
 
 
             // Your email and password does not match
@@ -148,7 +153,7 @@ const LogInClient = ({navigation}) => {
                 setIsErrorMessage(true);
         }
         else if (isEmailValid && encodedPass !== "") {
-            authUser();
+            checkEmailIsUsed();
         }
         else if (!isEmailValid) {
             setErrorMessage("Email is not valid");

@@ -193,6 +193,10 @@ const ProfileDetailsPage1 = ({navigation}) => {
       //   setIsCountryErrorMessage(true);
       // }
       // else
+      if(!isTermsConditions){
+        Alert.alert('You must agree to the terms and conditions to procced')
+        return
+      }
       if(!isLocationPermission || !isPushPermission){
         setIsPermissionsNotConfirmed(true);
       }

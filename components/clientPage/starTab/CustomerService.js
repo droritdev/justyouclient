@@ -110,7 +110,7 @@ const CustomerService = ({navigation}) => {
         if (ccInput !== "") {
             let emailsArray = ccInput.split(", ");
             if (emailsArray.length > 0) {
-                await sendEmailCopy(emailsArray);
+                //await sendEmailCopy(emailsArray);
             }
         }
 
@@ -220,7 +220,7 @@ const CustomerService = ({navigation}) => {
                         <Text style={styles.companyEmail}> {supportEmail}</Text>
                     </View>
                 </View>
-                <View style={styles.headerContainer}>
+                {/* <View style={styles.headerContainer}>
                     <View style={styles.headerRow}>
                         <Text style={styles.emailHeader}>Cc: </Text>
                         <TextInput
@@ -229,7 +229,7 @@ const CustomerService = ({navigation}) => {
                             onChangeText={(text) => handleOnCcInputChange(text)}
                         />
                     </View>
-                </View>
+                </View> */}
                 <View style={styles.headerContainer}>
                     <View style={styles.headerRow}>
                         <Text style={styles.emailHeader}>Subject: </Text>

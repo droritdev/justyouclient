@@ -16,6 +16,7 @@ const ReceiptsHistory = ({route, navigation}) => {
     //const {clientId} = useContext(ClientContext);
     const { clientId } = route.params
     const {orderObject, dispatchOrderObject} = useContext(OrderContext);
+    const {clientObject, dispatchClientObject} = useContext(ClientContext);
 
     const [approvedOrders, setApprovedOrders] = useState([]);
     const [webViewUri, setWebViewUri] = useState('https://www.google.com');
@@ -44,6 +45,20 @@ const ReceiptsHistory = ({route, navigation}) => {
         navigation.navigate('ProfilePage');
     }
 
+    const getToken = (i) => {
+        axios
+            .get('/getPaymeToken/' + clientObject.email.toLowerCase(),
+                config
+            )
+            .then((doc) => {
+                if (doc.data.length !== 0) {
+                    console.log('getpaymetoken success docdata ', doc.data)
+                    showReceipt(i, doc.data[0].paymeToken)
+                } else {console.log('getpaymetoken failed 1')}
+            })
+            .catch((err) => console.log('getpaymetoken failed 1 ', err))
+    }
+
     const getApprovedOrders = () => {
         console.log('clientid ', clientId)
         axios
@@ -58,7 +73,7 @@ const ReceiptsHistory = ({route, navigation}) => {
 
                 for (let index = 0; index < allOrders.length; index++) {
                     const singleOrder = allOrders[index];
-                    if (singleOrder.status === "approved") {
+                    if (singleOrder.status === "approved" || singleOrder.status === "completed") {
                         approvedOrders.push(singleOrder);
                     }
                 }
@@ -100,7 +115,7 @@ const ReceiptsHistory = ({route, navigation}) => {
         array[j] = temp;
     };
 
-    const showReceipt = (i) => {
+    const showReceipt = (i, paymeToken) => {
         console.log('showreceipt approvedorder ', approvedOrders[i])
         axios
         .post(
@@ -108,65 +123,47 @@ const ReceiptsHistory = ({route, navigation}) => {
             {
                 "doc_type": 400,
                 "buyer_name": approvedOrders[i].client.firstName + " " + approvedOrders[i].client.lastName,
-                //"pay_date": approvedOrders[i].updatedAt,
-                "due_date": "2021-08-16T00:00:00.000Z",
-                "pay_date": "2021-04-16T00:00:00.000Z",
-                "doc_date": "2021-05-25 00:00:00",
+                "pay_date": approvedOrders[i].updatedAt,
+                //"pay_date": "2021-04-16T00:00:00.000Z",
                 "currency": "USD",         
                 "doc_title": "Receipt",           
-                "doc_comments": "Receipt for training",           
-                "exchange_rate": 1,           
-                "vat_rate": 0,               
-                "total_excluding_vat": approvedOrders[i].cost,   
-                "discount": 0,               
-                "total_sum_after_discount": approvedOrders[i].cost,
-                "total_sum_including_vat": approvedOrders[i].cost,
                 "total_paid": approvedOrders[i].cost,             
-                "total_vat": 0,             
-                "total_paid_including_vat": approvedOrders[i].cost,
                 "language": "en",
                 "items": [
                     {
-                    "description": approvedOrders[i].category,
+                    "description": approvedOrders[i].category + " training",
                     "unit_price": approvedOrders[i].cost,
-                    "vat_exempt": true,
-                    "quantity": 1,
                     "currency": "USD"
                     }
                 ],
                 "credit_card": {
-                    "sum": 25,
-                    "installments": 1,
-                    "first_payment": 50,
-                    "buyer_key": "123456789",
-                    "number": "2222",
-                    "type": "Visa",
-                    "cvv": "123",
-                    "expiry": "0323",
-                    "buyer_social_id": "05001234",
-                    "buyer_name": "John Doe",
-                    "auth_number": "123123123"
+                    "sum": approvedOrders[i].cost,
+                    "buyer_key": paymeToken
                 }
             },
             configPayme
         )
         .then(response => {
+            //Alert.alert('payme receipt response url ', response.data.doc_url)
             console.log('payme receipt response data ', response.data)
-            axios
-            .get(
-                'https://preprod.paymeservice.com/api/documents{job_id}',
-                configPayme
-            )
-            .then(response => {
-                console.log('payme query response data ', response.data)
-                //const url = response.data.url            
-                //setWebViewUri(url)
-                setModalVisible(true)
-            })
-            .catch(err => {
-                console.log('payme query catch error ', err.response.data)
-                //Alert.alert('Cannot show receipt', JSON.stringify(err.response.data))
-            })
+            const url = response.data.doc_url
+            setWebViewUri(url)
+            setModalVisible(true)
+            // axios
+            // .get(
+            //     'https://preprod.paymeservice.com/api/documents{job_id}',
+            //     configPayme
+            // )
+            // .then(response => {
+            //     console.log('payme query response data ', response.data)
+            //     //const url = response.data.url            
+            //     //setWebViewUri(url)
+            //     setModalVisible(true)
+            // })
+            // .catch(err => {
+            //     console.log('payme query catch error ', err.response.data)
+            //     //Alert.alert('Cannot show receipt', JSON.stringify(err.response.data))
+            // })
         })
         .catch(err => {
             console.log('payme receipt catch error ', err.response.data)
@@ -182,7 +179,7 @@ const ReceiptsHistory = ({route, navigation}) => {
                 repeats.push(
                     <TouchableOpacity
                         key = {'ordersRow' + i}
-                        onPress={() => showReceipt(i)}
+                        onPress={() => getToken(i)}
                     >
                         <View style={styles.receiptRow}>
                             <Text style={styles.receiptText}>{approvedOrders[i].trainer.firstName + " " + approvedOrders[i].trainer.lastName }</Text>
