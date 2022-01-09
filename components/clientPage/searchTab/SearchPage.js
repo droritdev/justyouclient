@@ -565,6 +565,8 @@ const SearchPage = ({navigation, route}) => {
                 )
                 }
             </View>
+            <View style={{height: 100}}>
+            </View>
             {/* } */}
                 </ScrollView>
         </SafeAreaView>

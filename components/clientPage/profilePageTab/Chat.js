@@ -517,7 +517,7 @@ const Chat = ({navigation, route}) => {
                         <TouchableOpacity
                             onPress={()=> showSendLocationAlert()}
                         >
-                            <Icon name="map-pin" size={17} style={styles.locationIcon} />
+                            <Icon name="map-pin" size={24} style={styles.locationIcon} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height * .012,
         marginRight: Dimensions.get('window').width * .05,
         width: Dimensions.get('window').width * .060,
-        height: Dimensions.get('window').height * .025,
+        height: Dimensions.get('window').height * .04,
     },
     loadingTextView: {
         alignSelf: 'center',

@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image'
 import Icon from 'react-native-vector-icons/Feather';
 import StarRating from 'react-native-star-rating';
 import * as Progress from 'react-native-progress';
-
+import { useIsFocused } from "@react-navigation/native";
 
 
 import axios from 'axios';
@@ -20,6 +20,7 @@ import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 
 //The history page
 const History = ({navigation, route}) => {
+    const isFocused = useIsFocused()
     //boolean to check if there are orders
     const [isTrainers, setIsTrainers] = useState(true);
     //get the orders from the ProfilePage
@@ -39,8 +40,9 @@ const History = ({navigation, route}) => {
     const [listIsReadyToShow, setListIsReadyToShow] = useState('none');
     //array of booleans to check which trainer already got review
     const [reviewBooleanArray, setReviewBooleanArray] = useState([]);
-
     const [isLoadingCircle, setIsLoadingCircle] = useState(true);
+
+    const [trainerReview, setTrainerReview] = useState(null)
 
     const forceUpdate = useReducer(bool => !bool)[1];//Page refresh
 
@@ -155,7 +157,7 @@ const History = ({navigation, route}) => {
 
 
                                 <View style={styles.iconsContainer}>
-                                    {reviewBooleanArray[i] ?
+                                    {(reviewBooleanArray[i] || trainerReview !== null)?
                                         <TouchableOpacity
 
                                             onPress= {() => handleOnAlreadyGotReview()}>
@@ -237,6 +239,7 @@ const History = ({navigation, route}) => {
     }
     //handle when user fill all the fields and click submit for pushing the review to the trainer
     const handleSubmitButton = () => {
+        setTrainerReview(trainerIdForReview)
         addReview();
         //dismiss the review modal window
         setModalVisible(false);
