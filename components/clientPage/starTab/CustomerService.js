@@ -127,7 +127,7 @@ const CustomerService = ({navigation}) => {
             //Check if email was sent to the support
             if (res.data.status === 'success') {
                 //Send automatic response
-                sendAutomaticResponse();
+                //sendAutomaticResponse();
             }
         })
         .catch((err) => {

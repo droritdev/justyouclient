@@ -214,11 +214,16 @@ const TrainersByCategories = ({navigation, route}) => {
         <View>
           {isTrainersAvailable ? (
             <View display={'flex'}>
+              <View style={{height: 410}}>
               <FlatList
                 data={doc}
                 renderItem={renderItem}
                 keyExtractor={(item) => item._id}
               />
+              </View>
+              <View style={{height: 100}}>
+              </View>
+
             </View>
           ) : (
             <View style={{marginTop: 20}}>
@@ -227,6 +232,7 @@ const TrainersByCategories = ({navigation, route}) => {
               </Text>
             </View>
           )}
+          
         </View>
       )}
     </SafeAreaView>

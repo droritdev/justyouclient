@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {StyleSheet, View, Text, Image, TextInput, Dimensions, SafeAreaView, Keyboard, Alert} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
-
+import { Base64 } from 'js-base64';
 import axios from 'axios'
 
 //Here the user verifies his user details before navigates to the reset password page
@@ -11,14 +11,15 @@ const ForgotPassword = ({navigation}) => {
     const [phoneNumberInput, setPhoneNumberInput] = useState("");
     const [requestId, setRequestId] = useState()
     const [code, setCode] = useState("");
+    const [emailInput, setEmailInput] = useState('')
 
     const config = {
-        withCredentials: true,
-        baseURL: 'https://trainer.iqdesk.info:443/',
-        headers: {
-          "Content-Type": "application/json",
-        },
-    };
+      withCredentials: true,
+      baseURL: 'https://justyou.iqdesk.info:443/',
+      headers: {
+        "Content-Type": "application/json",
+      },
+  };
   
 
     const handleOnChangeAreaCode = (value) => {
@@ -76,10 +77,49 @@ const ForgotPassword = ({navigation}) => {
         }
       }
 
+      const handleOnChangeEmail = (value) => {
+        setEmailInput(value);
+      }
+
 
     //Navigates back to the log in page
     const handleArrowButton = () => {
         navigation.navigate('LogIn');
+    }
+
+    const sendPasswordEmail = () => {
+      //Alert.alert('in sendPasswordEmail ' + areaCodeInput + phoneNumberInput)
+      axios
+      .get('/clients/'+emailInput.toLowerCase(), config)
+      .then((doc) => {
+        //Alert.alert('in sendPasswordEmail then ' + doc.data[0].phone.areaCode)
+        if (doc.data[0].email.toLowerCase() === emailInput.toLowerCase()) {
+          // update clientinfo with new password
+          //Alert.alert('in sendPasswordEmail if ' + doc.data[0].phone.areaCode)
+          let decodedPass = Base64.decode(doc.data[0].password)
+          axios
+          .post('/send-email', {
+              to: emailInput,
+              from: 'info@justyou.info',
+              subject: 'Password Information',
+              text: 'Your JustYou password is ' + decodedPass,
+          },
+          config
+          )
+          .then((res) => {
+              navigation.navigate('LogIn')
+              if (res.data.status === 'success') {
+              }
+          })
+          .catch((err) => {
+              Alert.alert('Could not send email. Try again later.')
+          })
+        }
+      })
+      .catch((err) =>  {
+        Alert.alert('This phone is not registered ' + JSON.stringify(err))
+        console.log('error in sendPasswordEmail ', err)
+      });
     }
 
     //navigates to the reset passwrod page
@@ -97,7 +137,11 @@ const ForgotPassword = ({navigation}) => {
               console.log('res not null resdata ', res.data)
               if(res.data === 'authenticated'){
                 console.log('authenticated')
-                navigation.navigate('ResetPassword');
+                // navigation.navigate('ResetPassword', {
+                //   areaCode: areaCodeInput,
+                //   phoneNumber: phoneNumberInput
+                // });
+                sendPasswordEmail()
               }
               else{
                 console.log('failed')
@@ -131,7 +175,7 @@ const ForgotPassword = ({navigation}) => {
                     style={styles.phoneEmailInput}
                     placeholder='Phone number or Email'
                 /> */}
-                <View style={styles.phoneTextInput}>
+              {/*  <View style={styles.phoneTextInput}>
                     <TextInput
                             style={styles.areaCodeInput}
                             textAlign='center'
@@ -148,27 +192,27 @@ const ForgotPassword = ({navigation}) => {
                             value = {phoneNumberInput}
                             onChangeText={value => handleOnChangePhoneNumber(value)}
                         />
-                    </View>
+              </View> 
                 <TouchableOpacity
                     style={styles.verifyButton}
                     onPress={() => handleVerify()}
                 >
                     <Text style={styles.verifyButtonText}>Send Code</Text>
-                </TouchableOpacity>
-                <Text style={styles.verifyExplination}>A code will be sent to you to verify and re-set your password</Text>
+              </TouchableOpacity> */}
+                <Text style={styles.verifyExplination}>Enter your email. Your password will be sent to your email.</Text>
             </View> 
             <View style={styles.codeContainer}>
-                <Text style={styles.enterCodeText}>Enter Code</Text>
                 <TextInput
                     style={styles.codeInput}
-                    placeholder=""
-                    onChangeText={text => handleOnChangeCode(text)}
+                    placeholder="email"
+                    value={emailInput}
+                    onChangeText={text => handleOnChangeEmail(text)}
                 />
             </View>
             <View style={styles.nextButtonContainer}>
                 <TouchableOpacity
                     style={styles.nextButton}
-                    onPress={handleNext}
+                    onPress={sendPasswordEmail}
                 >
                     <Text style={styles.nextButtonText}>Next</Text>
                 </TouchableOpacity>
@@ -212,7 +256,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        height: Dimensions.get('window').height * .225
+        height: Dimensions.get('window').height * .075,
     },
     phoneEmailInput: {
         borderWidth: 1,
@@ -245,8 +289,8 @@ const styles = StyleSheet.create({
           width: Dimensions.get('window').width * .65,
       },
       codeContainer: {
-        alignItems: 'center',
-        marginTop: Dimensions.get('window').height * .066
+        alignItems: 'center'
+        //marginTop: Dimensions.get('window').height * .066
       },
       enterCodeText: {
         fontSize: Dimensions.get('window').height * .0278,

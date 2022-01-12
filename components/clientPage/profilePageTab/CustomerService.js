@@ -143,7 +143,6 @@ const CustomerService = ({navigation}) => {
             //     sendAutomaticResponse();
             // }
             console.log('sendEmail success')
-            
         })
         .catch((err) => {
             console.log('sendEmail catch ', err, err.response)

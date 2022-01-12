@@ -1,16 +1,26 @@
 import React, {useContext, useState} from 'react';
-import {StyleSheet, View, Text, TextInput, Button, Dimensions, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Button, Dimensions, SafeAreaView, Alert} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import axios from 'axios'
+import { Base64 } from 'js-base64';
 
 import {PasswordContext} from '../../context/PasswordContext';
 
 //Page to set the new client's password
-const ResetPasswordClient = ({navigation}) => {
+const ResetPasswordClient = ({route, navigation}) => {
     const {dispatchPassword} = useContext(PasswordContext);
     const [confirmedPassword, setConfirmedPassword] = useState("");
     const [isPasswordsNotMatch, setIsPasswordsNotMatch] = useState(false)
     const [passwordErrorText, setPasswordErrorText] = useState("");
     const [input, setInput] = useState("");
+
+    const config = {
+      withCredentials: true,
+      baseURL: 'https://justyou.iqdesk.info:443/',
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
     
     //Handle the password input when changed
     const handleOnPasswordChangeText = (text) => {
@@ -26,6 +36,43 @@ const ResetPasswordClient = ({navigation}) => {
       setConfirmedPassword(text);
     }
 
+    const saveNewPassword = () => {
+      axios
+      .get('/clients/phone/'+route.params.areaCode+route.params.phoneNumber, config)
+      .then((doc) => {
+        if (doc.data[0].phone.areaCode === route.params.areaCode && doc.data[0].phone.phoneNumber === route.params.phoneNumber) {
+          // update clientinfo with new password
+          let encodedPass = Base64.encode(input)
+          dispatchPassword({
+            type: 'SET_PASSWORD',
+            password: encodedPass
+          });
+          setIsPasswordsNotMatch(false);
+          setPasswordErrorText("");
+
+          axios
+          .post('/clients/updateClientInfo', {
+              _id: doc.data[0]._id,
+              password: encodedPass
+          },
+          config
+          )
+          .then((res) => {
+              if (res.data.type === "success") {
+                  Alert.alert('Password has been updated')
+                  navigation.navigate('LogIn')
+              }
+          })
+          .catch((err) => console.log(err));
+
+        }
+      })
+      .catch((err) =>  {
+        Alert.alert('This phone is not registered')
+        console.log('error in saveNewPassword ', err)
+      });
+    }
+
     //Handle when next button is pressed
     const handleNext = () => {
       if(input.length > 0 && confirmedPassword.length > 0){
@@ -34,13 +81,7 @@ const ResetPasswordClient = ({navigation}) => {
           setIsPasswordsNotMatch(true);
         }
         else{
-          dispatchPassword({
-            type: 'SET_PASSWORD',
-            password: input
-          });
-          setIsPasswordsNotMatch(false);
-          setPasswordErrorText("");
-          navigation.navigate('LogIn')
+          saveNewPassword()
         }
       }
       else{
