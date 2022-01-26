@@ -76,7 +76,7 @@ const LogInClient = ({navigation}) => {
           }
         })
         .catch((err) => {
-            setErrorMessage("The account dosen't exist");
+            setErrorMessage("The account doesn't exist");
             setIsErrorMessage(true);
 
         })
@@ -104,7 +104,7 @@ const LogInClient = ({navigation}) => {
         })
         .catch(error => {
             //checkEmailIsUsed();
-            setErrorMessage("The account dosen't exist");
+            setErrorMessage("The account doesn't exist");
             setIsErrorMessage(true);
 
 

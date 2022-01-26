@@ -117,7 +117,7 @@ const ForgotPassword = ({navigation}) => {
         }
       })
       .catch((err) =>  {
-        Alert.alert('This phone is not registered ' + JSON.stringify(err))
+        Alert.alert('This email is not registered')
         console.log('error in sendPasswordEmail ', err)
       });
     }
@@ -308,7 +308,8 @@ const styles = StyleSheet.create({
       nextButtonContainer: {
         flex: 1,
         justifyContent: 'flex-end',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 100
       },
       nextButton: {
         width: Dimensions.get('window').width * .9,
