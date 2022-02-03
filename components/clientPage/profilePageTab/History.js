@@ -386,7 +386,8 @@ const History = ({navigation, route}) => {
             </Modal>
 
 
-
+        <View style={{height: 80, marginTop: 10}}>
+        </View>
         </SafeAreaView>
     )
 }

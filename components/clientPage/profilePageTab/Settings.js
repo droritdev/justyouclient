@@ -137,13 +137,13 @@ const Settings = ({navigation}) => {
                 <View style={styles.settingsContainer2}>
                     <View style={styles.policyrow}>
                         <TouchableOpacity
-                            //onPress={() => handleOnEditProfilePressed()}
+                            onPress={() => navigation.navigate('TermsConditions')}
                         >
                             <Text style={styles.policytitle}>Privacy policy</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.arrowButton}
-                            //onPress={() => handleOnEditProfilePressed()}
+                            onPress={() => navigation.navigate('TermsConditions')}
                         >
                             <Image
                                 source={require('../../../images/arrowButton.png')}
@@ -152,10 +152,15 @@ const Settings = ({navigation}) => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.termsRow}>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('TermsConditions')}
+                        >
                             <Text style={styles.termsTitle}>Terms & Conditions</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.arrowButton}>
+                        <TouchableOpacity
+                            style={styles.arrowButton}
+                            onPress={() => navigation.navigate('TermsConditions')}    
+                        >
                             <Image
                                 source={require('../../../images/arrowButton.png')}
                                 style={styles.arrowImage}

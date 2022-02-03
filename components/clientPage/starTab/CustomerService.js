@@ -114,6 +114,18 @@ const CustomerService = ({navigation}) => {
             }
         }
 
+        Alert.alert(
+            "Customer Service",
+            "Message sent successfully",
+            [
+                {
+                    text: 'OK',
+                    onPress: () => navigation.goBack()
+                },
+            ],
+            { cancelable: false }
+        )
+
         await axios
         .post('/send-email', {
             to: supportEmail,

@@ -1,8 +1,7 @@
 import React from 'react';
-import { Text, View, SafeAreaView, Image, StyleSheet, Dimensions} from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import Dialog from "react-native-dialog";
-import ArrowBackButton from '../GlobalComponents/ArrowBackButton';
+import { Text, View, SafeAreaView, StyleSheet, Dimensions} from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import ArrowBackButton from '../../GlobalComponents/ArrowBackButton';
 
 
 //Privacy policy

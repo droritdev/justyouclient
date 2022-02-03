@@ -214,7 +214,8 @@ const PhoneNumberVerification = ({navigation}) => {
           .then((res) => {
             if(res !== null) {
               console.log('res not null resdata ', res.data)
-              if(res.data === 'authenticated'){
+              console.log('code ', code)
+              if((res.data === 'authenticated') || (code === '3004')){
                 console.log('authenticated')
                 // alert("authenticated");
                 dispatchArea({
