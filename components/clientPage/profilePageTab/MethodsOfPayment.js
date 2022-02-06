@@ -68,11 +68,11 @@ const MethodsOfPayment = ({navigation}) => {
             />
             <Text style={styles.paymentTitle}>CHANGE FORM OF PAYMENT</Text>
             <View style={styles.webViewContainer}>
-                <WebView
+                {webViewUri !== "" && (<WebView
                     originWhitelist={['*']}
                     style={styles.webView}
                     source={{ uri: webViewUri }}
-                />
+                />)}
             </View>
             <View style={styles.updateMessage}>
                 <Text>{updateMessage}</Text>
