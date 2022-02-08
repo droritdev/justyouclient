@@ -120,11 +120,11 @@ const PaymentsAndPolicy = ({navigation}) => {
             <Text style={styles.profileDetailesText}>Profile Details</Text>
             <Text style={styles.paymentTitle}>ADD FORM OF PAYMENT</Text>
             <View style={styles.webViewContainer}>
-                <WebView
+                {webViewUri !== "" && (<WebView
                     originWhitelist={['*']}
                     style={styles.webView}
                     source={{ uri: webViewUri }}
-                />
+                />)}
             </View>
             {/* <View style={styles.nextButtonContainer}>
                 <AppButton
