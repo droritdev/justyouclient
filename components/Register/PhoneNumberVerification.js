@@ -249,11 +249,11 @@ const PhoneNumberVerification = ({navigation}) => {
     return(
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
-            <View>
+            {/* <View>
               <ArrowBackButton
                 onPress={() => navigation.goBack()}
               />
-            </View>
+            </View> */}
             <View style={styles.headerContainer}>
               <Text style={styles.justYouHeader}>Just You</Text>
             </View>

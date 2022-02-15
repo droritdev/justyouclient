@@ -243,7 +243,7 @@ const ProfileDetailsPage2 = ({route, navigation}) => {
         date = minimumDate;
       }
       else{
-          setBirthdaySelected((date.getMonth()+1)+"/"+date.getUTCDate()+"/"+date.getUTCFullYear());
+          setBirthdaySelected((date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear());
           setIsBirthdaySelected(true);
 
       }
